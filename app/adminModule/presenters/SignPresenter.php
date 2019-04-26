@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 20.3.19
- * Time: 20:20
+ * Date: 26.4.19
+ * Time: 17:24
  */
 
 namespace App\AdminModule\Presenters;
@@ -17,4 +17,5 @@ use App\Presenters\BaseSignPresenter;
  */
 class SignPresenter extends BaseSignPresenter
 {
+
 }

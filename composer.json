@@ -31,7 +31,9 @@
 		"nxp/math-executor": "^0.7.2",
 		"ipub/visual-paginator": "@dev",
 		"kdyby/doctrine": "^4.0@dev",
-		"kdyby/events": "^3.1"
+		"kdyby/events": "^3.1",
+		"symfony/validator": "^4.2",
+		"doctrine/annotations": "^1.6"
 	},
 	"require-dev": {
 		"nette/tester": "^2.0"

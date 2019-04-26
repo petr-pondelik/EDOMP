@@ -134,3 +134,7 @@ ALTER TABLE prototype_json_data DROP INDEX condition_problem_unique;
         -   Nepovolit takovou úlohu odstranit? (před tím by musel být ostraněn test)
         -   Odstranit úlohu i z testů, ve kterých byla použita (při vygenerování podobného testu by test obsahoval o úlohu méně)
         -   
+
+
+### DOCTRINE CMDLINE
+-   Vytvoření DB schématu: sudo php ./www/index.php orm:schema-tool:create

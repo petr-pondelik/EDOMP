@@ -20,7 +20,7 @@
 
 <body>
 
-{if $user->isInRole("admin")}
+{*{if $user->isInRole("admin")}*}
 
     <nav id="sidebar" class="scrollbar scrollbar-primary">
         <div id="jquery-accordion-menu" class="jquery-accordion-menu">
@@ -54,11 +54,11 @@
                         <i class="fas fa-file mr-2"></i> Šablony
                     </a>
                 </li>
-                <li n:class="$presenter->isLinkCurrent('ProblemFinal:*') ? active">
+                {*<li n:class="$presenter->isLinkCurrent('ProblemFinal:*') ? active">
                     <a n:href="ProblemFinal:default">
                         <i class="fas fa-calculator mr-2"></i> Příklady
                     </a>
-                </li>
+                </li>*}
                 <li n:class="$presenter->isLinkCurrent('Category:*') ? active">
                     <a n:href="Category:default">
                         <i class="fas fa-archive mr-2"></i> Kategorie
@@ -75,11 +75,11 @@
                     </a>
                 </li>
 
-                <li n:class="$presenter->isLinkCurrent('Test:*') ? active">
+                {*<li n:class="$presenter->isLinkCurrent('Test:*') ? active">
                     <a n:href="Test:default">
                         <i class="fas fa-file-alt mr-2"></i> Testy
                     </a>
-                </li>
+                </li>*}
 
                 <li class="nav-small-cap">
                     <a href="javascript:void(0)" class="disabled">
@@ -141,7 +141,7 @@
                         <i class="fas fa-user"></i>
                     </a>
                     <div class="dropdown-menu">
-                        <h6 class="dropdown-header">{$user->getIdentity()->username}</h6>
+                        {*<h6 class="dropdown-header">{$user->getIdentity()->username}</h6>*}
                         <div class="dropdown-divider"></div>
                         <a href={link Sign:in do => logout} class="dropdown-item">Odhlásit</a>
                     </div>
@@ -190,25 +190,25 @@
     <!-- MathJax Library -->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML'></script>
 
-    {snippet mathJaxRender}
-        <!-- MathJax Config and Renderer function -->
-        <script type="text/javascript">
+{snippet mathJaxRender}
+    <!-- MathJax Config and Renderer function -->
+    <script type="text/javascript">
 
-            function mathJaxRenderer() {
-                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-                console.log('RENDERING MATHJAX');
-                MathJax.Hub.Config({
-                    messageStyle: "none",
-                    ignoreClass: "tex2jax_ignore"
-                });
-            }
+        function mathJaxRenderer() {
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+            console.log('RENDERING MATHJAX');
+            MathJax.Hub.Config({
+                messageStyle: "none",
+                ignoreClass: "tex2jax_ignore"
+            });
+        }
 
-            setTimeout(mathJaxRenderer, 1000);
+        setTimeout(mathJaxRenderer, 1000);
 
-        </script>
-    {/snippet}
+    </script>
+{/snippet}
 
-{/if}
+{*{/if}*}
 
 <main n:if="!$user->isInRole('admin')">
     {ifset sign}

@@ -2,20 +2,22 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 7.4.19
- * Time: 23:47
+ * Date: 26.4.19
+ * Time: 16:07
  */
 
 namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\CategoryGridFactory;
 use App\Components\Forms\CategoryFormFactory;
-use App\Model\Entities\Category;
-use App\Model\Managers\CategoryManager;
-use App\Services\ValidationService;
+use App\Model\Entity\Category;
+use App\Model\Functionality\CategoryFunctionality;
+use App\Model\Repository\CategoryRepository;
+use App\Service\ValidationService;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class CategoryPresenter
@@ -24,14 +26,14 @@ use Nette\Utils\ArrayHash;
 class CategoryPresenter extends AdminPresenter
 {
     /**
-     * @var CategoryManager
+     * @var CategoryRepository
      */
-    protected $categoryManager;
+    protected $categoryRepository;
 
     /**
-     * @var ValidationService
+     * @var CategoryFunctionality
      */
-    protected $validationService;
+    protected $categoryFunctionality;
 
     /**
      * @var CategoryGridFactory
@@ -44,37 +46,43 @@ class CategoryPresenter extends AdminPresenter
     protected $categoryFormFactory;
 
     /**
+     * @var ValidationService
+     */
+    protected $validationService;
+
+    /**
      * CategoryPresenter constructor.
-     * @param CategoryManager $categoryManager
-     * @param ValidationService $validationService
+     * @param CategoryRepository $categoryRepository
+     * @param CategoryFunctionality $categoryFunctionality
      * @param CategoryGridFactory $categoryGridFactory
      * @param CategoryFormFactory $categoryFormFactory
+     * @param ValidationService $validationService
      */
     public function __construct
     (
-        CategoryManager $categoryManager,
-        ValidationService $validationService,
-        CategoryGridFactory $categoryGridFactory, CategoryFormFactory $categoryFormFactory
+        CategoryRepository $categoryRepository,
+        CategoryFunctionality $categoryFunctionality,
+        CategoryGridFactory $categoryGridFactory, CategoryFormFactory $categoryFormFactory,
+        ValidationService $validationService
     )
     {
         parent::__construct();
-        $this->validationService = $validationService;
-        $this->categoryManager = $categoryManager;
+        $this->categoryRepository = $categoryRepository;
+        $this->categoryFunctionality = $categoryFunctionality;
         $this->categoryGridFactory = $categoryGridFactory;
         $this->categoryFormFactory = $categoryFormFactory;
+        $this->validationService = $validationService;
     }
 
     /**
-     * @param int $category_id
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
+     * @param int $id
      */
-    public function actionEdit(int $category_id)
+    public function actionEdit(int $id)
     {
         $form = $this["categoryEditForm"];
         if(!$form->isSubmitted()){
-            $record = $this->categoryManager->getById($category_id);
-            $this->template->categoryId = $category_id;
+            $record = $this->categoryRepository->find($id);
+            $this->template->categoryId = $id;
             $this->setDefaults($form, $record);
         }
     }
@@ -85,73 +93,92 @@ class CategoryPresenter extends AdminPresenter
      */
     private function setDefaults(IComponent $form, Category $record)
     {
-        $form["category_id"]->setDefaultValue($record->category_id);
-        $form["category_id_hidden"]->setDefaultValue($record->category_id);
-        $form["label"]->setDefaultValue($record->label);
+        $form["category_id"]->setDefaultValue($record->getId());
+        $form["category_id_hidden"]->setDefaultValue($record->getId());
+        $form["label"]->setDefaultValue($record->getLabel());
     }
 
     /**
      * @param $name
-     * @throws \Dibi\NotSupportedException
+     * @return DataGrid
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function createComponentCategoryGrid($name)
+    public function createComponentCategoryGrid($name): DataGrid
     {
         $grid = $this->categoryGridFactory->create($this, $name);
 
         $grid->addAction('delete', '', 'delete!')
             ->setIcon('trash')
-            ->setClass('btn btn-danger btn-sm ajax');
+            ->setClass('btn btn-danger btn-sm ajax')
+            ->setTitle("Odstranit kategorii.");
 
-        $grid->addAction('edit', '')
-            ->setTemplate(__DIR__ . '/templates/Category/editColumn.latte');
+        $grid->addAction("update", "", "update!")
+            ->setIcon("edit")
+            ->setClass("btn btn-primary btn-sm")
+            ->setTitle("Editovat kategorii.");
 
-        $grid->addInlineEdit('category_id')
+        $grid->addInlineEdit()
             ->setIcon('pencil-alt')
             ->setTitle('Upravit inline')
             ->setClass('btn btn-primary btn-sm ajax')
             ->onControlAdd[] = function($container) {
             $container->addText('label', '');
         };
-
-        $grid->getInlineEdit()->onSetDefaults[] = function($cont, $item) {
-            bdump($item);
-            $cont->setDefaults([
-                "label" => $item->label
-            ]);
+        $grid->getInlineEdit()->onSetDefaults[] = function($cont, Category $item) {
+            $cont->setDefaults([ "label" => $item->getLabel() ]);
         };
+        $grid->getInlineEdit()->onSubmit[] = [$this, 'handleInlineUpdate'];
 
-        $grid->getInlineEdit()->onSubmit[] = [$this, 'handleUpdate'];
+        return $grid;
     }
 
     /**
-     * @param int $category_id
-     * @throws \Dibi\Exception
+     * @param int $id
      */
-    public function handleDelete(int $category_id)
+    public function handleDelete(int $id): void
     {
-        $this->categoryManager->delete($category_id);
+        try{
+            $this->categoryFunctionality->delete($id);
+        } catch (\Exception $e){
+            $this->flashMessage('Chyba při odstraňování kategorie.', 'danger');
+            $this->redrawControl('mainFlashesSnippet');
+            return;
+        }
         $this['categoryGrid']->reload();
-        $this->flashMessage('Kategorie úspěšně odstraněna', 'success');
+        $this->flashMessage('Kategorie úspěšně odstraněna.', 'success');
         $this->redrawControl('mainFlashesSnippet');
     }
 
     /**
-     * @param int $categoryId
-     * @param $row
-     * @throws \Dibi\Exception
+     * @param int $id
+     * @throws \Nette\Application\AbortException
      */
-    public function handleUpdate(int $categoryId, $row)
+    public function handleUpdate(int $id): void
     {
-        $this->categoryManager->update($categoryId, $row);
+        $this->redirect("edit", $id);
+    }
+
+    /**
+     * @param int $id
+     * @param ArrayHash $data
+     */
+    public function handleInlineUpdate(int $id, ArrayHash $data): void
+    {
+        try{
+            $this->categoryFunctionality->update($id, $data);
+        } catch (\Exception $e){
+            $this->flashMessage('Chyba při editaci kategorie.', 'danger');
+            $this->redrawControl('mainFlashesSnippet');
+            return;
+        }
         $this->flashMessage('Kategorie úspěšně editována.', 'success');
         $this->redrawControl('mainFlashesSnippet');
     }
 
     /**
-     * @return \Nette\Application\UI\Form
+     * @return Form
      */
-    public function createComponentCategoryCreateForm()
+    public function createComponentCategoryCreateForm(): Form
     {
         $form = $this->categoryFormFactory->create();
         $form->onValidate[] = [$this, 'handleFormValidate'];
@@ -162,12 +189,16 @@ class CategoryPresenter extends AdminPresenter
     /**
      * @param Form $form
      * @param ArrayHash $values
-     * @throws \Dibi\Exception
      */
     public function handleCreateFormSuccess(Form $form, ArrayHash $values)
     {
-        bdump($values);
-        $this->categoryManager->create($values);
+        try{
+            $this->categoryFunctionality->create($values);
+        } catch (\Exception $e){
+            $this->flashMessage('Chyba při vytváření kategorie.', 'danger');
+            $this->redrawControl('mainFlashesSnippet');
+            return;
+        }
         $this['categoryGrid']->reload();
         $this->flashMessage('Kategorie úspěšně vytvořena.', 'success');
         $this->redrawControl('flashesSnippet');
@@ -176,14 +207,16 @@ class CategoryPresenter extends AdminPresenter
     /**
      * @return Form
      */
-    public function createComponentCategoryEditForm()
+    public function createComponentCategoryEditForm(): Form
     {
         $form = $this->categoryFormFactory->create();
+
         $form->addInteger('category_id', 'ID')
             ->setHtmlAttribute('class', 'form-control')
             ->setDisabled();
 
         $form->addHidden('category_id_hidden');
+
         $form->onValidate[] = [$this, "handleFormValidate"];
         $form->onSuccess[] = [$this, "handleEditFormSuccess"];
         return $form;
@@ -192,14 +225,17 @@ class CategoryPresenter extends AdminPresenter
     /**
      * @param Form $form
      * @param ArrayHash $values
-     * @throws \Dibi\Exception
      * @throws \Nette\Application\AbortException
      */
     public function handleEditFormSuccess(Form $form, ArrayHash $values)
     {
-        $this->categoryManager->update($values->category_id_hidden, [
-                "label" => $values->label
-        ]);
+        try{
+            $this->categoryFunctionality->update($values->category_id_hidden, $values);
+        } catch (\Exception $e){
+            $this->flashMessage('Chyba při editaci kategorie.', 'danger');
+            $this->redrawControl('mainFlashesSnippet');
+            return;
+        }
         $this->flashMessage('Kategorie úspěšně editována.', 'success');
         $this->redirect("default");
     }
@@ -210,9 +246,7 @@ class CategoryPresenter extends AdminPresenter
     public function handleFormValidate(Form $form)
     {
         $values = $form->values;
-
         $validateFields["label"] = $values->label;
-
         $validationErrors = $this->validationService->validate($validateFields);
 
         if($validationErrors){

@@ -8,7 +8,7 @@
 
 namespace App\Components\DataGrids;
 
-use App\Model\Managers\CategoryManager;
+use App\Model\Repository\CategoryRepository;
 
 /**
  * Class CategoryGridFactory
@@ -18,35 +18,38 @@ class CategoryGridFactory extends BaseGrid
 {
 
     /**
-     * @var CategoryManager
+     * @var CategoryRepository
      */
-    protected $categoryManager;
+    protected $categoryRepository;
 
+    /**
+     * CategoryGridFactory constructor.
+     * @param CategoryRepository $categoryRepository
+     */
     public function __construct
     (
-        CategoryManager $categoryManager
+         CategoryRepository $categoryRepository
     )
     {
         parent::__construct();
-        $this->categoryManager = $categoryManager;
+        $this->categoryRepository = $categoryRepository;
     }
 
     /**
      * @param $container
      * @param $name
      * @return \Ublaboo\DataGrid\DataGrid
-     * @throws \Dibi\NotSupportedException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
     public function create($container, $name)
     {
         $grid = parent::create($container, $name);
 
-        $grid->setPrimaryKey('category_id');
+        $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->categoryManager->getSelect());
+        $grid->setDataSource($this->categoryRepository->createQueryBuilder("er"));
 
-        $grid->addColumnNumber('category_id', 'ID')
+        $grid->addColumnNumber('id', 'ID')
             ->setSortable();
 
         $grid->addColumnDateTime('created', 'Vytvořeno')
