@@ -1,0 +1,46 @@
+{
+  "name": "bi-bap-edomp",
+  "version": "1.0.0",
+  "description": "Bachelor project focused on Electronical Database Of Mathematical Problems.",
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.fit.cvut.cz:pondepe1/bi-bap-edomp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^4.3.1",
+    "bootstrap-datepicker": "^1.8.0",
+    "bootstrap-select": "^1.13.7",
+    "filepond": "^4.2.0",
+    "filepond-plugin-file-validate-type": "^1.2.4",
+    "filepond-plugin-image-preview": "^4.0.3",
+    "jquery": "^3.3.1",
+    "jquery-filepond": "^1.0.0",
+    "mathjax": "^2.7.5",
+    "nette-forms": "^3.0.2",
+    "nette.ajax.js": "^2.3.0",
+    "popper.js": "^1.14.7",
+    "selectivity": "^3.1.0",
+    "ublaboo-datagrid": "^5.7.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@fortawesome/fontawesome-free": "^5.7.2",
+    "babel-loader": "^8.0.4",
+    "css-loader": "^1.0.0",
+    "file-loader": "^2.0.0",
+    "mini-css-extract-plugin": "^0.4.4",
+    "node-sass": "^4.11.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "url-loader": "^1.1.2",
+    "webpack": "^4.22.0",
+    "webpack-cli": "^3.1.1"
+  },
+  "scripts": {
+    "dev": "webpack --mode development --watch --progress",
+    "build": "webpack --mode production"
+  }
+}

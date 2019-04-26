@@ -1,0 +1,34 @@
+{block icon}
+    <i class="fas fa-home mr-3"></i>
+{/block}
+
+{block content}
+
+    <div class="card-header d-flex justify-content-between">
+        <h1 class="mb-0 font-weight-bold card-heading">
+            {include icon}Domovská stránka
+        </h1>
+    </div>
+
+    <div class="card-body" id="homepage-content">
+
+    <div class="card-deck mb-5">
+        <div class="card panel-card pr-0 pl-0">
+            <div class="card-header">
+                <h2 class="mb-0 card-heading"><i class="fas fa-archive mr-3"></i>Kategorie úloh</h2>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-primary mb-0">
+                    <h3 class="alert-heading">
+                        Celkem zpřístupněno
+                    </h3>
+                    {dump $user->identity->roles}
+                    <p class="pb-0">{count($user->identity->categories)}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+{/block}

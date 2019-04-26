@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html class=responsive lang="cs">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="/favicon-nette.ico" type="image/x-icon">
+	<link rel="alternate" type="application/rss+xml" title="RSS kanál fóra" href="feed.php">
+	<link rel="alternate" type="application/rss+xml" title="RSS kanál fóra, jen jeden příspěvek z vlákna" href="feed.php?group">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<meta property="og:image" content="https://files.nette.org/images/fb-preview.png">
+	<title>Mazanie suboru po samotnej akcii sťiahnuť súbor &#8212; Nette Framework forum</title>
+	<link rel="stylesheet" type="text/css" href="/style/phpbb_blue_n.css?v=1552067933">
+	<link rel="alternate" type="application/rss+xml" title="RSS tématu" href="feed.php?tid=31783">
+</head>
+
+<body id="forum-nette-org">
+<script nonce='O+v7BwFp8pEesbU2Qd208w=='>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script nonce='O+v7BwFp8pEesbU2Qd208w==' src="https://www.google-analytics.com/analytics.js" async></script>
+
+<div class="nettebar-placeholder"></div>
+<script nonce='O+v7BwFp8pEesbU2Qd208w==' src="https://nette.org/endpoint?nettebar=1&amp;lang=cs" async></script>
+
+<section class="header">
+	<div class="container">
+		<nav class="menu" id="main-nav">
+			<div class="menu-toggle"><a href="#" title="skip to nav">Menu</a></div>
+
+			
+			<ul class="menu-top">
+				<li id="navlogin"><a href="login.php"><span>Přihlásit se</span></a></li>
+				<li><a href="recent-posts"><span>Nejnovější</span></a></li>
+				<li id="navsearch"><a href="search.php"><span>Hledání</span></a></li>
+				<li id="navuserlist"><a href="userlist.php"><span>Uživatelé</span></a></li>
+				<li id="navextra1"><a href="feed.php" class="icon icon-rss"><span> RSS</span></a></li>
+			</ul>
+		
+		</nav>
+
+		<div class="header-brand">
+			<a href="/cs/" title="Úvodní stránka fóra" class="header-logo"><span>Nette Forum</span></a>
+		</div>
+	</div>
+</section>
+
+<script nonce='O+v7BwFp8pEesbU2Qd208w=='>
+if (!document.cookie.match(/hidedonatebar=/)) {
+	var bar = document.body.insertBefore(document.createElement('div'), document.querySelector('.header'));
+	bar.innerHTML = '<div class=donatebar><a href="#" class="donatebar-close" title="zavřít">×<\/a><p><i>Milý uživateli!<\/i> Spustili jsme nový crowdfundingový program a hledáme finanční prostředky pro vývoj Nette.	<br><b>Budoucnost frameworku je teď ve vašich rukou, <a href="https://blog.nette.org/spoustime-crowdfundingovy-program" target="_blank" rel="noopener">zapojte se prosím<\/a>. Děkujeme.<\/b><\/p><\/div>';
+}
+</script>
+
+<section class="main">
+	<div class="container" id="punwrap">
+	<div id="punviewtopic" class="pun">
+
+
+	<div id="content">
+		<div class="inner">
+			<div id="brdwelcome" class="inbox"></div>
+
+			
+
+			<div class="linkst">
+	<div class="inbox">
+		<div class=topAx></div>
+		<h1>Mazanie suboru po samotnej akcii sťiahnuť súbor</h1>
+		<div class="breadcrumbs"><a href="./">Úvod</a>&nbsp;&raquo;&nbsp;<a href="f40-zacatecnici">Začátečníci</a></div>
+		<div class="linkbox">
+								</div>
+	</div>
+</div>
+
+<div id="p202253" class="blockpost rowodd  firstpost">
+		<h2><span><a href="#p202253" title="26. 1. 17:55" data-time="2019-01-26T17:55:14+0100">před 2 měsíci</a></span></h2>
+		<div class="box">
+		<div class="inbox">
+			<div class="postleft">
+				<dl title="Registrovaný: 1. 10. 2017
+Místo: Bratislava, Slovakia
+Příspěvky: 73">
+					<dd class="postavatar"><img src="../img/avatars/15383.png" alt="" style="max-width:60px"></dd>
+					<dt><strong><a href="profile.php?id=15383">KristianSubweb</a></strong></dt>
+					<dd class="usertitle">Člen | 73</dd>
+				</dl>
+			</div>
+
+			<div class="postvote" >
+				<a class="up">+</a>
+				<div class="num" title=""><span class="">0</span></div>
+				<a class="down">-</a>
+			</div>
+			<div class="postright">
+				<div class="postmsg">
+					<p>Ahojte mám taký problém potrebujem spraviť niečo nasledovné. Potrebujem
+stiahnúť faktúru ktorá ale reálne može existovať na disku len v danú
+chvílu pri akcii download.</p>
+
+<p>Takže pred samotným stiahntím si vygenerujem pdf uložím, sťiahnem a
+následne ho chcem vymazať s disku.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> handleDownloadInvoice(<span
+class="php-var">$id</span>) {
+        <span
+class="php-var">$this</span>-&gt;hasPermissionModule(\Permission::VIEW);
+
+        <span
+class="php-var">$invoice</span> = <span
+class="php-var">$this</span>-&gt;invoiceService-&gt;getByIdAndCompanyId(<span
+class="php-var">$id</span>, <span
+class="php-var">$this</span>-&gt;user-&gt;getCompanyId());
+
+        <span
+class="php-comment">//Generate pdf and save file on server</span>
+        <span
+class="php-var">$pdfFileName</span> = <span
+class="php-var">$this</span>-&gt;invoiceService-&gt;generatePdf(<span
+class="php-var">$invoice</span>);
+        <span
+class="php-var">$invoice</span>-&gt;setFileName(<span
+class="php-var">$pdfFileName</span>);
+        <span
+class="php-var">$this</span>-&gt;invoiceService-&gt;update(<span
+class="php-var">$invoice</span>);
+
+        <span
+class="php-var">$basePath</span> = <span
+class="php-var">$this</span>-&gt;dirService-&gt;getWwwDir();
+
+        <span
+class="php-comment">//Download invoice</span>
+        <span
+class="php-var">$fileResponse</span> = <span
+class="php-keyword1">new</span> FileResponse(<span
+class="php-var">$invoice</span>-&gt;getFileName());
+        <span
+class="php-var">$this</span>-&gt;sendResponse(<span
+class="php-var">$fileResponse</span>);
+
+        <span
+class="php-comment">//Delete invoice file</span>
+        Functions::deleteFilesOnDirectory(<span
+class="php-var">$basePath</span> . <span
+class="php-quote">&quot;/&quot;</span> . <span
+class="php-var">$invoice</span>-&gt;getFileName());
+
+    }</code></pre>
+
+<p>Akonáhle funkcia spravý sendResponse dalej sa nedostanem.<br />
+Za vaše reakcie ďakujem :)</p>
+
+				</div>
+
+
+
+			<div class="clearer"></div>
+			</div>
+			<div class="postfootright">
+				<div class="actions">
+									</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="p202254" class="blockpost roweven ">
+		<h2><span><a href="#p202254" title="26. 1. 18:27" data-time="2019-01-26T18:27:21+0100">před 2 měsíci</a></span></h2>
+		<div class="box">
+		<div class="inbox">
+			<div class="postleft">
+				<dl title="Registrovaný: 26. 6. 2013
+Místo: Ostrava, Czechia
+Příspěvky: 469">
+					<dd class="postavatar"><img src="https://www.gravatar.com/avatar/415e5ceeae71ac08c78ff64e37c946bb?s=120&amp;d=https%3A%2F%2Fforum.nette.org%2F/img/no-avatar2.png" width="60" height="60" alt=""></dd>
+					<dt><strong><a href="profile.php?id=8723">Martk</a></strong></dt>
+					<dd class="usertitle">Člen | 469</dd>
+				</dl>
+			</div>
+
+			<div class="postvote" >
+				<a class="up">+</a>
+				<div class="num" title="+ votes: David Matějka"><span class="">0</span></div>
+				<a class="down">-</a>
+			</div>
+			<div class="postright">
+				<div class="postmsg">
+					<p>Proč dělat tohle? Mít string s pdf, ten uložit do souboru, přečíst
+soubor a uložit do stringu, pak smazat soubor? Nelze jen odeslat ten string,
+bez manipulací souborů? (tohle je jen řečnická otázka)</p>
+
+<p>V invoice udělej generateToString a v generatePdf, jí můžeš zároveň
+použít.</p>
+
+<p>PS: Vytvoř si novou response, která se bude chovat, tak jak potřebuješ a
+ten response odesílej</p>
+
+					<p class="postedit"><em>Editoval Martk (26. 1. 18:28)</em></p>
+				</div>
+
+
+
+			<div class="clearer"></div>
+			</div>
+			<div class="postfootright">
+				<div class="actions">
+									</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="p202256" class="blockpost rowodd ">
+		<h2><span><a href="#p202256" title="27. 1. 0:54" data-time="2019-01-27T00:54:34+0100">před 2 měsíci</a></span></h2>
+		<div class="box">
+		<div class="inbox">
+			<div class="postleft">
+				<dl title="Registrovaný: 26. 3. 2014
+Místo: Praha
+Příspěvky: 64">
+					<dd class="postavatar"><img src="https://www.gravatar.com/avatar/57f219e2fa05697bbd98b4bcc74eaae9?s=120&amp;d=https%3A%2F%2Fforum.nette.org%2F/img/no-avatar2.png" width="60" height="60" alt=""></dd>
+					<dt><strong><a href="profile.php?id=12602">trejjam</a></strong></dt>
+					<dd class="usertitle"><span class=usertitle-partner>Backer</span> | 64</dd>
+				</dl>
+			</div>
+
+			<div class="postvote" >
+				<a class="up">+</a>
+				<div class="num" title=""><span class="">0</span></div>
+				<a class="down">-</a>
+			</div>
+			<div class="postright">
+				<div class="postmsg">
+					<p>Toto jsme resili pomoci:</p>
+
+<ul>
+	<li><a
+	href="https://github.com/trejjam/Utils/blob/master/src/Helpers/FileResponse.php">https://github.com/…Response.php</a></li>
+
+	<li><a
+	href="https://github.com/trejjam/Utils/blob/master/src/Helpers/TempDownloadFile.php">https://github.com/…loadFile.php</a></li>
+</ul>
+
+<p><b>@Martk</b> soubor neni treba natahovat do pameti</p>
+
+				</div>
+
+
+
+			<div class="clearer"></div>
+			</div>
+			<div class="postfootright">
+				<div class="actions">
+									</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="p202276" class="blockpost roweven ">
+		<h2><span><a href="#p202276" title="28. 1. 17:15" data-time="2019-01-28T17:15:45+0100">před 2 měsíci</a></span></h2>
+		<div class="box">
+		<div class="inbox">
+			<div class="postleft">
+				<dl title="Registrovaný: 1. 10. 2017
+Místo: Bratislava, Slovakia
+Příspěvky: 73">
+					<dd class="postavatar"><img src="../img/avatars/15383.png" alt="" style="max-width:60px"></dd>
+					<dt><strong><a href="profile.php?id=15383">KristianSubweb</a></strong></dt>
+					<dd class="usertitle">Člen | 73</dd>
+				</dl>
+			</div>
+
+			<div class="postvote" >
+				<a class="up">+</a>
+				<div class="num" title=""><span class="">0</span></div>
+				<a class="down">-</a>
+			</div>
+			<div class="postright">
+				<div class="postmsg">
+					<p><b>@trejjam</b> pls nevieš mi poradiť ako presne to viem
+implementovať ?</p>
+
+				</div>
+
+
+
+			<div class="clearer"></div>
+			</div>
+			<div class="postfootright">
+				<div class="actions">
+									</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="p202279" class="blockpost rowodd ">
+		<h2><span><a href="#p202279" title="28. 1. 21:44" data-time="2019-01-28T21:44:47+0100">před 2 měsíci</a></span></h2>
+		<div class="box">
+		<div class="inbox">
+			<div class="postleft">
+				<dl title="Registrovaný: 4. 5. 2010
+Místo: Roztoky
+Příspěvky: 1126">
+					<dd class="postavatar"><img src="https://www.gravatar.com/avatar/91ccd0bc9e01fff1ad183660dd443fe8?s=120&amp;d=https%3A%2F%2Fforum.nette.org%2F/img/no-avatar2.png" width="60" height="60" alt=""></dd>
+					<dt><strong><a href="profile.php?id=2970">Milo</a></strong></dt>
+					<dd class="usertitle"><span class=usertitle-partner>Nette Core</span> | 1126</dd>
+				</dl>
+			</div>
+
+			<div class="postvote" >
+				<a class="up">+</a>
+				<div class="num" title="+ votes: CZechBoY, David Matějka, KristianSubweb"><span class="plus">+3</span></div>
+				<a class="down">-</a>
+			</div>
+			<div class="postright">
+				<div class="postmsg">
+					<p>Co třeba dekorací…</p>
+
+<pre class="src-php"><code><span
+class="php-keyword1">use</span> Nette\Application\Responses\FileResponse;
+<span
+class="php-keyword1">use</span> Nette\Http\IRequest;
+<span
+class="php-keyword1">use</span> Nette\Http\IResponse;
+
+<span
+class="php-keyword1">final</span> <span
+class="php-keyword1">class</span> DownloadAndDeleteFileResponse
+{
+    <span
+class="php-keyword1">private</span> <span
+class="php-var">$response</span>;
+
+    <span
+class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> __construct(FileResponse <span
+class="php-var">$response</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;response = <span
+class="php-var">$response</span>;
+    }
+
+    <span
+class="php-keyword1">public</span> funcion send(IRequest <span
+class="php-var">$request</span>, IResponse <span
+class="php-var">$response</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;response-&gt;send(<span
+class="php-var">$request</span>, <span
+class="php-var">$response</span>);
+        <span
+class="php-keyword2">unlink</span>(<span
+class="php-var">$this</span>-&gt;response-&gt;getFile());
+    }
+}</code></pre>
+
+				</div>
+
+
+
+			<div class="clearer"></div>
+			</div>
+			<div class="postfootright">
+				<div class="actions">
+									</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="p202297" class="blockpost roweven ">
+		<h2><span><a href="#p202297" title="29. 1. 18:08" data-time="2019-01-29T18:08:33+0100">před 2 měsíci</a></span></h2>
+		<div class="box">
+		<div class="inbox">
+			<div class="postleft">
+				<dl title="Registrovaný: 1. 10. 2017
+Místo: Bratislava, Slovakia
+Příspěvky: 73">
+					<dd class="postavatar"><img src="../img/avatars/15383.png" alt="" style="max-width:60px"></dd>
+					<dt><strong><a href="profile.php?id=15383">KristianSubweb</a></strong></dt>
+					<dd class="usertitle">Člen | 73</dd>
+				</dl>
+			</div>
+
+			<div class="postvote" >
+				<a class="up">+</a>
+				<div class="num" title=""><span class="">0</span></div>
+				<a class="down">-</a>
+			</div>
+			<div class="postright">
+				<div class="postmsg">
+					<p><b>@Milo</b> a pls nevieš poradiť ako napísať tu decoraci? :D sorač</p>
+
+<blockquote>
+	<p>Milo napsal(a):</p>
+
+	<p>Co třeba dekorací…</p>
+
+	<pre class="src-php"><code><span
+	class="php-keyword1">use</span> Nette\Application\Responses\FileResponse;
+<span
+	class="php-keyword1">use</span> Nette\Http\IRequest;
+<span
+	class="php-keyword1">use</span> Nette\Http\IResponse;
+
+<span
+	class="php-keyword1">final</span> <span
+	class="php-keyword1">class</span> DownloadAndDeleteFileResponse
+{
+  <span
+	class="php-keyword1">private</span> <span
+	class="php-var">$response</span>;
+
+  <span
+	class="php-keyword1">public</span> <span
+	class="php-keyword1">function</span> __construct(FileResponse <span
+	class="php-var">$response</span>)
+  {
+      <span
+	class="php-var">$this</span>-&gt;response = <span
+	class="php-var">$response</span>;
+  }
+
+  <span
+	class="php-keyword1">public</span> funcion send(IRequest <span
+	class="php-var">$request</span>, IResponse <span
+	class="php-var">$response</span>)
+  {
+      <span
+	class="php-var">$this</span>-&gt;response-&gt;send(<span
+	class="php-var">$request</span>, <span
+	class="php-var">$response</span>);
+      <span
+	class="php-keyword2">unlink</span>(<span
+	class="php-var">$this</span>-&gt;response-&gt;getFile());
+  }
+}</code></pre>
+</blockquote>
+
+				</div>
+
+
+
+			<div class="clearer"></div>
+			</div>
+			<div class="postfootright">
+				<div class="actions">
+									</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="p202298" class="blockpost rowodd ">
+		<h2><span><a href="#p202298" title="29. 1. 18:10" data-time="2019-01-29T18:10:19+0100">před 2 měsíci</a></span></h2>
+		<div class="box">
+		<div class="inbox">
+			<div class="postleft">
+				<dl title="Registrovaný: 26. 6. 2013
+Místo: Ostrava, Czechia
+Příspěvky: 469">
+					<dd class="postavatar"><img src="https://www.gravatar.com/avatar/415e5ceeae71ac08c78ff64e37c946bb?s=120&amp;d=https%3A%2F%2Fforum.nette.org%2F/img/no-avatar2.png" width="60" height="60" alt=""></dd>
+					<dt><strong><a href="profile.php?id=8723">Martk</a></strong></dt>
+					<dd class="usertitle">Člen | 469</dd>
+				</dl>
+			</div>
+
+			<div class="postvote" >
+				<a class="up">+</a>
+				<div class="num" title="+ votes: Milo, CZechBoY, KristianSubweb"><span class="plus">+3</span></div>
+				<a class="down">-</a>
+			</div>
+			<div class="postright">
+				<div class="postmsg">
+					<p>To co <b>@Milo</b> napsal je návrhový vzor dekorátor,
+použití takhle</p>
+
+<pre class="src-php"><code><span
+class="php-var">$this</span>-&gt;sendResponse(<span
+class="php-keyword1">new</span> DownloadAndDeleteFileResponse(<span
+class="php-keyword1">new</span> FileResponse(<span
+class="php-var">$filename</span>)));</code></pre>
+
+				</div>
+
+
+
+			<div class="clearer"></div>
+			</div>
+			<div class="postfootright">
+				<div class="actions">
+									</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="p202299" class="blockpost roweven ">
+		<h2><span><a href="#p202299" title="29. 1. 18:28" data-time="2019-01-29T18:28:51+0100">před 2 měsíci</a></span></h2>
+		<div class="box">
+		<div class="inbox">
+			<div class="postleft">
+				<dl title="Registrovaný: 1. 10. 2017
+Místo: Bratislava, Slovakia
+Příspěvky: 73">
+					<dd class="postavatar"><img src="../img/avatars/15383.png" alt="" style="max-width:60px"></dd>
+					<dt><strong><a href="profile.php?id=15383">KristianSubweb</a></strong></dt>
+					<dd class="usertitle">Člen | 73</dd>
+				</dl>
+			</div>
+
+			<div class="postvote" >
+				<a class="up">+</a>
+				<div class="num" title=""><span class="">0</span></div>
+				<a class="down">-</a>
+			</div>
+			<div class="postright">
+				<div class="postmsg">
+					<p><b>@Martk</b> nejde on čaka IResponse</p>
+
+<p>Argument 1 passed to Nette\Application\UI\Presenter::sendResponse() must
+implement interface Nette\Application\IResponse, instance of
+DefaultModule\Classes\DownloadAndDeleteFileResponse given, called in
+/Users/kristianbukva/Documents/www/service/app/AdminModule/Modules/InvoiceModule/presenters/InvoicePresenter.php
+on line 226</p>
+
+<blockquote>
+	<p>Martk napsal(a):</p>
+
+	<p>To co <b>@Milo</b> napsal je návrhový vzor dekorátor,
+	použití takhle</p>
+
+	<pre class="src-php"><code><span
+	class="php-var">$this</span>-&gt;sendResponse(<span
+	class="php-keyword1">new</span> DownloadAndDeleteFileResponse(<span
+	class="php-keyword1">new</span> FileResponse(<span
+	class="php-var">$filename</span>)));</code></pre>
+</blockquote>
+
+				</div>
+
+
+
+			<div class="clearer"></div>
+			</div>
+			<div class="postfootright">
+				<div class="actions">
+									</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="p202300" class="blockpost rowodd ">
+		<h2><span><a href="#p202300" title="29. 1. 18:30" data-time="2019-01-29T18:30:13+0100">před 2 měsíci</a></span></h2>
+		<div class="box">
+		<div class="inbox">
+			<div class="postleft">
+				<dl title="Registrovaný: 1. 10. 2017
+Místo: Bratislava, Slovakia
+Příspěvky: 73">
+					<dd class="postavatar"><img src="../img/avatars/15383.png" alt="" style="max-width:60px"></dd>
+					<dt><strong><a href="profile.php?id=15383">KristianSubweb</a></strong></dt>
+					<dd class="usertitle">Člen | 73</dd>
+				</dl>
+			</div>
+
+			<div class="postvote" >
+				<a class="up">+</a>
+				<div class="num" title=""><span class="">0</span></div>
+				<a class="down">-</a>
+			</div>
+			<div class="postright">
+				<div class="postmsg">
+					<p><b>@Martk</b> nejde on čaka IResponse</p>
+
+<p>Argument 1 passed to Nette\Application\UI\Presenter::sendResponse() must
+implement interface Nette\Application\IResponse, instance of
+DefaultModule\Classes\DownloadAndDeleteFileResponse given, called in
+/Users/kristianbukva/Documents/www/service/app/AdminModule/Modules/InvoiceModule/presenters/InvoicePresenter.php
+on line 226</p>
+
+<blockquote>
+	<blockquote>
+		<p>Martk napsal(a):</p>
+
+		<p>To co <b>@Milo</b> napsal je návrhový vzor dekorátor,
+		použití takhle</p>
+
+		<pre class="src-php"><code><span
+		class="php-var">$this</span>-&gt;sendResponse(<span
+		class="php-keyword1">new</span> DownloadAndDeleteFileResponse(<span
+		class="php-keyword1">new</span> FileResponse(<span
+		class="php-var">$filename</span>)));</code></pre>
+	</blockquote>
+</blockquote>
+
+<p>Takto to mám napísané</p>
+
+<pre class="src-php"><code><span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> handleDownloadInvoice(<span
+class="php-var">$id</span>) {
+        <span
+class="php-var">$this</span>-&gt;hasPermissionModule(\Permission::VIEW);
+
+        <span
+class="php-var">$invoice</span> = <span
+class="php-var">$this</span>-&gt;invoiceService-&gt;getByIdAndCompanyId(<span
+class="php-var">$id</span>, <span
+class="php-var">$this</span>-&gt;user-&gt;getCompanyId());
+
+        <span
+class="php-var">$pdfFileName</span> = <span
+class="php-var">$this</span>-&gt;invoiceService-&gt;generatePdf(<span
+class="php-var">$invoice</span>);
+
+        <span
+class="php-var">$invoice</span>-&gt;setFileName(<span
+class="php-var">$pdfFileName</span>);
+
+        <span
+class="php-var">$this</span>-&gt;invoiceService-&gt;update(<span
+class="php-var">$invoice</span>);
+
+        <span
+class="php-var">$file</span> = <span
+class="php-var">$this</span>-&gt;dirService-&gt;getWwwDir() . <span
+class="php-quote">&quot;/&quot;</span> . <span
+class="php-var">$invoice</span>-&gt;getFileName();
+
+        <span
+class="php-var">$this</span>-&gt;sendResponse(<span
+class="php-keyword1">new</span> DownloadAndDeleteFileResponse(<span
+class="php-keyword1">new</span> FileResponse(<span
+class="php-var">$file</span>)));
+    }</code></pre>
+
+					<p class="postedit"><em>Editoval KristianSubweb (29. 1. 18:31)</em></p>
+				</div>
+
+
+
+			<div class="clearer"></div>
+			</div>
+			<div class="postfootright">
+				<div class="actions">
+									</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="p202301" class="blockpost roweven ">
+		<h2><span><a href="#p202301" title="29. 1. 19:46" data-time="2019-01-29T19:46:02+0100">před 2 měsíci</a></span></h2>
+		<div class="box">
+		<div class="inbox">
+			<div class="postleft">
+				<dl title="Registrovaný: 6. 2. 2018
+Místo: Považská Bystrica, Slovakia
+Příspěvky: 155">
+					<dd class="postavatar"><img src="../img/avatars/15729.png" alt="" style="max-width:60px"></dd>
+					<dt><strong><a href="profile.php?id=15729">MajklNajt</a></strong></dt>
+					<dd class="usertitle">Člen | 155</dd>
+				</dl>
+			</div>
+
+			<div class="postvote" >
+				<a class="up">+</a>
+				<div class="num" title="+ votes: CZechBoY, tkn"><span class="plus">+2</span></div>
+				<a class="down">-</a>
+			</div>
+			<div class="postright">
+				<div class="postmsg">
+					<p>čo tak zapojiť trošku vlasntého rozumu?</p>
+
+<pre class="src-php"><code><span class="php-keyword1">final</span> <span
+class="php-keyword1">class</span> DownloadAndDeleteFileResponse <span
+class="php-keyword1">implements</span> Nette\Application\IResponse
+{
+...
+}</code></pre>
+
+				</div>
+
+
+
+			<div class="clearer"></div>
+			</div>
+			<div class="postfootright">
+				<div class="actions">
+									</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="p202350" class="blockpost rowodd ">
+		<h2><span><a href="#p202350" title="1. 2. 14:00" data-time="2019-02-01T14:00:33+0100">před 2 měsíci</a></span></h2>
+		<div class="box">
+		<div class="inbox">
+			<div class="postleft">
+				<dl title="Registrovaný: 1. 10. 2017
+Místo: Bratislava, Slovakia
+Příspěvky: 73">
+					<dd class="postavatar"><img src="../img/avatars/15383.png" alt="" style="max-width:60px"></dd>
+					<dt><strong><a href="profile.php?id=15383">KristianSubweb</a></strong></dt>
+					<dd class="usertitle">Člen | 73</dd>
+				</dl>
+			</div>
+
+			<div class="postvote" >
+				<a class="up">+</a>
+				<div class="num" title=""><span class="">0</span></div>
+				<a class="down">-</a>
+			</div>
+			<div class="postright">
+				<div class="postmsg">
+					<p>Ďakujem vám sorry ja dement som si to vobec nevšimol. :) Dik</p>
+
+				</div>
+
+
+
+			<div class="clearer"></div>
+			</div>
+			<div class="postfootright">
+				<div class="actions">
+									</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="p202378" class="blockpost roweven ">
+		<h2><span><a href="#p202378" title="3. 2. 0:32" data-time="2019-02-03T00:32:52+0100">před měsícem</a></span></h2>
+		<div class="box">
+		<div class="inbox">
+			<div class="postleft">
+				<dl title="Registrovaný: 25. 12. 2009
+Místo: Myjava, Slovensko
+Příspěvky: 411">
+					<dd class="postavatar"><img src="../img/avatars/2599.png" alt="" style="max-width:60px"></dd>
+					<dt><strong><a href="profile.php?id=2599">japlavaren</a></strong></dt>
+					<dd class="usertitle"><span class=usertitle-partner>Backer</span> | 411</dd>
+				</dl>
+			</div>
+
+			<div class="postvote" >
+				<a class="up">+</a>
+				<div class="num" title=""><span class="">0</span></div>
+				<a class="down">-</a>
+			</div>
+			<div class="postright">
+				<div class="postmsg">
+					<p>ak ti to staci na jednom mieste a si lenivy robit na to novu class, postaci
+aj calback response:</p>
+
+<pre class="src-php"><code><span class="xlang">&lt;?php</span>
+<span
+class="php-var">$this</span>-&gt;sendResponse(<span
+class="php-keyword1">new</span> CallbackResponse(<span
+class="php-keyword1">function</span> (IRequest <span
+class="php-var">$request</span>, IResponse <span
+class="php-var">$response</span>) {
+    <span
+class="php-keyword1">try</span> {
+        <span
+class="php-var">$file</span> = createFile();
+        (<span
+class="php-keyword1">new</span> FileResponse(<span
+class="php-var">$file</span>))-&gt;send(<span
+class="php-var">$request</span>, <span
+class="php-var">$response</span>);
+    } finally {
+        cleanup();
+    }
+}));
+<span
+class="xlang">?&gt;</span></code></pre>
+
+				</div>
+
+
+
+			<div class="clearer"></div>
+			</div>
+			<div class="postfootright">
+				<div class="actions">
+									</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="linksb">
+	<div class="inbox">
+				<a href="feed.php?tid=31783" class="icon icon-rss"> RSS tématu</a>	</div>
+</div>
+
+
+<script nonce="O+v7BwFp8pEesbU2Qd208w==">var topAx = "\r\n\t\t\t<div class='topAx'>\r\n\t\t\t<div class='topAx-inner'>\r\n\t\t\t\t<a href='https:\/\/www.skoleniphp.cz\/skoleni-nette-vyvoj-webovych-aplikaci' class='topAx-anchor' data-ad='10' target='_blank' rel='nofollow noopener'>\r\n\t\t\t\t\t\r\n\t\t\t\t\t<div class='topAx-title'>Nej\u017e\u00e1dan\u011bj\u0161\u00ed framework na Jobs<\/div>\r\n\t\t\t\t\t<div class='topAx-text'>Posledn\u00ed voln\u00e1 m\u00edsta na \u0161kolen\u00ed nej\u00fasp\u011b\u0161n\u011bj\u0161\u00edho frameworku u n\u00e1s<\/div>\r\n\t\t\t\t\t<div class='topAx-link'>www.skoleniphp.cz<\/div>\r\n\t\t\t\t\t\r\n\t\t\t\t<\/a>\r\n\t\t\t<\/div>\r\n\t\t\t<a href='https:\/\/nette.org\/donate' class='topAx-offer'>chci tady reklamu<\/a>\r\n\t\t\t<\/div>";var postAx = "\r\n\t\t\t<div class='postAx'>\r\n\t\t\t<div class='postAx-inner'>\r\n\t\t\t\t<a href='https:\/\/www.skoleniphp.cz\/inhouse' class='postAx-anchor' data-ad='11' target='_blank' rel='nofollow noopener'>\r\n\t\t\t\t\t\r\n\t\t\t\t\t<div class='postAx-title'>Hled\u00e1te support pro Nette?<\/div>\r\n\t\t\t\t\t<div class='postAx-text'>Pot\u0159ebujete konzultaci? Pomoci s update? Individu\u00e1ln\u00ed \u0161kolen\u00ed u v\u00e1s ve firm\u011b?<\/div>\r\n\t\t\t\t\t<div class='postAx-link'>www.skoleniphp.cz\/inhouse<\/div>\r\n\t\t\t\t\t\r\n\t\t\t\t<\/a>\r\n\t\t\t<\/div>\r\n\t\t\t<a href='https:\/\/nette.org\/donate' class='postAx-offer'>chci tady reklamu<\/a>\r\n\t\t\t<\/div>";</script>
+		</div>
+	</div>
+
+	</div>
+	</div>
+</section>
+
+
+<section class="footer">
+	<div class="container">
+	<footer>
+	<script nonce='O+v7BwFp8pEesbU2Qd208w==' src="https://api.nette.org/2/elementlist.js"></script>
+	<div id="brdfooter" class="block">
+	<h2><span>Zápatí</span></h2>
+	<div class="box">
+		<div class="inbox">
+<form method=post class=mobile><input type=hidden name=desktop value=1><button>Switch to desktop</button></form>
+			<div class="conl">
+				<form id="qjump" method="get" action="viewforum.php">
+					<div><label>Přejít na
+					 <select name="id" onchange="window.location=('viewforum.php?id='+this.options[this.selectedIndex].value)">
+						<optgroup label="Uživatelé Nette Framework">
+							<option value="40" selected="selected">Začátečníci</option>
+							<option value="22">Obecná diskuse</option>
+							<option value="28">Nette Application</option>
+							<option value="37">Routování</option>
+							<option value="45">Latte</option>
+							<option value="29">Formuláře</option>
+							<option value="39">Databáze &amp; ORM</option>
+							<option value="83">Tracy</option>
+							<option value="41">AJAX</option>
+							<option value="20">Autentizace a autorizace</option>
+							<option value="43">Konfigurace a Dependency Injection</option>
+							<option value="44">Testování</option>
+							<option value="27">Doplňky, pluginy a komponenty</option>
+						</optgroup>
+						<optgroup label="Vývoj Nette Framework">
+							<option value="23">Novinky, tipy, návody</option>
+							<option value="35">Diskuse o vývoji</option>
+						</optgroup>
+						<optgroup label="Různé">
+							<option value="33">Poslední sobota</option>
+							<option value="30">Práce a zakázky</option>
+							<option value="21">Různé</option>
+						</optgroup>
+						<optgroup label="Archiv">
+							<option value="31">Changelog</option>
+							<option value="42">RFC</option>
+							<option value="24">Hlášení chyb</option>
+							<option value="26">Feature Requests</option>
+							<option value="32">Dokumentace</option>
+							<option value="36">Koš</option>
+					</optgroup>
+					</select>
+					<input type="submit" value="Přejít" accesskey="g">
+					</label></div>
+				</form>
+			</div>
+<div><a href="terms.php">Terms and conditions</a></div><div style="clear:both">Hostováno na e-infrastruktuře <a href="https://www.cesnet.cz/sluzby/">CESNET</a>. Děkujeme za podporu sdružení CESNET, z.s.p.o.</div>			<div class="clearer"></div>
+		</div>
+	</div>
+</div>
+<script src="/combined.js?v=1551886354" nonce="O+v7BwFp8pEesbU2Qd208w=="></script>
+<script src="https://apis.google.com/js/client.js?onload=googleLoad" nonce="O+v7BwFp8pEesbU2Qd208w=="></script>
+	</footer>
+	</div>
+</section>
+
+</body>
+</html>

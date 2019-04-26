@@ -1,0 +1,13 @@
+{if $item->extension != ".pdf"}
+
+    <div class="text-center pt-4 pr-4 pb-4 pl-4">
+        <img class="img-fluid" style="height: auto; width: 60%" alt="{$item->path}" src="{$item->path}"/>
+    </div>
+
+{else}
+
+    <div class="text-center embed-responsive embed-responsive-16by9 pt-4 pr-4 pb-4 pl-4">
+        <embed class="embed-responsive-item" alt="{$item->path}" src="{$item->path}"/>
+    </div>
+
+{/if}

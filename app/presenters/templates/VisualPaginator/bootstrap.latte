@@ -1,0 +1,43 @@
+{if $paginator->pageCount > 1}
+    <ul class="pagination col-12 d-flex justify-content-between mb-4 pr-0">
+        {if $paginator->isFirst()}
+            <li class="page-item disabled">
+                <span class="btn btn-sm btn-secondary disabled">Předchozí</span>
+            </li>
+        {else}
+            <li class="page-item">
+                <a href="{link $handle, 'page' => $paginator->page - 1}" rel="prev" n:class="'btn btn-sm btn-primary', $useAjax ? ajax">
+                    Předchozí
+                </a>
+            </li>
+        {/if}
+
+        {*{foreach $steps as $step}
+            {if $step == $paginator->page}
+                <li class="page-item active">
+                    <span class="page-link">{$step}</span>
+                </li>
+            {else}
+                <li class="page-item">
+                    <a href="{link $handle, 'page' => $step}" n:class="'page-link', $useAjax ? ajax">
+                        {$step}
+                    </a>
+                </li>
+            {/if}
+        {/foreach}*}
+
+        <p>{$paginator->page}/{$paginator->itemCount}</p>
+
+        {if $paginator->isLast()}
+            <li class="page-item disabled">
+                <span class="btn btn-sm btn-secondary disabled">Další</span>
+            </li>
+        {else}
+            <li>
+                <a href="{link $handle, 'page' => $paginator->page + 1}" rel="next" n:class="'btn btn-sm btn-primary', $useAjax ? ajax">
+                    Další
+                </a>
+            </li>
+        {/if}
+    </ul>
+{/if}

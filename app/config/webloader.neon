@@ -1,0 +1,88 @@
+extensions:
+	webloader: WebLoader\Nette\Extension
+
+services:
+	wlCssFilter: WebLoader\Filter\CssUrlsFilter(%wwwDir%)
+	scssFilter: WebLoader\Filter\ScssFilter
+	jwlCssMinFilter: Joseki\Webloader\CssMinFilter
+
+
+webloader:
+
+    css:
+
+        default:
+
+            files:
+
+                # Bootstrap styles
+                #- %npmDir%/bootstrap/dist/css/bootstrap.min.css
+                #- %npmDir%/bootstrap-select/dist/css/bootstrap-select.min.css
+                - %npmDir%/bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone.min.css
+
+                # Ublaboo Datagrid styles
+                - %npmDir%/ublaboo-datagrid/assets/dist/datagrid.css
+                - %npmDir%/ublaboo-datagrid/assets/dist/datagrid-spinners.js
+                - %vendorDir%/ublaboo/datagrid/bower_components/happy/dist/happy.css
+
+                # Filepond styles
+                - %npmDir%/filepond/dist/filepond.css
+                - %npmDir%/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css
+
+                # Custom styles
+                - %assetsDir%/scss/global.scss
+                - %assetsDir%/css/sidemenu.css
+
+                # FontAwesome styles
+                #- %npmDir%/@fortawesome/fontawesome-free/css/all.css
+
+            filters:
+                - @jwlCssMinFilter
+
+            fileFilters:
+                - @scssFilter
+                - @wlCssFilter
+
+            watchFiles:		# only watch modify file
+                #- {files: ["*.css", "*.scss"], from: %assetsDir%/scss}
+
+    js:
+
+        default:
+
+            files:
+
+                # jQuery scripts
+                - %npmDir%/jquery/dist/jquery.min.js
+
+                # Bootstrap scripts
+                - %npmDir%/bootstrap/dist/js/bootstrap.min.js
+                - %npmDir%/bootstrap-select/dist/js/bootstrap-select.js
+                - %npmDir%/bootstrap-datepicker/dist/js/bootstrap-datepicker.js
+
+                # Nette Forms scripts
+                - %vendorDir%/nette/forms/src/assets/netteForms.min.js
+
+                # Nette Ajax scripts
+                - %assetsDir%/js/nette.ajax.js
+                - %assetsDir%/js/nette.ajax.init.js
+                - %assetsDir%/js/spinner.ajax.js
+
+                # Filepond scripts
+                - %npmDir%/filepond/dist/filepond.js
+                - %npmDir%/jquery-filepond/filepond.jquery.js
+                - %npmDir%/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js
+                - %assetsDir%/js/filepond.config.js
+
+                # Ublaboo Datagrid scripts
+                - %npmDir%/ublaboo-datagrid/assets/dist/datagrid.js
+                - %npmDir%/ublaboo-datagrid/assets/dist/datagrid-spinners.js
+
+                # MathJax scripts
+                - %assetsDir%/js/mathjax.config.js
+
+                # FontAwesome scripts
+                - %npmDir%/@fortawesome/fontawesome-free/js/all.js
+
+                # Custom scripts
+                - %assetsDir%/js/sidemenu.js

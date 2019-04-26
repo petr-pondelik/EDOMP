@@ -1,0 +1,158 @@
+{import 'default.latte'}
+
+{block headingFirstLink}
+    <li class="breadcrumb-item">
+        <a n:href="Problem:default">{include headingFirst}</a>
+    </li>
+{/block}
+
+{block headingSecond}
+    Šablona {$problemId}
+{/block}
+
+{block headingSecondLink}
+    <li class="breadcrumb-item font-weight-bold active">
+        {include headingSecond}
+    </li>
+{/block}
+
+{block content}
+
+    {form problemEditForm}
+
+        <div class="card-header d-flex justify-content-between">
+            <h1 class="mb-0 font-weight-bold card-heading">
+                <i class="fas fa-file mr-3"></i>{include headingSecond}
+            </h2>
+            <div class="d-inline">
+                <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
+                <a n:href="Problem:default" class="btn btn-secondary btn-sm">Zpět</a>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <div class="mt-3" n:snippet="flashesSnippet">
+                <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type}">{$flash->message}</div>
+            </div>
+
+            <div class="form-group">
+                {label id}
+                {input id}
+            </div>
+
+            <div class="form-group">
+                {label type}
+                {input type}
+                {snippet typeErrorSnippet}
+                    {var $form = $control['problemEditForm']}
+                    <div n:if="$form->hasErrors()" class="mt-1">
+                        <p n:foreach="$form['type']->errors as $error" class="alert alert-danger">
+                            {$error}
+                        </p>
+                    </div>
+                {/snippet}
+            </div>
+
+            <div class="form-group">
+                {label subcategory}
+                {input subcategory}
+            </div>
+
+            <div class="form-group">
+                {label before}
+                {input before}
+            </div>
+
+            <div class="form-group">
+                {label structure}
+                {input structure, 'data-edit' => true}
+                {snippet structureErrorSnippet}
+                    {var $form = $control['problemEditForm']}
+                    <div n:if="$form->hasErrors()" class="mt-2">
+                        <p n:foreach="$form['structure']->errors as $error" class="alert alert-danger">
+                            {$error}
+                        </p>
+                    </div>
+                {/snippet}
+            </div>
+
+            <div class="form-group">
+                {label variable}
+                {input variable}
+                {snippet variableErrorSnippet}
+                    {var $form = $control['problemEditForm']}
+                    <div n:if="$form->hasErrors()" class="mt-2">
+                        <p n:foreach="$form['variable']->errors as $error" class="alert alert-danger">
+                            {$error}
+                        </p>
+                    </div>
+                {/snippet}
+            </div>
+
+            <div class="form-group">
+                {label after}
+                {input after}
+            </div>
+
+            <div class="form-group">
+                {label difficulty}
+                {input difficulty}
+            </div>
+
+            {foreach $problemTypes as $typeKey => $type}
+
+                <div class="form-group type-wrapper" id="type-wrapper-{$typeKey}">
+
+                    {if $typeKey === \App\Helpers\ConstHelper::ARITHMETIC_SEQ}
+                        <div class="form-group">
+                            {label first_n_arithmetic_seq}
+                            {input first_n_arithmetic_seq}
+                        </div>
+                    {/if}
+
+                    {if $typeKey === \App\Helpers\ConstHelper::GEOMETRIC_SEQ}
+                        <div class="form-group">
+                            {label first_n_geometric_seq}
+                            {input first_n_geometric_seq}
+                        </div>
+                    {/if}
+
+                    {foreach $condByProblemTypes[$typeKey] as $condKey => $cond}
+                        {dump $cond->condition_type_id}
+                        <div class="form-group cond-wrapper" id="cond-wrapper-{$cond->condition_type_id}">
+                            {label condition_$cond->condition_type_id}
+                            {input condition_$cond->condition_type_id, data-key => $cond->condition_type_id}
+                            <div class="text-right mt-3 mb-3" id="condition-validation-{$cond->condition_type_id}">
+                                <button type="button" class="btn btn-primary condition-validation-btn"
+                                        id="condition-validation-btn-{$cond->condition_type_id}"
+                                        data-key="{$cond->condition_type_id}" data-edit="false">
+                                    Ověřit splnitelnost
+                                </button>
+                                {input condition_valid_$cond->condition_type_id, id => 'condtion-valid-'.$cond->condition_type_id}
+                            </div>
+                        </div>
+                    {/foreach}
+
+                </div>
+
+            {/foreach}
+
+            {snippet conditionsErrorSnippet}
+                {var $form = $control['problemCreateForm']}
+                <div class="col-12">
+                    <div n:if="$form->hasErrors()" class="mt-2">
+                        {for $i = 1; $i < 3; $i++}
+                            <p n:foreach="$form['condition_' . $i]->errors as $error" class="alert alert-danger">
+                                {$error}
+                            </p>
+                        {/for}
+                    </div>
+                </div>
+            {/snippet}
+
+        </div>
+
+    {/form}
+
+{/block}

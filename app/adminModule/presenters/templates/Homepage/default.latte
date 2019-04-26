@@ -1,0 +1,166 @@
+{block icon}
+    <i class="fas fa-home mr-3"></i>
+{/block}
+
+{block content}
+    <div class="card-header d-flex justify-content-between">
+        <h1 class="mb-0 font-weight-bold card-heading">
+            {include icon}Domovská stránka
+        </h1>
+    </div>
+
+    <div class="card-body" id="homepage-content">
+
+        <div class="card-deck mb-5">
+            <div class="card panel-card pr-0 pl-0">
+                <a n:href="Problem:default">
+                    <div class="card-header">
+                        <h2 class="mb-0 card-heading"><i class="fas fa-file mr-3"></i>Šablony</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-primary mb-0">
+                            <h3 class="alert-heading">
+                                Celkem
+                            </h3>
+                            <p class="pb-0">{$problemPrototypeCnt}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="card panel-card pr-0 pl-0">
+                <a n:href="ProblemFinal:default">
+                    <div class="card-header">
+                        <h2 class="mb-0 card-heading"><i class="fas fa-calculator mr-3"></i>Příklady</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-primary mb-0">
+                            <h3 class="alert-heading">
+                                Celkem
+                            </h3>
+                            <p class="pb-0">{$problemFinalCnt}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="card-deck mb-5">
+            <div class="card panel-card pr-0 pl-0">
+                <a n:href="Category:default">
+                    <div class="card-header">
+                        <h2 class="mb-0 card-heading"><i class="fas fa-archive mr-3"></i>Kategorie</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-primary mb-0">
+                            <h3 class="alert-heading">
+                                Celkem
+                            </h3>
+                            <p class="pb-0">{$categoryCnt}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="card panel-card pr-0 pl-0">
+                <a n:href="SubCategory:default">
+                    <div class="card-header">
+                        <h2 class="mb-0 card-heading"><i class="fas fa-folder-open mr-3"></i>Podkategorie</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-primary mb-0">
+                            <h3 class="alert-heading">
+                                Celkem
+                            </h3>
+                            <p class="pb-0">{$subCategoryCnt}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="card-deck mb-5">
+            <div class="card panel-card pr-0 pl-0">
+                <a n:href="Test:default">
+                    <div class="card-header">
+                        <h2 class="mb-0 card-heading"><i class="fas fa-file-alt mr-3"></i>Testy</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-primary mb-0">
+                            <h3 class="alert-heading">
+                                Celkem
+                            </h3>
+                            <p class="pb-0">{$testCnt}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="card-deck mb-5">
+            <div class="card panel-card pr-0 pl-0">
+                <a n:href="User:default">
+                    <div class="card-header">
+                        <h2 class="mb-0 card-heading"><i class="fas fa-user mr-3"></i>Uživatelé</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-primary mb-0">
+                            <h3 class="alert-heading">
+                                Celkem
+                            </h3>
+                            <p class="pb-0">{$userCnt}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="card panel-card pr-0 pl-0">
+                <a n:href="Group:default">
+                    <div class="card-header">
+                        <h2 class="mb-0 card-heading"><i class="fas fa-user-friends mr-3"></i>Skupiny</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-primary mb-0">
+                            <h3 class="alert-heading">
+                                Celkem
+                            </h3>
+                            <p class="pb-0">{$groupCnt}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="card panel-card pr-0 pl-0">
+                <a n:href="SuperGroup:default">
+                    <div class="card-header">
+                        <h2 class="mb-0 card-heading"><i class="fas fa-users mr-3"></i>Superskupiny</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-primary mb-0">
+                            <h3 class="alert-heading">
+                                Celkem
+                            </h3>
+                            <p class="pb-0">{$superGroupCnt}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="card-deck">
+            <div class="card panel-card pr-0 pl-0">
+                <a n:href="Logo:default">
+                    <div class="card-header">
+                        <h2 class="mb-0 card-heading"><i class="fas fa-images mr-3"></i>Loga</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-primary mb-0">
+                            <h3 class="alert-heading">
+                                Celkem
+                            </h3>
+                            <p class="pb-0">{$logoCnt}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </div>
+{/block}

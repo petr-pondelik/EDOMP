@@ -1,0 +1,248 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: wiedzmin
+ * Date: 6.2.19
+ * Time: 23:53
+ */
+
+namespace App\Services;
+
+use App\Helpers\ConstHelper;
+use App\Helpers\StringsHelper;
+use App\Model\Managers\ProblemManager;
+use App\Model\Managers\ProblemPrototypeManager;
+use Nette\NotSupportedException;
+use Nette\Utils\ArrayHash;
+use Nette\Utils\Json;
+use Tracy\Debugger;
+
+use Nette\Utils\Strings;
+
+/**
+ * Class GeneratorService
+ * @package App\Helpers
+ */
+class GeneratorService
+{
+
+    /**
+     * @var ProblemManager
+     */
+    protected $problemManager;
+
+    /**
+     * @var ProblemPrototypeManager
+     */
+    protected $problemPrototypeManager;
+
+    /**
+     * @var StringsHelper
+     */
+    protected $stringsHelper;
+
+    /**
+     * @var ConstHelper
+     */
+    protected $conditionsHelper;
+
+    /**
+     * @var array
+     */
+    private $generatorMarksMapping;
+
+    /**
+     * @var array
+     */
+    private $generatorAttrMapping;
+
+    /**
+     * @var array
+     */
+    protected $conditionsMatches;
+
+    /**
+     * GeneratorService constructor.
+     * @param ProblemManager $problemManager
+     * @param ProblemPrototypeManager $problemPrototypeManager
+     * @param StringsHelper $stringsHelper
+     * @param ConstHelper $constHelper
+     */
+    public function __construct
+    (
+        ProblemManager $problemManager, ProblemPrototypeManager $problemPrototypeManager,
+        StringsHelper $stringsHelper, ConstHelper $constHelper
+    )
+    {
+        $this->problemManager = $problemManager;
+        $this->problemPrototypeManager = $problemPrototypeManager;
+        $this->stringsHelper = $stringsHelper;
+        $this->conditionsHelper = $constHelper;
+
+        $this->generatorMarksMapping = [
+            'integer' => 'integer',
+            'float' => 'float'
+        ];
+
+        $this->generatorAttrMapping = [
+            'type' => 'type',
+            'min' => 'min',
+            'max' => 'max'
+        ];
+    }
+
+    /**
+     * @param String|null $type
+     * @param int|null $min
+     * @param int|null $max
+     * @return bool|float|int
+     */
+    public function generatePar(String $type = null, int $min = null, int $max = null)
+    {
+        if($type === null)
+            return $this->generateInteger($min, $max);
+        if($this->generatorMarksMapping['integer'] === $type)
+            return $this->generateInteger($min, $max);
+        if($this->generatorMarksMapping['float'] === $type)
+            return $this->generateFloat($min, $max);
+
+        return false;
+    }
+
+    /**
+     * @param $min
+     * @param $max
+     * @return int
+     */
+    public function generateInteger($min, $max)
+    {
+        if($min !== null && $max !== null)
+            return mt_rand($min, $max);
+        else if($min !== null)
+            return mt_rand($min, PHP_INT_MAX);
+        else if($max !== null)
+            return mt_rand(0, $max);
+        else
+            return mt_rand();
+    }
+
+    /**
+     * @param $min
+     * @param $max
+     * @return float|int
+     */
+    public function generateFloat($min, $max)
+    {
+        if(isset($min) && isset($max))
+            return mt_rand($min*10, $max*10)/10;
+        else if(isset($min))
+            return mt_rand($min*10, PHP_INT_MAX)/10;
+        else if(isset($max))
+            return mt_rand(0, $max*10)/10;
+        else
+            return mt_rand()/10;
+    }
+
+    /**
+     * @param String $xmpPar
+     * @param String $attr
+     * @return string|null
+     */
+    public function getParAttr(String $xmpPar, String $attr)
+    {
+        $start = Strings::indexOf($xmpPar, $attr);
+        if(!$start)
+            return null;
+        $xmpPar = Strings::substring($xmpPar, $start);
+        $end = Strings::indexOf($xmpPar, '"', 2);
+        return Strings::substring($xmpPar, Strings::indexOf($xmpPar, '"') + 1, $end - Strings::indexOf($xmpPar, '"') - 1);
+    }
+
+    /**
+     * @param String $xmlPar
+     * @return string
+     */
+    public function processPar(String $xmlPar)
+    {
+
+        $type = $this->getParAttr($xmlPar, 'type');
+        $min = $this->getParAttr($xmlPar, 'min');
+        $max = $this->getParAttr($xmlPar, 'max');
+
+        return ' '.$this->generatePar($type, $min ?? null, $max ?? null);
+    }
+
+    /**
+     * @param String $inputBlock
+     * @return string
+     */
+    public function processBlock(String $inputBlock)
+    {
+        $processedBlock = Strings::trim($inputBlock);
+        if(Strings::match($processedBlock, '~(<par.*\/>)~')){
+            $processedBlock = $this->processPar($processedBlock);
+        }
+        return $processedBlock;
+    }
+
+    /**
+     * Process input problem prototype. Find parameters for generating, replace them with generated numbers and return final string.
+     * @param string $expression
+     * @return array
+     */
+    public function generateParams(string $expression)
+    {
+        $expressionSplit = $this->stringsHelper::splitByParameters($expression);
+
+        $parameters = [];
+        $paramsCnt = 0;
+
+        //Check if split item is parameter. If true, trim this item and generate corresponding value.
+        foreach($expressionSplit as $splitKey => $splitItem){
+            $expressionSplit[$splitKey] = $this->processBlock($splitItem);
+            if($splitItem !== ""){
+                if(Strings::match($splitItem, '~(<par.*\/>)~')){
+                    $parameters['p'.$paramsCnt++] = Strings::trim($expressionSplit[$splitKey]);
+                }
+            }
+        }
+
+        return $parameters;
+    }
+
+    /**
+     * @param $problemPrototype
+     * @return string
+     * @throws \Nette\Utils\JsonException
+     */
+    public function generateWithConditions($problemPrototype)
+    {
+        //TODO: Generate problem final that corresponds to prototype conditions
+        //Use JSON matches array of problemPrototype
+
+        bdump($problemPrototype);
+
+        $parametrized = $this->stringsHelper::getParametrized($problemPrototype->structure);
+
+        $prototypeJsonData = $this->problemPrototypeManager->getPrototypeById($problemPrototype->problem_id)->matches;
+        $matchesArr = null;
+
+        bdump($prototypeJsonData);
+
+        if($prototypeJsonData){
+            $matchesArr = Json::decode($prototypeJsonData, Json::FORCE_ARRAY);
+            $matchesCnt = count($matchesArr);
+            bdump($matchesCnt);
+            $params = $matchesArr[$this->generateInteger(0, $matchesCnt - 1)];
+        }
+        else{
+            $params = $this->generateParams($problemPrototype->structure);
+        }
+
+        bdump($params);
+
+        return $this->stringsHelper::passValues($parametrized->expression, $params);
+
+    }
+
+}

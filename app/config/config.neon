@@ -1,0 +1,88 @@
+parameters:
+    imagesPath: 'assets/images/'
+
+extensions:
+    console: Kdyby\Console\DI\ConsoleExtension
+    events: Kdyby\Events\DI\EventsExtension
+    annotations: Kdyby\Annotations\DI\AnnotationsExtension
+    doctrine: Kdyby\Doctrine\DI\OrmExtension
+    #dibi: Dibi\Bridges\Nette\DibiExtension22
+    assetMacro: Webrouse\AssetMacro\DI\Extension
+    visualPaginator: IPub\VisualPaginator\DI\VisualPaginatorExtension
+
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
+
+session:
+	expiration: 14 days
+
+services:
+	router: App\RouterFactory::createRouter
+
+	#Managers
+	manager.homepage.statistics: App\Model\Managers\HomepageStatisticsManager
+	manager.problem: App\Model\Managers\ProblemManager
+	manager.problem.prototype: App\Model\Managers\ProblemPrototypeManager
+	manager.problem.final: App\Model\Managers\ProblemFinalManager
+	manager.difficulty: App\Model\Managers\DifficultyManager
+	manager.condition_Type: App\Model\Managers\ConditionTypeManager
+	manager.condition: App\Model\Managers\ConditionManager
+	manager.problem_type: App\Model\Managers\ProblemTypeManager
+	manager.test: App\Model\Managers\TestManager
+	manager.logo: App\Model\Managers\LogoManager
+	manager.specialization: App\Model\Managers\SpecializationManager
+	manager.user: App\Model\Managers\UserManager
+	manager.role: App\Model\Managers\RoleManager
+	manager.test_term: App\Model\Managers\TestTermManager
+	manager.group: App\Model\Managers\GroupManager
+	manager.supergroup: App\Model\Managers\SuperGroupManager
+	manager.category: App\Model\Managers\CategoryManager
+	manager.subcategory: App\Model\Managers\SubCategoryManager
+	manager.prototype.jsondata: App\Model\Managers\PrototypeJsonDataManager
+
+	#Factories
+	factory.problem.grid: App\Components\DataGrids\ProblemGridFactory
+	factory.problem.form: App\Components\Forms\ProblemFormFactory
+	factory.test.grid: App\Components\DataGrids\TestGridFactory
+	factory.test.form: App\Components\Forms\TestFormFactory
+	factory.test.statistics.form: App\Components\Forms\TestStatisticsFormFactory
+	factory.sign.form: App\Components\Forms\SignInFormFactory
+	factory.category.form: App\Components\Forms\CategoryFormFactory
+	factory.category.grid: App\Components\DataGrids\CategoryGridFactory
+	facotry.subcategory.form: App\Components\Forms\SubCategoryFormFactory
+	factory.subcategory.grid: App\Components\DataGrids\SubCategoryGridFactory
+	factory.supergroup.grid: App\Components\DataGrids\SuperGroupGridFactory
+	factory.supergroup.form: App\Components\Forms\SuperGroupFormFactory
+	factory.group.grid: App\Components\DataGrids\GroupGridFactory
+	factory.group.form: App\Components\Forms\GroupFormFactory
+	factory.logo.grid: App\Components\DataGrids\LogoGridFactory
+	factory.logo.form: App\Components\Forms\LogoFormFactory
+	factory.user.grid: App\Components\DataGrids\UserGridFactory
+	factory.user.form: App\Components\Forms\UserFormFactory
+	factory.problem.filter.form: App\Components\Forms\ProblemFilterFormFactory
+	factory.permission.form: App\Components\Forms\PermissionFormFactory
+
+	#Services
+	service.newtonapi.client: App\Services\NewtonApiClient
+	service.test.builder: App\Services\TestBuilderService
+	service.file: App\Services\FileService(%logosDir%, %logosTmpDir%)
+	service.validation: App\Services\ValidationService
+	service.generator: App\Services\GeneratorService
+	service.math: App\Services\MathService
+	service.condition.matching: App\Services\ConditionMatchingService
+
+	#Autentikátor
+	authenticator: App\Services\Authenticator
+
+	#Autorizátor
+	authorizator: App\Services\Authorizator
+
+	#Helpers
+	helper.condition: App\Helpers\ConstHelper
+	helper.strings: App\Helpers\StringsHelper
+	helper.latex: App\Helpers\LatexHelper
+	helper.formatter: App\Helpers\FormatterHelper
+
+includes:
