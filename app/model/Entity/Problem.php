@@ -10,12 +10,17 @@ namespace App\Model\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
+use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Model\Repository\ProblemRepository")
  * @ORM\InheritanceType("JOINED")
- * @ORM\DiscriminatorColumn(name="")
+ * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorMap({
+ *     "problem" = "Problem",
+ *     "lineareq" = "LinearEq"
+ * })
  *
  * Class Problem
  * @package App\Model\Entity
@@ -63,7 +68,17 @@ class Problem
     protected $isGenerated = false;
 
     /**
+     * @ORM\Column(type="datetime", nullable=false)
+     * @Assert\NotBlank()
+     *
+     * @var DateTime
+     */
+    protected $created;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\ProblemType", inversedBy="problems", cascade={"persist"})
+     *
+     * @var ProblemType
      */
     protected $problemType;
 
@@ -82,6 +97,15 @@ class Problem
      * @var SubCategory
      */
     protected $subCategory;
+
+    /**
+     * Problem constructor.
+     * @throws \Exception
+     */
+    public function __construct()
+    {
+        $this->created = new DateTime();
+    }
 
     /**
      * @return string
@@ -193,6 +217,38 @@ class Problem
     public function setSubCategory(SubCategory $subCategory): void
     {
         $this->subCategory = $subCategory;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreated(): DateTime
+    {
+        return $this->created;
+    }
+
+    /**
+     * @param DateTime $created
+     */
+    public function setCreated(DateTime $created): void
+    {
+        $this->created = $created;
+    }
+
+    /**
+     * @return ProblemType
+     */
+    public function getProblemType(): ProblemType
+    {
+        return $this->problemType;
+    }
+
+    /**
+     * @param ProblemType $problemType
+     */
+    public function setProblemType(ProblemType $problemType): void
+    {
+        $this->problemType = $problemType;
     }
 
 }

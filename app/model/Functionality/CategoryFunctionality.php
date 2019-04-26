@@ -48,17 +48,6 @@ class CategoryFunctionality extends BaseFunctionality
 
     /**
      * @param int $id
-     * @throws \Exception
-     */
-    public function delete(int $id): void
-    {
-        $category = $this->repository->find($id);
-        $this->em->remove($category);
-        $this->em->flush();
-    }
-
-    /**
-     * @param int $id
      * @param ArrayHash $data
      * @throws \Exception
      */

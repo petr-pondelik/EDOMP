@@ -11,6 +11,7 @@ namespace App\Model\Entity;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
+use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -33,11 +34,28 @@ class Difficulty
     protected $label;
 
     /**
+     * @ORM\Column(type="datetime", nullable=false)
+     * @Assert\NotBlank()
+     *
+     * @var DateTime
+     */
+    protected $created;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Model\Entity\Problem", mappedBy="difficulty", cascade={"persist"})
      *
      * @var Collection
      */
     protected $problems;
+
+    /**
+     * Difficulty constructor.
+     * @throws \Exception
+     */
+    public function __construct()
+    {
+        $this->created = new DateTime();
+    }
 
     /**
      * @return string
@@ -65,11 +83,26 @@ class Difficulty
 
     /**
      * @param $problems
-     * @return Difficulty
+     * @return void
      */
-    public function setProblems($problems): self
+    public function setProblems($problems): void
     {
         $this->problems = $problems;
-        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreated(): DateTime
+    {
+        return $this->created;
+    }
+
+    /**
+     * @param DateTime $created
+     */
+    public function setCreated(DateTime $created): void
+    {
+        $this->created = $created;
     }
 }

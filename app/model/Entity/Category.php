@@ -7,6 +7,7 @@
  */
 
 namespace App\Model\Entity;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 use Nette\Utils\DateTime;
@@ -38,6 +39,13 @@ class Category
      * @var DateTime
      */
     protected $created;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\SubCategory", mappedBy="category", cascade={"persist"})
+     *
+     * @var Collection
+     */
+    protected $subCategories;
 
     /**
      * Category constructor.
@@ -78,6 +86,30 @@ class Category
     public function setCreated(DateTime $created): void
     {
         $this->created = $created;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getSubCategories(): ?Collection
+    {
+        return $this->subCategories;
+    }
+
+    /**
+     * @param Collection $subCategories
+     */
+    public function setSubCategories(Collection $subCategories): void
+    {
+        $this->subCategories = $subCategories;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->id;
     }
 
 }

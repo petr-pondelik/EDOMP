@@ -8,7 +8,7 @@
 
 namespace App\Components\Forms;
 
-use App\Model\Managers\CategoryManager;
+use App\Model\Repository\CategoryRepository;
 
 /**
  * Class SubCategoryFormFactory
@@ -17,20 +17,20 @@ use App\Model\Managers\CategoryManager;
 class SubCategoryFormFactory extends BaseForm
 {
     /**
-     * @var CategoryManager
+     * @var CategoryRepository
      */
-    protected $categoryManager;
+    protected $categoryRepository;
 
     /**
      * SubCategoryFormFactory constructor.
-     * @param CategoryManager $categoryManager
+     * @param CategoryRepository $categoryRepository
      */
     public function __construct
     (
-        CategoryManager $categoryManager
+        CategoryRepository $categoryRepository
     )
     {
-        $this->categoryManager = $categoryManager;
+        $this->categoryRepository = $categoryRepository;
     }
 
     /**
@@ -40,7 +40,7 @@ class SubCategoryFormFactory extends BaseForm
     {
         $form = parent::create();
 
-        $categoryOptions = $this->categoryManager->getAllPairs("ASC");
+        $categoryOptions = $this->categoryRepository->findPairs();
 
         $form->addText("label", "Název")
             ->setHtmlAttribute("class", "form-control");

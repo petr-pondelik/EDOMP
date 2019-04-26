@@ -8,8 +8,9 @@
 
 namespace App\Components\DataGrids;
 
-use App\Model\Managers\CategoryManager;
-use App\Model\Managers\SubCategoryManager;
+use App\Model\Repository\CategoryRepository;
+use App\Model\Repository\SubCategoryRepository;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class SubCategoryGridFactory
@@ -18,50 +19,49 @@ use App\Model\Managers\SubCategoryManager;
 class SubCategoryGridFactory extends BaseGrid
 {
     /**
-     * @var SubCategoryManager
+     * @var SubCategoryRepository
      */
-    protected $subCategoryManager;
+    protected $subCategoryRepository;
 
     /**
-     * @var CategoryManager
+     * @var CategoryRepository
      */
-    protected $categoryManager;
+    protected $categoryRepository;
 
     /**
      * SubCategoryGridFactory constructor.
-     * @param SubCategoryManager $subCategoryManager
-     * @param CategoryManager $categoryManager
+     * @param SubCategoryRepository $subCategoryRepository
+     * @param CategoryRepository $categoryRepository
      */
     public function __construct
     (
-        SubCategoryManager $subCategoryManager, CategoryManager $categoryManager
+        SubCategoryRepository $subCategoryRepository, CategoryRepository $categoryRepository
     )
     {
         parent::__construct();
-        $this->subCategoryManager = $subCategoryManager;
-        $this->categoryManager = $categoryManager;
+        $this->subCategoryRepository = $subCategoryRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
     /**
      * @param $container
      * @param $name
-     * @return \Ublaboo\DataGrid\DataGrid
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
+     * @return DataGrid
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function create($container, $name)
+    public function create($container, $name): DataGrid
     {
         $grid = parent::create($container, $name);
 
-        $categoryOptions = $this->categoryManager->getAll('ASC');
+        $categoryOptions = $this->categoryRepository->findPairs([], "label");
+
         bdump($categoryOptions);
 
-        $grid->setPrimaryKey("sub_category_id");
+        $grid->setPrimaryKey("id");
 
-        $grid->setDataSource($this->subCategoryManager->getSelect());
+        $grid->setDataSource($this->subCategoryRepository->createQueryBuilder("er"));
 
-        $grid->addColumnNumber("sub_category_id", "ID")
+        $grid->addColumnNumber("id", "ID")
             ->setSortable();
 
         $grid->addColumnDateTime("created", "Vytvořeno")
@@ -71,10 +71,10 @@ class SubCategoryGridFactory extends BaseGrid
 
         $grid->addColumnText('label', 'Název');
 
-        $grid->addColumnStatus("category_id", "Kategorie")
-            ->setSortable()
+        $grid->addColumnStatus("Category.id", "Kategorie")
             ->addAttributes(["class" => "text-center"])
             ->setOptions($categoryOptions)
+            ->setSortable("er.id")
             ->onChange[] = [$container, "handleCategoryUpdate"];
 
         return $grid;

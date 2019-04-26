@@ -48,12 +48,18 @@ abstract class BaseFunctionality
 
     /**
      * @param int $id
-     */
-    abstract public function delete(int $id): void;
-
-    /**
-     * @param int $id
      * @param ArrayHash $data
      */
     abstract public function update(int $id, ArrayHash $data): void;
+
+    /**
+     * @param int $id
+     * @throws \Exception
+     */
+    public function delete(int $id): void
+    {
+        $category = $this->repository->find($id);
+        $this->em->remove($category);
+        $this->em->flush();
+    }
 }

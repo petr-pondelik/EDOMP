@@ -8,6 +8,7 @@
 
 namespace App\Model\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 use Nette\Utils\DateTime;
@@ -33,7 +34,73 @@ class ProblemType
     protected $label;
 
     /**
-     * @var
+     * @ORM\Column(type="datetime", nullable=false)
+     *
+     * @var DateTime
+     */
+    protected $created;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\Problem", mappedBy="problemType", cascade={"persist"})
+     *
+     * @var Collection
      */
     protected $problems;
+
+    /**
+     * ProblemType constructor.
+     * @throws \Exception
+     */
+    public function __construct()
+    {
+        $this->created = new DateTime();
+    }
+
+    /**
+     * @return string
+     */
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    /**
+     * @param string $label
+     */
+    public function setLabel(string $label): void
+    {
+        $this->label = $label;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreated(): DateTime
+    {
+        return $this->created;
+    }
+
+    /**
+     * @param DateTime $created
+     */
+    public function setCreated(DateTime $created): void
+    {
+        $this->created = $created;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getProblems(): ?Collection
+    {
+        return $this->problems;
+    }
+
+    /**
+     * @param Collection $problems
+     */
+    public function setProblems($problems): void
+    {
+        $this->problems = $problems;
+    }
 }

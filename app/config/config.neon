@@ -26,6 +26,11 @@ services:
 	    tags:
 	       doctrine.repositoryEntity: App\Model\Entity\Problem
 
+	repository.lineareq:
+	    class: App\Model\Repository\LinearEqRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\LinearEq
+
 	repository.difficulty:
 	    class: App\Model\Repository\DifficultyRepository
 	    tags:
@@ -43,10 +48,13 @@ services:
 
 	#Functionalities
 	functionality.category: App\Model\Functionality\CategoryFunctionality
+	functionality.subcategory: App\Model\Functionality\SubCategoryFunctionality
 
 	#Factories
 	factory.grid.category: App\Components\DataGrids\CategoryGridFactory
 	factory.form.category: App\Components\Forms\CategoryFormFactory
+	factory.grid.subcategory: App\Components\DataGrids\SubCategoryGridFactory
+	factory.form.subcategory: App\Components\Forms\SubCategoryFormFactory
 
 	#Services
 	service.validation: App\Service\ValidationService
