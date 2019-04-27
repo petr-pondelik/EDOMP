@@ -21,6 +21,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\DiscriminatorMap({
  *     "problem" = "Problem",
  *     "lineareq" = "LinearEq",
+ *     "quadraticeq" = "QuadraticEq",
+ *     "arithmeticseq" = "ArithmeticSeq",
+ *     "geometicSeq" = "GeometricSeq"
  * })
  *
  * Class Problem

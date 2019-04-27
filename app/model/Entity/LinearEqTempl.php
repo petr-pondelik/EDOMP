@@ -3,25 +3,23 @@
  * Created by PhpStorm.
  * User: wiedzmin
  * Date: 27.4.19
- * Time: 22:22
+ * Time: 22:47
  */
 
 namespace App\Model\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Repository\QuadraticEqRepository")
+ * @ORM\Entity(repositoryClass="App\Model\Repository\LinearEqTemplRepository")
  *
- * Class QuadraticEq
+ * Class LinearEqTempl
  * @package App\Model\Entity
  */
-class QuadraticEq extends Problem
+class LinearEqTempl extends Template
 {
     /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="string", nullable=true)
      *
      * @var string
      */

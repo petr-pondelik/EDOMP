@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: wiedzmin
  * Date: 27.4.19
- * Time: 22:22
+ * Time: 22:50
  */
 
 namespace App\Model\Entity;
@@ -12,12 +12,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Repository\QuadraticEqRepository")
+ * @ORM\Entity(repositoryClass="App\Model\Repository\QuadraticEqTemplRepository")
  *
- * Class QuadraticEq
+ * Class QuadraticEqTempl
  * @package App\Model\Entity
  */
-class QuadraticEq extends Problem
+class QuadraticEqTempl extends Template
 {
     /**
      * @ORM\Column(type="string", nullable=false)
