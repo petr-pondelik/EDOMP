@@ -8,6 +8,7 @@
 
 namespace App\Model\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 use Nette\Utils\DateTime;
@@ -19,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({
  *     "problem" = "Problem",
- *     "lineareq" = "LinearEq"
+ *     "lineareq" = "LinearEq",
  * })
  *
  * Class Problem
@@ -60,12 +61,27 @@ class Problem
     protected $result;
 
     /**
+     * @ORM\Column(type="float", nullable=true)
+     *
+     * @var float
+     */
+    protected $successRate;
+
+    /**
      * @ORM\Column(type="boolean", nullable=false)
      * @Assert\NotBlank()
      *
      * @var bool
      */
     protected $isGenerated = false;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false)
+     * @Assert\NotBlank()
+     *
+     * @var bool
+     */
+    protected $isUsed = false;
 
     /**
      * @ORM\Column(type="datetime", nullable=false)
@@ -76,14 +92,14 @@ class Problem
     protected $created;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Model\Entity\ProblemType", inversedBy="problems", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Model\Entity\ProblemType", inversedBy="problems", cascade={"persist", "merge"})
      *
      * @var ProblemType
      */
     protected $problemType;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Model\Entity\Difficulty", inversedBy="problems", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Model\Entity\Difficulty", inversedBy="problems", cascade={"persist", "merge"})
      * @Assert\NotBlank()
      *
      * @var Difficulty
@@ -91,12 +107,18 @@ class Problem
     protected $difficulty;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Model\Entity\SubCategory", inversedBy="problems", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Model\Entity\SubCategory", inversedBy="problems", cascade={"persist", "merge"})
      * @Assert\NotBlank()
      *
      * @var SubCategory
      */
     protected $subCategory;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="ProblemCondition", inversedBy="problems", cascade={"persist", "merge"})
+     * @ORM\JoinTable(name="problem_condition_problem_rel")
+     */
+    protected $conditions;
 
     /**
      * Problem constructor.
@@ -105,6 +127,7 @@ class Problem
     public function __construct()
     {
         $this->created = new DateTime();
+        $this->conditions = new ArrayCollection();
     }
 
     /**
@@ -249,6 +272,22 @@ class Problem
     public function setProblemType(ProblemType $problemType): void
     {
         $this->problemType = $problemType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConditions()
+    {
+        return $this->conditions;
+    }
+
+    /**
+     * @param mixed $conditions
+     */
+    public function setConditions($conditions): void
+    {
+        $this->conditions = $conditions;
     }
 
 }

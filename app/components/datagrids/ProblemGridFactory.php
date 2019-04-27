@@ -8,12 +8,10 @@
 
 namespace App\Components\DataGrids;
 
-use App\Model\Managers\DifficultyManager;
-use App\Model\Managers\ProblemFinalManager;
-use App\Model\Managers\ProblemPrototypeManager;
-use App\Model\Managers\ProblemTypeManager;
-use App\Model\Managers\SubCategoryManager;
-use Tracy\Debugger;
+use App\Model\Repository\DifficultyRepository;
+use App\Model\Repository\ProblemRepository;
+use App\Model\Repository\ProblemTypeRepository;
+use App\Model\Repository\SubCategoryRepository;
 
 /**
  * Class ProblemGridFactory
@@ -22,72 +20,62 @@ use Tracy\Debugger;
 class ProblemGridFactory extends BaseGrid
 {
     /**
-     * @var DifficultyManager
+     * @var DifficultyRepository
      */
-    private $difficultyManager;
+    private $difficultyRepository;
 
     /**
-     * @var ProblemPrototypeManager
+     * @var ProblemRepository
      */
-    protected $problemPrototypeManager;
+    protected $problemRepository;
 
     /**
-     * @var ProblemFinalManager
+     * @var ProblemTypeRepository
      */
-    protected $problemFinalManager;
+    private $problemTypeRepository;
 
     /**
-     * @var ProblemTypeManager
+     * @var SubCategoryRepository
      */
-    private $problemTypeManager;
-
-    /**
-     * @var SubCategoryManager
-     */
-    private $subCategoryManager;
+    private $subCategoryRepository;
 
     /**
      * ProblemGridFactory constructor.
-     * @param DifficultyManager $difficultyManager
-     * @param ProblemPrototypeManager $problemPrototypeManager
-     * @param ProblemFinalManager $problemFinalManager
-     * @param ProblemTypeManager $problemTypeManager
-     * @param SubCategoryManager $subCategoryManager
+     * @param DifficultyRepository $difficultyRepository
+     * @param ProblemRepository $problemRepository
+     * @param ProblemTypeRepository $problemTypeRepository
+     * @param SubCategoryRepository $subCategoryRepository
      */
     public function __construct(
-        DifficultyManager $difficultyManager, ProblemPrototypeManager $problemPrototypeManager,
-        ProblemFinalManager $problemFinalManager, ProblemTypeManager $problemTypeManager,
-        SubCategoryManager $subCategoryManager
+        DifficultyRepository $difficultyRepository,
+        ProblemRepository $problemRepository, ProblemTypeRepository $problemTypeRepository,
+        SubCategoryRepository $subCategoryRepository
     )
     {
         parent::__construct();
-        $this->difficultyManager = $difficultyManager;
-        $this->problemPrototypeManager = $problemPrototypeManager;
-        $this->problemFinalManager = $problemFinalManager;
-        $this->problemTypeManager = $problemTypeManager;
-        $this->subCategoryManager = $subCategoryManager;
+        $this->difficultyRepository = $difficultyRepository;
+        $this->problemRepository = $problemRepository;
+        $this->problemTypeRepository = $problemTypeRepository;
+        $this->subCategoryRepository = $subCategoryRepository;
     }
 
     /**
      * @param $container
      * @param $name
-     * @param bool $prototype
      * @return \Ublaboo\DataGrid\DataGrid
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function create($container, $name, $prototype = false)
+    public function create($container, $name)
     {
         $grid = parent::create($container, $name);
 
-        $difficultyOptions = $this->difficultyManager->getAll('ASC');
-        $typeOptions = $this->problemTypeManager->getAll('ASC');
-        $subCategoryOptions = $this->subCategoryManager->getAll("ASC");
+        $difficultyOptions = $this->difficultyRepository->findAll();
+        $typeOptions = $this->problemTypeRepository->findAll();
+        $subCategoryOptions = $this->subCategoryRepository->findAll();
 
-        $grid->setPrimaryKey('problem_id');
+        $grid->setPrimaryKey("id");
 
-        $prototype ? $grid->setDataSource($this->problemPrototypeManager->getSelect()) : $grid->setDataSource($this->problemFinalManager->getSelect('result'));
+        $grid->setDataSource($this->problemRepository->createQueryBuilder("er"));
 
         $grid->addColumnNumber('problem_id', 'ID')
             ->setSortable();
@@ -103,40 +91,38 @@ class ProblemGridFactory extends BaseGrid
 
         $grid->addColumnText('text_after', 'Zadání po');
 
-        if(!$prototype)
-            $grid->addColumnText('result', 'Výsledek');
+        $grid->addColumnText('result', 'Výsledek');
 
         $grid->addColumnText("success_rate", "Prům. úspěšnost");
 
-        if(!$prototype)
-            $grid->addColumnNumber('is_generatable', 'Generovatelný')
-                ->addAttributes(['class' => 'text-center'])
-                ->setTemplateEscaping(false)
-                ->setReplacement([
-                    0 => "<i class='fa fa-times text-danger'></i>",
-                    1 => "<i class='fa fa-check text-success'></i>"
-                ]);
+        $grid->addColumnNumber('is_generated', 'Vygenerovaný')
+            ->addAttributes(['class' => 'text-center'])
+            ->setTemplateEscaping(false)
+            ->setReplacement([
+                0 => "<i class='fa fa-times text-danger'></i>",
+                1 => "<i class='fa fa-check text-success'></i>"
+            ]);
 
-        $grid->addColumnNumber('problem_type_id', 'Typ')
+        $grid->addColumnNumber('problemType', 'Typ')
             ->setSortable()
             ->addAttributes(['class' => 'text-center'])
             ->setReplacement($typeOptions)
             ->setFilterMultiSelect($typeOptions);
 
-        $grid->addColumnStatus("sub_category_id", "Téma")
+        $grid->addColumnStatus("subCategory", "Téma")
             ->setSortable()
             ->addAttributes(["class" => "text-center"])
             ->setOptions($subCategoryOptions)
             ->onChange[] = [$container, "handleSubCategoryUpdate"];
 
-        $grid->addFilterMultiSelect("sub_category_id", "", $subCategoryOptions);
+        $grid->addFilterMultiSelect("subCategory", "", $subCategoryOptions);
 
-        $grid->addColumnStatus('difficulty_id', 'Obtížnost')
+        $grid->addColumnStatus('difficulty', 'Obtížnost')
             ->setSortable()
             ->addAttributes(['class' => 'text-center'])
             ->setOptions($difficultyOptions)
             ->onChange[] = [$container, 'handleDifficultyUpdate'];
-        $grid->addFilterMultiSelect('difficulty_id', '', $difficultyOptions);
+        $grid->addFilterMultiSelect('difficulty', '', $difficultyOptions);
 
         return $grid;
     }

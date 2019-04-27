@@ -8,6 +8,7 @@
 
 namespace App\Model\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
@@ -15,7 +16,7 @@ use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Repository\ProblemRepository")
+ * @ORM\Entity(repositoryClass="App\Model\Repository\DifficultyRepository")
  *
  * Class Difficulty
  * @package App\Model\Entity
@@ -42,7 +43,7 @@ class Difficulty
     protected $created;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\Problem", mappedBy="difficulty", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\Problem", mappedBy="difficulty", cascade={"persist", "merge"})
      *
      * @var Collection
      */
@@ -55,6 +56,7 @@ class Difficulty
     public function __construct()
     {
         $this->created = new DateTime();
+        $this->problems = new ArrayCollection();
     }
 
     /**
@@ -104,5 +106,13 @@ class Difficulty
     public function setCreated(DateTime $created): void
     {
         $this->created = $created;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->label;
     }
 }

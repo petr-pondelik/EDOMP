@@ -2,28 +2,36 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 26.4.19
- * Time: 15:54
+ * Date: 27.4.19
+ * Time: 13:10
  */
 
 namespace App\Model\Entity;
+
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class Category
- * @package App\Model\Entity
+ * @ORM\Entity(repositoryClass="App\Model\Repository\ProblemConditionTypeRepository")
  *
- * @ORM\Entity(repositoryClass="App\Model\Repository\CategoryRepository")
+ * Class ProblemConditionType
+ * @package App\Model\Entity
  */
-class Category
+class ProblemConditionType
 {
     //Identifier trait for id column
     use Identifier;
+
+    /**
+     * @ORM\Column(type="integer", nullable=false)
+     * @Assert\NotBlank()
+     *
+     * @var int
+     */
+    protected $accessor;
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -35,25 +43,46 @@ class Category
 
     /**
      * @ORM\Column(type="datetime", nullable=false)
-     * @Assert\NotBlank()
      *
      * @var DateTime
      */
     protected $created;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\SubCategory", mappedBy="category", cascade={"persist", "merge"})
+     * @ORM\OneToMany(targetEntity="ProblemCondition", mappedBy="conditionType", cascade={"persist", "merge"})
      */
-    protected $subCategories;
+    protected $conditions;
 
     /**
-     * Category constructor.
+     * @ORM\ManyToMany(targetEntity="App\Model\Entity\ProblemType", mappedBy="conditionTypes", cascade={"persist", "merge"})
+     */
+    protected $problemTypes;
+
+    /**
+     * ProblemConditionType constructor.
      * @throws \Exception
      */
     public function __construct()
     {
         $this->created = new DateTime();
-        $this->subCategories = new ArrayCollection();
+        $this->conditions = new ArrayCollection();
+        $this->problemTypes = new ArrayCollection();
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccessor(): int
+    {
+        return $this->accessor;
+    }
+
+    /**
+     * @param int $accessor
+     */
+    public function setAccessor(int $accessor): void
+    {
+        $this->accessor = $accessor;
     }
 
     /**
@@ -77,7 +106,7 @@ class Category
      */
     public function getCreated(): DateTime
     {
-        return DateTime::from($this->created);
+        return $this->created;
     }
 
     /**
@@ -89,27 +118,18 @@ class Category
     }
 
     /**
-     * @return Collection
+     * @return mixed
      */
-    public function getSubCategories(): ?Collection
+    public function getProblemTypes()
     {
-        return $this->subCategories;
+        return $this->problemTypes;
     }
 
     /**
-     * @param Collection $subCategories
+     * @param mixed $problemTypes
      */
-    public function setSubCategories(Collection $subCategories): void
+    public function setProblemTypes($problemTypes): void
     {
-        $this->subCategories = $subCategories;
+        $this->problemTypes = $problemTypes;
     }
-
-    /**
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return $this->label;
-    }
-
 }

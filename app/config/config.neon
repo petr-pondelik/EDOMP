@@ -26,6 +26,11 @@ services:
 	    tags:
 	       doctrine.repositoryEntity: App\Model\Entity\Problem
 
+	repository.problemtype:
+	    class: App\Model\Repository\ProblemTypeRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\ProblemType
+
 	repository.lineareq:
 	    class: App\Model\Repository\LinearEqRepository
 	    tags:
@@ -46,6 +51,11 @@ services:
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\Category
 
+	repository.condition:
+	    class: App\Model\Repository\ProblemConditionRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\ProblemCondition
+
 	#Functionalities
 	functionality.category: App\Model\Functionality\CategoryFunctionality
 	functionality.subcategory: App\Model\Functionality\SubCategoryFunctionality
@@ -55,8 +65,13 @@ services:
 	factory.form.category: App\Components\Forms\CategoryFormFactory
 	factory.grid.subcategory: App\Components\DataGrids\SubCategoryGridFactory
 	factory.form.subcategory: App\Components\Forms\SubCategoryFormFactory
+	factory.grid.problem: App\Components\DataGrids\ProblemGridFactory
+	factory.form.problem: App\Components\Forms\ProblemFormFactory
 
 	#Services
 	service.validation: App\Service\ValidationService
+
+	#Helpers
+	helper.const: App\Helpers\ConstHelper
 
 includes:

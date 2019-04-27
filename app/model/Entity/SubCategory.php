@@ -8,6 +8,7 @@
 
 namespace App\Model\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
@@ -42,14 +43,14 @@ class SubCategory
     protected $created;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Model\Entity\Category", inversedBy="subCategories", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Model\Entity\Category", inversedBy="subCategories")
      *
      * @var Category
      */
     protected $category;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\Problem", mappedBy="subCategory", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\Problem", mappedBy="subCategory", cascade={"persist", "merge"})
      *
      * @var Collection
      */
@@ -62,6 +63,7 @@ class SubCategory
     public function __construct()
     {
         $this->created = new DateTime();
+        $this->problems = new ArrayCollection();
     }
 
     /**
@@ -127,5 +129,13 @@ class SubCategory
     public function setCategory(Category $category): void
     {
         $this->category = $category;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->label;
     }
 }

@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 26.4.19
- * Time: 18:50
+ * Date: 27.4.19
+ * Time: 13:19
  */
 
 namespace App\Model\Entity;
@@ -16,23 +16,15 @@ use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Repository\ProblemTypeRepository")
+ * @ORM\Entity(repositoryClass="App\Model\Repository\ProblemConditionRepository")
  *
- * Class ProblemType
+ * Class ProblemCondition
  * @package App\Model\Entity
  */
-class ProblemType
+class ProblemCondition
 {
     //Identifier trait for id column
     use Identifier;
-
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    protected $label;
 
     /**
      * @ORM\Column(type="integer", nullable=false)
@@ -43,43 +35,57 @@ class ProblemType
     protected $accessor;
 
     /**
-     * @ORM\Column(type="boolean", nullable=false)
+     * @ORM\Column(type="string", nullable=false)
      * @Assert\NotBlank()
      *
-     * @var bool
+     * @var string
      */
-    protected $isGeneratable;
+    protected $label;
 
     /**
      * @ORM\Column(type="datetime", nullable=false)
+     * @Assert\NotBlank()
      *
      * @var DateTime
      */
     protected $created;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\Problem", mappedBy="problemType", cascade={"persist", "merge"})
+     * @ORM\ManyToOne(targetEntity="ProblemConditionType", inversedBy="conditions", cascade={"persist", "merge"})
      *
-     * @var ArrayCollection|Problem[]
+     * @var ProblemConditionType
+     */
+    protected $problemConditionType;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Model\Entity\Problem", mappedBy="conditions")
      */
     protected $problems;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Model\Entity\ProblemConditionType", inversedBy="problemTypes", cascade={"persist", "merge"})
-     * @ORM\JoinTable(name="problem_tp_problem_condition_tp_rel")
-     */
-    protected $conditionTypes;
-
-    /**
-     * ProblemType constructor.
+     * ProblemCondition constructor.
      * @throws \Exception
      */
     public function __construct()
     {
-        $this->isGeneratable = false;
         $this->created = new DateTime();
         $this->problems = new ArrayCollection();
-        $this->conditionTypes = new ArrayCollection();
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccessor(): int
+    {
+        return $this->accessor;
+    }
+
+    /**
+     * @param int $accessor
+     */
+    public function setAccessor(int $accessor): void
+    {
+        $this->accessor = $accessor;
     }
 
     /**
@@ -115,35 +121,35 @@ class ProblemType
     }
 
     /**
-     * @return Collection
+     * @return ProblemConditionType
      */
-    public function getProblems(): ?Collection
+    public function getConditionType(): ProblemConditionType
+    {
+        return $this->conditionType;
+    }
+
+    /**
+     * @param ProblemConditionType $conditionType
+     */
+    public function setConditionType(ProblemConditionType $conditionType): void
+    {
+        $this->conditionType = $conditionType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProblems()
     {
         return $this->problems;
     }
 
     /**
-     * @param Collection $problems
+     * @param mixed $problems
      */
     public function setProblems($problems): void
     {
         $this->problems = $problems;
-    }
-
-    /**
-     * @return Collection/ProblemConditionType[]
-     */
-    public function getConditionTypes(): ?Collection
-    {
-        return $this->conditionTypes;
-    }
-
-    /**
-     * @param mixed $conditionTypes
-     */
-    public function setConditionTypes($conditionTypes): void
-    {
-        $this->conditionTypes = $conditionTypes;
     }
 
     /**

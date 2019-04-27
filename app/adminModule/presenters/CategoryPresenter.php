@@ -74,6 +74,11 @@ class CategoryPresenter extends AdminPresenter
         $this->validationService = $validationService;
     }
 
+    public function renderDefault()
+    {
+        //bdump($this->categoryRepository->find(1)->getSubcategories());
+    }
+
     /**
      * @param int $id
      */

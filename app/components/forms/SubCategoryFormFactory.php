@@ -35,17 +35,20 @@ class SubCategoryFormFactory extends BaseForm
 
     /**
      * @return \Nette\Application\UI\Form
+     * @throws \Exception
      */
     public function create()
     {
         $form = parent::create();
 
-        $categoryOptions = $this->categoryRepository->findPairs();
+        $categoryOptions = $this->categoryRepository->findAssoc([], "id");
+
+        bdump($categoryOptions);
 
         $form->addText("label", "Název")
             ->setHtmlAttribute("class", "form-control");
 
-        $form->addSelect("category_id", "Kategorie", $categoryOptions)
+        $form->addSelect("category", "Kategorie", $categoryOptions)
             ->setHtmlAttribute("class", "form-control");
 
         $form->addSubmit("submit", "Vytvořit")

@@ -137,4 +137,14 @@ ALTER TABLE prototype_json_data DROP INDEX condition_problem_unique;
 
 
 ### DOCTRINE CMDLINE
--   Vytvoření DB schématu: sudo php ./www/index.php orm:schema-tool:create
+-   Vytvoření DB schématu:
+
+        sudo php ./www/index.php orm:schema-tool:create
+        
+-   Drop schématu:
+
+        sudo php ./www/index.php orm:schema-tool:drop --force
+
+-   Update schématu:
+
+        sudo php ./www/index.php orm:schema-tool:update --force

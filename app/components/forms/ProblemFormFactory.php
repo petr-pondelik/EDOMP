@@ -8,14 +8,13 @@
 
 namespace App\Components\Forms;
 
-use App\Model\Managers\ConditionManager;
-use App\Model\Managers\DifficultyManager;
-use App\Model\Managers\ProblemTypeManager;
-use App\Model\Managers\SubCategoryManager;
-use App\Services\ValidationService;
+use App\Model\Repository\DifficultyRepository;
+use App\Model\Repository\ProblemConditionRepository;
+use App\Model\Repository\ProblemTypeRepository;
+use App\Model\Repository\SubCategoryRepository;
+use App\Service\ValidationService;
 use Nette\Application\UI\Form;
 use App\Helpers\ConstHelper;
-use Tracy\Debugger;
 
 /**
  * Class ProblemFormFactory
@@ -23,24 +22,24 @@ use Tracy\Debugger;
 class ProblemFormFactory extends BaseForm
 {
     /**
-     * @var DifficultyManager
+     * @var DifficultyRepository
      */
-    protected $difficultyManager;
+    protected $difficultyRepository;
 
     /**
-     * @var SubCategoryManager
+     * @var SubCategoryRepository
      */
-    protected $subCategoryManager;
+    protected $subCategoryRepository;
 
     /**
-     * @var ProblemTypeManager
+     * @var ProblemTypeRepository
      */
-    protected $problemTypeManager;
+    protected $problemTypeRepository;
 
     /**
-     * @var ConditionManager
+     * @var ProblemConditionRepository
      */
-    protected $conditionManager;
+    protected $problemConditionRepository;
 
     /**
      * @var ConstHelper
@@ -49,44 +48,48 @@ class ProblemFormFactory extends BaseForm
 
     /**
      * ProblemFormFactory constructor.
-     * @param DifficultyManager $difficultyManager
-     * @param SubCategoryManager $subCategoryManager
-     * @param ProblemTypeManager $problemTypeManager
-     * @param ConditionManager $conditionManager
+     * @param DifficultyRepository $difficultyRepository
+     * @param SubCategoryRepository $subCategoryRepository
+     * @param ProblemTypeRepository $problemTypeRepository
+     * @param ProblemConditionRepository $problemConditionRepository
      * @param ConstHelper $constHelper
      */
     public function __construct
     (
-        DifficultyManager $difficultyManager, SubCategoryManager $subCategoryManager,
-        ProblemTypeManager $problemTypeManager, ConditionManager $conditionManager,
+        DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
+        ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
         ConstHelper $constHelper
     )
     {
-        $this->difficultyManager = $difficultyManager;
-        $this->subCategoryManager = $subCategoryManager;
-        $this->problemTypeManager = $problemTypeManager;
-        $this->conditionManager = $conditionManager;
+        $this->difficultyRepository = $difficultyRepository;
+        $this->subCategoryRepository = $subCategoryRepository;
+        $this->problemTypeRepository = $problemTypeRepository;
+        $this->problemConditionRepository = $problemConditionRepository;
         $this->constHelper = $constHelper;
     }
 
-    /**
-     * @param bool $generatableTypes
-     * @return Form
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
-     */
+
     public function create(bool $generatableTypes = false)
     {
-        $difficulties = $this->difficultyManager->getAll('ASC');
+        $difficulties = $this->difficultyRepository->findAssoc([], "id");
         if(!$generatableTypes)
-            $types = $this->problemTypeManager->getAll('ASC');
+            $types = $this->problemTypeRepository->findAssoc([], "id");
         else
-            $types = $this->problemTypeManager->getByCond("is_generatable = true");
+            $types = $this->problemTypeRepository->findAssoc([
+                "is_generatable" => true
+            ], "id");
 
-        $subcategories = $this->subCategoryManager->getAll("ASC");
+        $subcategories = $this->subCategoryRepository->findAssoc([], "id");
+        bdump($subcategories);
 
-        $resultConditions = $this->conditionManager->getByCondType($this->constHelper::RESULT);
-        $discriminantConditions = $this->conditionManager->getByCondType($this->constHelper::DISCRIMINANT);
+        $resultConditions = $this->problemConditionRepository->findAssoc([
+            "problemConditionType.id" => $this->constHelper::RESULT
+        ], "id");
+        bdump($resultConditions);
+
+        $discriminantConditions = $this->problemConditionRepository->findAssoc([
+            "problemConditionType.id" => $this->constHelper::DISCRIMINANT
+        ], "id");
 
         $form = parent::create();
 
@@ -120,14 +123,14 @@ class ProblemFormFactory extends BaseForm
             ->setHtmlId('difficulty');
 
         //Arithmetic sequences
-        $form->addInteger('first_n_arithmetic_seq', 'Prvních členů:')
+        /*$form->addInteger('first_n_arithmetic_seq', 'Prvních členů:')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlId('first-n-arithmetic-seq');
+            ->setHtmlId('first-n-arithmetic-seq');*/
 
         //Geometric sequences
-        $form->addInteger('first_n_geometric_seq', 'Prvních členů:')
+        /*$form->addInteger('first_n_geometric_seq', 'Prvních členů:')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlId('first-n-geometric-seq');
+            ->setHtmlId('first-n-geometric-seq');*/
 
         //Conditions
         $form->addSelect('condition_' . $this->constHelper::RESULT, 'Podmínka výsledku', $resultConditions)
@@ -140,9 +143,6 @@ class ProblemFormFactory extends BaseForm
         $form->addSelect('condition_' . $this->constHelper::DISCRIMINANT, 'Podmínka diskriminantu', $discriminantConditions)
             ->setHtmlAttribute('class', 'form-control condition')
             ->setHtmlId('condition-' . $this->constHelper::DISCRIMINANT);
-
-        $form->addHidden('condition_valid_'.$this->constHelper::DISCRIMINANT)
-            ->setDefaultValue(1);
 
         //Field for storing all conditions final valid state (aggregation of conditions)
         $form->addHidden('conditions_valid')
