@@ -68,8 +68,12 @@ class ProblemFormFactory extends BaseForm
         $this->constHelper = $constHelper;
     }
 
-
-    public function create(bool $generatableTypes = false)
+    /**
+     * @param bool $generatableTypes
+     * @return Form
+     * @throws \Exception
+     */
+    public function create(bool $generatableTypes = false): Form
     {
         $difficulties = $this->difficultyRepository->findAssoc([], "id");
         if(!$generatableTypes)
@@ -80,16 +84,14 @@ class ProblemFormFactory extends BaseForm
             ], "id");
 
         $subcategories = $this->subCategoryRepository->findAssoc([], "id");
-        bdump($subcategories);
 
         $resultConditions = $this->problemConditionRepository->findAssoc([
             "problemConditionType.id" => $this->constHelper::RESULT
-        ], "id");
-        bdump($resultConditions);
+        ], "accessor");
 
         $discriminantConditions = $this->problemConditionRepository->findAssoc([
             "problemConditionType.id" => $this->constHelper::DISCRIMINANT
-        ], "id");
+        ], "accessor");
 
         $form = parent::create();
 
@@ -102,11 +104,11 @@ class ProblemFormFactory extends BaseForm
             ->setDefaultValue(1)
             ->setHtmlAttribute("class", "form-control");
 
-        $form->addTextArea('before', 'Zadání před')
+        $form->addTextArea('text_before', 'Zadání před')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('before');
 
-        $form->addTextArea('structure', 'Struktura')
+        $form->addTextArea('body', 'Tělo')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('structure');
 
@@ -114,7 +116,7 @@ class ProblemFormFactory extends BaseForm
             ->setHtmlAttribute("class", "form-control")
             ->setHtmlId("variable");
 
-        $form->addTextArea('after', 'Zadání po')
+        $form->addTextArea('text_after', 'Zadání po')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('after');
 
@@ -122,32 +124,14 @@ class ProblemFormFactory extends BaseForm
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('difficulty');
 
-        //Arithmetic sequences
-        /*$form->addInteger('first_n_arithmetic_seq', 'Prvních členů:')
-            ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlId('first-n-arithmetic-seq');*/
-
-        //Geometric sequences
-        /*$form->addInteger('first_n_geometric_seq', 'Prvních členů:')
-            ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlId('first-n-geometric-seq');*/
-
         //Conditions
         $form->addSelect('condition_' . $this->constHelper::RESULT, 'Podmínka výsledku', $resultConditions)
             ->setHtmlAttribute('class', 'form-control condition')
             ->setHtmlId('condition-' . $this->constHelper::RESULT);
 
-        $form->addHidden('condition_valid_'.$this->constHelper::RESULT)
-            ->setDefaultValue(1);
-
         $form->addSelect('condition_' . $this->constHelper::DISCRIMINANT, 'Podmínka diskriminantu', $discriminantConditions)
             ->setHtmlAttribute('class', 'form-control condition')
             ->setHtmlId('condition-' . $this->constHelper::DISCRIMINANT);
-
-        //Field for storing all conditions final valid state (aggregation of conditions)
-        $form->addHidden('conditions_valid')
-            ->setDefaultValue(1)
-            ->setHtmlId('conditions_valid');
 
         $form->addSubmit('prototype_create_submit', 'Vytvořit')
             ->setHtmlAttribute('class', 'btn btn-primary');

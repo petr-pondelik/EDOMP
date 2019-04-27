@@ -8,7 +8,11 @@
 
 namespace App\Service;
 
+use App\Helpers\ConstHelper;
+use App\Helpers\LatexHelper;
+use App\Helpers\StringsHelper;
 use Nette\NotSupportedException;
+use Nette\Utils\Strings;
 
 /**
  * Class ValidationService
@@ -16,6 +20,25 @@ use Nette\NotSupportedException;
  */
 class ValidationService
 {
+    /**
+     * @var NewtonApiClient
+     */
+    protected $newtonApiClient;
+
+    /**
+     * @var ConstHelper
+     */
+    protected $constHelper;
+
+    /**
+     * @var StringsHelper
+     */
+    protected $stringsHelper;
+
+    /**
+     * @var LatexHelper
+     */
+    protected $latexHelper;
 
     /**
      * @var array
@@ -29,14 +52,24 @@ class ValidationService
 
     public function __construct
     (
-
+        NewtonApiClient $newtonApiClient,
+        ConstHelper $constHelper, StringsHelper $stringsHelper, LatexHelper $latexHelper
     )
     {
+        $this->newtonApiClient = $newtonApiClient;
+        $this->constHelper = $constHelper;
+        $this->stringsHelper = $stringsHelper;
+        $this->latexHelper = $latexHelper;
+
         $this->validationMapping = [
 
             "label" => function($filledVal){
                 if(empty($filledVal)) return 0;
                 return -1;
+            },
+
+            "body" => function($filledVal){
+                return $this->validateBody($filledVal->body, $filledVal->bodyType);
             },
 
         ];
@@ -47,7 +80,50 @@ class ValidationService
                 0 => "Název musí být vyplněn."
             ],
 
+            "body" => [
+                0 => "Tělo úlohy musí být vyplněno.",
+                1 => "Vstupní LaTeX musí být uvnitř značek pro matematický mód.",
+                2 => "Šablona neobsahuje zadanou neznámou.",
+                3 => "Šablona není validní matematický výraz."
+            ],
+
         ];
+    }
+
+    /**
+     * @param string $body
+     * @param int $type
+     * @param string|null $variable
+     * @return int
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    private function validateBody(string $body, int $type,  string $variable = null): int
+    {
+        if(empty($body)) return 0;
+
+        if(!$this->latexHelper::latexWrapped($body)) return 1;
+
+        if($type !== $this->constHelper::BODY_FINAL){
+
+            $parsed = $this->latexHelper::parseLatex($body);
+            bdump("PARSED: " . $parsed);
+            $split = $this->stringsHelper::splitByParameters($parsed);
+
+            if(empty($variable) || !$this->stringsHelper::containsVariable($split, $variable))
+                return 2;
+
+            $parametrized = $this->stringsHelper::getParametrized($parsed);
+
+            bdump($parametrized);
+
+            $parsedNewton = $this->stringsHelper::newtonFormat($parametrized->expression);
+            $newtonApiRes = $this->newtonApiClient->simplify($parsedNewton);
+
+            if(Strings::contains($newtonApiRes, "Stop"))
+                return 3;
+        }
+
+        return -1;
     }
 
     /**

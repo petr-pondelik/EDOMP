@@ -14,5 +14,4 @@ namespace App\Model\Repository;
  */
 class ProblemTypeRepository extends BaseRepository
 {
-
 }

@@ -57,6 +57,7 @@ services:
 	        doctrine.repositoryEntity: App\Model\Entity\ProblemCondition
 
 	#Functionalities
+	functionality.problem: App\Model\Functionality\ProblemFunctionality
 	functionality.category: App\Model\Functionality\CategoryFunctionality
 	functionality.subcategory: App\Model\Functionality\SubCategoryFunctionality
 
@@ -69,9 +70,12 @@ services:
 	factory.form.problem: App\Components\Forms\ProblemFormFactory
 
 	#Services
+	service.newtopapi.client: App\Service\NewtonApiClient
 	service.validation: App\Service\ValidationService
 
 	#Helpers
 	helper.const: App\Helpers\ConstHelper
+	helper.strings: App\Helpers\StringsHelper
+	helper.latex: App\Helpers\LatexHelper
 
 includes:

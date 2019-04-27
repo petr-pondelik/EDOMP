@@ -69,15 +69,15 @@ class ProblemGridFactory extends BaseGrid
     {
         $grid = parent::create($container, $name);
 
-        $difficultyOptions = $this->difficultyRepository->findAll();
-        $typeOptions = $this->problemTypeRepository->findAll();
-        $subCategoryOptions = $this->subCategoryRepository->findAll();
+        $difficultyOptions = $this->difficultyRepository->findAssoc([], "id");
+        $typeOptions = $this->problemTypeRepository->findAssoc([], "id");
+        $subCategoryOptions = $this->subCategoryRepository->findAssoc([], "id");
 
         $grid->setPrimaryKey("id");
 
         $grid->setDataSource($this->problemRepository->createQueryBuilder("er"));
 
-        $grid->addColumnNumber('problem_id', 'ID')
+        $grid->addColumnNumber('id', 'ID')
             ->setSortable();
 
         $grid->addColumnDateTime('created', 'Vytvořeno')
@@ -87,7 +87,7 @@ class ProblemGridFactory extends BaseGrid
 
         $grid->addColumnText('text_before', 'Zadání před');
 
-        $grid->addColumnText('structure', 'Struktura');
+        $grid->addColumnText('body', 'Tělo');
 
         $grid->addColumnText('text_after', 'Zadání po');
 
@@ -104,24 +104,25 @@ class ProblemGridFactory extends BaseGrid
             ]);
 
         $grid->addColumnNumber('problemType', 'Typ')
-            ->setSortable()
+            ->setSortable("er.id")
             ->addAttributes(['class' => 'text-center'])
             ->setReplacement($typeOptions)
             ->setFilterMultiSelect($typeOptions);
 
-        $grid->addColumnStatus("subCategory", "Téma")
-            ->setSortable()
+        $grid->addColumnStatus("subCategory", "Téma", "subCategory.id")
+            ->setSortable("er.id")
             ->addAttributes(["class" => "text-center"])
             ->setOptions($subCategoryOptions)
             ->onChange[] = [$container, "handleSubCategoryUpdate"];
 
         $grid->addFilterMultiSelect("subCategory", "", $subCategoryOptions);
 
-        $grid->addColumnStatus('difficulty', 'Obtížnost')
+        $grid->addColumnStatus('difficulty', 'Obtížnost', "difficulty.id")
             ->setSortable()
             ->addAttributes(['class' => 'text-center'])
             ->setOptions($difficultyOptions)
             ->onChange[] = [$container, 'handleDifficultyUpdate'];
+
         $grid->addFilterMultiSelect('difficulty', '', $difficultyOptions);
 
         return $grid;

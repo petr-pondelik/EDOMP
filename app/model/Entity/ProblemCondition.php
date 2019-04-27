@@ -153,10 +153,27 @@ class ProblemCondition
     }
 
     /**
+     * @return ProblemConditionType
+     */
+    public function getProblemConditionType(): ProblemConditionType
+    {
+        return $this->problemConditionType;
+    }
+
+    /**
+     * @param ProblemConditionType $problemConditionType
+     */
+    public function setProblemConditionType(ProblemConditionType $problemConditionType): void
+    {
+        $this->problemConditionType = $problemConditionType;
+    }
+
+    /**
      * @return string
      */
     public function __toString()
     {
         return $this->label;
     }
+
 }

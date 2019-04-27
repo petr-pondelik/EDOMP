@@ -53,7 +53,9 @@ class SubCategoryGridFactory extends BaseGrid
     {
         $grid = parent::create($container, $name);
 
-        $categoryOptions = $this->categoryRepository->findPairs([], "label");
+        $categoryOptions = $this->categoryRepository->findAssoc([], "id");
+
+        bdump($categoryOptions);
 
         bdump($categoryOptions);
 
@@ -71,11 +73,13 @@ class SubCategoryGridFactory extends BaseGrid
 
         $grid->addColumnText('label', 'Název');
 
-        $grid->addColumnStatus("Category.id", "Kategorie")
+        $grid->addColumnStatus("category", "Kategorie", "category.id")
             ->addAttributes(["class" => "text-center"])
             ->setOptions($categoryOptions)
-            ->setSortable("er.id")
+            ->setSortable("er.category")
             ->onChange[] = [$container, "handleCategoryUpdate"];
+
+        $grid->addFilterMultiSelect("category", "", $categoryOptions);
 
         return $grid;
     }

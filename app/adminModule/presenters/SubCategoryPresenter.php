@@ -189,11 +189,10 @@ class SubCategoryPresenter extends AdminPresenter
      */
     public function handleCategoryUpdate(int $subCategoryId, $categoryId)
     {
-        $category = $this->categoryRepository->find($categoryId);
         try{
             $this->subCategoryFunctionality->update($subCategoryId,
                 ArrayHash::from([
-                    "category" => $category
+                    "category" => $categoryId
                 ])
             );
         } catch (\Exception $e){

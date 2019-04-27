@@ -1,0 +1,9 @@
+{if $item->isGenerated()}
+    <a class="btn btn-primary btn-sm ajax" title="Získat výsledek"
+       href="{plink ProblemFinal:default
+                do => getResult,
+                id => $item->getId()
+            }">
+        <i class="fas fa-calculator"></i>
+    </a>
+{/if}

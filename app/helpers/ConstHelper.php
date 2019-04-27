@@ -44,6 +44,9 @@ class ConstHelper
     //Types group of equations
     const EQUATIONS = [self::LINEAR_EQ, self::QUADRATIC_EQ];
 
+    //Structure types constants
+    const BODY_FINAL = 0;
+
     //Maximal number of parameters in prototype
     const PARAMETERS_MAX = 6;
 

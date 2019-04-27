@@ -247,7 +247,7 @@ class Problem
      */
     public function getCreated(): DateTime
     {
-        return $this->created;
+        return DateTime::from($this->created);
     }
 
     /**
@@ -288,6 +288,47 @@ class Problem
     public function setConditions($conditions): void
     {
         $this->conditions = $conditions;
+    }
+
+    /**
+     * @param ProblemCondition $condition
+     */
+    public function addCondition(ProblemCondition $condition): void
+    {
+        if($this->conditions->contains($condition)) return;
+        $this->conditions[] = $condition;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getSuccessRate(): ?float
+    {
+        return $this->successRate;
+    }
+
+    /**
+     * @param float $successRate
+     */
+    public function setSuccessRate(float $successRate): void
+    {
+        $this->successRate = $successRate;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUsed(): bool
+    {
+        return $this->isUsed;
+    }
+
+    /**
+     * @param bool $isUsed
+     */
+    public function setIsUsed(bool $isUsed): void
+    {
+        $this->isUsed = $isUsed;
     }
 
 }

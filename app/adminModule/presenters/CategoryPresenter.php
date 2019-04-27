@@ -74,11 +74,6 @@ class CategoryPresenter extends AdminPresenter
         $this->validationService = $validationService;
     }
 
-    public function renderDefault()
-    {
-        //bdump($this->categoryRepository->find(1)->getSubcategories());
-    }
-
     /**
      * @param int $id
      */
@@ -238,8 +233,7 @@ class CategoryPresenter extends AdminPresenter
             $this->categoryFunctionality->update($values->category_id_hidden, $values);
         } catch (\Exception $e){
             $this->flashMessage('Chyba při editaci kategorie.', 'danger');
-            $this->redrawControl('mainFlashesSnippet');
-            return;
+            $this->redirect("default");
         }
         $this->flashMessage('Kategorie úspěšně editována.', 'success');
         $this->redirect("default");

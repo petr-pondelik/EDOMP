@@ -160,9 +160,9 @@ $(document).ready(() => {
         let key = e.target.dataset.key;
 
         console.log("CONDITION CHANGE");
-        console.log(e.target.dataset.final);
+        console.log(e.target.dataset);
 
-        if(!e.target.dataset.final){
+        if(!e.target.dataset.static){
 
             if (e.target.value != 0) {
                 $(document).find('#condition-validation-btn-' + key).show();
@@ -324,6 +324,9 @@ $(document).ready(() => {
         //console.log(e.target.value);
         //console.log(e.target.dataset.key);
         let key = e.target.dataset.key;
+        console.log(e.target.dataset);
+        if(e.target.dataset.static == true)
+            return;
         if (e.target.value != 0) {
             $(document).find('#edit-condition-validation-btn-' + key).show();
             $(document).find('#edit-condition-valid-' + key).val(0);
