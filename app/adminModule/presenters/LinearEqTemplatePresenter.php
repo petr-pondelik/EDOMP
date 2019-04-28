@@ -9,9 +9,15 @@
 namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\TemplateGridFactory;
-use App\Components\Forms\ProblemFormFactory;
+use App\Components\Forms\TemplateFormFactory;
 use App\Helpers\ConstHelper;
+use App\Model\Functionality\LinearEqTemplFunctionality;
 use App\Model\Repository\LinearEqTemplRepository;
+use App\Model\Repository\ProblemTypeRepository;
+use App\Service\MathService;
+use App\Service\ValidationService;
+use Nette\Application\UI\Form;
+use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
@@ -23,29 +29,58 @@ class LinearEqTemplatePresenter extends ProblemTemplatePresenter
     /**
      * @var string
      */
-    protected $type = "linearEqTemplate";
+    protected $type = "LinearEqTemplate";
 
+    /**
+     * LinearEqTemplatePresenter constructor.
+     * @param LinearEqTemplRepository $repository
+     * @param LinearEqTemplFunctionality $functionality
+     * @param ProblemTypeRepository $problemTypeRepository
+     * @param TemplateGridFactory $templateGridFactory
+     * @param TemplateFormFactory $templateFormFactory
+     * @param ValidationService $validationService
+     * @param MathService $mathService
+     * @param ConstHelper $constHelper
+     */
     public function __construct
     (
-        LinearEqTemplRepository $repository,
-        TemplateGridFactory $templateGridFactory, ProblemFormFactory $problemFormFactory,
+        LinearEqTemplRepository $repository, LinearEqTemplFunctionality $functionality,
+        ProblemTypeRepository $problemTypeRepository,
+        TemplateGridFactory $templateGridFactory, TemplateFormFactory $templateFormFactory,
+        ValidationService $validationService, MathService $mathService,
         ConstHelper $constHelper
     )
     {
-        parent::__construct($templateGridFactory, $problemFormFactory, $constHelper);
+        parent::__construct(
+            $problemTypeRepository,
+            $templateGridFactory, $templateFormFactory,
+            $validationService, $mathService,
+            $constHelper
+        );
         $this->repository = $repository;
+        $this->functionality = $functionality;
         $this->typeId = $this->constHelper::LINEAR_EQ;
     }
 
-    public function createComponentTemplateGrid($name): DataGrid
+    /**
+     * @return Form
+     * @throws \Exception
+     */
+    public function createComponentTemplateCreateForm()
     {
-        $grid = parent::createComponentTemplateGrid($name);
-        return $grid;
-    }
-
-    public function createComponentCreateForm()
-    {
-        $form = $this->problemFormFactory->create(true, $this->typeId);
+        $form = $this->templateFormFactory->create(true, $this->typeId);
+        $form->onValidate[] = [$this, "handleFormValidate"];
+        $form->onSuccess[] = [$this, "handleCreateFormSuccess"];
         return $form;
     }
+
+    /**
+     * @param int $id
+     * @throws \Nette\Application\AbortException
+     */
+    public function handleUpdate(int $id)
+    {
+        $this->redirect("edit", $id);
+    }
+
 }

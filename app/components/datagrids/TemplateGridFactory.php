@@ -88,8 +88,6 @@ class TemplateGridFactory extends BaseGrid
 
         $grid->setDataSource($repository->createQueryBuilder("er"));
 
-        //$grid->setDataSource($this->problemTemplateRepository->createQueryBuilder("er"));
-
         $grid->addColumnNumber('id', 'ID')
             ->setSortable();
 
@@ -115,7 +113,7 @@ class TemplateGridFactory extends BaseGrid
         $grid->addFilterMultiSelect("subCategory", "", $subCategoryOptions);
 
         $grid->addColumnStatus('difficulty', 'Obtížnost', "difficulty.id")
-            ->setSortable()
+            ->setSortable("er.id")
             ->addAttributes(['class' => 'text-center'])
             ->setOptions($difficultyOptions)
             ->onChange[] = [$container, 'handleDifficultyUpdate'];

@@ -185,11 +185,13 @@ $(document).ready(() => {
     //Admin section: prototypes conditions validations
     $(document).on('click', '.condition-validation-btn', (e) => {
 
-        let structure = $(document).find('#structure').val();
+        let body = $(document).find('#body').val();
         let conditionType = e.target.dataset.key;
         let accessor = $(document).find('#condition-' + conditionType).val();
         let variable = $(document).find('#variable').val();
         let problemType = $(document).find('#type').val();
+
+        console.log(problemType);
 
         console.log('CONDITION TYPE: ' + conditionType);
         console.log('ACCESSOR: ' + accessor);
@@ -212,7 +214,7 @@ $(document).ready(() => {
             data: {
                 'conditionType': conditionType,
                 'accessor': accessor,
-                'structure': structure,
+                'body': body,
                 'problemId': problemId,
                 'problemType': problemType,
                 'variable': variable

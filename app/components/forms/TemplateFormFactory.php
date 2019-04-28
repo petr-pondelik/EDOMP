@@ -2,23 +2,24 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 6.2.19
- * Time: 23:05
+ * Date: 28.4.19
+ * Time: 11:34
  */
 
 namespace App\Components\Forms;
 
+use App\Helpers\ConstHelper;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
-use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
+use App\Service\ValidationService;
 use Nette\Application\UI\Form;
-use App\Helpers\ConstHelper;
 
 /**
- * Class ProblemFormFactory
+ * Class TemplateFormFactory
+ * @package App\Components\Forms
  */
-class ProblemFormFactory extends BaseForm
+class TemplateFormFactory extends BaseForm
 {
     /**
      * @var DifficultyRepository
@@ -31,14 +32,19 @@ class ProblemFormFactory extends BaseForm
     protected $subCategoryRepository;
 
     /**
-     * @var ProblemTypeRepository
-     */
-    protected $problemTypeRepository;
-
-    /**
      * @var ProblemConditionRepository
      */
     protected $problemConditionRepository;
+
+    /**
+     * @var ValidationService
+     */
+    protected $validationService;
+
+    /**
+     * @var
+     */
+    protected $mathService;
 
     /**
      * @var ConstHelper
@@ -49,32 +55,30 @@ class ProblemFormFactory extends BaseForm
      * ProblemFormFactory constructor.
      * @param DifficultyRepository $difficultyRepository
      * @param SubCategoryRepository $subCategoryRepository
-     * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param ConstHelper $constHelper
      */
     public function __construct
     (
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
-        ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
+        ProblemConditionRepository $problemConditionRepository,
         ConstHelper $constHelper
     )
     {
         $this->difficultyRepository = $difficultyRepository;
         $this->subCategoryRepository = $subCategoryRepository;
-        $this->problemTypeRepository = $problemTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->constHelper = $constHelper;
     }
 
     /**
+     * @param int $templateType
      * @return Form
      * @throws \Exception
      */
-    public function create(): Form
+    public function create(int $templateType = 0): Form
     {
         $difficulties = $this->difficultyRepository->findAssoc([], "id");
-        $types = $this->problemTypeRepository->findAssoc([], "id");
         $subcategories = $this->subCategoryRepository->findAssoc([], "id");
 
         $resultConditions = $this->problemConditionRepository->findAssoc([
@@ -87,10 +91,8 @@ class ProblemFormFactory extends BaseForm
 
         $form = parent::create();
 
-        $form->addSelect('type', 'Typ', $types)
-            ->setDefaultValue(1)
-            ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlId('type');
+        $form->addHidden("type")
+                ->setDefaultValue($templateType);
 
         $form->addSelect("subcategory", "Podkategorie", $subcategories)
             ->setDefaultValue(1)
@@ -102,7 +104,7 @@ class ProblemFormFactory extends BaseForm
 
         $form->addTextArea('body', 'Tělo')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlId('structure');
+            ->setHtmlId('body');
 
         $form->addText("variable", "Neznámá")
             ->setHtmlAttribute("class", "form-control")
@@ -125,10 +127,14 @@ class ProblemFormFactory extends BaseForm
             ->setHtmlAttribute('class', 'form-control condition')
             ->setHtmlId('condition-' . $this->constHelper::DISCRIMINANT);
 
-        $form->addSubmit('submit', 'Vytvořit')
+        //Field for storing all conditions final valid state
+        $form->addHidden('conditions_valid')
+            ->setDefaultValue(1)
+            ->setHtmlId('conditions_valid');
+
+        $form->addSubmit('prototype_create_submit', 'Vytvořit')
             ->setHtmlAttribute('class', 'btn btn-primary');
 
         return $form;
     }
-
 }

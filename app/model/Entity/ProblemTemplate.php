@@ -198,7 +198,7 @@ class ProblemTemplate
     /**
      * @return float
      */
-    public function getSuccessRate(): float
+    public function getSuccessRate(): ?float
     {
         return $this->successRate;
     }
@@ -248,7 +248,7 @@ class ProblemTemplate
      */
     public function getCreated(): DateTime
     {
-        return $this->created;
+        return DateTime::from($this->created);
     }
 
     /**
@@ -321,5 +321,14 @@ class ProblemTemplate
     public function setConditions($conditions): void
     {
         $this->conditions = $conditions;
+    }
+
+    /**
+     * @param ProblemCondition $condition
+     */
+    public function addCondition(ProblemCondition $condition): void
+    {
+        if($this->conditions->contains($condition)) return;
+        $this->conditions[] = $condition;
     }
 }

@@ -128,7 +128,7 @@ class ProblemGridFactory extends BaseGrid
         $grid->addFilterMultiSelect("subCategory", "", $subCategoryOptions);
 
         $grid->addColumnStatus('difficulty', 'Obtížnost', "difficulty.id")
-            ->setSortable()
+            ->setSortable("er.id")
             ->addAttributes(['class' => 'text-center'])
             ->setOptions($difficultyOptions)
             ->onChange[] = [$container, 'handleDifficultyUpdate'];

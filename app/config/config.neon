@@ -70,6 +70,7 @@ services:
 	functionality.problem: App\Model\Functionality\ProblemFunctionality
 	functionality.category: App\Model\Functionality\CategoryFunctionality
 	functionality.subcategory: App\Model\Functionality\SubCategoryFunctionality
+	functionality.lineareqtempl: App\Model\Functionality\LinearEqTemplFunctionality
 
 	#Factories
 	factory.grid.category: App\Components\DataGrids\CategoryGridFactory
@@ -78,11 +79,14 @@ services:
 	factory.form.subcategory: App\Components\Forms\SubCategoryFormFactory
 	factory.grid.problem: App\Components\DataGrids\ProblemGridFactory
 	factory.form.problem: App\Components\Forms\ProblemFormFactory
-	factory.template.grid: App\Components\DataGrids\TemplateGridFactory
+	factory.grid.template: App\Components\DataGrids\TemplateGridFactory
+	factory.form.template: App\Components\Forms\TemplateFormFactory
 
 	#Services
 	service.newtopapi.client: App\Service\NewtonApiClient
 	service.validation: App\Service\ValidationService
+	service.math: App\Service\MathService
+	service.generator: App\Service\GeneratorService
 
 	#Helpers
 	helper.const: App\Helpers\ConstHelper
