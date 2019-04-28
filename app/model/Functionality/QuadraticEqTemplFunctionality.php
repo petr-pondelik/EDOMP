@@ -3,34 +3,33 @@
  * Created by PhpStorm.
  * User: wiedzmin
  * Date: 28.4.19
- * Time: 14:19
+ * Time: 19:46
  */
 
 namespace App\Model\Functionality;
 
-use App\Model\Entity\LinearEqTempl;
+use App\Model\Entity\QuadraticEqTempl;
 use App\Model\Repository\DifficultyRepository;
-use App\Model\Repository\LinearEqTemplRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemTypeRepository;
+use App\Model\Repository\QuadraticEqTemplRepository;
 use App\Model\Repository\SequenceInfoRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class LinearEqTemplFunctionality
+ * Class QuadraticEqTemplFunctionality
  * @package App\Model\Functionality
  */
-class LinearEqTemplFunctionality extends ProblemTemplateFunctionality
+class QuadraticEqTemplFunctionality extends ProblemTemplateFunctionality
 {
 
     public function __construct
     (
         EntityManager $entityManager,
-        LinearEqTemplRepository $repository,
+        QuadraticEqTemplRepository $repository,
         SequenceInfoFunctionality $sequenceInfoFunctionality,
         ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
@@ -50,16 +49,16 @@ class LinearEqTemplFunctionality extends ProblemTemplateFunctionality
 
     /**
      * @param ArrayHash $data
+     * @return void
      * @throws \Exception
      */
     public function create(ArrayHash $data): void
     {
-        $templ = new LinearEqTempl();
+        $templ = new QuadraticEqTempl();
         $templ = $this->setBaseValues($templ, $data);
         $templ->setVariable($data->variable);
         $this->em->persist($templ);
         $this->em->flush();
-        bdump("LAST ID:" . $templ->getId());
         $this->sequenceInfoFunctionality->storeInfo(
             ArrayHash::from([
                 "problemTemplateSeqVal" => $templ->getId()
@@ -70,15 +69,9 @@ class LinearEqTemplFunctionality extends ProblemTemplateFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
-     * @throws \Exception
      */
     public function update(int $id, ArrayHash $data): void
     {
-        $templ = $this->repository->find($id);
-        $templ->setConditions(new ArrayCollection());
-        $templ = $this->setBaseValues($templ, $data, $id);
-        $templ->setVariable($data->variable);
-        $this->em->persist($templ);
-        $this->em->flush();
+        // TODO: Implement update() method.
     }
 }

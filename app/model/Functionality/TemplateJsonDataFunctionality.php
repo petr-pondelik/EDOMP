@@ -10,6 +10,7 @@ namespace App\Model\Functionality;
 
 use App\Model\Entity\TemplateJsonData;
 use App\Model\Repository\ProblemTemplateRepository;
+use App\Model\Repository\SequenceInfoRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
@@ -26,19 +27,27 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
     protected $problemTemplateRepository;
 
     /**
+     * @var SequenceInfoRepository
+     */
+    protected $sequenceInfoRepository;
+
+    /**
      * TemplateJsonDataFunctionality constructor.
      * @param EntityManager $entityManager
+     * @param SequenceInfoRepository $sequenceInfoRepository
      * @param TemplateJsonDataRepository $repository
      * @param ProblemTemplateRepository $problemTemplateRepository
      */
     public function __construct
     (
         EntityManager $entityManager,
+        SequenceInfoRepository $sequenceInfoRepository,
         TemplateJsonDataRepository $repository, ProblemTemplateRepository $problemTemplateRepository
     )
     {
         parent::__construct($entityManager);
         $this->repository = $repository;
+        $this->sequenceInfoRepository = $sequenceInfoRepository;
         $this->problemTemplateRepository = $problemTemplateRepository;
     }
 
@@ -46,13 +55,12 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
      * @param ArrayHash $data
      * @param int|null $templateId
      * @return void
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Exception
      */
     public function create(ArrayHash $data, int $templateId = null): void
     {
         if(!$templateId)
-            $templateId = $this->problemTemplateRepository->getLastId() + 1;
+            $templateId = $this->sequenceInfoRepository->find(1)->getProblemTemplateSeqVal() + 1;
 
         if($jsonData = $this->repository->findOneBy([ "templateId" => $templateId ])){
             $jsonData->setJsonData($data->jsonData);
@@ -63,7 +71,7 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
 
         $jsonData = new TemplateJsonData();
         $jsonData->setJsonData($data->jsonData);
-        $jsonData->setProblemId($templateId);
+        $jsonData->setTemplateId($templateId);
         $this->em->persist($jsonData);
         $this->em->flush();
     }

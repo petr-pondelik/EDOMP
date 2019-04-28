@@ -73,10 +73,11 @@ class TemplateFormFactory extends BaseForm
 
     /**
      * @param int $templateType
+     * @param bool $edit
      * @return Form
      * @throws \Exception
      */
-    public function create(int $templateType = 0): Form
+    public function create(int $templateType = 0, bool $edit = false): Form
     {
         $difficulties = $this->difficultyRepository->findAssoc([], "id");
         $subcategories = $this->subCategoryRepository->findAssoc([], "id");
@@ -90,6 +91,13 @@ class TemplateFormFactory extends BaseForm
         ], "accessor");
 
         $form = parent::create();
+
+        if($edit){
+            $form->addHidden("id_hidden");
+            $form->addInteger("id", "ID")
+                ->setHtmlAttribute("class", "form-control")
+                ->setDisabled();
+        }
 
         $form->addHidden("type")
                 ->setDefaultValue($templateType);
@@ -132,7 +140,7 @@ class TemplateFormFactory extends BaseForm
             ->setDefaultValue(1)
             ->setHtmlId('conditions_valid');
 
-        $form->addSubmit('prototype_create_submit', 'Vytvořit')
+        $form->addSubmit('submit', 'Vytvořit')
             ->setHtmlAttribute('class', 'btn btn-primary');
 
         return $form;

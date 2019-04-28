@@ -1,5 +1,5 @@
 {block headingFirst}
-    Šablony lineárních rovnic
+    Šablony kvadratických rovnic
 {/block}
 
 {block headingFirstLink}
@@ -122,7 +122,7 @@
 
                     {foreach $problemTypes as $typeKey => $type}
 
-                        <div class="form-group {if $typeKey !== \App\Helpers\ConstHelper::LINEAR_EQ}hidden{/if}"
+                        <div class="form-group {if $typeKey !== \App\Helpers\ConstHelper::QUADRATIC_EQ}hidden{/if}"
                              id="type-wrapper-{$typeKey}">
 
                             {foreach $condByProblemTypes[$typeKey] as $condKey => $cond}

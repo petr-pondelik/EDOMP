@@ -208,6 +208,8 @@ $(document).ready(() => {
             url = '?do=CondValidation';
         }
 
+        console.log('PROBLEM ID:' + problemId);
+
         $.nette.ajax({
             type: 'POST',
             url: url,

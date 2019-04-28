@@ -408,6 +408,9 @@ class ValidationService
 
     public function validateResultCond(int $accessor, string $body, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null): bool
     {
+        bdump("VALIDATE RESULT COND");
+        bdump($problemId);
+
         $variableExp = $this->stringsHelper::getLinearVariableExpresion($standardized, $variable);
 
         $matches = $this->conditionMatchingService->findConditionsMatches([

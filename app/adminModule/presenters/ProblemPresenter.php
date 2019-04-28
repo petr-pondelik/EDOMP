@@ -146,7 +146,6 @@ class ProblemPresenter extends AdminPresenter
         $form["subcategory"]->setDefaultValue($record->getSubCategory()->getId());
 
         $conditions = $record->getConditions()->getValues();
-
         foreach($conditions as $condition)
             $form['condition_' . $condition->getProblemConditionType()->getId()]->setValue($condition->getAccessor());
     }

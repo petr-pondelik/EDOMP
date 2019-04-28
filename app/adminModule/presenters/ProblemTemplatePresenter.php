@@ -12,12 +12,14 @@ use App\Components\DataGrids\TemplateGridFactory;
 use App\Components\Forms\TemplateFormFactory;
 use App\Exceptions\StringFormatException;
 use App\Helpers\ConstHelper;
+use App\Model\Entity\ProblemTemplate;
 use App\Model\Functionality\BaseFunctionality;
 use App\Model\Repository\BaseRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Service\MathService;
 use App\Service\ValidationService;
 use Nette\Application\UI\Form;
+use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 
@@ -103,6 +105,9 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
         $this->constHelper = $constHelper;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function actionDefault()
     {
         $types = $this->problemTypeRepository->findAssoc([], "id");
@@ -110,6 +115,41 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
         $this->template->condByProblemTypes = [];
         foreach ($types as $key => $type)
             $this->template->condByProblemTypes[$key] = $type->getConditionTypes()->getValues();
+    }
+
+    /**
+     * @param int $id
+     * @throws \Exception
+     */
+    public function actionEdit(int $id)
+    {
+        $this->actionDefault();
+        $form = $this["templateEditForm"];
+        if(!$form->isSubmitted()){
+            $record = $this->repository->find($id);
+            $this->template->id = $id;
+            $this->setDefaults($form, $record);
+        }
+    }
+
+    /**
+     * @param IComponent $form
+     * @param ProblemTemplate $record
+     */
+    protected function setDefaults(IComponent $form, ProblemTemplate $record)
+    {
+        bdump($record);
+        $form["id"]->setDefaultValue($record->getId());
+        $form["id_hidden"]->setDefaultValue($record->getId());
+        $form["subcategory"]->setDefaultValue($record->getSubCategory()->getId());
+        $form["text_before"]->setDefaultValue($record->getTextBefore());
+        $form["body"]->setDefaultValue($record->getBody());
+        $form["text_after"]->setDefaultValue($record->getTextAfter());
+        $form["difficulty"]->setDefaultVAlue($record->getDifficulty()->getId());
+
+        $conditions = $record->getConditions()->getValues();
+        foreach($conditions as $condition)
+            $form['condition_' . $condition->getProblemConditionType()->getId()]->setValue($condition->getAccessor());
     }
 
     /**
@@ -147,6 +187,27 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     }
 
     /**
+     * @param int $id
+     * @throws \Nette\Application\AbortException
+     */
+    public function handleUpdate(int $id)
+    {
+        $this->redirect("edit", $id);
+    }
+
+    /**
+     * @return Form
+     * @throws \Exception
+     */
+    public function createComponentTemplateCreateForm(): Form
+    {
+        $form = $this->templateFormFactory->create($this->typeId);
+        $form->onValidate[] = [$this, "handleFormValidate"];
+        $form->onSuccess[] = [$this, "handleCreateFormSuccess"];
+        return $form;
+    }
+
+    /**
      * @param Form $form
      * @param ArrayHash $values
      * @throws \Exception
@@ -163,6 +224,36 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
         $this["templateGrid"]->reload();
         $this->flashMessage("Šablona úspěšně vytvořena.", "success");
         $this->redrawControl("mainFlashesSnippet");
+    }
+
+    /**
+     * @return Form
+     * @throws \Exception
+     */
+    public function createComponentTemplateEditForm(): Form
+    {
+        $form = $this->templateFormFactory->create($this->typeId, true);
+        $form->onValidate[] = [$this, "handleFormValidate"];
+        $form->onSuccess[] = [$this, "handleEditFormSuccess"];
+        return $form;
+    }
+
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     * @throws \Nette\Application\AbortException
+     */
+    public function handleEditFormSuccess(Form $form, ArrayHash $values)
+    {
+        bdump($values);
+        try{
+            $this->functionality->update($values->id_hidden, $values);
+        } catch (\Exception $e){
+            $this->flashMessage("Chyba při editace šablony.", "danger");
+            $this->redirect("default");
+        }
+        $this->flashMessage("Šablona úspěšně editována.", "success");
+        $this->redirect("default");
     }
 
     /**

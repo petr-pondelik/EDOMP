@@ -66,17 +66,29 @@ services:
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\LinearEqTempl
 
+	repository.quadraticeqtempl:
+	    class: App\Model\Repository\QuadraticEqTemplRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\QuadraticEqTempl
+
 	repository.template.jsondata:
 	    class: App\Model\Repository\TemplateJsonDataRepository
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\TemplateJsonData
 
+	repository.sequence.info:
+	    class: App\Model\Repository\SequenceInfoRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\SequenceInfo
+
 	#Functionalities
 	functionality.problem: App\Model\Functionality\ProblemFunctionality
 	functionality.category: App\Model\Functionality\CategoryFunctionality
 	functionality.subcategory: App\Model\Functionality\SubCategoryFunctionality
-	functionality.lineareqtempl: App\Model\Functionality\LinearEqTemplFunctionality
+	functionality.template.linear.equation: App\Model\Functionality\LinearEqTemplFunctionality
+	functionality.template.quadratic.equation: App\Model\Functionality\QuadraticEqTemplFunctionality
 	functionality.template.jsondata: App\Model\Functionality\TemplateJsonDataFunctionality
+	functionality.sequence.info: App\Model\Functionality\SequenceInfoFunctionality
 
 	#Factories
 	factory.grid.category: App\Components\DataGrids\CategoryGridFactory
