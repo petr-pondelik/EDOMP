@@ -153,13 +153,13 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
      */
     public function handleCreateFormSuccess(Form $form, ArrayHash $values)
     {
-        try{
+        //try{
             $this->functionality->create($values);
-        } catch (\Exception $e){
+        /*} catch (\Exception $e){
             $this->flashMessage("Chyba při vytváření šablony.", "danger");
             $this->redrawControl("mainFlashesSnippet");
             return;
-        }
+        }*/
         $this["templateGrid"]->reload();
         $this->flashMessage("Šablona úspěšně vytvořena.", "success");
         $this->redrawControl("mainFlashesSnippet");
@@ -252,7 +252,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     }
 
     /**
-     * @param string $structure
+     * @param string $body
      * @param int $conditionType
      * @param int $accessor
      * @param int $problemType
@@ -267,7 +267,8 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
         $validationFields["variable"] = $variable;
         $validationFields['body'] = ArrayHash::from([
             "body" => $body,
-            "variable" => $variable
+            "bodyType" => $problemType,
+            "variable" => $variable,
         ]);
 
         $validationErrors = $this->validationService->validate($validationFields);
@@ -282,10 +283,10 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
             return;
         }
 
-        /*try{
-            $standardized = $this->mathService->standardizeEquation($structure);
+        try{
+            $standardized = $this->mathService->standardizeEquation($body);
         } catch (StringFormatException $e){
-            $this[$form]["structure"]->addError($e->getMessage());
+            $this[$form]["body"]->addError($e->getMessage());
             $this->redrawFormErrors();
             return;
         }
@@ -295,7 +296,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
         //Then validate it's type
         $validationFields["type"] = [
             "type_" . $problemType => ArrayHash::from([
-                "structure" => $structure,
+                "body" => $body,
                 "standardized" => $standardized,
                 "variable" => $variable
             ])
@@ -306,7 +307,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
                 foreach($errorGroup as $egKey => $error)
-                    $this[$form]["type"]->addError($error);
+                    $this[$form]["body"]->addError($error);
             }
             $this->redrawFormErrors();
             return;
@@ -317,7 +318,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
         //Then validate specified condition
         $validationFields['condition'] = [
             'condition_' . $conditionType => ArrayHash::from([
-                "structure" => $structure,
+                "body" => $body,
                 "standardized" => $standardized,
                 "accessor" => $accessor,
                 "variable" => $variable
@@ -338,7 +339,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
                 foreach($errorGroup as $egKey => $error)
                     $this[$form]['condition_' . $conditionType]->addError($error);
             }
-        }*/
+        }
 
         $this->redrawFormErrors();
 

@@ -14,6 +14,7 @@ use App\Model\Repository\LinearEqTemplRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
+use App\Model\Repository\TemplateJsonDataRepository;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
@@ -28,12 +29,15 @@ class LinearEqTemplFunctionality extends ProblemTemplateFunctionality
         EntityManager $entityManager,
         LinearEqTemplRepository $repository,
         ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository
+        DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
+        TemplateJsonDataRepository $templateJsonDataRepository
     )
     {
         parent::__construct(
             $entityManager,
-            $problemTypeRepository, $problemConditionRepository, $difficultyRepository, $subCategoryRepository
+            $problemTypeRepository, $problemConditionRepository, $difficultyRepository, $subCategoryRepository,
+            $templateJsonDataRepository
+
         );
         $this->repository = $repository;
     }

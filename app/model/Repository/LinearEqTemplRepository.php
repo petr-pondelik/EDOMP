@@ -14,5 +14,20 @@ namespace App\Model\Repository;
  */
 class LinearEqTemplRepository extends BaseRepository
 {
+    /**
+     * @return int
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getLastId(): int
+    {
+        $res = $this->createQueryBuilder("er")
+            ->setMaxResults(1)
+            ->select("er.id")
+            ->orderBy("er.id", "DESC")
+            ->getQuery()
+            ->getSingleResult();
 
+        return $res["id"];
+    }
 }

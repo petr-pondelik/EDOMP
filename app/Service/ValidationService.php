@@ -12,6 +12,7 @@ use App\Exceptions\StringFormatException;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
+use App\Model\Functionality\TemplateJsonDataFunctionality;
 use Nette\NotSupportedException;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
@@ -32,6 +33,16 @@ class ValidationService
      * @var MathService
      */
     protected $mathService;
+
+    /**
+     * @var ConditionMatchingService
+     */
+    protected $conditionMatchingService;
+
+    /**
+     * @var TemplateJsonDataFunctionality
+     */
+    protected $templateJsonDataFunctionality;
 
     /**
      * @var ConstHelper
@@ -61,12 +72,16 @@ class ValidationService
 
     public function __construct
     (
-        NewtonApiClient $newtonApiClient, MathService $mathService,
+        NewtonApiClient $newtonApiClient,
+        MathService $mathService, ConditionMatchingService $conditionMatchingService,
+        TemplateJsonDataFunctionality $templateJsonDataFunctionality,
         ConstHelper $constHelper, StringsHelper $stringsHelper, LatexHelper $latexHelper
     )
     {
         $this->newtonApiClient = $newtonApiClient;
         $this->mathService = $mathService;
+        $this->conditionMatchingService = $conditionMatchingService;
+        $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
         $this->constHelper = $constHelper;
         $this->stringsHelper = $stringsHelper;
         $this->latexHelper = $latexHelper;
@@ -120,7 +135,7 @@ class ValidationService
             "condition" => [
 
                 "condition_" . $this->constHelper::RESULT => function(ArrayHash $filledVal, $problemId = null){
-                    $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal->structure);
+                    $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal->body);
 
                     //Maximal number of parameters exceeded
                     if($parametersInfo->count > $this->constHelper::PARAMETERS_MAX)
@@ -130,14 +145,14 @@ class ValidationService
                     if($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX)
                         return 3;
 
-                    if(!$this->validateResultCond($filledVal->accessor, $filledVal->structure, $filledVal->standardized, $filledVal->variable, $parametersInfo, $problemId))
+                    if(!$this->validateResultCond($filledVal->accessor, $filledVal->body, $filledVal->standardized, $filledVal->variable, $parametersInfo, $problemId))
                         return 4;
 
                     return -1;
                 },
 
                 "condition_" . $this->constHelper::DISCRIMINANT => function(ArrayHash $filledVal, $problemId = null){
-                    $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal["structure"]);
+                    $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal["body"]);
 
                     //Maximal number of parameters exceeded
                     if($parametersInfo->count > $this->constHelper::PARAMETERS_MAX)
@@ -152,7 +167,7 @@ class ValidationService
                     //TODO: Extend prototype create validation by valid_$i fields checks (all the conditions have to be satisfied)
 
                     if(!$this->validateDiscriminantCond(
-                        $filledVal->accessor, $filledVal->structure, $filledVal->variable, $parametersInfo, $problemId)) {
+                        $filledVal->accessor, $filledVal->body, $filledVal->variable, $parametersInfo, $problemId)) {
                         return 4;
                     }
 
@@ -391,7 +406,7 @@ class ValidationService
         return $quot1 == $quot2;
     }
 
-    public function validateResultCond(int $accessor, string $structure, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null): bool
+    public function validateResultCond(int $accessor, string $body, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null): bool
     {
         $variableExp = $this->stringsHelper::getLinearVariableExpresion($standardized, $variable);
 
@@ -411,14 +426,16 @@ class ValidationService
         $arrayToJson["matches"] = $matches;
 
         $jsonData = Json::encode($arrayToJson);
-        $this->prototypeJsonDataManager->storePrototypeJsonData($jsonData, $problemId);
+        $this->templateJsonDataFunctionality->create(ArrayHash::from([
+            "jsonData" => $jsonData
+        ]), $problemId);
 
         return true;
     }
 
-    private function validateDiscriminantCond(int $accessor, string $structure, string $variable, ArrayHash $parametersInfo, $problemId = null): bool
+    private function validateDiscriminantCond(int $accessor, string $body, string $variable, ArrayHash $parametersInfo, $problemId = null): bool
     {
-        $parametrized = $this->stringsHelper::getParametrized($structure);
+        $parametrized = $this->stringsHelper::getParametrized($body);
         $discriminantExp = $this->mathService->getDiscriminantExpression($parametrized->expression, $variable);
 
         $matches = $this->conditionMatchingService->findConditionsMatches([
@@ -435,7 +452,9 @@ class ValidationService
         $arrayToJson["matches"] = $matches;
 
         $jsonData = Json::encode($arrayToJson);
-        $this->prototypeJsonDataManager->storePrototypeJsonData($jsonData, $problemId);
+        $this->templateJsonDataFunctionality->create(ArrayHash::from([
+            "jsonData" => $jsonData
+        ]), $problemId);
 
         return true;
     }
@@ -465,6 +484,38 @@ class ValidationService
                 if( ($validationRes = $this->validationMapping[$key1]($value1)) !== -1 )
                     $validationErrors[$key1][] = $this->validationMessages[$key1][$validationRes];
             }
+        }
+
+        return $validationErrors;
+    }
+
+    /**
+     * @param $fields
+     * @param $problemId
+     * @return array
+     */
+    public function editValidate($fields, $problemId)
+    {
+        $validationErrors = [];
+
+        foreach((array)$fields as $key1 => $value1){
+
+            if(!array_key_exists($key1, $this->validationMapping))
+                throw new NotSupportedException("Požadavek obsahuje neočekávanou hodnotu.");
+
+            if(is_array($value1)){
+                foreach ($value1 as $key2 => $value2){
+                    if(!array_key_exists($key2, $this->validationMapping[$key1]))
+                        throw  new NotSupportedException("Požadavek obsahuje neočekávanou hodnotu.");
+                    if( ($validationRes = $this->validationMapping[$key1][$key2]($value2, $problemId)) !== -1 )
+                        $validationErrors[$key1][] = $this->validationMessages[$key1][$key2][$validationRes];
+                }
+            }
+            else{
+                if( ($validationRes = $this->validationMapping[$key1]($value1, $problemId)) !== -1 )
+                    $validationErrors[$key1][] = $this->validationMessages[$key1][$validationRes];
+            }
+
         }
 
         return $validationErrors;

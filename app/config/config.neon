@@ -66,11 +66,17 @@ services:
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\LinearEqTempl
 
+	repository.template.jsondata:
+	    class: App\Model\Repository\TemplateJsonDataRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\TemplateJsonData
+
 	#Functionalities
 	functionality.problem: App\Model\Functionality\ProblemFunctionality
 	functionality.category: App\Model\Functionality\CategoryFunctionality
 	functionality.subcategory: App\Model\Functionality\SubCategoryFunctionality
 	functionality.lineareqtempl: App\Model\Functionality\LinearEqTemplFunctionality
+	functionality.template.jsondata: App\Model\Functionality\TemplateJsonDataFunctionality
 
 	#Factories
 	factory.grid.category: App\Components\DataGrids\CategoryGridFactory
@@ -87,6 +93,7 @@ services:
 	service.validation: App\Service\ValidationService
 	service.math: App\Service\MathService
 	service.generator: App\Service\GeneratorService
+	service.condition.matching: App\Service\ConditionMatchingService
 
 	#Helpers
 	helper.const: App\Helpers\ConstHelper

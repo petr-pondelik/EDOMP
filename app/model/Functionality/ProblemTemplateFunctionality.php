@@ -14,6 +14,7 @@ use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
+use App\Model\Repository\TemplateJsonDataRepository;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
@@ -45,18 +46,25 @@ abstract class ProblemTemplateFunctionality extends BaseFunctionality
     protected $subCategoryRepository;
 
     /**
+     * @var TemplateJsonDataRepository
+     */
+    protected $templateJsonDataRepository;
+
+    /**
      * ProblemFunctionality constructor.
      * @param EntityManager $entityManager
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param DifficultyRepository $difficultyRepository
      * @param SubCategoryRepository $subCategoryRepository
+     * @param TemplateJsonDataRepository $templateJsonDataRepository
      */
     public function __construct
     (
         EntityManager $entityManager,
         ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository
+        DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
+        TemplateJsonDataRepository $templateJsonDataRepository
     )
     {
         parent::__construct($entityManager);
@@ -64,6 +72,7 @@ abstract class ProblemTemplateFunctionality extends BaseFunctionality
         $this->problemConditionRepository = $problemConditionRepository;
         $this->difficultyRepository = $difficultyRepository;
         $this->subCategoryRepository = $subCategoryRepository;
+        $this->templateJsonDataRepository = $templateJsonDataRepository;
     }
 
     /**
@@ -79,7 +88,13 @@ abstract class ProblemTemplateFunctionality extends BaseFunctionality
         $templ->setProblemType($this->problemTypeRepository->find($data->type));
         $templ->setDifficulty($this->difficultyRepository->find($data->difficulty));
         $templ->setSubCategory($this->subCategoryRepository->find($data->subcategory));
+
+        $templateId = $this->repository->getLastId() + 1;
+        $templJsonData = $this->templateJsonDataRepository->findOneBy([ "templateId" => $templateId])->getJsonData();
+        $templ->setMatches($templJsonData);
+
         $templ = $this->attachConditions($templ, $data);
+
         return $templ;
     }
 
