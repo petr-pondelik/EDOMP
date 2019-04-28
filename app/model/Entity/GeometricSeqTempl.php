@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class GeometricSeqTempl
  * @package App\Model\Entity
  */
-class GeometricSeqTempl extends Template
+class GeometricSeqTempl extends ProblemTemplate
 {
     /**
      * @ORM\Column(type="string", nullable=false)

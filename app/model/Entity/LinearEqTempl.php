@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class LinearEqTempl
  * @package App\Model\Entity
  */
-class LinearEqTempl extends Template
+class LinearEqTempl extends ProblemTemplate
 {
     /**
      * @ORM\Column(type="string", nullable=true)

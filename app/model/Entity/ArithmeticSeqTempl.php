@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class ArithmeticSeqTempl
  * @package App\Model\Entity
  */
-class ArithmeticSeqTempl extends Template
+class ArithmeticSeqTempl extends ProblemTemplate
 {
     /**
      * @ORM\Column(type="string", nullable=false)

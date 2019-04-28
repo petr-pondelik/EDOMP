@@ -2,33 +2,34 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 22.2.19
- * Time: 13:06
+ * Date: 28.4.19
+ * Time: 10:19
  */
 
 namespace App\Components\DataGrids;
 
 use App\Helpers\ConstHelper;
+use App\Model\Repository\BaseRepository;
 use App\Model\Repository\DifficultyRepository;
-use App\Model\Repository\ProblemRepository;
+use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 
 /**
- * Class ProblemGridFactory
- * @package app\components\datagrids
+ * Class TemplateGridFactory
+ * @package App\Components\DataGrids
  */
-class ProblemGridFactory extends BaseGrid
+class TemplateGridFactory extends BaseGrid
 {
+    /**
+     * @var ProblemTemplateRepository
+     */
+    protected $problemTemplateRepository;
+
     /**
      * @var DifficultyRepository
      */
-    private $difficultyRepository;
-
-    /**
-     * @var ProblemRepository
-     */
-    protected $problemRepository;
+    protected $difficultyRepository;
 
     /**
      * @var ProblemTypeRepository
@@ -48,21 +49,21 @@ class ProblemGridFactory extends BaseGrid
     /**
      * ProblemGridFactory constructor.
      * @param DifficultyRepository $difficultyRepository
-     * @param ProblemRepository $problemRepository
+     * @param ProblemTemplateRepository $problemTemplateRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param SubCategoryRepository $subCategoryRepository
      * @param ConstHelper $constHelper
      */
     public function __construct(
         DifficultyRepository $difficultyRepository,
-        ProblemRepository $problemRepository, ProblemTypeRepository $problemTypeRepository,
+        ProblemTemplateRepository $problemTemplateRepository, ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository,
         ConstHelper $constHelper
     )
     {
         parent::__construct();
         $this->difficultyRepository = $difficultyRepository;
-        $this->problemRepository = $problemRepository;
+        $this->problemTemplateRepository = $problemTemplateRepository;
         $this->problemTypeRepository = $problemTypeRepository;
         $this->subCategoryRepository = $subCategoryRepository;
         $this->constHelper = $constHelper;
@@ -71,21 +72,23 @@ class ProblemGridFactory extends BaseGrid
     /**
      * @param $container
      * @param $name
-     * @param bool $template
+     * @param $repository
+     * @param int $problemType
      * @return \Ublaboo\DataGrid\DataGrid
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function create($container, $name)
+    public function create($container, $name, BaseRepository $repository = null, int $problemType = 0)
     {
         $grid = parent::create($container, $name);
 
         $difficultyOptions = $this->difficultyRepository->findAssoc([], "id");
-        $typeOptions = $this->problemTypeRepository->findAssoc([], "id");
         $subCategoryOptions = $this->subCategoryRepository->findAssoc([], "id");
 
         $grid->setPrimaryKey("id");
 
-        $grid->setDataSource($this->problemRepository->createQueryBuilder("er"));
+        $grid->setDataSource($repository->createQueryBuilder("er"));
+
+        //$grid->setDataSource($this->problemTemplateRepository->createQueryBuilder("er"));
 
         $grid->addColumnNumber('id', 'ID')
             ->setSortable();
@@ -101,23 +104,7 @@ class ProblemGridFactory extends BaseGrid
 
         $grid->addColumnText('text_after', 'Zadání po');
 
-        $grid->addColumnText('result', 'Výsledek');
-
         $grid->addColumnText("success_rate", "Prům. úspěšnost");
-
-        $grid->addColumnNumber('is_generated', 'Vygenerovaný')
-            ->addAttributes(['class' => 'text-center'])
-            ->setTemplateEscaping(false)
-            ->setReplacement([
-                0 => "<i class='fa fa-times text-danger'></i>",
-                1 => "<i class='fa fa-check text-success'></i>"
-            ]);
-
-        $grid->addColumnNumber('problemType', 'Typ')
-            ->setSortable("er.id")
-            ->addAttributes(['class' => 'text-center'])
-            ->setReplacement($typeOptions)
-            ->setFilterMultiSelect($typeOptions);
 
         $grid->addColumnStatus("subCategory", "Téma", "subCategory.id")
             ->setSortable("er.id")

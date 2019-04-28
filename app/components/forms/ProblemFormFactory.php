@@ -69,14 +69,15 @@ class ProblemFormFactory extends BaseForm
     }
 
     /**
-     * @param bool $generatableTypes
+     * @param bool $template
+     * @param int $templateType
      * @return Form
      * @throws \Exception
      */
-    public function create(bool $generatableTypes = false): Form
+    public function create(bool $template = false, int $templateType = 0): Form
     {
         $difficulties = $this->difficultyRepository->findAssoc([], "id");
-        if(!$generatableTypes)
+        if(!$template)
             $types = $this->problemTypeRepository->findAssoc([], "id");
         else
             $types = $this->problemTypeRepository->findAssoc([
@@ -95,10 +96,16 @@ class ProblemFormFactory extends BaseForm
 
         $form = parent::create();
 
-        $form->addSelect('type', 'Typ', $types)
-            ->setDefaultValue(1)
-            ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlId('type');
+        if(!$template){
+            $form->addSelect('type', 'Typ', $types)
+                ->setDefaultValue(1)
+                ->setHtmlAttribute('class', 'form-control')
+                ->setHtmlId('type');
+        }
+        else{
+            $form->addHidden("type")
+                ->setDefaultValue($templateType);
+        }
 
         $form->addSelect("subcategory", "Podkategorie", $subcategories)
             ->setDefaultValue(1)

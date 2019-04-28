@@ -47,7 +47,6 @@ class GroupGridFactory extends BaseGrid
      * @param $name
      * @param bool $isPermissions
      * @return \Ublaboo\DataGrid\DataGrid
-     * @throws \Dibi\NotSupportedException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
     public function create($container, $name, bool $isPermissions = false)

@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class QuadraticEqTempl
  * @package App\Model\Entity
  */
-class QuadraticEqTempl extends Template
+class QuadraticEqTempl extends ProblemTemplate
 {
     /**
      * @ORM\Column(type="string", nullable=false)

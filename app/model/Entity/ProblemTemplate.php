@@ -15,20 +15,21 @@ use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Model\Repository\ProblemTemplateRepository")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({
+ *     "problem" = "ProblemTemplate",
  *     "lineareq" = "LinearEqTempl",
  *     "quadraticeq" = "QuadraticEqTempl",
  *     "arithmeticseq" = "ArithmeticSeqTempl",
  *     "geometicSeq" = "GeometricSeqTempl"
  * })
  *
- * Class Template
+ * Class ProblemTemplate
  * @package App\Model\Entity
  */
-abstract class Template
+class ProblemTemplate
 {
     //Identifier trait for id column
     use Identifier;
@@ -116,7 +117,7 @@ abstract class Template
 
     /**
      * @ORM\ManyToMany(targetEntity="ProblemCondition", cascade={"persist", "merge"})
-     * @ORM\JoinTable(name="problem_condition_template_rel")
+     * @ORM\JoinTable(name="problem_condition_problem_template_rel")
      */
     protected $conditions;
 

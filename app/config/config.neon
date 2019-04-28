@@ -26,6 +26,11 @@ services:
 	    tags:
 	       doctrine.repositoryEntity: App\Model\Entity\Problem
 
+	repository.problemtemplate:
+	    class: App\Model\Repository\ProblemTemplateRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\ProblemTemplate
+
 	repository.problemtype:
 	    class: App\Model\Repository\ProblemTypeRepository
 	    tags:
@@ -56,6 +61,11 @@ services:
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\ProblemCondition
 
+	repository.lineareqtempl:
+	    class: App\Model\Repository\LinearEqTemplRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\LinearEqTempl
+
 	#Functionalities
 	functionality.problem: App\Model\Functionality\ProblemFunctionality
 	functionality.category: App\Model\Functionality\CategoryFunctionality
@@ -68,6 +78,7 @@ services:
 	factory.form.subcategory: App\Components\Forms\SubCategoryFormFactory
 	factory.grid.problem: App\Components\DataGrids\ProblemGridFactory
 	factory.form.problem: App\Components\Forms\ProblemFormFactory
+	factory.template.grid: App\Components\DataGrids\TemplateGridFactory
 
 	#Services
 	service.newtopapi.client: App\Service\NewtonApiClient
