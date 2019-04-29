@@ -31,18 +31,16 @@ class LinearEqTemplFunctionality extends ProblemTemplateFunctionality
     (
         EntityManager $entityManager,
         LinearEqTemplRepository $repository,
-        SequenceInfoFunctionality $sequenceInfoFunctionality,
         ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
-        TemplateJsonDataRepository $templateJsonDataRepository, SequenceInfoRepository $sequenceInfoRepository
+        TemplateJsonDataRepository $templateJsonDataRepository
     )
     {
         parent::__construct
         (
             $entityManager,
-            $sequenceInfoFunctionality,
             $problemTypeRepository, $problemConditionRepository, $difficultyRepository, $subCategoryRepository,
-            $templateJsonDataRepository, $sequenceInfoRepository
+            $templateJsonDataRepository
 
         );
         $this->repository = $repository;
@@ -59,11 +57,6 @@ class LinearEqTemplFunctionality extends ProblemTemplateFunctionality
         $templ->setVariable($data->variable);
         $this->em->persist($templ);
         $this->em->flush();
-        $this->sequenceInfoFunctionality->storeInfo(
-            ArrayHash::from([
-                "problemTemplateSeqVal" => $templ->getId()
-            ])
-        );
     }
 
     /**

@@ -27,27 +27,19 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
     protected $problemTemplateRepository;
 
     /**
-     * @var SequenceInfoRepository
-     */
-    protected $sequenceInfoRepository;
-
-    /**
      * TemplateJsonDataFunctionality constructor.
      * @param EntityManager $entityManager
-     * @param SequenceInfoRepository $sequenceInfoRepository
      * @param TemplateJsonDataRepository $repository
      * @param ProblemTemplateRepository $problemTemplateRepository
      */
     public function __construct
     (
         EntityManager $entityManager,
-        SequenceInfoRepository $sequenceInfoRepository,
         TemplateJsonDataRepository $repository, ProblemTemplateRepository $problemTemplateRepository
     )
     {
         parent::__construct($entityManager);
         $this->repository = $repository;
-        $this->sequenceInfoRepository = $sequenceInfoRepository;
         $this->problemTemplateRepository = $problemTemplateRepository;
     }
 
@@ -60,7 +52,9 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
     public function create(ArrayHash $data, int $templateId = null): void
     {
         if(!$templateId)
-            $templateId = $this->sequenceInfoRepository->find(1)->getProblemTemplateSeqVal() + 1;
+            $templateId = $this->problemTemplateRepository->getSequenceVal();
+
+        //find(1)->getProblemTemplateSeqVal() + 1;
 
         if($jsonData = $this->repository->findOneBy([ "templateId" => $templateId ])){
             $jsonData->setJsonData($data->jsonData);

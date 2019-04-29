@@ -8,7 +8,7 @@
 
 namespace App\Components\DataGrids;
 
-use App\Model\Managers\LogoManager;
+use App\Model\Repository\LogoRepository;
 
 /**
  * Class LogoGridFactory
@@ -17,39 +17,38 @@ use App\Model\Managers\LogoManager;
 class LogoGridFactory extends BaseGrid
 {
     /**
-     * @var LogoManager
+     * @var LogoRepository
      */
-    protected $logoManager;
+    protected $logoRepository;
 
     /**
      * LogoGridFactory constructor.
-     * @param LogoManager $logoManager
+     * @param LogoRepository $logoRepository
      */
     public function __construct
     (
-        LogoManager $logoManager
+        LogoRepository $logoRepository
     )
     {
         parent::__construct();
-        $this->logoManager = $logoManager;
+        $this->logoRepository = $logoRepository;
     }
 
     /**
      * @param $container
      * @param $name
      * @return \Ublaboo\DataGrid\DataGrid
-     * @throws \Dibi\NotSupportedException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
     public function create($container, $name)
     {
         $grid = parent::create($container, $name);
 
-        $grid->setPrimaryKey("logo_id");
+        $grid->setPrimaryKey("id");
 
-        $grid->setDataSource($this->logoManager->getDatagridSelect());
+        $grid->setDataSource($this->logoRepository->createQueryBuilder("er"));
 
-        $grid->addColumnNumber("logo_id", "ID")
+        $grid->addColumnNumber("id", "ID")
             ->setSortable();
 
         $grid->addColumnDateTime('created', 'Vytvořeno')

@@ -28,11 +28,6 @@ abstract class ProblemTemplateFunctionality extends BaseFunctionality
 {
 
     /**
-     * @var SequenceInfoFunctionality
-     */
-    protected $sequenceInfoFunctionality;
-
-    /**
      * @var ProblemTypeRepository
      */
     protected $problemTypeRepository;
@@ -57,39 +52,30 @@ abstract class ProblemTemplateFunctionality extends BaseFunctionality
      */
     protected $templateJsonDataRepository;
 
-    /**
-     * @var SequenceInfoRepository
-     */
-    protected $sequenceInfoRepository;
 
     /**
      * ProblemFunctionality constructor.
      * @param EntityManager $entityManager
-     * @param SequenceInfoFunctionality $sequenceInfoFunctionality
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param DifficultyRepository $difficultyRepository
      * @param SubCategoryRepository $subCategoryRepository
      * @param TemplateJsonDataRepository $templateJsonDataRepository
-     * @param SequenceInfoRepository $sequenceInfoRepository
      */
     public function __construct
     (
         EntityManager $entityManager,
-        SequenceInfoFunctionality $sequenceInfoFunctionality,
         ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
-        TemplateJsonDataRepository $templateJsonDataRepository, SequenceInfoRepository $sequenceInfoRepository
+        TemplateJsonDataRepository $templateJsonDataRepository
     )
     {
         parent::__construct($entityManager);
-        $this->sequenceInfoFunctionality = $sequenceInfoFunctionality;
         $this->problemTypeRepository = $problemTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->difficultyRepository = $difficultyRepository;
         $this->subCategoryRepository = $subCategoryRepository;
         $this->templateJsonDataRepository = $templateJsonDataRepository;
-        $this->sequenceInfoRepository = $sequenceInfoRepository;
     }
 
     /**
@@ -130,7 +116,7 @@ abstract class ProblemTemplateFunctionality extends BaseFunctionality
 
         if(!$fromDataGrid){
             if(!$templateId)
-                $templateId = $this->sequenceInfoRepository->find(1)->getProblemTemplateSeqVal() + 1;
+                $templateId = $this->repository->getSequenceVal();
             $templJsonData = null;
             if($jsonDataObj = $this->templateJsonDataRepository->findOneBy([ "templateId" => $templateId]))
                 $templJsonData = $jsonDataObj->getJsonData();

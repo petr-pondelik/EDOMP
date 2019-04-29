@@ -2,17 +2,17 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 28.4.19
- * Time: 20:31
+ * Date: 29.4.19
+ * Time: 19:16
  */
 
 namespace App\Model\Repository;
 
 /**
- * Class SequenceInfoRepository
+ * Class TestRepository
  * @package App\Model\Repository
  */
-class SequenceInfoRepository extends BaseRepository
+class TestRepository extends BaseRepository
 {
 
 }

@@ -9,6 +9,7 @@
 namespace App\Components\Forms;
 
 use App\Model\Managers\SuperGroupManager;
+use App\Model\Repository\SuperGroupRepository;
 
 /**
  * Class GroupFormFactory
@@ -17,20 +18,20 @@ use App\Model\Managers\SuperGroupManager;
 class GroupFormFactory extends BaseForm
 {
     /**
-     * @var SuperGroupManager
+     * @var SuperGroupRepository
      */
-    protected $superGroupManager;
+    protected $superGroupRepository;
 
     /**
      * GroupFormFactory constructor.
-     * @param SuperGroupManager $superGroupManager
+     * @param SuperGroupRepository $superGroupRepository
      */
     public function __construct
     (
-        SuperGroupManager $superGroupManager
+        SuperGroupRepository $superGroupRepository
     )
     {
-        $this->superGroupManager = $superGroupManager;
+        $this->superGroupRepository = $superGroupRepository;
     }
 
     /**
@@ -40,7 +41,7 @@ class GroupFormFactory extends BaseForm
     {
         $form = parent::create();
 
-        $superGroupOptions = $this->superGroupManager->getAllPairs("ASC");
+        $superGroupOptions = $this->superGroupRepository->findAll();
 
         $form->addText("label", "Název")
             ->setHtmlAttribute("class", "form-control");

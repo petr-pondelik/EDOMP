@@ -93,6 +93,11 @@ class ValidationService
                 return -1;
             },
 
+            "logo_file" => function($filledVal){
+                if(empty($filledVal)) return 0;
+                return -1;
+            },
+
             "body" => function($filledVal){
                 return $this->validateBody($filledVal->body, $filledVal->bodyType, $filledVal->variable);
             },
@@ -196,6 +201,10 @@ class ValidationService
 
             "label" => [
                 0 => "Název musí být vyplněn."
+            ],
+
+            "logo_file" => [
+                0 => "Soubor musí být zvolen."
             ],
 
             "body" => [

@@ -81,15 +81,25 @@ services:
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\GeometricSeqTempl
 
+	repository.supergroup:
+	    class: App\Model\Repository\SuperGroupRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\SuperGroup
+
+	repository.group:
+	    class: App\Model\Repository\GroupRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\Group
+
+	repository.logo:
+	    class: App\Model\Repository\LogoRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\Logo
+
 	repository.template.jsondata:
 	    class: App\Model\Repository\TemplateJsonDataRepository
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\TemplateJsonData
-
-	repository.sequence.info:
-	    class: App\Model\Repository\SequenceInfoRepository
-	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\SequenceInfo
 
 	#Functionalities
 	functionality.problem: App\Model\Functionality\ProblemFunctionality
@@ -99,8 +109,10 @@ services:
 	functionality.template.equation.quadratic: App\Model\Functionality\QuadraticEqTemplFunctionality
 	functionality.template.sequence.arithmetic: App\Model\Functionality\ArithmeticSeqTemplFunctionality
 	functionality.template.sequence.geometric: App\Model\Functionality\GeometricSeqTemplFunctionality
+	functionality.supergroup: App\Model\Functionality\SuperGroupFunctionality
+	functionality.group: App\Model\Functionality\GroupFunctionality
+	functionality.logo: App\Model\Functionality\LogoFunctionality
 	functionality.template.jsondata: App\Model\Functionality\TemplateJsonDataFunctionality
-	functionality.sequence.info: App\Model\Functionality\SequenceInfoFunctionality
 
 	#Factories
 	factory.grid.category: App\Components\DataGrids\CategoryGridFactory
@@ -111,6 +123,12 @@ services:
 	factory.form.problem: App\Components\Forms\ProblemFormFactory
 	factory.grid.template: App\Components\DataGrids\TemplateGridFactory
 	factory.form.template: App\Components\Forms\TemplateFormFactory
+	factory.grid.logo: App\Components\DataGrids\LogoGridFactory
+	factory.form.logo: App\Components\Forms\LogoFormFactory
+	factory.grid.supergroup: App\Components\DataGrids\SuperGroupGridFactory
+	factory.form.supergroup: App\Components\Forms\SuperGroupFormFactory
+	factory.grid.group: App\Components\DataGrids\GroupGridFactory
+	factory.form.group: App\Components\Forms\GroupFormFactory
 
 	#Services
 	service.newtopapi.client: App\Service\NewtonApiClient
@@ -118,6 +136,7 @@ services:
 	service.math: App\Service\MathService
 	service.generator: App\Service\GeneratorService
 	service.condition.matching: App\Service\ConditionMatchingService
+	service.file: App\Service\FileService(%logosDir%, %logosTmpDir%)
 
 	#Helpers
 	helper.const: App\Helpers\ConstHelper

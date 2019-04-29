@@ -8,8 +8,8 @@
 
 namespace App\Components\DataGrids;
 
-use App\Model\Managers\GroupManager;
-use App\Model\Managers\SuperGroupManager;
+use App\Model\Repository\GroupRepository;
+use App\Model\Repository\SuperGroupRepository;
 
 /**
  * Class GroupGridFactory
@@ -18,28 +18,28 @@ use App\Model\Managers\SuperGroupManager;
 class GroupGridFactory extends BaseGrid
 {
     /**
-     * @var GroupManager
+     * @var GroupRepository
      */
-    protected $groupManager;
+    protected $groupRepository;
 
     /**
-     * @var SuperGroupManager
+     * @var SuperGroupRepository
      */
-    protected $superGroupManager;
+    protected $superGroupRepository;
 
     /**
      * GroupGridFactory constructor.
-     * @param GroupManager $groupManager
-     * @param SuperGroupManager $superGroupManager
+     * @param GroupRepository $groupRepository
+     * @param SuperGroupRepository $superGroupRepository
      */
     public function __construct
     (
-        GroupManager $groupManager, SuperGroupManager $superGroupManager
+        GroupRepository $groupRepository, SuperGroupRepository $superGroupRepository
     )
     {
         parent::__construct();
-        $this->groupManager = $groupManager;
-        $this->superGroupManager = $superGroupManager;
+        $this->groupRepository = $groupRepository;
+        $this->superGroupRepository = $superGroupRepository;
     }
 
     /**
@@ -53,13 +53,13 @@ class GroupGridFactory extends BaseGrid
     {
         $grid = parent::create($container, $name);
 
-        $superGroupOptions = $this->superGroupManager->getAllPairs("ASC");
+        $superGroupOptions = $this->superGroupRepository->findAll();
 
-        $grid->setPrimaryKey('group_id');
+        $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->groupManager->getSelect());
+        $grid->setDataSource($this->groupRepository->createQueryBuilder("er"));
 
-        $grid->addColumnNumber('group_id', 'ID')
+        $grid->addColumnNumber('id', 'ID')
             ->setSortable();
 
         $grid->addColumnDateTime('created', 'Vytvořeno')
@@ -70,8 +70,8 @@ class GroupGridFactory extends BaseGrid
         $grid->addColumnText('label', 'Název');
 
         if(!$isPermissions){
-            $grid->addColumnStatus("super_group_id", "Super-skupina")
-                ->setSortable()
+            $grid->addColumnStatus("superGroup", "Superskupina", "superGroup.id")
+                ->setSortable("er.category")
                 ->addAttributes(["class" => "text-center"])
                 ->setOptions($superGroupOptions)
                 ->onChange[] = [$container, 'handleSuperGroupUpdate'];

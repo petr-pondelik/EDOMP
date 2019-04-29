@@ -8,6 +8,8 @@
 
 namespace App\Components\Forms;
 
+use Nette\Application\UI\Form;
+
 /**
  * Class SuperGroupFormFactory
  * @package App\Components\Forms
@@ -17,7 +19,7 @@ class SuperGroupFormFactory extends BaseForm
     /**
      * @return \Nette\Application\UI\Form
      */
-    public function create()
+    public function create(): Form
     {
         $form = parent::create();
 

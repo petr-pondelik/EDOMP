@@ -8,7 +8,8 @@
 
 namespace App\Components\DataGrids;
 
-use App\Model\Managers\SuperGroupManager;
+use App\Model\Repository\SuperGroupRepository;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class SuperGroupGridFactory
@@ -17,28 +18,38 @@ use App\Model\Managers\SuperGroupManager;
 class SuperGroupGridFactory extends BaseGrid
 {
     /**
-     * @var SuperGroupManager
+     * @var SuperGroupRepository
      */
-    protected $superGroupManager;
+    protected $superGroupRepository;
 
+    /**
+     * SuperGroupGridFactory constructor.
+     * @param SuperGroupRepository $superGroupRepository
+     */
     public function __construct
     (
-        SuperGroupManager $superGroupManager
+        SuperGroupRepository $superGroupRepository
     )
     {
         parent::__construct();
-        $this->superGroupManager = $superGroupManager;
+        $this->superGroupRepository = $superGroupRepository;
     }
 
-    public function create($container, $name)
+    /**
+     * @param $container
+     * @param $name
+     * @return DataGrid
+     * @throws \Ublaboo\DataGrid\Exception\DataGridException
+     */
+    public function create($container, $name): DataGrid
     {
         $grid = parent::create($container, $name);
 
-        $grid->setPrimaryKey("super_group_id");
+        $grid->setPrimaryKey("id");
 
-        $grid->setDataSource($this->superGroupManager->getSelect());
+        $grid->setDataSource($this->superGroupRepository->createQueryBuilder("er"));
 
-        $grid->addColumnNumber('super_group_id', 'ID')
+        $grid->addColumnNumber('id', 'ID')
             ->setSortable();
 
         $grid->addColumnDateTime('created', 'Vytvořeno')

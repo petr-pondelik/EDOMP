@@ -30,18 +30,16 @@ class ArithmeticSeqTemplFunctionality extends ProblemTemplateFunctionality
     (
         EntityManager $entityManager,
         ArithmeticSeqTemplRepository $repository,
-        SequenceInfoFunctionality $sequenceInfoFunctionality,
         ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
-        TemplateJsonDataRepository $templateJsonDataRepository, SequenceInfoRepository $sequenceInfoRepository
+        TemplateJsonDataRepository $templateJsonDataRepository
     )
     {
         parent::__construct
         (
             $entityManager,
-            $sequenceInfoFunctionality,
             $problemTypeRepository, $problemConditionRepository, $difficultyRepository, $subCategoryRepository,
-            $templateJsonDataRepository, $sequenceInfoRepository
+            $templateJsonDataRepository
         );
         $this->repository = $repository;
     }
@@ -59,11 +57,6 @@ class ArithmeticSeqTemplFunctionality extends ProblemTemplateFunctionality
         $templ->setFirstN($data->first_n);
         $this->em->persist($templ);
         $this->em->flush();
-        $this->sequenceInfoFunctionality->storeInfo(
-            ArrayHash::from([
-                "problemTemplateSeqVal" => $templ->getId()
-            ])
-        );
     }
 
     /**
