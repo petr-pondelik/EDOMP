@@ -67,7 +67,7 @@
             <div class="form-group">
                 {label body}
                 {input body, 'data-edit' => true}
-                {snippet structureErrorSnippet}
+                {snippet bodyErrorSnippet}
                     {var $form = $control['templateEditForm']}
                     <div n:if="$form->hasErrors()" class="mt-2">
                         <p n:foreach="$form['body']->errors as $error" class="alert alert-danger">

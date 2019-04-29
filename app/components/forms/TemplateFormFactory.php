@@ -126,6 +126,12 @@ class TemplateFormFactory extends BaseForm
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('difficulty');
 
+        if($templateType === $this->constHelper::ARITHMETIC_SEQ || $templateType === $this->constHelper::GEOMETRIC_SEQ){
+            $form->addInteger('first_n', 'Prvních členů:')
+                ->setHtmlAttribute('class', 'form-control')
+                ->setHtmlId('first-n');
+        }
+
         //Conditions
         $form->addSelect('condition_' . $this->constHelper::RESULT, 'Podmínka výsledku', $resultConditions)
             ->setHtmlAttribute('class', 'form-control condition')

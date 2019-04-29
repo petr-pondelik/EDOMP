@@ -79,9 +79,11 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @return Object
      */
-    public function update(int $id, ArrayHash $data): void
+    public function update(int $id, ArrayHash $data): ?Object
     {
         // TODO: Implement update() method.
+        return null;
     }
 }

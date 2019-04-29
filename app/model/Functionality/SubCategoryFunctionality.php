@@ -63,9 +63,10 @@ class SubCategoryFunctionality extends BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @return Object
      * @throws \Exception
      */
-    public function update(int $id, ArrayHash $data): void
+    public function update(int $id, ArrayHash $data): ?Object
     {
         $subcategory = $this->repository->find($id);
 
@@ -79,5 +80,7 @@ class SubCategoryFunctionality extends BaseFunctionality
 
         $this->em->persist($subcategory);
         $this->em->flush();
+
+        return $subcategory;
     }
 }

@@ -150,7 +150,7 @@ class ProblemTemplate
     /**
      * @return string
      */
-    public function getTextBefore(): string
+    public function getTextBefore(): ?string
     {
         return $this->textBefore;
     }
@@ -166,7 +166,7 @@ class ProblemTemplate
     /**
      * @return string
      */
-    public function getTextAfter(): string
+    public function getTextAfter(): ?string
     {
         return $this->textAfter;
     }

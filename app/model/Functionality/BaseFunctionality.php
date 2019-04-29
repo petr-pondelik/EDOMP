@@ -49,8 +49,9 @@ abstract class BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @return Object
      */
-    abstract public function update(int $id, ArrayHash $data): void;
+    abstract public function update(int $id, ArrayHash $data): ?Object;
 
     /**
      * @param int $id

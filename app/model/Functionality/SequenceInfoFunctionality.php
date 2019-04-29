@@ -45,14 +45,16 @@ class SequenceInfoFunctionality extends BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @return Object
      * @throws \Exception
      */
-    public function update(int $id, ArrayHash $data): void
+    public function update(int $id, ArrayHash $data): ?Object
     {
         $seqInfo = $this->repository->find($id);
         $seqInfo->setProblemTemplateSeqVal($data->problemTemplateSeqVal);
         $this->em->persist($seqInfo);
         $this->em->flush();
+        return $seqInfo;
     }
 
     /**

@@ -1,5 +1,5 @@
 {block headingFirst}
-    Šablony lineárních rovnic
+    Šablony aritmetických posl.
 {/block}
 
 {block headingFirstLink}
@@ -120,9 +120,22 @@
                         </div>
                     </div>
 
+                    <div class="form-group col-12">
+                        {label first_n}
+                        {input first_n}
+                        {snippet first_nErrorSnippet}
+                            {var $form = $control['templateCreateForm']}
+                            <div n:if="$form->hasErrors()" class="mt-2">
+                                <p n:foreach="$form['first_n']->errors as $error" class="alert alert-danger">
+                                    {$error}
+                                </p>
+                            </div>
+                        {/snippet}
+                    </div>
+
                     {foreach $problemTypes as $typeKey => $type}
 
-                        <div class="form-group {if $typeKey !== \App\Helpers\ConstHelper::LINEAR_EQ}hidden{/if}"
+                        <div class="form-group {if $typeKey !== \App\Helpers\ConstHelper::ARITHMETIC_SEQ}hidden{/if}"
                              id="type-wrapper-{$typeKey}">
 
                             {foreach $condByProblemTypes[$typeKey] as $condKey => $cond}

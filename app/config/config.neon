@@ -61,15 +61,25 @@ services:
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\ProblemCondition
 
-	repository.lineareqtempl:
+	repository.template.equation.linear:
 	    class: App\Model\Repository\LinearEqTemplRepository
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\LinearEqTempl
 
-	repository.quadraticeqtempl:
+	repository.template.equation.quadratic:
 	    class: App\Model\Repository\QuadraticEqTemplRepository
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\QuadraticEqTempl
+
+	repository.template.sequence.arithmetic:
+	    class: App\Model\Repository\ArithmeticSeqTemplRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\ArithmeticSeqTempl
+
+	repository.template.sequence.geometric:
+	    class: App\Model\Repository\GeometricSeqTemplRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\GeometricSeqTempl
 
 	repository.template.jsondata:
 	    class: App\Model\Repository\TemplateJsonDataRepository
@@ -85,8 +95,10 @@ services:
 	functionality.problem: App\Model\Functionality\ProblemFunctionality
 	functionality.category: App\Model\Functionality\CategoryFunctionality
 	functionality.subcategory: App\Model\Functionality\SubCategoryFunctionality
-	functionality.template.linear.equation: App\Model\Functionality\LinearEqTemplFunctionality
-	functionality.template.quadratic.equation: App\Model\Functionality\QuadraticEqTemplFunctionality
+	functionality.template.equation.linear: App\Model\Functionality\LinearEqTemplFunctionality
+	functionality.template.equation.quadratic: App\Model\Functionality\QuadraticEqTemplFunctionality
+	functionality.template.sequence.arithmetic: App\Model\Functionality\ArithmeticSeqTemplFunctionality
+	functionality.template.sequence.geometric: App\Model\Functionality\GeometricSeqTemplFunctionality
 	functionality.template.jsondata: App\Model\Functionality\TemplateJsonDataFunctionality
 	functionality.sequence.info: App\Model\Functionality\SequenceInfoFunctionality
 

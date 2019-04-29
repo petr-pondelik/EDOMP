@@ -44,6 +44,9 @@ class ConstHelper
     //Types group of equations
     const EQUATIONS = [self::LINEAR_EQ, self::QUADRATIC_EQ];
 
+    //Types group of sequences
+    const SEQUENCES = [self::ARITHMETIC_SEQ, self::GEOMETRIC_SEQ];
+
     //Structure types constants
     const BODY_FINAL = 0;
 

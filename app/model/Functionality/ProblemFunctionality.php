@@ -96,9 +96,10 @@ class ProblemFunctionality extends BaseFunctionality
      * @param int $id
      * @param ArrayHash $data
      * @param bool $updateConditions
+     * @return Object|null
      * @throws \Exception
      */
-    public function update(int $id, ArrayHash $data, bool $updateConditions = true): void
+    public function update(int $id, ArrayHash $data, bool $updateConditions = true): ?Object
     {
         $problem = $this->repository->find($id);
 
@@ -125,6 +126,8 @@ class ProblemFunctionality extends BaseFunctionality
 
         $this->em->persist($problem);
         $this->em->flush();
+
+        return $problem;
     }
 
     /**
@@ -132,7 +135,7 @@ class ProblemFunctionality extends BaseFunctionality
      * @param ArrayHash $data
      * @return Problem
      */
-    public function attachConditions(Problem $problem, ArrayHash $data)
+    public function attachConditions(Problem $problem, ArrayHash $data): Problem
     {
         $type = $this->problemTypeRepository->find($data->type);
         $problemCondTypes = $type->getConditionTypes()->getValues();

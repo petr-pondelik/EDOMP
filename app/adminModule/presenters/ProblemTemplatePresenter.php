@@ -166,6 +166,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
             ->setIcon("edit")
             ->setTitle("Editovat šablonu")
             ->setClass("btn btn-primary btn-sm");
+
         return $grid;
     }
 
@@ -196,6 +197,49 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     }
 
     /**
+     * @param int $subCategoryId
+     * @param int $templateId
+     */
+    public function handleSubCategoryUpdate(int $templateId, int $subCategoryId): void
+    {
+        try{
+            $this->functionality->update($templateId,
+                ArrayHash::from([
+                    "subcategory" => $subCategoryId
+                ]),
+                true);
+        } catch (\Exception $e){
+            $this->flashMessage('Chyba při změně tématu.', 'danger');
+            $this->redrawControl('mainFlashesSnippet');
+        }
+        $this["templateGrid"]->reload();
+        $this->flashMessage('Téma úspěšně změněno.', 'success');
+        $this->redrawControl('mainFlashesSnippet');
+    }
+
+    /**
+     * @param int $templateId
+     * @param int $difficultyId
+     */
+    public function handleDifficultyUpdate(int $templateId, int $difficultyId): void
+    {
+        try{
+            $this->functionality->update($templateId,
+                ArrayHash::from([
+                    'difficulty' => $difficultyId
+                ]),
+                true);
+        } catch (\Exception $e){
+            $this->flashMessage("Chyba při změně obtížnosti.", "danger");
+            $this->redrawControl("mainFlashesSnippet");
+            return;
+        }
+        $this["templateGrid"]->reload();
+        $this->flashMessage('Obtížnost úspěšně změněna.', 'success');
+        $this->redrawControl('mainFlashesSnippet');
+    }
+
+    /**
      * @return Form
      * @throws \Exception
      */
@@ -214,6 +258,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
      */
     public function handleCreateFormSuccess(Form $form, ArrayHash $values)
     {
+        bdump($values);
         //try{
             $this->functionality->create($values);
         /*} catch (\Exception $e){
@@ -266,6 +311,10 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
 
         //First validate problem body
         $validateFields["variable"] = $values->variable;
+
+        if(in_array($this->typeId, $this->constHelper::SEQUENCES))
+            $validateFields["first_n"] = $values->first_n;
+
         $validateFields["body"] = ArrayHash::from([
             "body" => $values->body,
             "variable" => $values->variable,
@@ -330,16 +379,6 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
         }
 
         $this->redrawFormErrors();
-    }
-
-    public function redrawFormErrors()
-    {
-        $this->redrawControl("variableErrorSnippet");
-        $this->redrawControl('bodyErrorSnippet');
-        $this->redrawControl("typeErrorSnippet");
-        $this->redrawControl('conditionsErrorSnippet');
-        $this->redrawControl("flashesSnippet");
-        $this->redrawControl('prototype_create_submitErrorSnippet');
     }
 
     /**
@@ -439,5 +478,16 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
             $this->flashMessage("Podmínka je splnitelná.", "success");
             $this->payload->result = true;
         }
+    }
+
+    public function redrawFormErrors()
+    {
+        $this->redrawControl("variableErrorSnippet");
+        $this->redrawControl('bodyErrorSnippet');
+        $this->redrawControl("typeErrorSnippet");
+        $this->redrawControl('conditionsErrorSnippet');
+        $this->redrawControl("first_nErrorSnippet");
+        $this->redrawControl("flashesSnippet");
+        $this->redrawControl('submit');
     }
 }

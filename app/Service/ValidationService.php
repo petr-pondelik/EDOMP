@@ -106,6 +106,14 @@ class ValidationService
                 return -1;
             },
 
+            "first_n" => function($filledVal){
+                if(empty($filledVal))
+                    return 0;
+                if($filledVal <= 0)
+                    return 1;
+                return -1;
+            },
+
             "type" => [
 
                 "type_" . $this->constHelper::LINEAR_EQ => function($filledVal){
@@ -200,6 +208,11 @@ class ValidationService
             "variable" => [
                 0 => "Zadejte prosím neznámou.",
                 1 => "Zadejte prosím právě jedno malé písmo abecedy."
+            ],
+
+            "first_n" => [
+                0 => "Zvolte počet prvních členů.",
+                1 => "Počet prvních členů musí být kladný."
             ],
 
             "type" => [

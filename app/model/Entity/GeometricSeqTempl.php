@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Repository\GeometricSeqRepository")
+ * @ORM\Entity(repositoryClass="App\Model\Repository\GeometricSeqTemplRepository")
  *
  * Class GeometricSeqTempl
  * @package App\Model\Entity
@@ -36,8 +36,7 @@ class GeometricSeqTempl extends ProblemTemplate
     protected $firstN;
 
     /**
-     * @ORM\Column(type="float", nullable=false)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="float", nullable=true)
      *
      * @var float
      */

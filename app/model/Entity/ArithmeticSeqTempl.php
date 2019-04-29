@@ -36,8 +36,7 @@ class ArithmeticSeqTempl extends ProblemTemplate
     protected $firstN;
 
     /**
-     * @ORM\Column(type="integer", nullable=false)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="integer", nullable=true)
      *
      * @var float
      */

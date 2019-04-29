@@ -69,9 +69,17 @@ class QuadraticEqTemplFunctionality extends ProblemTemplateFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @param bool|null $fromDataGrid
+     * @return Object|null
+     * @throws \Exception
      */
-    public function update(int $id, ArrayHash $data): void
+    public function update(int $id, ArrayHash $data, bool $fromDataGrid = null): ?Object
     {
-        // TODO: Implement update() method.
+        $templ = parent::update($id, $data, $fromDataGrid);
+        if(!empty($data->variable))
+            $templ->setVariable($data->variable);
+        $this->em->persist($templ);
+        $this->em->flush();
+        return $templ;
     }
 }

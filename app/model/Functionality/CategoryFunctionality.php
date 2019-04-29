@@ -49,13 +49,15 @@ class CategoryFunctionality extends BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @return Object|null
      * @throws \Exception
      */
-    public function update(int $id, ArrayHash $data): void
+    public function update(int $id, ArrayHash $data): ?Object
     {
         $category = $this->repository->find($id);
         $category->setLabel($data->label);
         $this->em->persist($category);
         $this->em->flush();
+        return $category;
     }
 }
