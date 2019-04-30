@@ -118,10 +118,15 @@ class Problem
     protected $subCategory;
 
     /**
-     * @ORM\ManyToMany(targetEntity="ProblemCondition", inversedBy="problems", cascade={"persist", "merge"})
+     * @ORM\ManyToMany(targetEntity="App\Model\Entity\ProblemCondition", inversedBy="problems", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="problem_condition_problem_rel")
      */
     protected $conditions;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\ProblemTestAssociation", mappedBy="problem", cascade={"all"})
+     */
+    protected $testAssociations;
 
     /**
      * Problem constructor.
@@ -131,6 +136,7 @@ class Problem
     {
         $this->created = new DateTime();
         $this->conditions = new ArrayCollection();
+        $this->testAssociations = new ArrayCollection();
     }
 
     /**
@@ -332,6 +338,22 @@ class Problem
     public function setIsUsed(bool $isUsed): void
     {
         $this->isUsed = $isUsed;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTestAssociations()
+    {
+        return $this->testAssociations;
+    }
+
+    /**
+     * @param mixed $testAssociations
+     */
+    public function setTestAssociations($testAssociations): void
+    {
+        $this->testAssociations = $testAssociations;
     }
 
 }

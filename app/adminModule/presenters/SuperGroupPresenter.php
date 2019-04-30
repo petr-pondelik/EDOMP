@@ -183,7 +183,7 @@ class SuperGroupPresenter extends AdminPresenter
         bdump($values);
         $this->superGroupFunctionality->create($values);
         $this["superGroupGrid"]->reload();
-        $this->flashMessage("Super-Skupina úspěšně vytvořena.", "success");
+        $this->flashMessage("Superskupina úspěšně vytvořena.", "success");
         $this->redrawControl("mainFlashesSnippet");
     }
 

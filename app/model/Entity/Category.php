@@ -43,7 +43,7 @@ class Category
     protected $created;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\SubCategory", mappedBy="category", cascade={"persist", "merge"})
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\SubCategory", mappedBy="category", cascade={"all"})
      */
     protected $subCategories;
 

@@ -43,7 +43,7 @@ class SubCategory
     protected $created;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Model\Entity\Category", inversedBy="subCategories")
+     * @ORM\ManyToOne(targetEntity="App\Model\Entity\Category", inversedBy="subCategories", cascade={"persist", "merge"})
      *
      * @var Category
      */

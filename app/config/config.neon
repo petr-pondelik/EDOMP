@@ -96,6 +96,21 @@ services:
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\Logo
 
+	repository.term:
+	    class: App\Model\Repository\TermRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\Term
+
+	repository.test:
+	    class: App\Model\Repository\TestRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\Test
+
+	repository.problem.test.association:
+	    class: App\Model\Repository\ProblemTestAssociationRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\ProblemTestAssociation
+
 	repository.template.jsondata:
 	    class: App\Model\Repository\TemplateJsonDataRepository
 	    tags:

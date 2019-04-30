@@ -103,7 +103,7 @@ class GroupPresenter extends AdminPresenter
         $form["id"]->setDefaultValue($record->getId());
         $form["id_hidden"]->setDefaultValue($record->getId());
         $form["label"]->setDefaultValue($record->getLabel());
-        $form["super_group"]->setDefaultValue($record->getSuperGroup()->getId());
+        $form["super_group_id"]->setDefaultValue($record->getSuperGroup()->getId());
     }
 
     /**
@@ -133,7 +133,7 @@ class GroupPresenter extends AdminPresenter
         $grid->getInlineEdit()->onSetDefaults[] = function($cont, $item) {
             bdump($item);
             $cont->setDefaults([
-                "label" => $item->label
+                "label" => $item->getLabel()
             ]);
         };
 
@@ -164,8 +164,9 @@ class GroupPresenter extends AdminPresenter
     /**
      * @param int $id
      * @param $row
+     * @throws \Exception
      */
-    public function handleUpdate(int $id, $row): void
+    public function handleInlineUpdate(int $id, $row): void
     {
         $this->groupFunctionality->update($id, $row);
         $this->flashMessage("Skupina úspěšně editována.", "success");
@@ -175,6 +176,7 @@ class GroupPresenter extends AdminPresenter
     /**
      * @param int $groupId
      * @param int $superGroupId
+     * @throws \Exception
      */
     public function handleSuperGroupUpdate(int $groupId, int $superGroupId): void
     {
@@ -182,12 +184,13 @@ class GroupPresenter extends AdminPresenter
             "super_group_id" => $superGroupId
         ]));
         $this["groupGrid"]->reload();
-        $this->flashMessage("Super-skupina úspěšně změněna.", "success");
+        $this->flashMessage("Superskupina úspěšně změněna.", "success");
         $this->redrawControl("mainFlashesSnippet");
     }
 
     /**
      * @return Form
+     * @throws \Exception
      */
     public function createComponentGroupCreateForm(): Form
     {
@@ -200,6 +203,7 @@ class GroupPresenter extends AdminPresenter
     /**
      * @param Form $form
      * @param ArrayHash $values
+     * @throws \Exception
      */
     public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
     {
@@ -211,6 +215,7 @@ class GroupPresenter extends AdminPresenter
 
     /**
      * @return Form
+     * @throws \Exception
      */
     public function createComponentGroupEditForm(): Form
     {

@@ -8,6 +8,7 @@
 
 namespace App\Model\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 use Nette\Utils\DateTime;
@@ -40,12 +41,18 @@ class SuperGroup
     protected $created;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\Group", mappedBy="superGroup", cascade={"all"})
+     */
+    protected $groups;
+
+    /**
      * SuperGroup constructor.
      * @throws \Exception
      */
     public function __construct()
     {
         $this->created = new DateTime();
+        $this->groups = new ArrayCollection();
     }
 
     /**
@@ -86,5 +93,21 @@ class SuperGroup
     public function __toString()
     {
         return $this->label;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+
+    /**
+     * @param mixed $groups
+     */
+    public function setGroups($groups): void
+    {
+        $this->groups = $groups;
     }
 }

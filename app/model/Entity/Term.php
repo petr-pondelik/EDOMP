@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 29.4.19
- * Time: 21:46
+ * Date: 30.4.19
+ * Time: 10:22
  */
 
 namespace App\Model\Entity;
@@ -14,13 +14,12 @@ use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Repository\GroupRepository")
- * @ORM\Table(name="`group`")
+ * @ORM\Entity(repositoryClass="App\Model\Repository\TermRepository")
  *
- * Class Group
+ * Class Term
  * @package App\Model\Entity
  */
-class Group
+class Term
 {
     use Identifier;
 
@@ -41,14 +40,7 @@ class Group
     protected $created;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Model\Entity\SuperGroup", inversedBy="groups", cascade={"persist", "merge"})
-     *
-     * @var SuperGroup
-     */
-    protected $superGroup;
-
-    /**
-     * Group constructor.
+     * Term constructor.
      * @throws \Exception
      */
     public function __construct()
@@ -77,7 +69,7 @@ class Group
      */
     public function getCreated(): DateTime
     {
-        return DateTime::from($this->created);
+        return $this->created;
     }
 
     /**
@@ -85,22 +77,6 @@ class Group
      */
     public function setCreated(DateTime $created): void
     {
-        $this->created = $created;
-    }
-
-    /**
-     * @return SuperGroup
-     */
-    public function getSuperGroup(): SuperGroup
-    {
-        return $this->superGroup;
-    }
-
-    /**
-     * @param SuperGroup $superGroup
-     */
-    public function setSuperGroup(SuperGroup $superGroup): void
-    {
-        $this->superGroup = $superGroup;
+        $this->created = DateTime::from($created);
     }
 }

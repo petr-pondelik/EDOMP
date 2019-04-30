@@ -36,12 +36,13 @@ class GroupFormFactory extends BaseForm
 
     /**
      * @return \Nette\Application\UI\Form
+     * @throws \Exception
      */
     public function create()
     {
         $form = parent::create();
 
-        $superGroupOptions = $this->superGroupRepository->findAll();
+        $superGroupOptions = $this->superGroupRepository->findAssoc([], "id");
 
         $form->addText("label", "Název")
             ->setHtmlAttribute("class", "form-control");

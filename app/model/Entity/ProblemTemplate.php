@@ -122,6 +122,11 @@ class ProblemTemplate
     protected $conditions;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\ProblemTestAssociation", mappedBy="problemTemplate", cascade={"all"})
+     */
+    protected $testAssociations;
+
+    /**
      * Problem constructor.
      * @throws \Exception
      */
@@ -129,6 +134,7 @@ class ProblemTemplate
     {
         $this->created = new DateTime();
         $this->conditions = new ArrayCollection();
+        $this->testAssociations = new ArrayCollection();
     }
 
     /**
@@ -330,5 +336,21 @@ class ProblemTemplate
     {
         if($this->conditions->contains($condition)) return;
         $this->conditions[] = $condition;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTestAssociations()
+    {
+        return $this->testAssociations;
+    }
+
+    /**
+     * @param mixed $testAssociations
+     */
+    public function setTestAssociations($testAssociations): void
+    {
+        $this->testAssociations = $testAssociations;
     }
 }

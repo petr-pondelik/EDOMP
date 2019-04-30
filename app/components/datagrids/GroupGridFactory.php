@@ -53,7 +53,7 @@ class GroupGridFactory extends BaseGrid
     {
         $grid = parent::create($container, $name);
 
-        $superGroupOptions = $this->superGroupRepository->findAll();
+        $superGroupOptions = $this->superGroupRepository->findAssoc([], "id");
 
         $grid->setPrimaryKey('id');
 
