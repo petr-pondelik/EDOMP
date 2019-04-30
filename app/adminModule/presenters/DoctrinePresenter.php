@@ -10,10 +10,13 @@ namespace App\AdminModule\Presenters;
 
 
 use App\Model\Entity\Category;
+use App\Model\Entity\Difficulty;
 use App\Model\Entity\ProblemFinal;
+use App\Model\Entity\ProblemType;
+use App\Model\Entity\QuadraticEqTempl;
+use App\Model\Entity\SubCategory;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\DifficultyRepository;
-use App\Model\Repository\LinearEqRepository;
 use App\Model\Repository\ProblemFinalRepository;
 use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\QuadraticEqTemplRepository;
@@ -29,11 +32,6 @@ class DoctrinePresenter extends BasePresenter
      * @var ProblemFinalRepository
      */
     protected $problemRepository;
-
-    /**
-     * @var LinearEqRepository
-     */
-    protected $linearEqRepository;
 
     /**
      * @var CategoryRepository
@@ -63,14 +61,13 @@ class DoctrinePresenter extends BasePresenter
     public function __construct
     (
         EntityManager $em, ProblemFinalRepository $problemRepository, CategoryRepository $categoryRepository,
-        LinearEqRepository $linearEqRepository, TemplateJsonDataRepository $templateJsonDataRepository,
+        TemplateJsonDataRepository $templateJsonDataRepository,
         ProblemTemplateRepository $problemTemplateRepository, QuadraticEqTemplRepository $quadraticEqTemplRepository
     )
     {
         parent::__construct();
         $this->problemRepository = $problemRepository;
         $this->categoryRepository = $categoryRepository;
-        $this->linearEqRepository = $linearEqRepository;
         $this->templateJsonDataRepository = $templateJsonDataRepository;
         //$this->difficultyRepository = $difficultyRepository;
         //$this->subCategoryRepository = $subCategoryRepository;
@@ -84,10 +81,34 @@ class DoctrinePresenter extends BasePresenter
         //bdump(Json::decode($this->problemTemplateRepository->findOneBy(["id" => 4])->getMatches()));
         //$this->em->getConnection()->get
         //bdump($this->quadraticEqTemplRepository->getLastId());
+
         $category = new Category();
         $category->setLabel("TEXT");
         $this->em->persist($category);
+
+        $subCategory = new SubCategory();
+        $subCategory->setLabel("test label");
+        $subCategory->setCategory($category);
+        $this->em->persist($subCategory);
+
+        $difficulty = new Difficulty();
+        $difficulty->setLabel("test label");
+        $this->em->persist($difficulty);
+
+        $problemType = new ProblemType();
+        $problemType->setLabel("test label");
+        $problemType->setAccessor("1");
+        $this->em->persist($problemType);
+
+        $templ = new QuadraticEqTempl();
+        $templ->setBody("test body");
+        $templ->setVariable("x");
+        $templ->setProblemType($problemType);
+        $templ->setSubCategory($subCategory);
+        $templ->setDifficulty($difficulty);
+        $this->em->persist($templ);
+
         $this->em->flush();
-        bdump($category->getId());
+
     }
 }

@@ -23,10 +23,10 @@ use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
- * Class ProblemPresenter
+ * Class ProblemFinalPresenter
  * @package App\AdminModule\Presenters
  */
-class ProblemPresenter extends AdminPresenter
+class ProblemFinalPresenter extends AdminPresenter
 {
 
     /**
@@ -70,7 +70,7 @@ class ProblemPresenter extends AdminPresenter
     protected $constHelper;
 
     /**
-     * ProblemPresenter constructor.
+     * ProblemFinalPresenter constructor.
      * @param ProblemGridFactory $problemGridFactory
      * @param ProblemFormFactory $problemFormFactory
      * @param ProblemFinalRepository $problemRepository
@@ -160,11 +160,11 @@ class ProblemPresenter extends AdminPresenter
         $grid = $this->problemGridFactory->create($this, $name);
 
         $grid->addAction('delete', '', 'delete!')
-            ->setTemplate(__DIR__ . '/templates/Problem/removeBtn.latte');
+            ->setTemplate(__DIR__ . '/templates/ProblemFinal/removeBtn.latte');
 
         $grid->addAction('getResult', 'Získat výsledek')
             ->setTitle('Získat výsledek')
-            ->setTemplate(__DIR__ . '/templates/Problem/getResultBtn.latte');
+            ->setTemplate(__DIR__ . '/templates/ProblemFinal/getResultBtn.latte');
 
         $grid->addAction('edit', "", "update!")
             ->setIcon("edit")

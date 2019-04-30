@@ -19,7 +19,7 @@ trait SequenceValTrait
      */
     public function getSequenceVal(): int
     {
-        $sql = "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'edomp_final' AND TABLE_NAME = 'problem_template'";
+        $sql = "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'edomp_final' AND TABLE_NAME = 'problem'";
         return $this->getEntityManager()->getConnection()->query($sql)->fetch()["AUTO_INCREMENT"];
     }
 }

@@ -440,7 +440,7 @@ $(document).ready(() => {
     $(document).on('change', '.filter', (e) => {
 
         console.log(e.target);
-        console.log('ProblemFinal ID: ' + e.target.dataset.problemId);
+        console.log('ProblemFinalPresenter ID: ' + e.target.dataset.problemId);
         console.log('Filter type: ' + e.target.dataset.filterType);
         console.log('Filter value: ' + e.target.value);
 

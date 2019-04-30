@@ -1,8 +1,8 @@
-INSERT INTO `condition_type` (`accessor`, `label`, `created`) VALUES
+INSERT INTO `problem_condition_type` (`accessor`, `label`, `created`) VALUES
 (1, 'Podmínka výsledku', '2019-04-27 11:42:36'),
 (2, 'Podmínka diskriminantu', '2019-04-27 11:42:58');
 
-INSERT INTO `condition` (`condition_type_id`, `accessor`, `label`, `created`) VALUES
+INSERT INTO `problem_condition` (`condition_type_id`, `accessor`, `label`, `created`) VALUES
 (1, 0, 'Bez omezení', '2019-04-27 11:49:59'),
 (1, 1, 'Kladný', '2019-04-27 11:49:59'),
 (1, 2, 'Nulový', '2019-04-27 11:49:59'),
@@ -40,3 +40,6 @@ INSERT INTO `problem_type` (`label`, `created`, `accessor`, `is_generatable`) VA
 
 INSERT INTO edomp_final.term (label, created) VALUES ('1. pololetí', '2019-04-30 20:35:36');
 INSERT INTO edomp_final.term (label, created) VALUES ('2. pololetí', '2019-04-30 20:35:40');
+
+INSERT INTO edomp_final.problem_tp_problem_condition_tp_rel (problem_type_id, problem_condition_type_id) VALUES (1, 1);
+INSERT INTO edomp_final.problem_tp_problem_condition_tp_rel (problem_type_id, problem_condition_type_id) VALUES (2, 2);

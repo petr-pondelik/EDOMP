@@ -8,17 +8,21 @@
 
 namespace App\Model\Traits;
 
+use App\Model\Entity\Term;
+
 /**
- * Trait LabelTrait
+ * Trait ToStringTrait
  * @package App\Model\Traits
  */
-trait LabelTrait
+trait ToStringTrait
 {
     /**
      * @return string
      */
     public function __toString(): string
     {
+        if($this instanceof Term)
+            return $this->label;
         return $this->body;
     }
 }

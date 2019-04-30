@@ -153,4 +153,36 @@ class ProblemType
     {
         return $this->label;
     }
+
+    /**
+     * @return int
+     */
+    public function getAccessor(): int
+    {
+        return $this->accessor;
+    }
+
+    /**
+     * @param int $accessor
+     */
+    public function setAccessor(int $accessor): void
+    {
+        $this->accessor = $accessor;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGeneratable(): bool
+    {
+        return $this->isGeneratable;
+    }
+
+    /**
+     * @param bool $isGeneratable
+     */
+    public function setIsGeneratable(bool $isGeneratable): void
+    {
+        $this->isGeneratable = $isGeneratable;
+    }
 }

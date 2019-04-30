@@ -1,5 +1,5 @@
 {if !$item->isUsed()}
-    <a href={plink Problem:default do => delete, id => $item->getId()} title="Odstranit" class="btn btn-danger btn-sm ajax">
+    <a href={plink ProblemFinal:default do => delete, id => $item->getId()} title="Odstranit" class="btn btn-danger btn-sm ajax">
         <span class="fa fa-trash"></span>
     </a>
 {else}

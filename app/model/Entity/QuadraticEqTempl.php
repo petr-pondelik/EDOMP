@@ -28,6 +28,16 @@ class QuadraticEqTempl extends ProblemTemplate
     protected $variable;
 
     /**
+     * ProblemTemplate constructor.
+     * @throws \Exception
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->isTemplate = true;
+    }
+
+    /**
      * @return string
      */
     public function getVariable(): string

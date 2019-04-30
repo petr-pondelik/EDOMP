@@ -219,8 +219,6 @@ class TestPresenter extends AdminPresenter
             else
                 $filterRes = $this->problemRepository->findFiltered($problemFilters["filters"]);
 
-            //$this["createForm"]["problem_" . $problemKey]->setOptions($filterRes);
-
             bdump($filterRes);
 
             if(isset($problemFilters['filters'])){

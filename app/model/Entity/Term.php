@@ -8,6 +8,7 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Traits\ToStringTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 use Nette\Utils\DateTime;
@@ -22,6 +23,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Term
 {
     use Identifier;
+
+    use ToStringTrait;
 
     /**
      * @ORM\Column(type="string", nullable=false)

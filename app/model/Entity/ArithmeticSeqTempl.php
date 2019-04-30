@@ -8,7 +8,7 @@
 
 namespace App\Model\Entity;
 
-use App\Model\Traits\LabelTrait;
+use App\Model\Traits\ToStringTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -42,6 +42,16 @@ class ArithmeticSeqTempl extends ProblemTemplate
      * @var float
      */
     protected $difference;
+
+    /**
+     * ProblemTemplate constructor.
+     * @throws \Exception
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->isTemplate = true;
+    }
 
     /**
      * @return string

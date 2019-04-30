@@ -26,7 +26,12 @@ services:
 	    tags:
 	       doctrine.repositoryEntity: App\Model\Entity\Problem
 
-	repository.problemtemplate:
+	repository.problem.final:
+	    class: App\Model\Repository\ProblemFinalRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\ProblemFinal
+
+	repository.problem.template:
 	    class: App\Model\Repository\ProblemTemplateRepository
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\ProblemTemplate
@@ -35,11 +40,6 @@ services:
 	    class: App\Model\Repository\ProblemTypeRepository
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\ProblemType
-
-	repository.lineareq:
-	    class: App\Model\Repository\LinearEqRepository
-	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\LinearEq
 
 	repository.difficulty:
 	    class: App\Model\Repository\DifficultyRepository
