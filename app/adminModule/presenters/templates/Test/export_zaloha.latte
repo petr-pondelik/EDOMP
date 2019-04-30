@@ -1,0 +1,25 @@
+\documentclass[12pt]{{(exam)}}
+
+\usepackage{{(graphicx)}}
+\usepackage[utf8]{{(inputenc)}}
+
+\begin{{(document)}}
+
+\lhead{{ \includegraphics[width=5cm]{{($test['header']['logo'])}} }}
+
+\begin{{(figure)}}
+\includegraphics[width=.5\textwidth]{{($test['header']['logo'])}}
+\end{{(figure)}}
+
+\begin{{(questions)}}
+
+{foreach $test['body']['problems'] as $key => $problem}
+
+    \question {$problem['before']} {$problem['structure']} {$problem['after']}
+    \vspace{ \stretch{{(1)}} }
+
+{/foreach}
+
+\end{{(questions)}}
+
+\end{{(document)}}

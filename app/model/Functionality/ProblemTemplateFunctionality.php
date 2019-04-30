@@ -13,9 +13,9 @@ use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\ProblemTypeRepository;
-use App\Model\Repository\SequenceInfoRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
+use App\Model\Traits\ProblemTemplateFunctionalityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
@@ -24,34 +24,10 @@ use Nette\Utils\ArrayHash;
  * Class ProblemTemplateFunctionality
  * @package App\Model\Functionality
  */
-abstract class ProblemTemplateFunctionality extends BaseFunctionality
+class ProblemTemplateFunctionality extends BaseFunctionality
 {
 
-    /**
-     * @var ProblemTypeRepository
-     */
-    protected $problemTypeRepository;
-
-    /**
-     * @var ProblemConditionRepository
-     */
-    protected $problemConditionRepository;
-
-    /**
-     * @var DifficultyRepository
-     */
-    protected $difficultyRepository;
-
-    /**
-     * @var SubCategoryRepository
-     */
-    protected $subCategoryRepository;
-
-    /**
-     * @var TemplateJsonDataRepository
-     */
-    protected $templateJsonDataRepository;
-
+    use ProblemTemplateFunctionalityTrait;
 
     /**
      * ProblemFunctionality constructor.
@@ -92,68 +68,8 @@ abstract class ProblemTemplateFunctionality extends BaseFunctionality
         return $this->setBaseValues($templ, $data, $id, $fromDataGrid);
     }
 
-    /**
-     * @param $templ
-     * @param ArrayHash $data
-     * @param int|null $templateId
-     * @param bool $fromDataGrid
-     * @return ProblemTemplate
-     */
-    public function setBaseValues($templ, ArrayHash $data, int $templateId = null, bool $fromDataGrid = false): ProblemTemplate
+    public function create(ArrayHash $data): void
     {
-        if(!empty($data->text_before))
-            $templ->setTextBefore($data->text_before);
-        if(!empty($data->body))
-            $templ->setBody($data->body);
-        if(!empty($data->text_after))
-            $templ->setTextAfter($data->text_after);
-        if(!empty($data->type))
-            $templ->setProblemType($this->problemTypeRepository->find($data->type));
-        if(!empty($data->difficulty))
-            $templ->setDifficulty($this->difficultyRepository->find($data->difficulty));
-        if(!empty($data->subcategory))
-            $templ->setSubCategory($this->subCategoryRepository->find($data->subcategory));
-
-        if(!$fromDataGrid){
-            if(!$templateId)
-                $templateId = $this->repository->getSequenceVal();
-            $templJsonData = null;
-            if($jsonDataObj = $this->templateJsonDataRepository->findOneBy([ "templateId" => $templateId]))
-                $templJsonData = $jsonDataObj->getJsonData();
-            $templ->setMatches($templJsonData);
-            $templ = $this->attachConditions($templ, $data);
-        }
-
-        return $templ;
-    }
-
-    /**
-     * @param $templ
-     * @param ArrayHash $data
-     * @return ProblemTemplate
-     */
-    public function attachConditions($templ, ArrayHash $data): ProblemTemplate
-    {
-        $type = $this->problemTypeRepository->find($data->type);
-        $problemCondTypes = $type->getConditionTypes()->getValues();
-
-        foreach ($problemCondTypes as $problemCondType){
-
-            //Get ConditionType ID
-            $condTypeId = $problemCondType->getId();
-
-            //Get ConditionType value from created problem
-            $condTypeVal = $data->{"condition_" . $condTypeId};
-
-            $condition = $this->problemConditionRepository->findOneBy([
-                "problemConditionType.id" => $condTypeId,
-                "accessor" => $condTypeVal
-            ]);
-
-            $templ->addCondition($condition);
-
-        }
-
-        return $templ;
+        // TODO: Implement create() method.
     }
 }

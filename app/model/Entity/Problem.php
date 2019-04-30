@@ -118,6 +118,13 @@ class Problem
     protected $subCategory;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Model\Entity\ProblemTemplate", cascade={"persist", "merge"})
+     *
+     * @var ProblemTemplate
+     */
+    protected $problemTemplate;
+
+    /**
      * @ORM\ManyToMany(targetEntity="App\Model\Entity\ProblemCondition", inversedBy="problems", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="problem_condition_problem_rel")
      */
@@ -354,6 +361,30 @@ class Problem
     public function setTestAssociations($testAssociations): void
     {
         $this->testAssociations = $testAssociations;
+    }
+
+    /**
+     * @return ProblemTemplate
+     */
+    public function getProblemTemplate(): ?ProblemTemplate
+    {
+        return $this->problemTemplate;
+    }
+
+    /**
+     * @param ProblemTemplate $problemTemplate
+     */
+    public function setProblemTemplate(ProblemTemplate $problemTemplate): void
+    {
+        $this->problemTemplate = $problemTemplate;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->body;
     }
 
 }

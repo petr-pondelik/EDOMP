@@ -71,14 +71,6 @@ class ProblemTemplate
     protected $successRate;
 
     /**
-     * @ORM\Column(type="boolean", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var bool
-     */
-    protected $isUsed = false;
-
-    /**
      * @ORM\Column(type="json", nullable=true)
      *
      */
@@ -215,22 +207,6 @@ class ProblemTemplate
     public function setSuccessRate(float $successRate): void
     {
         $this->successRate = $successRate;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isUsed(): bool
-    {
-        return $this->isUsed;
-    }
-
-    /**
-     * @param bool $isUsed
-     */
-    public function setIsUsed(bool $isUsed): void
-    {
-        $this->isUsed = $isUsed;
     }
 
     /**

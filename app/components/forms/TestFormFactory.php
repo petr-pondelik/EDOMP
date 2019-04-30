@@ -8,14 +8,13 @@
 
 namespace App\Components\Forms;
 
-use App\Model\Managers\DifficultyManager;
-use App\Model\Managers\GroupManager;
-use App\Model\Managers\LogoManager;
-use App\Model\Managers\ProblemManager;
-use App\Model\Managers\ProblemTypeManager;
-use App\Model\Managers\SpecializationManager;
-use App\Model\Managers\SubCategoryManager;
-use App\Model\Managers\TestTermManager;
+use App\Model\Repository\DifficultyRepository;
+use App\Model\Repository\GroupRepository;
+use App\Model\Repository\LogoRepository;
+use App\Model\Repository\ProblemRepository;
+use App\Model\Repository\ProblemTypeRepository;
+use App\Model\Repository\SubCategoryRepository;
+use App\Model\Repository\TermRepository;
 use Nette;
 
 /**
@@ -26,86 +25,79 @@ class TestFormFactory extends BaseForm
 {
 
     /**
-     * @var ProblemManager
+     * @var ProblemRepository
      */
-    protected $problemManager;
+    protected $problemRepository;
 
     /**
-     * @var ProblemTypeManager
+     * @var ProblemTypeRepository
      */
-    protected $problemTypeManager;
+    protected $problemTypeRepository;
 
     /**
-     * @var DifficultyManager
+     * @var DifficultyRepository
      */
-    protected $difficultyManager;
+    protected $difficultyRepository;
 
     /**
-     * @var SpecializationManager
+     * @var GroupRepository
      */
-    protected $specializationManager;
+    protected $groupRepository;
 
     /**
-     * @var GroupManager
+     * @var TermRepository
      */
-    protected $groupManager;
+    protected $termRepository;
 
     /**
-     * @var TestTermManager
+     * @var SubCategoryRepository
      */
-    protected $testTermManager;
+    protected $subCategoryRepository;
 
     /**
-     * @var SubCategoryManager
+     * @var LogoRepository
      */
-    protected $subCategoryManager;
+    protected $logoRepository;
 
-    /**
-     * @var LogoManager
-     */
-    protected $logoManager;
 
     /**
      * TestFormFactory constructor.
-     * @param ProblemManager $problemManager
-     * @param ProblemTypeManager $problemTypeManager
-     * @param DifficultyManager $difficultyManager
-     * @param SpecializationManager $specializationManager
-     * @param GroupManager $groupManager
-     * @param TestTermManager $testTermManager
-     * @param SubCategoryManager $subCategoryManager
-     * @param LogoManager $logoManager
+     * @param ProblemRepository $problemRepository
+     * @param ProblemTypeRepository $problemTypeRepository
+     * @param DifficultyRepository $difficultyRepository
+     * @param GroupRepository $groupRepository
+     * @param TermRepository $termRepository
+     * @param SubCategoryRepository $subCategoryRepository
+     * @param LogoRepository $logoRepository
      */
     public function __construct(
-        ProblemManager $problemManager, ProblemTypeManager $problemTypeManager, DifficultyManager $difficultyManager,
-        SpecializationManager $specializationManager, GroupManager $groupManager, TestTermManager $testTermManager,
-        SubCategoryManager $subCategoryManager, LogoManager $logoManager
+        ProblemRepository $problemRepository, ProblemTypeRepository $problemTypeRepository, DifficultyRepository $difficultyRepository,
+        GroupRepository $groupRepository, TermRepository $termRepository,
+        SubCategoryRepository $subCategoryRepository, LogoRepository $logoRepository
     )
     {
-        $this->problemManager = $problemManager;
-        $this->problemTypeManager = $problemTypeManager;
-        $this->difficultyManager = $difficultyManager;
-        $this->specializationManager = $specializationManager;
-        $this->groupManager = $groupManager;
-        $this->testTermManager = $testTermManager;
-        $this->subCategoryManager = $subCategoryManager;
-        $this->logoManager = $logoManager;
+        $this->problemRepository = $problemRepository;
+        $this->problemTypeRepository = $problemTypeRepository;
+        $this->difficultyRepository = $difficultyRepository;
+        $this->groupRepository = $groupRepository;
+        $this->termRepository = $termRepository;
+        $this->subCategoryRepository = $subCategoryRepository;
+        $this->logoRepository = $logoRepository;
     }
 
     /**
      * @return Nette\Application\UI\Form
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
+     * @throws \Exception
      */
     public function create()
     {
         $form = parent::create();
 
-        $problemTypes = $this->problemTypeManager->getAllPairs('ASC', true);
-        $difficulties = $this->difficultyManager->getAllPairs('ASC', true);
-        $groups = $this->groupManager->getAllPairs('ASC');
-        $testTerms = $this->testTermManager->getAllPairs('ASC');
-        $subCategories = $this->subCategoryManager->getAllPairs("ASC", true);
+        $problemTypes = $this->problemTypeRepository->findAssoc([], "id");
+        $difficulties = $this->difficultyRepository->findAssoc([], "id");
+        $groups = $this->groupRepository->findAssoc([],"id");
+        $testTerms = $this->termRepository->findAssoc([],"id");
+        $subCategories = $this->subCategoryRepository->findAssoc([], "id");
 
         $form->addSelect('variants', 'Počet variant', [
             1 => 1,
@@ -177,7 +169,7 @@ class TestFormFactory extends BaseForm
                 ->setHtmlAttribute('data-filter-type', 'difficulty_id')
                 ->setHtmlId('difficulty_id_'.$i);
 
-            $form->addSelect('problem_'.$i, 'Úloha', $this->problemManager->getAll())
+            $form->addSelect('problem_'.$i, 'Úloha', $this->problemRepository->findAssoc([], "id"))
                 ->setHtmlAttribute('class', 'form-control problem-select')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlId('problem_'.$i);

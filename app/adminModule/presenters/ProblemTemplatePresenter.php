@@ -18,6 +18,7 @@ use App\Model\Repository\BaseRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Service\MathService;
 use App\Service\ValidationService;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
@@ -161,7 +162,9 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     {
         $grid = $this->templateGridFactory->create($this, $name, $this->repository, $this->typeId);
         $grid->addAction('delete', '', 'delete!')
-            ->setTemplate(__DIR__ . '/templates/' . $this->type . '/removeBtn.latte');
+            ->setIcon("trash")
+            ->setTitle("Odstranit šablonu")
+            ->setClass("btn btn-sm btn-danger ajax");
         $grid->addAction('edit', '', "update!")
             ->setIcon("edit")
             ->setTitle("Editovat šablonu")
@@ -178,7 +181,10 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
         try{
             $this->functionality->delete($id);
         } catch (\Exception $e){
-            $this->flashMessage('Chyba při odstraňování šablony.', 'danger');
+            if($e instanceof ForeignKeyConstraintViolationException)
+                $this->flashMessage('K šabloně existují vygenerované příklady.', 'danger');
+            else
+                $this->flashMessage('Chyba při odstraňování šablony.', 'danger');
             $this->redrawControl('mainFlashesSnippet');
             return;
         }

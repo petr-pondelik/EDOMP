@@ -173,4 +173,9 @@ class Logo
     {
         $this->isUsed = $isUsed;
     }
+
+    public function __toString(): string
+    {
+        return "<img src='".$this->getPath()."'/>";
+    }
 }

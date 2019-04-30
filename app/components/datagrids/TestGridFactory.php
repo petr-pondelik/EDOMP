@@ -8,9 +8,9 @@
 
 namespace App\Components\DataGrids;
 
-use App\Model\Managers\GroupManager;
-use App\Model\Managers\SpecializationManager;
-use App\Model\Managers\TestManager;
+use App\Model\Repository\GroupRepository;
+use App\Model\Repository\TestRepository;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class TestGridFactory
@@ -19,49 +19,47 @@ use App\Model\Managers\TestManager;
 class TestGridFactory extends BaseGrid
 {
     /**
-     * @var TestManager
+     * @var TestRepository
      */
-    protected $testManager;
+    protected $testRepository;
 
     /**
-     * @var GroupManager
+     * @var GroupRepository
      */
-    protected $groupManager;
+    protected $groupRepository;
 
     /**
      * TestGridFactory constructor.
-     * @param TestManager $testManager
-     * @param GroupManager $groupManager
+     * @param TestRepository $testRepository
+     * @param GroupRepository $groupRepository
      */
     public function __construct
     (
-        TestManager $testManager, GroupManager $groupManager
+        TestRepository $testRepository, GroupRepository $groupRepository
     )
     {
         parent::__construct();
-        $this->testManager = $testManager;
-        $this->groupManager = $groupManager;
+        $this->testRepository = $testRepository;
+        $this->groupRepository = $groupRepository;
     }
 
     /**
      * @param $container
      * @param $name
      * @return \Ublaboo\DataGrid\DataGrid
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function create($container, $name)
+    public function create($container, $name): DataGrid
     {
         $grid = parent::create($container, $name);
 
-        $groupOptions = $this->groupManager->getAll('ASC');
+        $groupOptions = $this->groupRepository->findAssoc([], "id");
 
-        $grid->setPrimaryKey('test_id');
+        $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->testManager->getSelect());
+        $grid->setDataSource($this->testRepository->createQueryBuilder("er"));
 
-        $grid->addColumnNumber('test_id', 'ID')
+        $grid->addColumnNumber('id', 'ID')
             ->addAttributes(['class' => 'text-center'])
             ->setSortable();
 
@@ -70,9 +68,9 @@ class TestGridFactory extends BaseGrid
             ->setFormat('d.m.Y H:i:s')
             ->setSortable();
 
-        $grid->addColumnText('group_id', 'Skupina')
+        $grid->addColumnText('group', 'Skupina', "group.id")
             ->addAttributes(['class' => 'text-center'])
-            ->setSortable()
+            ->setSortable("er.id")
             ->setReplacement($groupOptions)
             ->setFilterMultiSelect($groupOptions);
 

@@ -1,9 +1,0 @@
-{if !$item->isUsed()}
-    <a href={plink QuadraticEqTemplate:default do => delete, id => $item->getId()} title="Odstranit" class="btn btn-danger btn-sm ajax">
-        <span class="fa fa-trash"></span>
-    </a>
-{else}
-    <a href="#" class="btn btn-danger btn-sm disabled" title="Úloha je využívána.">
-        <span class="fa fa-trash"></span>
-    </a>
-{/if}

@@ -8,11 +8,13 @@
 
 namespace App\Model\Repository;
 
+use App\Model\Traits\SequenceValTrait;
+
 /**
  * Class GeometricSeqTemplRepository
  * @package App\Model\Repository
  */
 class GeometricSeqTemplRepository extends BaseRepository
 {
-
+    use SequenceValTrait;
 }

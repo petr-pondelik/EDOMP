@@ -98,6 +98,17 @@ class ValidationService
                 return -1;
             },
 
+            "school_year" => function($filledVal){
+                if(empty($filledVal)) return 0;
+                return -1;
+            },
+
+            "test_number" => function($filledVal){
+                if(empty($filledVal)) return 0;
+                if($filledVal < 0) return 1;
+                return -1;
+            },
+
             "body" => function($filledVal){
                 return $this->validateBody($filledVal->body, $filledVal->bodyType, $filledVal->variable);
             },
@@ -205,6 +216,15 @@ class ValidationService
 
             "logo_file" => [
                 0 => "Soubor musí být zvolen."
+            ],
+
+            "school_year" => [
+                0 => "Školní rok musí bý vyplněn."
+            ],
+
+            "test_number" => [
+                0 => "Číslo testu musí být vyplněno.",
+                1 => "Číslo testu nesmí být záporné."
             ],
 
             "body" => [

@@ -120,6 +120,7 @@ services:
 	functionality.problem: App\Model\Functionality\ProblemFunctionality
 	functionality.category: App\Model\Functionality\CategoryFunctionality
 	functionality.subcategory: App\Model\Functionality\SubCategoryFunctionality
+	functionality.template: App\Model\Functionality\ProblemTemplateFunctionality
 	functionality.template.equation.linear: App\Model\Functionality\LinearEqTemplFunctionality
 	functionality.template.equation.quadratic: App\Model\Functionality\QuadraticEqTemplFunctionality
 	functionality.template.sequence.arithmetic: App\Model\Functionality\ArithmeticSeqTemplFunctionality
@@ -127,6 +128,7 @@ services:
 	functionality.supergroup: App\Model\Functionality\SuperGroupFunctionality
 	functionality.group: App\Model\Functionality\GroupFunctionality
 	functionality.logo: App\Model\Functionality\LogoFunctionality
+	functionality.test: App\Model\Functionality\TestFunctionality
 	functionality.template.jsondata: App\Model\Functionality\TemplateJsonDataFunctionality
 
 	#Factories
@@ -144,6 +146,9 @@ services:
 	factory.form.supergroup: App\Components\Forms\SuperGroupFormFactory
 	factory.grid.group: App\Components\DataGrids\GroupGridFactory
 	factory.form.group: App\Components\Forms\GroupFormFactory
+	factory.grid.test: App\Components\DataGrids\TestGridFactory
+	factory.form.test: App\Components\Forms\TestFormFactory
+	factory.form.test.statistics: App\Components\Forms\TestStatisticsFormFactory
 
 	#Services
 	service.newtopapi.client: App\Service\NewtonApiClient
@@ -152,6 +157,7 @@ services:
 	service.generator: App\Service\GeneratorService
 	service.condition.matching: App\Service\ConditionMatchingService
 	service.file: App\Service\FileService(%logosDir%, %logosTmpDir%)
+	service.test.builder: App\Service\TestBuilderService
 
 	#Helpers
 	helper.const: App\Helpers\ConstHelper

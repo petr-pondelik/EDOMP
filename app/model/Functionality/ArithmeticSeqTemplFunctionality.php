@@ -13,9 +13,9 @@ use App\Model\Repository\ArithmeticSeqTemplRepository;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemTypeRepository;
-use App\Model\Repository\SequenceInfoRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
+use App\Model\Traits\ProblemTemplateFunctionalityTrait;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
@@ -23,8 +23,10 @@ use Nette\Utils\ArrayHash;
  * Class ArithmeticSeqTemplFunctionality
  * @package App\Model\Functionality
  */
-class ArithmeticSeqTemplFunctionality extends ProblemTemplateFunctionality
+class ArithmeticSeqTemplFunctionality extends BaseFunctionality
 {
+
+    use ProblemTemplateFunctionalityTrait;
 
     public function __construct
     (
@@ -35,12 +37,12 @@ class ArithmeticSeqTemplFunctionality extends ProblemTemplateFunctionality
         TemplateJsonDataRepository $templateJsonDataRepository
     )
     {
-        parent::__construct
-        (
-            $entityManager,
-            $problemTypeRepository, $problemConditionRepository, $difficultyRepository, $subCategoryRepository,
-            $templateJsonDataRepository
-        );
+        parent::__construct($entityManager);
+        $this->problemTypeRepository = $problemTypeRepository;
+        $this->problemConditionRepository = $problemConditionRepository;
+        $this->difficultyRepository = $difficultyRepository;
+        $this->subCategoryRepository = $subCategoryRepository;
+        $this->templateJsonDataRepository = $templateJsonDataRepository;
         $this->repository = $repository;
     }
 
@@ -68,7 +70,7 @@ class ArithmeticSeqTemplFunctionality extends ProblemTemplateFunctionality
      */
     public function update(int $id, ArrayHash $data, bool $fromDataGrid = false): ?Object
     {
-        $templ = parent::update($id, $data, $fromDataGrid);
+        $templ = $this->baseUpdate($id, $data, $fromDataGrid);
         if(!empty($data->variable))
             $templ->setVariable($data->variable);
         if(!empty($data->first_n))
