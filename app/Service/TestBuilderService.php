@@ -15,7 +15,7 @@ use App\Model\Functionality\TestFunctionality;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\LogoRepository;
 use App\Model\Repository\ProblemConditionRepository;
-use App\Model\Repository\ProblemRepository;
+use App\Model\Repository\ProblemFinalRepository;
 use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\TermRepository;
 use App\Model\Repository\TestRepository;

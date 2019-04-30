@@ -50,7 +50,7 @@ class SubCategory
     protected $category;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\Problem", mappedBy="subCategory", cascade={"persist", "merge"})
+     * @ORM\OneToMany(targetEntity="ProblemFinal", mappedBy="subCategory", cascade={"persist", "merge"})
      *
      * @var Collection
      */

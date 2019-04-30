@@ -10,11 +10,11 @@ namespace App\AdminModule\Presenters;
 
 
 use App\Model\Entity\Category;
-use App\Model\Entity\Problem;
+use App\Model\Entity\ProblemFinal;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\LinearEqRepository;
-use App\Model\Repository\ProblemRepository;
+use App\Model\Repository\ProblemFinalRepository;
 use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\QuadraticEqTemplRepository;
 use App\Model\Repository\SubCategoryRepository;
@@ -26,7 +26,7 @@ use Nette\Utils\Json;
 class DoctrinePresenter extends BasePresenter
 {
     /**
-     * @var ProblemRepository
+     * @var ProblemFinalRepository
      */
     protected $problemRepository;
 
@@ -62,7 +62,7 @@ class DoctrinePresenter extends BasePresenter
 
     public function __construct
     (
-        EntityManager $em, ProblemRepository $problemRepository, CategoryRepository $categoryRepository,
+        EntityManager $em, ProblemFinalRepository $problemRepository, CategoryRepository $categoryRepository,
         LinearEqRepository $linearEqRepository, TemplateJsonDataRepository $templateJsonDataRepository,
         ProblemTemplateRepository $problemTemplateRepository, QuadraticEqTemplRepository $quadraticEqTemplRepository
     )

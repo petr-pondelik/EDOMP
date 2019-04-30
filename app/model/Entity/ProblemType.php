@@ -58,9 +58,9 @@ class ProblemType
     protected $created;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\Problem", mappedBy="problemType", cascade={"persist", "merge"})
+     * @ORM\OneToMany(targetEntity="ProblemFinal", mappedBy="problemType", cascade={"persist", "merge"})
      *
-     * @var ArrayCollection|Problem[]
+     * @var ArrayCollection|ProblemFinal[]
      */
     protected $problems;
 

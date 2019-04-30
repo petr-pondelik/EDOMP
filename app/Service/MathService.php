@@ -12,8 +12,8 @@ use App\Exceptions\StringFormatException;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
-use App\Model\Entity\Problem;
-use App\Model\Repository\ProblemRepository;
+use App\Model\Entity\ProblemFinal;
+use App\Model\Repository\ProblemFinalRepository;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 use NXP\MathExecutor;
@@ -55,7 +55,7 @@ class MathService
     protected $generatorService;
 
     /**
-     * @var ProblemRepository
+     * @var ProblemFinalRepository
      */
     protected $problemRepository;
 
@@ -83,7 +83,7 @@ class MathService
      * MathService constructor.
      * @param NewtonApiClient $newtonApiClient
      * @param GeneratorService $generatorService
-     * @param ProblemRepository $problemRepository
+     * @param ProblemFinalRepository $problemRepository
      * @param ConstHelper $constHelper
      * @param StringsHelper $stringsHelper
      * @param LatexHelper $latexHelper
@@ -92,7 +92,7 @@ class MathService
     (
         NewtonApiClient $newtonApiClient,
         GeneratorService $generatorService,
-        ProblemRepository $problemRepository,
+        ProblemFinalRepository $problemRepository,
         ConstHelper $constHelper, StringsHelper $stringsHelper, LatexHelper $latexHelper
     )
     {
@@ -105,19 +105,19 @@ class MathService
 
         $this->evaluate = [
 
-            $this->constHelper::LINEAR_EQ => function(Problem $problem){
+            $this->constHelper::LINEAR_EQ => function(ProblemFinal $problem){
                 return $this->evaluateLinearEquation($problem);
             },
 
-            $this->constHelper::QUADRATIC_EQ => function(Problem $problem){
+            $this->constHelper::QUADRATIC_EQ => function(ProblemFinal $problem){
                 return $this->evaluateQuadraticEquation($problem);
             },
 
-            $this->constHelper::ARITHMETIC_SEQ => function(Problem $problem){
+            $this->constHelper::ARITHMETIC_SEQ => function(ProblemFinal $problem){
                 return $this->evaluateSequence($problem, self::ARITHMETIC);
             },
 
-            $this->constHelper::GEOMETRIC_SEQ => function(Problem $problem){
+            $this->constHelper::GEOMETRIC_SEQ => function(ProblemFinal $problem){
                 return $this->evaluateSequence($problem, self::GEOMETRIC);
             }
 
@@ -223,11 +223,11 @@ class MathService
     }
 
     /**
-     * @param Problem $problem
+     * @param ProblemFinal $problem
      * @return ArrayHash
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function evaluateLinearEquation(Problem $problem)
+    public function evaluateLinearEquation(ProblemFinal $problem)
     {
         $standardized = $this->standardizeEquation($problem->structure);
         $variable = $problem->variable;
@@ -241,11 +241,11 @@ class MathService
     }
 
     /**
-     * @param Problem $problem
+     * @param ProblemFinal $problem
      * @return ArrayHash
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function evaluateQuadraticEquation(Problem $problem)
+    public function evaluateQuadraticEquation(ProblemFinal $problem)
     {
         $standardized = $this->standardizeEquation($problem->structure);
         $a = $this->getDiscriminantA($standardized, $problem->variable);
@@ -282,13 +282,13 @@ class MathService
     }
 
     /**
-     * @param Problem $problem
+     * @param ProblemFinal $problem
      * @param bool $sequenceType
      * @return bool|ArrayHash
      * @throws \Dibi\Exception
      * @throws \Dibi\NotSupportedException
      */
-    public function evaluateSequence(Problem $problem, bool $sequenceType = self::ARITHMETIC)
+    public function evaluateSequence(ProblemFinal $problem, bool $sequenceType = self::ARITHMETIC)
     {
         $parsed = $this->latexHelper::parseLatex($problem->structure);
         $variable = $problem->variable;

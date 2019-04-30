@@ -483,7 +483,7 @@ CREATE TRIGGER `problem_final_test_rel_insert_check` BEFORE INSERT ON `problem_t
     DECLARE cnt INT;
     SET cnt = ( SELECT COUNT(*) FROM problem WHERE problem_id = NEW.problem_prototype_id AND is_prototype = TRUE );
     IF NEW.problem_prototype_id IS NOT NULL AND cnt < 1 THEN
-      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Problem prototype id does not match any existing prototype.';
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ProblemFinal prototype id does not match any existing prototype.';
     END IF;
   END
 $$
@@ -493,7 +493,7 @@ CREATE TRIGGER `problem_final_test_rel_update_check` BEFORE UPDATE ON `problem_t
     DECLARE cnt INT;
     SET cnt = ( SELECT COUNT(*) FROM problem WHERE problem_id = NEW.problem_prototype_id AND is_prototype = TRUE );
     IF NEW.problem_prototype_id IS NOT NULL AND cnt < 1 THEN
-      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Problem prototype id does not match any existing prototype.';
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ProblemFinal prototype id does not match any existing prototype.';
     END IF;
   END
 $$

@@ -8,6 +8,7 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
@@ -15,24 +16,26 @@ use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Repository\ProblemRepository")
+ * @ORM\Entity(repositoryClass="App\Model\Repository\ProblemFinalRepository")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({
- *     "problem" = "Problem",
+ *     "problem" = "ProblemFinal",
  *     "lineareq" = "LinearEq",
  *     "quadraticeq" = "QuadraticEq",
  *     "arithmeticseq" = "ArithmeticSeq",
  *     "geometicSeq" = "GeometricSeq"
  * })
  *
- * Class Problem
+ * Class ProblemFinal
  * @package App\Model\Entity
  */
-class Problem
+class ProblemFinal
 {
     //Identifier trait for id column
     use Identifier;
+
+    use LabelTrait;
 
     /**
      * @ORM\Column(type="text", nullable=false)
@@ -136,7 +139,7 @@ class Problem
     protected $testAssociations;
 
     /**
-     * Problem constructor.
+     * ProblemFinal constructor.
      * @throws \Exception
      */
     public function __construct()
@@ -377,14 +380,6 @@ class Problem
     public function setProblemTemplate(ProblemTemplate $problemTemplate): void
     {
         $this->problemTemplate = $problemTemplate;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return $this->body;
     }
 
 }

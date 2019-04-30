@@ -58,7 +58,7 @@ class ProblemCondition
     protected $problemConditionType;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Model\Entity\Problem", mappedBy="conditions")
+     * @ORM\ManyToMany(targetEntity="ProblemFinal", mappedBy="conditions")
      */
     protected $problems;
 

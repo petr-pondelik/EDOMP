@@ -10,7 +10,7 @@ namespace App\Components\DataGrids;
 
 use App\Helpers\ConstHelper;
 use App\Model\Repository\DifficultyRepository;
-use App\Model\Repository\ProblemRepository;
+use App\Model\Repository\ProblemFinalRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 
@@ -26,7 +26,7 @@ class ProblemGridFactory extends BaseGrid
     private $difficultyRepository;
 
     /**
-     * @var ProblemRepository
+     * @var ProblemFinalRepository
      */
     protected $problemRepository;
 
@@ -48,14 +48,14 @@ class ProblemGridFactory extends BaseGrid
     /**
      * ProblemGridFactory constructor.
      * @param DifficultyRepository $difficultyRepository
-     * @param ProblemRepository $problemRepository
+     * @param ProblemFinalRepository $problemRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param SubCategoryRepository $subCategoryRepository
      * @param ConstHelper $constHelper
      */
     public function __construct(
         DifficultyRepository $difficultyRepository,
-        ProblemRepository $problemRepository, ProblemTypeRepository $problemTypeRepository,
+        ProblemFinalRepository $problemRepository, ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository,
         ConstHelper $constHelper
     )

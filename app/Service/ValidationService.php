@@ -110,7 +110,9 @@ class ValidationService
             },
 
             "body" => function($filledVal){
-                return $this->validateBody($filledVal->body, $filledVal->bodyType, $filledVal->variable);
+                if(isset($filledVal->variable))
+                    return $this->validateBody($filledVal->body, $filledVal->bodyType, $filledVal->variable);
+                return $this->validateBody($filledVal->body, $filledVal->bodyType);
             },
 
             "variable" => function($filledVal){

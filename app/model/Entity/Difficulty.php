@@ -43,7 +43,7 @@ class Difficulty
     protected $created;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\Problem", mappedBy="difficulty", cascade={"persist", "merge"})
+     * @ORM\OneToMany(targetEntity="ProblemFinal", mappedBy="difficulty", cascade={"persist", "merge"})
      *
      * @var Collection
      */

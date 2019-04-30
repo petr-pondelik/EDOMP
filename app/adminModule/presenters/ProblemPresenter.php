@@ -11,10 +11,10 @@ namespace App\AdminModule\Presenters;
 use App\Components\DataGrids\ProblemGridFactory;
 use App\Components\Forms\ProblemFormFactory;
 use App\Helpers\ConstHelper;
-use App\Model\Entity\Problem;
+use App\Model\Entity\ProblemFinal;
 use App\Model\Functionality\ProblemFunctionality;
 use App\Model\Repository\ProblemConditionRepository;
-use App\Model\Repository\ProblemRepository;
+use App\Model\Repository\ProblemFinalRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Service\ValidationService;
 use Nette\Application\UI\Form;
@@ -40,7 +40,7 @@ class ProblemPresenter extends AdminPresenter
     protected $problemFormFactory;
 
     /**
-     * @var ProblemRepository
+     * @var ProblemFinalRepository
      */
     protected $problemRepository;
 
@@ -73,7 +73,7 @@ class ProblemPresenter extends AdminPresenter
      * ProblemPresenter constructor.
      * @param ProblemGridFactory $problemGridFactory
      * @param ProblemFormFactory $problemFormFactory
-     * @param ProblemRepository $problemRepository
+     * @param ProblemFinalRepository $problemRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemFunctionality $problemFunctionality
      * @param ProblemConditionRepository $problemConditionRepository
@@ -83,7 +83,7 @@ class ProblemPresenter extends AdminPresenter
     public function __construct
     (
         ProblemGridFactory $problemGridFactory, ProblemFormFactory $problemFormFactory,
-        ProblemRepository $problemRepository, ProblemTypeRepository $problemTypeRepository,
+        ProblemFinalRepository $problemRepository, ProblemTypeRepository $problemTypeRepository,
         ProblemFunctionality $problemFunctionality,
         ProblemConditionRepository $problemConditionRepository,
         ValidationService $validationService,
@@ -130,9 +130,9 @@ class ProblemPresenter extends AdminPresenter
 
     /**
      * @param IComponent $form
-     * @param Problem $record
+     * @param ProblemFinal $record
      */
-    private function setDefaults(IComponent $form, Problem $record)
+    private function setDefaults(IComponent $form, ProblemFinal $record)
     {
         $form["id"]->setDefaultValue($record->getId());
         $form["id_hidden"]->setDefaultValue($record->getId());

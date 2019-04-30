@@ -8,11 +8,11 @@
 
 namespace App\Model\Functionality;
 
-use App\Model\Entity\Problem;
+use App\Model\Entity\ProblemFinal;
 use App\Model\Entity\ProblemCondition;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
-use App\Model\Repository\ProblemRepository;
+use App\Model\Repository\ProblemFinalRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -49,7 +49,7 @@ class ProblemFunctionality extends BaseFunctionality
     /**
      * ProblemFunctionality constructor.
      * @param EntityManager $entityManager
-     * @param ProblemRepository $problemRepository
+     * @param ProblemFinalRepository $problemRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param DifficultyRepository $difficultyRepository
@@ -58,7 +58,7 @@ class ProblemFunctionality extends BaseFunctionality
     public function __construct
     (
         EntityManager $entityManager,
-        ProblemRepository $problemRepository,
+        ProblemFinalRepository $problemRepository,
         ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository
     )
@@ -77,7 +77,7 @@ class ProblemFunctionality extends BaseFunctionality
      */
     public function create(ArrayHash $data): void
     {
-        $problem = new Problem();
+        $problem = new ProblemFinal();
 
         $problem->setTextBefore($data->text_before);
         $problem->setBody($data->body);
@@ -131,11 +131,11 @@ class ProblemFunctionality extends BaseFunctionality
     }
 
     /**
-     * @param Problem $problem
+     * @param ProblemFinal $problem
      * @param ArrayHash $data
-     * @return Problem
+     * @return ProblemFinal
      */
-    public function attachConditions(Problem $problem, ArrayHash $data): Problem
+    public function attachConditions(ProblemFinal $problem, ArrayHash $data): ProblemFinal
     {
         $type = $this->problemTypeRepository->find($data->type);
         $problemCondTypes = $type->getConditionTypes()->getValues();

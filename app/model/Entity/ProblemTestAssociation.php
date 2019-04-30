@@ -54,10 +54,10 @@ class ProblemTestAssociation
     protected $created;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Model\Entity\Problem", inversedBy="testAssociations", cascade={"persist", "merge"})
+     * @ORM\ManyToOne(targetEntity="ProblemFinal", inversedBy="testAssociations", cascade={"persist", "merge"})
      * @Assert\NotBlank()
      *
-     * @var Problem
+     * @var ProblemFinal
      */
     protected $problem;
 
@@ -149,17 +149,17 @@ class ProblemTestAssociation
     }
 
     /**
-     * @return Problem
+     * @return ProblemFinal
      */
-    public function getProblem(): Problem
+    public function getProblem(): ProblemFinal
     {
         return $this->problem;
     }
 
     /**
-     * @param Problem $problem
+     * @param ProblemFinal $problem
      */
-    public function setProblem(Problem $problem): void
+    public function setProblem(ProblemFinal $problem): void
     {
         $this->problem = $problem;
     }

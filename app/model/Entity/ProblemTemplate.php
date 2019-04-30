@@ -8,6 +8,7 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
@@ -33,6 +34,8 @@ class ProblemTemplate
 {
     //Identifier trait for id column
     use Identifier;
+
+    use LabelTrait;
 
     /**
      * @ORM\Column(type="text", nullable=false)
@@ -119,7 +122,7 @@ class ProblemTemplate
     protected $testAssociations;
 
     /**
-     * Problem constructor.
+     * ProblemFinal constructor.
      * @throws \Exception
      */
     public function __construct()

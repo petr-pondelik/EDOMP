@@ -8,6 +8,7 @@
 
 namespace App\Model\Repository;
 
+use App\Model\Traits\FilterTrait;
 use App\Model\Traits\SequenceValTrait;
 
 /**
@@ -17,4 +18,6 @@ use App\Model\Traits\SequenceValTrait;
 class ProblemTemplateRepository extends BaseRepository
 {
     use SequenceValTrait;
+
+    use FilterTrait;
 }

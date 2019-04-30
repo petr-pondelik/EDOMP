@@ -16,7 +16,8 @@ use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
 use App\Model\Functionality\TestFunctionality;
 use App\Model\Repository\LogoRepository;
-use App\Model\Repository\ProblemRepository;
+use App\Model\Repository\ProblemFinalRepository;
+use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\TestRepository;
 use App\Service\FileService;
 use App\Service\GeneratorService;
@@ -51,6 +52,16 @@ class TestPresenter extends AdminPresenter
      * @var TestFunctionality
      */
     protected $testFunctionality;
+
+    /**
+     * @var ProblemTemplateRepository
+     */
+    protected $problemTemplateRepository;
+
+    /**
+     * @var ProblemFinalRepository
+     */
+    protected $problemRepository;
 
     /**
      * @var LogoRepository
@@ -116,6 +127,8 @@ class TestPresenter extends AdminPresenter
      * TestPresenter constructor.
      * @param TestRepository $testRepository
      * @param TestFunctionality $testFunctionality
+     * @param ProblemTemplateRepository $problemTemplateRepository
+     * @param ProblemFinalRepository $problemRepository
      * @param LogoRepository $logoRepository
      * @param TestFormFactory $testFormFactory
      * @param TestStatisticsFormFactory $testStatisticsFormFactory
@@ -131,7 +144,8 @@ class TestPresenter extends AdminPresenter
      */
     public function __construct
     (
-        TestRepository $testRepository, TestFunctionality $testFunctionality, LogoRepository $logoRepository,
+        TestRepository $testRepository, TestFunctionality $testFunctionality,
+        ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemRepository, LogoRepository $logoRepository,
         TestFormFactory $testFormFactory, TestStatisticsFormFactory $testStatisticsFormFactory, TestGridFactory $testGridFactory,
         TestBuilderService $testBuilderService, FileService $fileService, ValidationService $validationService,
         GeneratorService $generatorService, MathService $mathService,
@@ -141,6 +155,8 @@ class TestPresenter extends AdminPresenter
         parent::__construct();
         $this->testRepository = $testRepository;
         $this->testFunctionality = $testFunctionality;
+        $this->problemTemplateRepository = $problemTemplateRepository;
+        $this->problemRepository = $problemRepository;
         $this->logoRepository = $logoRepository;
         $this->testFormFactory = $testFormFactory;
         $this->testStatisticsFormFactory = $testStatisticsFormFactory;
@@ -188,14 +204,24 @@ class TestPresenter extends AdminPresenter
 
     /**
      * @param array $filters
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
+     * @throws \Exception
      */
-    public function handleFilterChange(array $filters)
+    public function handleFilterChange(array $filters): void
     {
-        $filterRes = $this->testBuilderService->filterProblems($filters);
+        bdump($filters);
 
         foreach($filters as $problemKey => $problemFilters){
+
+            bdump($problemFilters);
+
+            if(!isset($problemFilters["filters"]["is_template"]) || $problemFilters["filters"]["is_template"])
+                $filterRes = $this->problemTemplateRepository->findFiltered($problemFilters["filters"]);
+            else
+                $filterRes = $this->problemRepository->findFiltered($problemFilters["filters"]);
+
+            //$this["createForm"]["problem_" . $problemKey]->setOptions($filterRes);
+
+            bdump($filterRes);
 
             if(isset($problemFilters['filters'])){
                 foreach ($problemFilters['filters'] as $filterType => $filterVal) {
@@ -203,9 +229,9 @@ class TestPresenter extends AdminPresenter
                 }
             }
 
-            $this['createForm']['problem_' . $problemKey]->setItems($filterRes[$problemKey]);
+            $this['createForm']['problem_' . $problemKey]->setItems($filterRes);
 
-            if(array_key_exists($problemFilters['selected'], $filterRes[$problemKey]))
+            if(array_key_exists($problemFilters['selected'], $filterRes))
                 $this['createForm']['problem_' . $problemKey]->setValue($problemFilters['selected']);
 
         }
@@ -324,8 +350,42 @@ class TestPresenter extends AdminPresenter
     {
         $form =  $this->testFormFactory->create();
         $form->onValidate[] = [$this, 'handleFormValidate'];
-        $form->onSuccess[] = [$this, 'handleFormSuccess'];
+        $form->onSuccess[] = [$this, 'handleCreateFormSuccess'];
         return $form;
+    }
+
+    /**
+     * @param Form $form
+     * @param $values
+     * @throws \Dibi\Exception
+     * @throws \Dibi\NotSupportedException
+     * @throws \Nette\Application\AbortException
+     * @throws \Nette\Utils\JsonException
+     */
+    public function handleCreateFormSuccess(Form $form, $values)
+    {
+        try{
+            $testData = $this->testBuilderService->buildTest($values);
+        }
+        catch(NotSupportedException $e){
+            $this->flashMessage($e->getMessage(), 'danger');
+            $this->redrawControl('flashesSnippet');
+            return;
+        }
+
+        $template = $this->getTemplate();
+
+        $template->setFile(__DIR__.'/templates/Test/export.latte');
+
+        foreach($testData->test as $variant){
+            $template->test = $variant;
+            FileSystem::createDir( DATA_DIR.'/tests/'.$testData->testId);
+            file_put_contents( DATA_DIR.'/tests/'.$testData->testId.'/variant_'.Strings::lower($variant['head']['variant']).'.tex', (string) $template);
+        }
+
+        $this->fileService->createTestZip($testData->testId);
+
+        $this->redirect('default');
     }
 
     /**
@@ -353,40 +413,6 @@ class TestPresenter extends AdminPresenter
         $this->redrawControl("logoFileErrorSnippet");
         $this->redrawControl("schoolYearErrorSnippet");
         $this->redrawControl("testNumberErrorSnippet");
-    }
-
-    /**
-     * @param Form $form
-     * @param $values
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
-     * @throws \Nette\Application\AbortException
-     * @throws \Nette\Utils\JsonException
-     */
-    public function handleFormSuccess(Form $form, $values)
-    {
-        try{
-            $testData = $this->testBuilderService->buildTest($values);
-        }
-        catch(NotSupportedException $e){
-            $this->flashMessage($e->getMessage(), 'danger');
-            $this->redrawControl('flashesSnippet');
-            return;
-        }
-
-        $template = $this->getTemplate();
-
-        $template->setFile(__DIR__.'/templates/Test/export.latte');
-
-        foreach($testData->test as $variant){
-            $template->test = $variant;
-            FileSystem::createDir( DATA_DIR.'/tests/'.$testData->testId);
-            file_put_contents( DATA_DIR.'/tests/'.$testData->testId.'/variant_'.Strings::lower($variant['head']['variant']).'.tex', (string) $template);
-        }
-
-        $this->fileService->createTestZip($testData->testId);
-
-        $this->redirect('default');
     }
 
     public function createComponentStatisticsForm()

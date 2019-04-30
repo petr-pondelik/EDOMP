@@ -18,6 +18,10 @@ use App\Model\Repository\TemplateJsonDataRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Nette\Utils\ArrayHash;
 
+/**
+ * Trait ProblemTemplateFunctionalityTrait
+ * @package App\Model\Traits
+ */
 trait ProblemTemplateFunctionalityTrait
 {
     /**

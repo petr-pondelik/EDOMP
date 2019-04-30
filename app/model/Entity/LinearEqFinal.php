@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class LinearEq
  * @package App\Model\Entity
  */
-class LinearEq extends Problem
+class LinearEq extends ProblemFinal
 {
     /**
      * @ORM\Column(type="string", nullable=true)
