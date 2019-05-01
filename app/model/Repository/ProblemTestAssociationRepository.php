@@ -8,6 +8,8 @@
 
 namespace App\Model\Repository;
 
+use Doctrine\ORM\Query\Expr\Join;
+
 /**
  * Class ProblemTestAssociationRepository
  * @package App\Model\Repository

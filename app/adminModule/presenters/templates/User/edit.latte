@@ -1,0 +1,114 @@
+{import 'default.latte'}
+
+{block headingFirstLink}
+    <li class="breadcrumb-item">
+        <a n:href="User:default">
+            {include headingFirst}
+        </a>
+    </li>
+{/block}
+
+{block headingSecond}
+    Uživatel {$userId}
+{/block}
+
+{block headingSecondLink}
+    <li class="breadcrumb-item font-weight-bold active">
+        {include headingSecond}
+    </li>
+{/block}
+
+{block content}
+
+    {form userEditForm}
+
+        <div class="card-header d-flex justify-content-between">
+            <h1 class="mb-0 font-weight-bold card-heading">
+                {include icon}Uživatel {$userId}
+            </h2>
+            <div class="d-inline">
+                <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
+                <a n:href="User:default" class="btn btn-secondary btn-sm" title="Zpět na přehled">Zpět</a>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <div class="form-group">
+                {label user_id}
+                {input user_id}
+            </div>
+
+            {input user_id_hidden}
+
+            <div class="form-group">
+                {label username}
+                {input username}
+                {snippet usernameErrorSnippet}
+                    {var $form = $control['userEditForm']}
+                    <div n:if="$form->hasErrors()" class="mt-2">
+                        <p n:foreach="$form['username']->errors as $error" class="alert alert-danger">
+                            {$error}
+                        </p>
+                    </div>
+                {/snippet}
+            </div>
+
+            <div class="form-group">
+                {label change_password}
+                {input change_password, "id" => "change-password-switch"}
+            </div>
+
+            <div id="change-password-wrapper">
+
+                <div class="form-group">
+                    {label password}
+                    {input password}
+                </div>
+
+                <div class="form-group">
+                    {label password_confirm}
+                    {input password_confirm}
+                    {snippet passwordConfirmErrorSnippet}
+                        {var $form = $control['userEditForm']}
+                        <div n:if="$form->hasErrors()" class="mt-2">
+                            <p n:foreach="$form['password_confirm']->errors as $error" class="alert alert-danger">
+                                {$error}
+                            </p>
+                        </div>
+                    {/snippet}
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                {label roles}
+                {input roles}
+                {snippet rolesErrorSnippet}
+                    {var $form = $control['userEditForm']}
+                    <div n:if="$form->hasErrors()" class="mt-2">
+                        <p n:foreach="$form['roles']->errors as $error" class="alert alert-danger">
+                            {$error}
+                        </p>
+                    </div>
+                {/snippet}
+            </div>
+
+            <div class="form-group">
+                {label groups}
+                {input groups}
+                {snippet groupsErrorSnippet}
+                    {var $form = $control['userEditForm']}
+                    <div n:if="$form->hasErrors()" class="mt-2">
+                        <p n:foreach="$form['groups']->errors as $error" class="alert alert-danger">
+                            {$error}
+                        </p>
+                    </div>
+                {/snippet}
+            </div>
+
+        </div>
+
+    {/form}
+
+{/block}

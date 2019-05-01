@@ -14,10 +14,14 @@ use App\Components\Forms\TestStatisticsFormFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
+use App\Model\Functionality\ProblemFunctionality;
+use App\Model\Functionality\ProblemTestAssociationFunctionality;
 use App\Model\Functionality\TestFunctionality;
 use App\Model\Repository\LogoRepository;
 use App\Model\Repository\ProblemFinalRepository;
+use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTemplateRepository;
+use App\Model\Repository\ProblemTestAssociationRepository;
 use App\Model\Repository\TestRepository;
 use App\Service\FileService;
 use App\Service\GeneratorService;
@@ -65,14 +69,29 @@ class TestPresenter extends AdminPresenter
     protected $problemTemplateRepository;
 
     /**
-     * @var ProblemFinalRepository
+     * @var ProblemRepository
      */
     protected $problemRepository;
+
+    /**
+     * @var ProblemFunctionality
+     */
+    protected $problemFunctionality;
 
     /**
      * @var LogoRepository
      */
     protected $logoRepository;
+
+    /**
+     * @var ProblemTestAssociationRepository
+     */
+    protected $problemTestAssociationRepository;
+
+    /**
+     * @var ProblemTestAssociationFunctionality
+     */
+    protected $problemTestAssociationFunctionality;
 
     /**
      * @var TestFormFactory
@@ -135,8 +154,11 @@ class TestPresenter extends AdminPresenter
      * @param TestRepository $testRepository
      * @param TestFunctionality $testFunctionality
      * @param ProblemTemplateRepository $problemTemplateRepository
-     * @param ProblemFinalRepository $problemRepository
+     * @param ProblemRepository $problemRepository
+     * @param ProblemFunctionality $problemFunctionality
      * @param LogoRepository $logoRepository
+     * @param ProblemTestAssociationRepository $problemTestAssociationRepository
+     * @param ProblemTestAssociationFunctionality $problemTestAssociationFunctionality
      * @param TestFormFactory $testFormFactory
      * @param TestStatisticsFormFactory $testStatisticsFormFactory
      * @param TestGridFactory $testGridFactory
@@ -153,7 +175,10 @@ class TestPresenter extends AdminPresenter
     (
         EntityManager $entityManager,
         TestRepository $testRepository, TestFunctionality $testFunctionality,
-        ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemRepository, LogoRepository $logoRepository,
+        ProblemTemplateRepository $problemTemplateRepository,
+        ProblemRepository $problemRepository, ProblemFunctionality $problemFunctionality,
+        LogoRepository $logoRepository,
+        ProblemTestAssociationRepository $problemTestAssociationRepository, ProblemTestAssociationFunctionality $problemTestAssociationFunctionality,
         TestFormFactory $testFormFactory, TestStatisticsFormFactory $testStatisticsFormFactory, TestGridFactory $testGridFactory,
         TestBuilderService $testBuilderService, FileService $fileService, ValidationService $validationService,
         GeneratorService $generatorService, MathService $mathService,
@@ -166,7 +191,10 @@ class TestPresenter extends AdminPresenter
         $this->testFunctionality = $testFunctionality;
         $this->problemTemplateRepository = $problemTemplateRepository;
         $this->problemRepository = $problemRepository;
+        $this->problemFunctionality = $problemFunctionality;
         $this->logoRepository = $logoRepository;
+        $this->problemTestAssociationRepository = $problemTestAssociationRepository;
+        $this->problemTestAssociationFunctionality = $problemTestAssociationFunctionality;
         $this->testFormFactory = $testFormFactory;
         $this->testStatisticsFormFactory = $testStatisticsFormFactory;
         $this->testGridFactory = $testGridFactory;
@@ -186,28 +214,39 @@ class TestPresenter extends AdminPresenter
         $this->testRepository->findVariants(22);
     }
 
-    public function actionStatistics(int $testId)
+    /**
+     * @param int $id
+     */
+    public function actionStatistics(int $id)
     {
         $form = $this["statisticsForm"];
         if(!$form->isSubmitted()){
-            $this->template->testId = $testId;
-            $problems = $this->testManager->getProblems($testId);
-            $this->template->problemsCnt = count($problems);
-            $this->template->problems = $problems;
-            $this->setDefaults($form, $problems);
+            $this->template->id = $id;
+            $problemAssociations = $this->problemTestAssociationRepository->findBy(["test" => $id]);
+            $this->template->problemsCnt = count($problemAssociations);
+            $this->template->problemAssociations = $problemAssociations;
+            $this->setDefaults($form, $id, $problemAssociations);
         }
     }
 
-    public function setDefaults(IComponent $form, array $problems)
+    /**
+     * @param IComponent $form
+     * @param int $testId
+     * @param array $problemAssociations
+     */
+    public function setDefaults(IComponent $form, int $testId, array $problemAssociations)
     {
-        $form["problems_cnt"]->setDefaultValue(count($problems));
+        $form["problems_cnt"]->setDefaultValue(count($problemAssociations));
         $i = 0;
-        foreach($problems as $problem){
-            $form["problem_final_id_disabled_" . $i]->setDefaultValue($problem->problem_final_id);
-            $form["problem_final_id_" . $i]->setDefaultValue($problem->problem_final_id);
-            $form["problem_prototype_id_disabled_" . $i]->setDefaultValue($problem->problem_prototype_id);
-            $form["problem_prototype_id_" . $i]->setDefaultValue($problem->problem_prototype_id);
-            $form["success_rate_" . $i]->setDefaultValue($problem->success_rate);
+        $form["test_id"]->setDefaultValue($testId);
+        foreach($problemAssociations as $association){
+            $form["problem_final_id_disabled_" . $i]->setDefaultValue($association->getProblem()->getId());
+            $form["problem_final_id_" . $i]->setDefaultValue($association->getProblem()->getId());
+            if($association->getProblemTemplate()){
+                $form["problem_prototype_id_disabled_" . $i]->setDefaultValue($association->getProblemTemplate()->getId());
+                $form["problem_prototype_id_" . $i]->setDefaultValue($association->getProblemTemplate()->getId());
+            }
+            $form["success_rate_" . $i]->setDefaultValue($association->getSuccessRate());
             $i++;
         }
     }
@@ -248,26 +287,7 @@ class TestPresenter extends AdminPresenter
     }
 
     /**
-     * @throws \Dibi\Exception
-     * @throws \Nette\Application\AbortException
-     */
-    public function handleUploadFile()
-    {
-        $this->sendResponse( new TextResponse($this->fileService->uploadFile($this->getHttpRequest())) );
-    }
-
-    /**
-     * @throws \Nette\Application\AbortException
-     */
-    public function handleDeleteFile()
-    {
-        $this->sendResponse( new TextResponse($this->fileService->deleteFile($this->getHttpRequest())) );
-    }
-
-    /**
      * @param $name
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
     public function createComponentTestGrid($name)
@@ -401,7 +421,7 @@ class TestPresenter extends AdminPresenter
 
         $this->fileService->createTestZip($testData->testId);
 
-        //$this->redirect('default');
+        $this->redirect('default');
     }
 
     /**
@@ -444,23 +464,27 @@ class TestPresenter extends AdminPresenter
     /**
      * @param Form $form
      * @param ArrayHash $values
+     * @throws \Exception
      */
     public function handleStatisticsFormSuccess(Form $form, ArrayHash $values)
     {
         bdump($values);
         for($i = 0; $i < $values->problems_cnt; $i++) {
             if(!empty($values->{"success_rate_" . $i})){
-                $this->testManager->updateSuccessRate(
+                $this->problemTestAssociationFunctionality->update(
                     $values->{"problem_final_id_" . $i},
-                    (float) $values->{"success_rate_" . $i}
+                    ArrayHash::from([
+                        "test_id" => $values->test_id,
+                        "success_rate" => $values->{"success_rate_" . $i}
+                        ])
                 );
             }
         }
 
         for($i = 0; $i < $values->problems_cnt; $i++) {
-            $this->problemManager->calculateSuccessRate($values->{"problem_final_id_" . $i});
+            $this->problemFunctionality->calculateSuccessRate($values->{"problem_final_id_" . $i});
             if(!empty($values->{"problem_prototype_id_" . $i}))
-                $this->problemManager->calculateSuccessRate($values->{"problem_prototype_id_" . $i}, true);
+                $this->problemFunctionality->calculateSuccessRate($values->{"problem_prototype_id_" . $i}, true);
         }
     }
 

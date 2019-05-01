@@ -21,6 +21,16 @@ services:
 	router: App\RouterFactory::createRouter
 
 	#Repositories
+	repository.user:
+	    class: App\Model\Repository\UserRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\User
+
+	repository.role:
+	    class: App\Model\Repository\RoleRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\Role
+
 	repository.problem:
 	    class: App\Model\Repository\ProblemRepository
 	    tags:
@@ -117,9 +127,12 @@ services:
 	        doctrine.repositoryEntity: App\Model\Entity\TemplateJsonData
 
 	#Functionalities
+	functionality.user: App\Model\Functionality\UserFunctionality
 	functionality.problem.final: App\Model\Functionality\ProblemFinalFunctionality
 	functionality.category: App\Model\Functionality\CategoryFunctionality
 	functionality.subcategory: App\Model\Functionality\SubCategoryFunctionality
+	functionality.problem: App\Model\Functionality\ProblemFunctionality
+	functionality.problem.test.association: App\Model\Functionality\ProblemTestAssociationFunctionality
 	functionality.template: App\Model\Functionality\ProblemTemplateFunctionality
 	functionality.template.equation.linear: App\Model\Functionality\LinearEqTemplFunctionality
 	functionality.template.equation.quadratic: App\Model\Functionality\QuadraticEqTemplFunctionality
@@ -132,6 +145,8 @@ services:
 	functionality.template.jsondata: App\Model\Functionality\TemplateJsonDataFunctionality
 
 	#Factories
+	factory.grid.user: App\Components\DataGrids\UserGridFactory
+	factory.form.user: App\Components\Forms\UserFormFactory
 	factory.grid.category: App\Components\DataGrids\CategoryGridFactory
 	factory.form.category: App\Components\Forms\CategoryFormFactory
 	factory.grid.subcategory: App\Components\DataGrids\SubCategoryGridFactory

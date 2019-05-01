@@ -88,6 +88,41 @@ class ValidationService
 
         $this->validationMapping = [
 
+            "username" => function($filledVal){
+                if(empty($filledVal))
+                    return 0;
+                return -1;
+            },
+
+            "password" => function($filledVal){
+                if(empty($filledVal))
+                    return 0;
+                return -1;
+            },
+
+            //Validate password in administration User section
+            "password_confirm" => function(ArrayHash $filledVal){
+                if(empty($filledVal->password) || empty($filledVal->password_confirm))
+                    return 0;
+                if(strcmp($filledVal->password, $filledVal->password_confirm))
+                    return 0;
+                if(strlen($filledVal->password) < 8)
+                    return 1;
+                return -1;
+            },
+
+            "roles" => function(ArrayHash $filledVal){
+                if(count($filledVal) < 1)
+                    return 0;
+                return -1;
+            },
+
+            "groups" => function(ArrayHash $filledVal){
+                if(count($filledVal) < 1)
+                    return 0;
+                return -1;
+            },
+
             "label" => function($filledVal){
                 if(empty($filledVal)) return 0;
                 return -1;
@@ -211,6 +246,27 @@ class ValidationService
         ];
 
         $this->validationMessages = [
+
+            "username" => [
+                0 => "Zadejte uživatelské jméno."
+            ],
+
+            "password" => [
+                0 => "Zadejte heslo."
+            ],
+
+            "password_confirm" => [
+                0 => "Obě hesla musí být vyplněna a shodovat se.",
+                1 => "Heslo musí mít délku alespoň 8 znaků."
+            ],
+
+            "roles" => [
+                0 => "Zvolte alespoň jednu roli."
+            ],
+
+            "groups" => [
+                0 => "Zvolte alespoň jednu skupinu."
+            ],
 
             "label" => [
                 0 => "Název musí být vyplněn."

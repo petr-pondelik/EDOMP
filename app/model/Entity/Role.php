@@ -2,27 +2,30 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 29.4.19
- * Time: 21:46
+ * Date: 1.5.19
+ * Time: 22:03
  */
 
 namespace App\Model\Entity;
 
+use App\Model\Traits\ToStringTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Repository\GroupRepository")
- * @ORM\Table(name="`group`")
+ * @ORM\Entity(repositoryClass="App\Model\Repository\RoleRepository")
  *
- * Class Group
+ * Class Role
  * @package App\Model\Entity
  */
-class Group
+class Role
 {
     use Identifier;
+
+    use ToStringTrait;
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -41,24 +44,18 @@ class Group
     protected $created;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Model\Entity\SuperGroup", inversedBy="groups", cascade={"persist", "merge"})
-     *
-     * @var SuperGroup
-     */
-    protected $superGroup;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Model\Entity\User", mappedBy="groups")
+     * @ORM\ManyToMany(targetEntity="App\Model\Entity\User", mappedBy="roles")
      */
     protected $users;
 
     /**
-     * Group constructor.
+     * Role constructor.
      * @throws \Exception
      */
     public function __construct()
     {
         $this->created = new DateTime();
+        $this->users = new ArrayCollection();
     }
 
     /**
@@ -82,7 +79,7 @@ class Group
      */
     public function getCreated(): DateTime
     {
-        return DateTime::from($this->created);
+        return $this->created;
     }
 
     /**
@@ -94,26 +91,18 @@ class Group
     }
 
     /**
-     * @return SuperGroup
+     * @return mixed
      */
-    public function getSuperGroup(): SuperGroup
+    public function getUsers()
     {
-        return $this->superGroup;
+        return $this->users;
     }
 
     /**
-     * @param SuperGroup $superGroup
+     * @param mixed $users
      */
-    public function setSuperGroup(SuperGroup $superGroup): void
+    public function setUsers($users): void
     {
-        $this->superGroup = $superGroup;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return $this->getLabel();
+        $this->users = $users;
     }
 }

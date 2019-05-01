@@ -9,7 +9,7 @@
 {/block}
 
 {block headingSecond}
-    Statistika: Test {$testId}
+    Statistika: Test {$id}
 {/block}
 
 {block headingSecondLink}
@@ -36,7 +36,7 @@
 
         {var $i = 0}
 
-        {foreach $problems as $problem}
+        {foreach $problemAssociations as $association}
 
             <div class="card card-shadow border-light mb-5">
 
@@ -52,7 +52,7 @@
                         {input problem_prototype_id_disabled_$i}
                     </div>
 
-                    <p class="text-center mt-5 mb-5">{$problem->structure}</p>
+                    <p class="text-center mt-5 mb-5">{$association->getProblem()->getBody()}</p>
 
                     <div class="form-group">
                         {label success_rate_$i}

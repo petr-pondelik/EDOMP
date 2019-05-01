@@ -119,7 +119,7 @@ class ProblemTestAssociation
     /**
      * @return float
      */
-    public function getSuccessRate(): float
+    public function getSuccessRate(): ?float
     {
         return $this->successRate;
     }
@@ -167,7 +167,7 @@ class ProblemTestAssociation
     /**
      * @return ProblemTemplate
      */
-    public function getProblemTemplate(): ProblemTemplate
+    public function getProblemTemplate(): ?ProblemTemplate
     {
         return $this->problemTemplate;
     }

@@ -8,7 +8,7 @@
 
 namespace App\Components\DataGrids;
 
-use App\Model\Managers\UserManager;
+use App\Model\Repository\UserRepository;
 
 /**
  * Class UserGridFactory
@@ -17,39 +17,38 @@ use App\Model\Managers\UserManager;
 class UserGridFactory extends BaseGrid
 {
     /**
-     * @var UserManager
+     * @var UserRepository
      */
-    protected $userManager;
+    protected $userRepository;
 
     /**
      * UserGridFactory constructor.
-     * @param UserManager $userManager
+     * @param UserRepository $userRepository
      */
     public function __construct
     (
-        UserManager $userManager
+        UserRepository $userRepository
     )
     {
         parent::__construct();
-        $this->userManager = $userManager;
+        $this->userRepository = $userRepository;
     }
 
     /**
      * @param $container
      * @param $name
      * @return \Ublaboo\DataGrid\DataGrid
-     * @throws \Dibi\NotSupportedException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
     public function create($container, $name)
     {
         $grid = parent::create($container, $name);
 
-        $grid->setPrimaryKey("user_id");
+        $grid->setPrimaryKey("id");
 
-        $grid->setDataSource($this->userManager->getSelect());
+        $grid->setDataSource($this->userRepository->createQueryBuilder("er"));
 
-        $grid->addColumnNumber("user_id", "ID")
+        $grid->addColumnNumber("id", "ID")
             ->setSortable();
 
         $grid->addColumnDateTime("created", "Vytvořeno")

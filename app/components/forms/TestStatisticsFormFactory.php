@@ -19,6 +19,7 @@ class TestStatisticsFormFactory extends BaseForm
         $form = parent::create();
 
         $form->addHidden("problems_cnt");
+        $form->addHidden("test_id");
 
         for($i = 0; $i < 160; $i++){
             $form->addInteger("problem_final_id_disabled_" . $i, "ID příkladu")

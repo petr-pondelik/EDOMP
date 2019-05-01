@@ -8,6 +8,9 @@
 
 namespace App\Model\Repository;
 
+use App\Helpers\ConstHelper;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping;
 use Kdyby\Doctrine\EntityRepository;
 
 /**
@@ -16,4 +19,20 @@ use Kdyby\Doctrine\EntityRepository;
  */
 abstract class BaseRepository extends EntityRepository
 {
+    /**
+     * @var ConstHelper
+     */
+    protected $constHelper;
+
+    /**
+     * BaseRepository constructor.
+     * @param $em
+     * @param Mapping\ClassMetadata $class
+     * @param ConstHelper $constHelper
+     */
+    public function __construct($em, Mapping\ClassMetadata $class, ConstHelper $constHelper)
+    {
+        parent::__construct($em, $class);
+        $this->constHelper = $constHelper;
+    }
 }

@@ -8,6 +8,7 @@
 
 namespace App\Model\Traits;
 
+use App\Model\Entity\Role;
 use App\Model\Entity\Term;
 
 /**
@@ -21,7 +22,7 @@ trait ToStringTrait
      */
     public function __toString(): string
     {
-        if($this instanceof Term)
+        if($this instanceof Term || $this instanceof Role)
             return $this->label;
         return $this->body;
     }
