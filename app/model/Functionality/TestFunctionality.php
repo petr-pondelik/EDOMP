@@ -8,6 +8,10 @@
 
 namespace App\Model\Functionality;
 
+use App\Model\Entity\Problem;
+use App\Model\Entity\ProblemFinal;
+use App\Model\Entity\ProblemTemplate;
+use App\Model\Entity\ProblemTestAssociation;
 use App\Model\Entity\Test;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\LogoRepository;
@@ -69,6 +73,7 @@ class TestFunctionality extends BaseFunctionality
         $test->setGroups([$this->groupRepository->find($data->group_id)]);
         $test->setSchoolYear($data->school_year);
         $test->setTestNumber($data->test_number);
+        $test->setIntroductionText($data->introduction_text);
         $this->em->persist($test);
         $this->em->flush();
         return $test->getId();
@@ -82,5 +87,29 @@ class TestFunctionality extends BaseFunctionality
     public function update(int $id, ArrayHash $data): ?Object
     {
         // TODO: Implement update() method.
+        return null;
+    }
+
+    /**
+     * @param Test $test
+     * @param ProblemFinal $problem
+     * @param string $variant
+     * @param ProblemTemplate $template
+     * @param bool $newPage
+     * @throws \Exception
+     */
+    public function attachProblem(Test $test, ProblemFinal $problem, string $variant, ProblemTemplate $template = null, bool $newPage = false)
+    {
+        $association = new ProblemTestAssociation();
+        $association->setTest($test);
+        $association->setProblem($problem);
+        $association->setVariant($variant);
+        if($template !== null)
+            $association->setProblemTemplate($template);
+        $association->setNextPage($newPage);
+        $this->em->persist($association);
+        $test->addProblemAssociation($association);
+        $this->em->persist($test);
+        $this->em->flush();
     }
 }

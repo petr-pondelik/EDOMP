@@ -89,6 +89,7 @@ class Test
     {
         $this->created = new DateTime();
         $this->groups = new ArrayCollection();
+        $this->problemAssociations = new ArrayCollection();
     }
 
     /**
@@ -217,5 +218,14 @@ class Test
     public function setProblemAssociations($problemAssociations): void
     {
         $this->problemAssociations = $problemAssociations;
+    }
+
+    /**
+     * @param ProblemTestAssociation $association
+     */
+    public function addProblemAssociation(ProblemTestAssociation $association): void
+    {
+        if($this->problemAssociations->contains($association)) return;
+        $this->problemAssociations[] = $association;
     }
 }

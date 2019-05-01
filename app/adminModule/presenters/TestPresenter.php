@@ -24,6 +24,7 @@ use App\Service\GeneratorService;
 use App\Service\MathService;
 use App\Service\TestBuilderService;
 use App\Service\ValidationService;
+use Kdyby\Doctrine\EntityManager;
 use Nette\Application\Responses\CallbackResponse;
 use Nette\Application\Responses\TextResponse;
 use Nette\Application\UI\Form;
@@ -42,6 +43,11 @@ use Nette\Utils\FileSystem;
  */
 class TestPresenter extends AdminPresenter
 {
+
+    /**
+     * @var EntityManager
+     */
+    protected $entityManager;
 
     /**
      * @var TestRepository
@@ -125,6 +131,7 @@ class TestPresenter extends AdminPresenter
 
     /**
      * TestPresenter constructor.
+     * @param EntityManager $entityManager
      * @param TestRepository $testRepository
      * @param TestFunctionality $testFunctionality
      * @param ProblemTemplateRepository $problemTemplateRepository
@@ -144,6 +151,7 @@ class TestPresenter extends AdminPresenter
      */
     public function __construct
     (
+        EntityManager $entityManager,
         TestRepository $testRepository, TestFunctionality $testFunctionality,
         ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemRepository, LogoRepository $logoRepository,
         TestFormFactory $testFormFactory, TestStatisticsFormFactory $testStatisticsFormFactory, TestGridFactory $testGridFactory,
@@ -153,6 +161,7 @@ class TestPresenter extends AdminPresenter
     )
     {
         parent::__construct();
+        $this->entityManager = $entityManager;
         $this->testRepository = $testRepository;
         $this->testFunctionality = $testFunctionality;
         $this->problemTemplateRepository = $problemTemplateRepository;
@@ -174,6 +183,7 @@ class TestPresenter extends AdminPresenter
     public function renderCreate()
     {
         $this->template->logos = $this->logoRepository->findBy([], ["id" => "DESC"]);
+        $this->testRepository->findVariants(22);
     }
 
     public function actionStatistics(int $testId)
@@ -376,15 +386,22 @@ class TestPresenter extends AdminPresenter
 
         $template->setFile(__DIR__.'/templates/Test/export.latte');
 
-        foreach($testData->test as $variant){
-            $template->test = $variant;
+        $this->entityManager->flush();
+
+        $test = $this->testRepository->find($testData->testId);
+
+        bdump($this->testRepository->find($testData->testId));
+
+        foreach($testData->variants as $variant){
+            $template->variant = $variant;
+            $template->test = $test;
             FileSystem::createDir( DATA_DIR.'/tests/'.$testData->testId);
-            file_put_contents( DATA_DIR.'/tests/'.$testData->testId.'/variant_'.Strings::lower($variant['head']['variant']).'.tex', (string) $template);
+            file_put_contents( DATA_DIR.'/tests/'.$testData->testId.'/variant_'.Strings::lower($variant).'.tex', (string) $template);
         }
 
         $this->fileService->createTestZip($testData->testId);
 
-        $this->redirect('default');
+        //$this->redirect('default');
     }
 
     /**

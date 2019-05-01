@@ -179,4 +179,20 @@ class ProblemTestAssociation
     {
         $this->problemTemplate = $problemTemplate;
     }
+
+    /**
+     * @return Test
+     */
+    public function getTest(): Test
+    {
+        return $this->test;
+    }
+
+    /**
+     * @param Test $test
+     */
+    public function setTest(Test $test): void
+    {
+        $this->test = $test;
+    }
 }

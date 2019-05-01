@@ -13,6 +13,7 @@ use App\Model\Entity\ProblemCondition;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemFinalRepository;
+use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -25,6 +26,11 @@ use Nette\Utils\ArrayHash;
  */
 class ProblemFinalFunctionality extends BaseFunctionality
 {
+
+    /**
+     * @var ProblemRepository
+     */
+    protected $problemRepository;
 
     /**
      * @var ProblemTypeRepository
@@ -49,7 +55,8 @@ class ProblemFinalFunctionality extends BaseFunctionality
     /**
      * ProblemFinalFunctionality constructor.
      * @param EntityManager $entityManager
-     * @param ProblemFinalRepository $problemRepository
+     * @param ProblemFinalRepository $repository
+     * @param ProblemRepository $problemRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param DifficultyRepository $difficultyRepository
@@ -58,13 +65,15 @@ class ProblemFinalFunctionality extends BaseFunctionality
     public function __construct
     (
         EntityManager $entityManager,
-        ProblemFinalRepository $problemRepository,
+        ProblemFinalRepository $repository,
+        ProblemRepository $problemRepository,
         ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository
     )
     {
         parent::__construct($entityManager);
-        $this->repository = $problemRepository;
+        $this->repository = $repository;
+        $this->problemRepository = $problemRepository;
         $this->problemTypeRepository = $problemTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->difficultyRepository = $difficultyRepository;
@@ -73,24 +82,36 @@ class ProblemFinalFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @param array|null $conditions
      * @return int
      * @throws \Exception
      */
-    public function create(ArrayHash $data): int
+    public function create(ArrayHash $data, array $conditions = null): int
     {
         $problem = new ProblemFinal();
 
         $problem->setTextBefore($data->text_before);
         $problem->setBody($data->body);
         $problem->setTextAfter($data->text_after);
-        $problem->setResult($data->result);
+        if(isset($data->result))
+            $problem->setResult($data->result);
+        if(isset($data->is_generated))
+            $problem->setIsGenerated($data->is_generated);
+
         $problem->setProblemType($this->problemTypeRepository->find($data->type));
         $problem->setDifficulty($this->difficultyRepository->find($data->difficulty));
         $problem->setSubCategory($this->subCategoryRepository->find($data->subcategory));
-        $problem = $this->attachConditions($problem, $data);
+        if(isset($data->problem_template_id))
+            $problem->setProblemTemplate($this->problemRepository->find($data->problem_template_id));
+
+        if($conditions === null)
+            $problem = $this->attachConditions($problem, $data);
+        else
+            $problem->setConditions($conditions);
 
         $this->em->persist($problem);
         $this->em->flush();
+
         return $problem->getId();
     }
 

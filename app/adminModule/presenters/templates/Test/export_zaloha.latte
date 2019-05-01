@@ -1,25 +1,62 @@
-\documentclass[12pt]{{(exam)}}
+\documentclass[czech, a4paper, 12pt]{{(exam)}}
 
-\usepackage{{(graphicx)}}
+\usepackage[czech]{{(babel)}}
 \usepackage[utf8]{{(inputenc)}}
+\usepackage{{(graphicx)}}
+\usepackage{{(subfigure)}}
+\usepackage{{(latexsym)}}
+
+\setlength{{('\topmargin')}}{{('-2cm')}}
+\setlength{{('\textwidth')}}{{('19cm')}}
+\setlength{{('\textheight')}}{{('25cm')}}
+\setlength{{('\evensidemargin')}}{{('-2cm')}}
+\setlength{{('\oddsidemargin')}}{{('-2cm')}}
+
+\pagestyle{{(empty)}}
+
+{dump $test}
 
 \begin{{(document)}}
+\begin{{(minipage)}}{{('9cm')}}
+{ifset $test->getLogo()}
+    \includegraphics[width=8cm]{{($test->getLogo()->getPath())}}
+{/ifset}
+\end{{(minipage)}}
+\begin{{(minipage)}}{{('5cm')}}
+\begin{{(tabbing)}}
+{$test->getSchoolYear()}, {$test['head']['test_term']}, {$test['head']['test_number']}, {$test['head']['variant']}\\[.1cm]
+$\Box$ řádný, \hspace{{('.2cm')}} $\Box$ náhradní \hspace{{('.2cm')}}, $\Box$ opravný. \\[.1cm]
+Skupina: {$test['head']['group']} \\[.1cm]
+Jméno: \hspace{{('2cm')}} \= \rule{{('4.7cm')}}{{('.1mm')}} \\[.1cm]
+Datum: \hspace{{('2cm')}} \= \rule{{('4.7cm')}}{{('.1mm')}} \\[.1cm]
+Počet papírů:\> zadání + \rule{{('1.2cm')}}{{('.1mm')}}
+\end{{(tabbing)}}
+\end{{(minipage)}}
 
-\lhead{{ \includegraphics[width=5cm]{{($test['header']['logo'])}} }}
+\vspace{{('.3cm')}}
+\begin{{('center')}}
+\rule{{('17cm')}}{{('.7mm')}}
+\end{{('center')}}
+\vspace{{('.3cm')}}
 
-\begin{{(figure)}}
-\includegraphics[width=.5\textwidth]{{($test['header']['logo'])}}
-\end{{(figure)}}
+{$test['body']['introduction_text']}
 
-\begin{{(questions)}}
+\begin{{(enumerate)}}
+
+{dump $test['body']}
 
 {foreach $test['body']['problems'] as $key => $problem}
 
-    \question {$problem['before']} {$problem['structure']} {$problem['after']}
-    \vspace{ \stretch{{(1)}} }
+    \item {$problem['before']}
+    {$problem['structure']}
+    {$problem['after']}
+
+    {if $problem["newpage"]}
+        \newpage
+    {/if}
 
 {/foreach}
 
-\end{{(questions)}}
+\end{{(enumerate)}}
 
 \end{{(document)}}

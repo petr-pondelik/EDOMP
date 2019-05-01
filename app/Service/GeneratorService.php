@@ -220,9 +220,10 @@ class GeneratorService
 
         if($prototypeJsonData){
             $matchesArr = Json::decode($prototypeJsonData, Json::FORCE_ARRAY);
-            $matchesCnt = count($matchesArr);
+            bdump($matchesArr);
+            $matchesCnt = count($matchesArr["matches"]);
             bdump($matchesCnt);
-            $params = $matchesArr[$this->generateInteger(0, $matchesCnt - 1)];
+            $params = $matchesArr["matches"][$this->generateInteger(0, $matchesCnt - 1)];
         }
         else{
             $params = $this->generateParams($problemTemplate->getBody());

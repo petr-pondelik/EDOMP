@@ -10,6 +10,7 @@ namespace App\Service;
 
 use App\Model\Functionality\LogoFunctionality;
 use App\Model\Repository\LogoRepository;
+use App\Model\Repository\TestRepository;
 use Nette\FileNotFoundException;
 use Nette\Http\IRequest;
 use Nette\IOException;
@@ -24,7 +25,6 @@ use Nette\Utils\Strings;
  */
 class FileService
 {
-
     /**
      * @var string
      */
@@ -34,6 +34,11 @@ class FileService
      * @var string
      */
     protected $logosTmpDir;
+
+    /**
+     * @var TestRepository
+     */
+    protected $testRepository;
 
     /**
      * @var LogoRepository
@@ -49,17 +54,19 @@ class FileService
      * FileService constructor.
      * @param string $logosDir
      * @param string $logosTmpDir
+     * @param TestRepository $testRepository
      * @param LogoRepository $logoRepository
      * @param LogoFunctionality $logoFunctionality
      */
     public function __construct
     (
         string $logosDir, string $logosTmpDir,
-        LogoRepository $logoRepository, LogoFunctionality $logoFunctionality
+        TestRepository $testRepository, LogoRepository $logoRepository, LogoFunctionality $logoFunctionality
     )
     {
         $this->logosDir = $logosDir;
         $this->logosTmpDir = $logosTmpDir;
+        $this->testRepository = $testRepository;
         $this->logoRepository = $logoRepository;
         $this->logoFunctionality = $logoFunctionality;
     }
@@ -212,18 +219,20 @@ class FileService
      */
     public function createTestZip(int $testId)
     {
-        /*$zip = new \ZipArchive();
+        $zip = new \ZipArchive();
 
-        $variantRows = $this->testManager->getVariants($testId);
+        $variants = $this->testRepository->findVariants($testId);
+
+        bdump($variants);
 
         //Check files existence
-        foreach ($variantRows as $row){
-            if(!file_exists(DATA_DIR  . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($row->variant) . '.tex' ))
+        foreach ($variants as $variant){
+            if(!file_exists(DATA_DIR  . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($variant["variant"]) . '.tex' ))
                 throw new FileNotFoundException('Soubor s testem nenalezen.');
         }
 
-        $logoId = $this->testManager->getById($testId)->logo_id;
-        $logoExt = $this->logoRepository->getById((int) $logoId)->extension;
+        $logoId = $this->testRepository->find($testId)->getLogo()->getId();
+        $logoExt = $this->logoRepository->find($logoId)->getExtension();
 
         //Check logo file existence
         if(!file_exists(LOGOS_DIR . DIRECTORY_SEPARATOR . $logoId . DIRECTORY_SEPARATOR . 'file' . $logoExt))
@@ -232,15 +241,15 @@ class FileService
         if(!$zip->open(DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'test_' . $testId . '.zip', \ZipArchive::CREATE))
             throw new IOException('Zip archiv nemohl být vytvořen.');
 
-        foreach ($variantRows as $row)
+        foreach ($variants as $variant)
             $zip->addFile(
-                DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($row->variant) . '.tex',
-                'variant_' . Strings::lower($row->variant) . '.tex'
+                DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($variant["variant"]) . '.tex',
+                'variant_' . Strings::lower($variant["variant"]) . '.tex'
             );
 
         $zip->addFile(LOGOS_DIR . DIRECTORY_SEPARATOR . $logoId . DIRECTORY_SEPARATOR . 'file' . $logoExt, 'file' . $logoExt);
 
-        $zip->close();*/
+        $zip->close();
     }
 
     /**

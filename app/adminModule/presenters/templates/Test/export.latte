@@ -14,17 +14,23 @@
 
 \pagestyle{{(empty)}}
 
+{dump $test}
+
 \begin{{(document)}}
 \begin{{(minipage)}}{{('9cm')}}
-{ifset $test['head']['logo']}
-\includegraphics[width=8cm]{{($test['head']['logo'])}}
-{/ifset}
+{if $test->getLogo() !== null}
+\includegraphics[width=8cm]{{('./file' . $test->getLogo()->getExtension())}}
+{/if}
 \end{{(minipage)}}
 \begin{{(minipage)}}{{('5cm')}}
 \begin{{(tabbing)}}
-{$test['head']['school_year']}, {$test['head']['test_term']}, {$test['head']['test_number']}, {$test['head']['variant']}\\[.1cm]
-$\Box$ řádný, \hspace{{('.2cm')}} $\Box$ náhradní \hspace{{('.2cm')}}, $\Box$ opravný. \\[.1cm]
-Skupina: {$test['head']['group']} \\[.1cm]
+{$test->getSchoolYear()}, {$test->getTerm()}, test {$test->getTestNumber()}, {$variant}\\[.1cm]
+$\Box$ řádný, \hspace{{('.2cm')}} $\Box$ náhradní, \hspace{{('.2cm')}} $\Box$ opravný. \\[.1cm]
+{dump $test->getGroups()->getValues()}
+Skupina:
+{foreach $test->getGroups()->getValues() as $group}
+$\Box$ {$group->getLabel()}, \hspace{{('.2cm')}} \\[.1cm]
+{/foreach}
 Jméno: \hspace{{('2cm')}} \= \rule{{('4.7cm')}}{{('.1mm')}} \\[.1cm]
 Datum: \hspace{{('2cm')}} \= \rule{{('4.7cm')}}{{('.1mm')}} \\[.1cm]
 Počet papírů:\> zadání + \rule{{('1.2cm')}}{{('.1mm')}}
@@ -37,20 +43,22 @@ Počet papírů:\> zadání + \rule{{('1.2cm')}}{{('.1mm')}}
 \end{{('center')}}
 \vspace{{('.3cm')}}
 
-{$test['body']['introduction_text']}
+{$test->getIntroductionText()}
 
 \begin{{(enumerate)}}
 
-{dump $test['body']}
+{foreach $test->getProblemAssociations()->getValues() as $key => $problemAssociation}
 
-{foreach $test['body']['problems'] as $key => $problem}
+    {if $problemAssociation->getVariant() == $variant}
 
-    \item {$problem['before']}
-    {$problem['structure']}
-    {$problem['after']}
+    \item {$problemAssociation->getProblem()->getTextBefore()}
+    {$problemAssociation->getProblem()->getBody()}
+    {$problemAssociation->getProblem()->getTextAfter()}
 
-    {if $problem["newpage"]}
+    {if $problemAssociation->isNextPage()}
         \newpage
+    {/if}
+
     {/if}
 
 {/foreach}
