@@ -297,4 +297,20 @@ abstract class Problem
     {
         $this->testAssociations = $testAssociations;
     }
+
+    /**
+     * @return bool
+     */
+    public function isTemplate(): bool
+    {
+        return $this->isTemplate;
+    }
+
+    /**
+     * @param bool $isTemplate
+     */
+    public function setIsTemplate(bool $isTemplate): void
+    {
+        $this->isTemplate = $isTemplate;
+    }
 }

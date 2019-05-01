@@ -45,10 +45,10 @@ class SubCategoryFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return void
+     * @return int
      * @throws \Exception
      */
-    public function create(ArrayHash $data): void
+    public function create(ArrayHash $data): int
     {
         $subcategory = new SubCategory();
         $category = $this->categoryRepository->find($data->category);
@@ -58,6 +58,7 @@ class SubCategoryFunctionality extends BaseFunctionality
 
         $this->em->persist($subcategory);
         $this->em->flush();
+        return $subcategory->getId();
     }
 
     /**

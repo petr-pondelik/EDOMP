@@ -144,7 +144,7 @@ class Test
      */
     public function getCreated(): DateTime
     {
-        return $this->created;
+        return DateTime::from($this->created);
     }
 
     /**

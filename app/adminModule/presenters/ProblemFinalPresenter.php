@@ -12,7 +12,7 @@ use App\Components\DataGrids\ProblemGridFactory;
 use App\Components\Forms\ProblemFormFactory;
 use App\Helpers\ConstHelper;
 use App\Model\Entity\ProblemFinal;
-use App\Model\Functionality\ProblemFunctionality;
+use App\Model\Functionality\ProblemFinalFunctionality;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemFinalRepository;
 use App\Model\Repository\ProblemTypeRepository;
@@ -45,7 +45,7 @@ class ProblemFinalPresenter extends AdminPresenter
     protected $problemRepository;
 
     /**
-     * @var ProblemFunctionality
+     * @var ProblemFinalFunctionality
      */
     protected $problemFunctionality;
 
@@ -75,7 +75,7 @@ class ProblemFinalPresenter extends AdminPresenter
      * @param ProblemFormFactory $problemFormFactory
      * @param ProblemFinalRepository $problemRepository
      * @param ProblemTypeRepository $problemTypeRepository
-     * @param ProblemFunctionality $problemFunctionality
+     * @param ProblemFinalFunctionality $problemFunctionality
      * @param ProblemConditionRepository $problemConditionRepository
      * @param ValidationService $validationService
      * @param ConstHelper $constHelper
@@ -84,7 +84,7 @@ class ProblemFinalPresenter extends AdminPresenter
     (
         ProblemGridFactory $problemGridFactory, ProblemFormFactory $problemFormFactory,
         ProblemFinalRepository $problemRepository, ProblemTypeRepository $problemTypeRepository,
-        ProblemFunctionality $problemFunctionality,
+        ProblemFinalFunctionality $problemFunctionality,
         ProblemConditionRepository $problemConditionRepository,
         ValidationService $validationService,
         ConstHelper $constHelper

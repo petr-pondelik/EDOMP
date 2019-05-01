@@ -117,7 +117,7 @@ services:
 	        doctrine.repositoryEntity: App\Model\Entity\TemplateJsonData
 
 	#Functionalities
-	functionality.problem: App\Model\Functionality\ProblemFunctionality
+	functionality.problem.final: App\Model\Functionality\ProblemFinalFunctionality
 	functionality.category: App\Model\Functionality\CategoryFunctionality
 	functionality.subcategory: App\Model\Functionality\SubCategoryFunctionality
 	functionality.template: App\Model\Functionality\ProblemTemplateFunctionality

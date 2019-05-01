@@ -48,10 +48,10 @@ class ArithmeticSeqTemplFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return void
+     * @return int
      * @throws \Exception
      */
-    public function create(ArrayHash $data): void
+    public function create(ArrayHash $data): int
     {
         $templ = new ArithmeticSeqTempl();
         $templ = $this->setBaseValues($templ, $data);
@@ -59,6 +59,7 @@ class ArithmeticSeqTemplFunctionality extends BaseFunctionality
         $templ->setFirstN($data->first_n);
         $this->em->persist($templ);
         $this->em->flush();
+        return $templ->getId();
     }
 
     /**

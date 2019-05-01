@@ -10,6 +10,7 @@ namespace App\Service;
 
 use App\Helpers\ConstHelper;
 use App\Helpers\StringsHelper;
+use App\Model\Entity\ProblemTemplate;
 use App\Model\Repository\ProblemTemplateRepository;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
@@ -199,20 +200,20 @@ class GeneratorService
     }
 
     /**
-     * @param $problemPrototype
+     * @param ProblemTemplate $problemTemplate
      * @return string
      * @throws \Nette\Utils\JsonException
      */
-    public function generateWithConditions($problemPrototype)
+    public function generateWithConditions(ProblemTemplate $problemTemplate)
     {
         //TODO: Generate problem final that corresponds to prototype conditions
         //Use JSON matches array of problemPrototype
 
-        bdump($problemPrototype);
+        bdump($problemTemplate);
 
-        $parametrized = $this->stringsHelper::getParametrized($problemPrototype->structure);
+        $parametrized = $this->stringsHelper::getParametrized($problemTemplate->getBody());
 
-        $prototypeJsonData = $this->problemTemplateRepository->find($problemPrototype->problem_id)->getMatches();
+        $prototypeJsonData = $this->problemTemplateRepository->find($problemTemplate->getId())->getMatches();
         $matchesArr = null;
 
         bdump($prototypeJsonData);
@@ -224,7 +225,7 @@ class GeneratorService
             $params = $matchesArr[$this->generateInteger(0, $matchesCnt - 1)];
         }
         else{
-            $params = $this->generateParams($problemPrototype->structure);
+            $params = $this->generateParams($problemTemplate->getBody());
         }
 
         bdump($params);

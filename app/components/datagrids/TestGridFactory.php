@@ -53,7 +53,7 @@ class TestGridFactory extends BaseGrid
     {
         $grid = parent::create($container, $name);
 
-        $groupOptions = $this->groupRepository->findAssoc([], "id");
+        //$groupOptions = $this->groupRepository->findAssoc([], "id");
 
         $grid->setPrimaryKey('id');
 
@@ -68,11 +68,11 @@ class TestGridFactory extends BaseGrid
             ->setFormat('d.m.Y H:i:s')
             ->setSortable();
 
-        $grid->addColumnText('group', 'Skupina', "group.id")
+        /*$grid->addColumnText('group', 'Skupina', "group.id")
             ->addAttributes(['class' => 'text-center'])
             ->setSortable("er.id")
             ->setReplacement($groupOptions)
-            ->setFilterMultiSelect($groupOptions);
+            ->setFilterMultiSelect($groupOptions);*/
 
         return $grid;
     }

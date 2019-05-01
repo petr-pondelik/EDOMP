@@ -42,9 +42,9 @@ abstract class BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return void
+     * @return int
      */
-    abstract public function create(ArrayHash $data): void;
+    abstract public function create(ArrayHash $data): int;
 
     /**
      * @param int $id

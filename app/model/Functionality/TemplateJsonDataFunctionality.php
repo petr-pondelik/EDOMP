@@ -46,10 +46,10 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
     /**
      * @param ArrayHash $data
      * @param int|null $templateId
-     * @return void
+     * @return int
      * @throws \Exception
      */
-    public function create(ArrayHash $data, int $templateId = null): void
+    public function create(ArrayHash $data, int $templateId = null): int
     {
         if(!$templateId)
             $templateId = $this->problemTemplateRepository->getSequenceVal();
@@ -60,7 +60,7 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
             $jsonData->setJsonData($data->jsonData);
             $this->em->persist($jsonData);
             $this->em->flush();
-            return;
+            return false;
         }
 
         $jsonData = new TemplateJsonData();
@@ -68,6 +68,7 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
         $jsonData->setTemplateId($templateId);
         $this->em->persist($jsonData);
         $this->em->flush();
+        return $jsonData->getId();
     }
 
     /**

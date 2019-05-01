@@ -8,18 +8,19 @@
 
 namespace App\Service;
 
+use App\Model\Entity\ProblemFinal;
 use App\Model\Functionality\LogoFunctionality;
-use App\Model\Functionality\ProblemFunctionality;
+use App\Model\Functionality\ProblemFinalFunctionality;
 use App\Model\Functionality\ProblemTemplateFunctionality;
 use App\Model\Functionality\TestFunctionality;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\LogoRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemFinalRepository;
+use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\TermRepository;
 use App\Model\Repository\TestRepository;
-use Dibi\Connection;
 use Dibi\UniqueConstraintViolationException;
 use Nette\NotSupportedException;
 use Nette\Utils\ArrayHash;
@@ -37,6 +38,11 @@ class TestBuilderService
     protected $termRepository;
 
     /**
+     * @var ProblemRepository
+     */
+    protected $problemRepository;
+
+    /**
      * @var ProblemTemplateRepository
      */
     protected $problemTemplateRepository;
@@ -47,9 +53,9 @@ class TestBuilderService
     protected $problemTemplateFunctionality;
 
     /**
-     * @var ProblemFunctionality
+     * @var ProblemFinalFunctionality
      */
-    protected $problemFunctionality;
+    protected $problemFinalFunctionality;
 
     /**
      * @var ProblemConditionRepository
@@ -89,9 +95,10 @@ class TestBuilderService
     /**
      * TestBuilderService constructor.
      * @param TermRepository $termRepository
+     * @param ProblemRepository $problemRepository
      * @param ProblemTemplateRepository $problemTemplateRepository
      * @param ProblemTemplateFunctionality $problemTemplateFunctionality
-     * @param ProblemFunctionality $problemFunctionality
+     * @param ProblemFinalFunctionality $problemFinalFunctionality
      * @param ProblemConditionRepository $problemConditionRepository
      * @param LogoRepository $logoRepository
      * @param LogoFunctionality $logoFunctionality
@@ -101,18 +108,19 @@ class TestBuilderService
      */
     public function __construct
     (
-        TermRepository $termRepository,
+        TermRepository $termRepository, ProblemRepository $problemRepository,
         ProblemTemplateRepository $problemTemplateRepository, ProblemTemplateFunctionality $problemTemplateFunctionality,
-        ProblemFunctionality $problemFunctionality, ProblemConditionRepository $problemConditionRepository,
+        ProblemFinalFunctionality $problemFinalFunctionality, ProblemConditionRepository $problemConditionRepository,
         LogoRepository $logoRepository, LogoFunctionality $logoFunctionality,
         GroupRepository $groupRepository, TestFunctionality $testFunctionality,
         GeneratorService $generatorService
     )
     {
         $this->termRepository = $termRepository;
+        $this->problemRepository = $problemRepository;
         $this->problemTemplateRepository = $problemTemplateRepository;
         $this->problemTemplateFunctionality = $problemTemplateFunctionality;
-        $this->problemFunctionality = $problemFunctionality;
+        $this->problemFinalFunctionality = $problemFinalFunctionality;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->logoRepository = $logoRepository;
         $this->logoFunctionality = $logoFunctionality;
@@ -150,15 +158,13 @@ class TestBuilderService
     /**
      * @param ArrayHash $data
      * @return ArrayHash|null
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
      */
     public function getLogoData(ArrayHash $data)
     {
         $logoId = $data->logo_file_hidden;
 
-        $logo = $this->logoManager->getById($logoId);
-        $logoPath = './' . Strings::substring($logo->path, Strings::indexOf($logo->path, DIRECTORY_SEPARATOR, -1)+1);
+        $logo = $this->logoRepository->find($logoId);
+        $logoPath = './' . Strings::substring($logo->getPath(), Strings::indexOf($logo->getPath(), DIRECTORY_SEPARATOR, -1)+1);
 
         $resArr = [
             "logoId" => $logoId,
@@ -173,8 +179,6 @@ class TestBuilderService
      * @param ArrayHash $data
      * @param string|null $logoPath
      * @return array
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
      */
     public function buildVariantHead(string $variant, ArrayHash $data, string $logoPath = null)
     {
@@ -183,8 +187,8 @@ class TestBuilderService
         $testHeader["variant"] = $variant;
         if($logoPath)
             $testHeader["logo"] = $logoPath;
-        $testHeader["group"] = $this->groupManager->getById($data->group)->label;
-        $testHeader["test_term"] = $this->testTermManager->getById($data->test_term)->label;
+        $testHeader["group"] = $this->groupRepository->find($data->group)->getLabel();
+        $testHeader["test_term"] = $this->termRepository->find($data->test_term)->getLabel();
         $testHeader["school_year"] = $data->school_year;
         $testHeader["test_number"] = $data->test_number;
 
@@ -196,8 +200,6 @@ class TestBuilderService
      * @param string $variant
      * @param ArrayHash $data
      * @return mixed
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
      * @throws \Nette\Utils\JsonException
      */
     public function buildVariantBody(int $testId, string $variant, ArrayHash $data)
@@ -208,20 +210,20 @@ class TestBuilderService
 
             $problemPrototypeId = null;
             $problemId = $data['problem_'.$i];
-            $problem = $this->problemManager->getById($problemId);
+            $problem = $this->problemRepository->find($problemId);
 
-            $body['problems'][$i]['before'] = $problem->text_before;
+            $body['problems'][$i]['before'] = $problem->getTextBefore();
 
             //If the problem is prototype, it needs to be generated to it's final form
-            if($problem->is_prototype){
+            if($problem->isTemplate()){
 
                 $generatedFinal = $this->generatorService->generateWithConditions($problem);
 
                 //Build final problem object
                 $prototypeData = new ArrayHash();
-                $prototypeData["before"] = $problem->text_before;
+                $prototypeData["before"] = $problem->getTextBefore();
                 $prototypeData["structure"] = $generatedFinal;
-                $prototypeData["after"] = $problem->text_after;
+                $prototypeData["after"] = $problem->getTextAfter();
                 $prototypeData["difficulty"] = $problem->difficulty_id;
                 $prototypeData["type"] = $problem->problem_type_id;
                 $prototypeData["result"] = "";
@@ -230,25 +232,28 @@ class TestBuilderService
                 $prototypeData["variable"] = $problem->variable;
 
                 //Get prototype conditions
-                $prototypeConditions = $this->conditionManager->getByProblem($problemId);
+                $prototypeConditions = $problem->getConditions();
 
                 //Store generated final problem to DB and switch problemId to it's ID
                 $problemPrototypeId = $problemId;
-                $problemId = $this->problemFinalManager->createFinal($prototypeData, $prototypeConditions, true, true);
+
+                //TODO: CREATE FINAL PROBLEM CORRESPONDING
+
+                $problemId = $this->problemFinalFunctionality->create($prototypeData, $prototypeConditions);
                 //$this->problemManager->update($problemPrototypeId, ['is_used' => true]);
 
-                $body['problems'][$i]['structure'] = $generatedFinal;
+                $body['problems'][$i]['body'] = $generatedFinal;
 
             }
             else{
-                $body['problems'][$i]['structure'] = $problem->structure;
+                $body['problems'][$i]['body'] = $problem->getBody();
             }
 
-            $body['problems'][$i]['after'] = $problem->text_after;
+            $body['problems'][$i]['after'] = $problem->getTextAfter();
             $body["problems"][$i]["newpage"] = $data->{"newpage_" . $i};
 
             //Attach current problem to the created test
-            $this->testManager->attachProblem($testId, $variant, $problemId, $problemPrototypeId ?? null, $data->{"newpage_" . $i});
+            $this->testFunctionality->attachProblem($testId, $variant, $problemId, $problemPrototypeId ?? null, $data->{"newpage_" . $i});
         }
 
         return $body;
@@ -260,8 +265,6 @@ class TestBuilderService
      * @param ArrayHash $data
      * @param $logoData
      * @return array
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
      * @throws \Nette\Utils\JsonException
      */
     public function buildTestVariant(int $testId, string $variant, ArrayHash $data, $logoData)
@@ -280,8 +283,6 @@ class TestBuilderService
     /**
      * @param ArrayHash $data
      * @return bool|ArrayHash
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
      * @throws \Nette\Utils\JsonException
      */
     public function buildTest(ArrayHash $data)
@@ -293,17 +294,17 @@ class TestBuilderService
 
         bdump($variants);
 
-        $testId = $this->testManager->create([
+        $testId = $this->testFunctionality->create(ArrayHash::from([
             "logo_id" => $logoData->logoId,
-            "test_term_id" => $data->test_term,
+            "term_id" => $data->test_term,
             "school_year" => $data->school_year,
             "test_number" => $data->test_number,
             "group_id" => $data->group
-        ]);
+        ]));
 
-        $this->logoManager->update($logoData->logoId,[
+        $this->logoFunctionality->update($logoData->logoId, ArrayHash::from([
             "is_used" => true
-        ]);
+        ]));
 
         foreach($variants as $variant){
             //Catch if there is one final problem more than once

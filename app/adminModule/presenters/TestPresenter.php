@@ -268,11 +268,11 @@ class TestPresenter extends AdminPresenter
             ->setIcon('trash')
             ->setClass('btn btn-danger btn-sm ajax');
 
-        $grid->addAction('downloadSource', '', 'downloadSource!', ['test_id'])
+        $grid->addAction('downloadSource', '', 'downloadSource!', ['id'])
             ->setIcon('download')
             ->setClass('btn btn-primary btn-sm');
 
-        $grid->addAction('pdf', '', 'pdfOverleaf!', ['test_id'])
+        $grid->addAction('pdf', '', 'pdfOverleaf!', ['id'])
             ->setIcon('file-pdf')
             ->setClass('btn btn-primary btn-sm')
             ->addAttributes([
@@ -286,63 +286,66 @@ class TestPresenter extends AdminPresenter
     }
 
     /**
-     * @param int $test_id
-     * @throws \Dibi\Exception
+     * @param int $id
+     * @throws \Exception
      */
-    public function handleDelete(int $test_id)
+    public function handleDelete(int $id)
     {
-        $this->testManager->delete($test_id);
+        $this->testFunctionality->delete($id);
         $this["testGrid"]->reload();
         $this->flashMessage("Test úspěšně odstraněn.", "success");
         $this->redrawControl("mainFlashesSnippet");
     }
 
     /**
-     * @param int $test_id
+     * @param int $id
      * @throws \Nette\Application\AbortException
      */
-    public function handlePdfOverleaf(int $test_id)
+    public function handlePdfOverleaf(int $id)
     {
-        $this->fileService->moveTestDirToPublic($test_id);
-        $this->redirectUrl('https://www.overleaf.com/docs?snip_uri=http://wiedzmin.4fan.cz/data_public/tests/test_' . $test_id . '.zip');
+        $this->fileService->moveTestDirToPublic($id);
+        $this->redirectUrl('https://www.overleaf.com/docs?snip_uri=http://wiedzmin.4fan.cz/data_public/tests/test_' . $id . '.zip');
     }
 
     /**
-     * @param int $test_id
+     * @param int $id
      * @throws \Nette\Application\AbortException
      */
-    public function handleDownloadSource(int $test_id)
+    public function handleDownloadSource(int $id)
     {
         //TODO: Create response decorator as Class
 
-        $this->sendResponse(new CallbackResponse(function (IRequest $request, IResponse $response) use ($test_id) {
+        $this->sendResponse(new CallbackResponse(function (IRequest $request, IResponse $response) use ($id) {
             $response = new Response();
             $response->setHeader('Content-type', 'application/zip');
             $response->setHeader(
                 'Content-Disposition',
-                'attachment; filename=test_' . $test_id . '.zip'
+                'attachment; filename=test_' . $id . '.zip'
             );
             $response->setHeader(
                 "Content-length",
-                filesize(DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $test_id . DIRECTORY_SEPARATOR . 'test_' . $test_id . '.zip')
+                filesize(DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'test_' . $id . '.zip')
             );
             $response->setHeader("Pragma", 'no-cache');
             $response->setHeader("Expires", '0');
 
-            readfile(DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $test_id . DIRECTORY_SEPARATOR . 'test_' . $test_id . '.zip');
+            readfile(DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'test_' . $id . '.zip');
 
         }));
     }
 
-    public function handleStatistics(int $test_id)
+    /**
+     * @param int $id
+     * @throws \Nette\Application\AbortException
+     */
+    public function handleStatistics(int $id)
     {
-        $this->redirect("statistics", $test_id);
+        $this->redirect("statistics", $id);
     }
 
     /**
      * @return \Nette\Application\UI\Form
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
+     * @throws \Exception
      */
     public function createComponentCreateForm()
     {
@@ -355,8 +358,6 @@ class TestPresenter extends AdminPresenter
     /**
      * @param Form $form
      * @param $values
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
      * @throws \Nette\Application\AbortException
      * @throws \Nette\Utils\JsonException
      */
@@ -413,6 +414,9 @@ class TestPresenter extends AdminPresenter
         $this->redrawControl("testNumberErrorSnippet");
     }
 
+    /**
+     * @return Form
+     */
     public function createComponentStatisticsForm()
     {
         $form = $this->testStatisticsFormFactory->create();
@@ -420,6 +424,10 @@ class TestPresenter extends AdminPresenter
         return $form;
     }
 
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
     public function handleStatisticsFormSuccess(Form $form, ArrayHash $values)
     {
         bdump($values);

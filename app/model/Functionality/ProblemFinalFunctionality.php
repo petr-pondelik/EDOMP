@@ -20,10 +20,10 @@ use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class ProblemFunctionality
+ * Class ProblemFinalFunctionality
  * @package App\Model\Functionality
  */
-class ProblemFunctionality extends BaseFunctionality
+class ProblemFinalFunctionality extends BaseFunctionality
 {
 
     /**
@@ -47,7 +47,7 @@ class ProblemFunctionality extends BaseFunctionality
     protected $subCategoryRepository;
 
     /**
-     * ProblemFunctionality constructor.
+     * ProblemFinalFunctionality constructor.
      * @param EntityManager $entityManager
      * @param ProblemFinalRepository $problemRepository
      * @param ProblemTypeRepository $problemTypeRepository
@@ -73,9 +73,10 @@ class ProblemFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @return int
      * @throws \Exception
      */
-    public function create(ArrayHash $data): void
+    public function create(ArrayHash $data): int
     {
         $problem = new ProblemFinal();
 
@@ -90,6 +91,7 @@ class ProblemFunctionality extends BaseFunctionality
 
         $this->em->persist($problem);
         $this->em->flush();
+        return $problem->getId();
     }
 
     /**

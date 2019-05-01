@@ -36,14 +36,16 @@ class LogoFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @return int
      * @throws \Exception
      */
-    public function create(ArrayHash $data): void
+    public function create(ArrayHash $data): int
     {
         $logo = new Logo();
         $logo->setExtensionTmp($data->extension_tmp);
         $this->em->persist($logo);
         $this->em->flush();
+        return $logo->getId();
     }
 
     /**

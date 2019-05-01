@@ -30,7 +30,7 @@ class ProblemTemplateFunctionality extends BaseFunctionality
     use ProblemTemplateFunctionalityTrait;
 
     /**
-     * ProblemFunctionality constructor.
+     * ProblemFinalFunctionality constructor.
      * @param EntityManager $entityManager
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
@@ -68,8 +68,12 @@ class ProblemTemplateFunctionality extends BaseFunctionality
         return $this->setBaseValues($templ, $data, $id, $fromDataGrid);
     }
 
-    public function create(ArrayHash $data): void
+    /**
+     * @param ArrayHash $data
+     * @return int
+     */
+    public function create(ArrayHash $data): int
     {
-        // TODO: Implement create() method.
+        return 0;
     }
 }

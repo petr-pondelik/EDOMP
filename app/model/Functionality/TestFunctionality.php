@@ -8,6 +8,12 @@
 
 namespace App\Model\Functionality;
 
+use App\Model\Entity\Test;
+use App\Model\Repository\GroupRepository;
+use App\Model\Repository\LogoRepository;
+use App\Model\Repository\TermRepository;
+use App\Model\Repository\TestRepository;
+use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -16,14 +22,56 @@ use Nette\Utils\ArrayHash;
  */
 class TestFunctionality extends BaseFunctionality
 {
+    /**
+     * @var LogoRepository
+     */
+    protected $logoRepository;
+
+    /**
+     * @var TermRepository
+     */
+    protected $termRepository;
+
+    /**
+     * @var GroupRepository
+     */
+    protected $groupRepository;
+
+    /**
+     * TestFunctionality constructor.
+     * @param EntityManager $entityManager
+     * @param TestRepository $repository
+     * @param LogoRepository $logoRepository
+     * @param TermRepository $termRepository
+     * @param GroupRepository $groupRepository
+     */
+    public function __construct(
+        EntityManager $entityManager, TestRepository $repository,
+        LogoRepository $logoRepository, TermRepository $termRepository, GroupRepository $groupRepository)
+    {
+        parent::__construct($entityManager);
+        $this->repository = $repository;
+        $this->logoRepository = $logoRepository;
+        $this->termRepository = $termRepository;
+        $this->groupRepository = $groupRepository;
+    }
 
     /**
      * @param ArrayHash $data
-     * @return void
+     * @return int
+     * @throws \Exception
      */
-    public function create(ArrayHash $data): void
+    public function create(ArrayHash $data): int
     {
-        // TODO: Implement create() method.
+        $test = new Test();
+        $test->setLogo($this->logoRepository->find($data->logo_id));
+        $test->setTerm($this->termRepository->find($data->term_id));
+        $test->setGroups([$this->groupRepository->find($data->group_id)]);
+        $test->setSchoolYear($data->school_year);
+        $test->setTestNumber($data->test_number);
+        $this->em->persist($test);
+        $this->em->flush();
+        return $test->getId();
     }
 
     /**

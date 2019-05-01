@@ -58,10 +58,10 @@ class GeometricSeqTemplFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return void
+     * @return int
      * @throws \Exception
      */
-    public function create(ArrayHash $data): void
+    public function create(ArrayHash $data): int
     {
         $templ = new GeometricSeqTempl();
         $templ = $this->setBaseValues($templ, $data);
@@ -69,6 +69,7 @@ class GeometricSeqTemplFunctionality extends BaseFunctionality
         $templ->setFirstN($data->first_n);
         $this->em->persist($templ);
         $this->em->flush();
+        return $templ->getId();
     }
 
     /**

@@ -36,14 +36,16 @@ class CategoryFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @return int
      * @throws \Exception
      */
-    public function create(ArrayHash $data): void
+    public function create(ArrayHash $data): int
     {
         $category = new Category();
         $category->setLabel($data->label);
         $this->em->persist($category);
         $this->em->flush();
+        return $category->getId();
     }
 
     /**
