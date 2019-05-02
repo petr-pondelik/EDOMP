@@ -8,6 +8,7 @@
 
 namespace App\Components\DataGrids;
 
+use App\Helpers\ConstHelper;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\SuperGroupRepository;
 
@@ -28,18 +29,25 @@ class GroupGridFactory extends BaseGrid
     protected $superGroupRepository;
 
     /**
+     * @var ConstHelper
+     */
+    protected $constHelper;
+
+    /**
      * GroupGridFactory constructor.
      * @param GroupRepository $groupRepository
      * @param SuperGroupRepository $superGroupRepository
+     * @param ConstHelper $constHelper
      */
     public function __construct
     (
-        GroupRepository $groupRepository, SuperGroupRepository $superGroupRepository
+        GroupRepository $groupRepository, SuperGroupRepository $superGroupRepository, ConstHelper $constHelper
     )
     {
         parent::__construct();
         $this->groupRepository = $groupRepository;
         $this->superGroupRepository = $superGroupRepository;
+        $this->constHelper = $constHelper;
     }
 
     /**
@@ -57,7 +65,11 @@ class GroupGridFactory extends BaseGrid
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->groupRepository->createQueryBuilder("er"));
+        $grid->setDataSource(
+            $this->groupRepository->createQueryBuilder("er")
+                ->where("er.id != :id")
+                ->setParameter("id", $this->constHelper::ADMIN_GROUP)
+        );
 
         $grid->addColumnNumber('id', 'ID')
             ->setSortable();

@@ -59,7 +59,7 @@ class UserFormFactory extends BaseForm
     public function create()
     {
         $form = parent::create();
-        $groupOptions = $this->groupRepository->findAssoc([], "id");
+        $groupOptions = $this->groupRepository->findWithoutAdmin();
         $roleOptions = $this->roleRepository->findWithoutAdmin();
 
         $form->addText("username", "Uživatelské jméno")

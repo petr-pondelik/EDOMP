@@ -41,6 +41,14 @@ class User
     protected $password;
 
     /**
+     * @ORM\Column(type="boolean", nullable=false)
+     * @Assert\NotBlank()
+     *
+     * @var bool
+     */
+    protected $isAdmin = false;
+
+    /**
      * @ORM\Column(type="datetime", nullable=false)
      * @Assert\NotBlank()
      *
@@ -183,11 +191,38 @@ class User
     /**
      * @return array
      */
+    public function getRolesLabel(): array
+    {
+        $res = [];
+        foreach ($this->getRoles()->getValues() as $key => $role)
+            array_push($res, $role->getLabel());
+        return $res;
+    }
+
+    /**
+     * @return array
+     */
     public function getGroupsId(): array
     {
         $res = [];
         foreach ($this->getGroups()->getValues() as $key => $group)
             array_push($res, $group->getId());
         return $res;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->isAdmin;
+    }
+
+    /**
+     * @param bool $isAdmin
+     */
+    public function setIsAdmin(bool $isAdmin): void
+    {
+        $this->isAdmin = $isAdmin;
     }
 }

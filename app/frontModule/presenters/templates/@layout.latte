@@ -56,9 +56,9 @@
                         <i class="fas fa-archive mr-3"></i>Kategorie
                     </a>
                     <ul class="submenu">
-                        {foreach $user->identity->categories as $category}
-                            <li n:class="$presenter->isLinkCurrent('Category:default', $category->category_id) ? active">
-                                <a n:href="Category:default 'category_id' => $category->category_id, 'clear_filters' => true">{$category->label}</a>
+                        {foreach $user->identity->categories as $key => $category}
+                            <li n:class="$presenter->isLinkCurrent('Category:default', $key) ? active">
+                                <a n:href="Category:default 'id' => $key, 'clear_filters' => true">{$category}</a>
                             </li>
                         {/foreach}
                     </ul>

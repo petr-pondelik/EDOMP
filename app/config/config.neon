@@ -165,6 +165,8 @@ services:
 	factory.form.test: App\Components\Forms\TestFormFactory
 	factory.form.test.statistics: App\Components\Forms\TestStatisticsFormFactory
 	factory.form.permission: App\Components\Forms\PermissionFormFactory
+	factory.form.sign.in: App\Components\Forms\SignInFormFactory
+	factory.form.problem.filter: App\Components\Forms\ProblemFilterFormFactory
 
 	#Services
 	service.newtopapi.client: App\Service\NewtonApiClient
@@ -174,6 +176,11 @@ services:
 	service.condition.matching: App\Service\ConditionMatchingService
 	service.file: App\Service\FileService(%logosDir%, %logosTmpDir%)
 	service.test.builder: App\Service\TestBuilderService
+	service.authenticator: App\Service\Authenticator
+	service.authorizator: App\Service\Authorizator
+
+	#Managers
+	manager.homepage.statistics: App\Model\Manager\HomepageStatisticsManager
 
 	#Helpers
 	helper.const: App\Helpers\ConstHelper

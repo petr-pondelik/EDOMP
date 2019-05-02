@@ -191,10 +191,16 @@ class SettingsPresenter extends AdminPresenter
         return $form;
     }
 
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     * @throws \Nette\Application\AbortException
+     * @throws \Exception
+     */
     public function handleSuperGroupPermissionFormSuccess(Form $form, ArrayHash $values)
     {
         $this->superGroupFunctionality->updatePermissions($values->id, $values->categories);
-        /*$this->flashMessage("Oprávnění superskupiny úspěšně změněna.", "success");
-        $this->redirect("superGroupPermission");*/
+        $this->flashMessage("Oprávnění superskupiny úspěšně změněna.", "success");
+        $this->redirect("superGroupPermission");
     }
 }

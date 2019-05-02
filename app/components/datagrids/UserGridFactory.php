@@ -8,6 +8,7 @@
 
 namespace App\Components\DataGrids;
 
+use App\Helpers\ConstHelper;
 use App\Model\Repository\UserRepository;
 
 /**
@@ -22,16 +23,23 @@ class UserGridFactory extends BaseGrid
     protected $userRepository;
 
     /**
+     * @var ConstHelper
+     */
+    protected $constHelper;
+
+    /**
      * UserGridFactory constructor.
      * @param UserRepository $userRepository
+     * @param ConstHelper $constHelper
      */
     public function __construct
     (
-        UserRepository $userRepository
+        UserRepository $userRepository, ConstHelper $constHelper
     )
     {
         parent::__construct();
         $this->userRepository = $userRepository;
+        $this->constHelper = $constHelper;
     }
 
     /**
@@ -46,7 +54,10 @@ class UserGridFactory extends BaseGrid
 
         $grid->setPrimaryKey("id");
 
-        $grid->setDataSource($this->userRepository->createQueryBuilder("er"));
+        $grid->setDataSource(
+            $this->userRepository->createQueryBuilder("er")
+                ->where("er.isAdmin = false")
+        );
 
         $grid->addColumnNumber("id", "ID")
             ->setSortable();

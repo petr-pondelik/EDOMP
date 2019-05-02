@@ -35,4 +35,12 @@ abstract class BaseRepository extends EntityRepository
         parent::__construct($em, $class);
         $this->constHelper = $constHelper;
     }
+
+    /**
+     * @return int
+     */
+    public function getCnt(): int
+    {
+        return count($this->findAll());
+    }
 }

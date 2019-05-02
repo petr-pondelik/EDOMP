@@ -9,6 +9,8 @@
 namespace App\Components\Forms;
 
 use App\Model\Managers\DifficultyManager;
+use App\Model\Repository\DifficultyRepository;
+use Nette\Application\UI\Form;
 use Nette\Forms\Controls\Checkbox;
 
 /**
@@ -18,25 +20,33 @@ use Nette\Forms\Controls\Checkbox;
 class ProblemFilterFormFactory extends BaseForm
 {
     /**
-     * @var DifficultyManager
+     * @var DifficultyRepository
      */
-    protected $difficultyManager;
+    protected $difficultyRepository;
 
+    /**
+     * ProblemFilterFormFactory constructor.
+     * @param DifficultyRepository $difficultyRepository
+     */
     public function __construct
     (
-        DifficultyManager $difficultyManager
+        DifficultyRepository $difficultyRepository
     )
     {
-        $this->difficultyManager = $difficultyManager;
+        $this->difficultyRepository = $difficultyRepository;
     }
 
-    public function create()
+    /**
+     * @return Form
+     * @throws \Exception
+     */
+    public function create(): Form
     {
         $form = parent::create();
 
         $form->getElementPrototype()->class('border-light ajax');
 
-        $difficultyOptions = $this->difficultyManager->getAll("ASC");
+        $difficultyOptions = $this->difficultyRepository->findAssoc([],"id");
 
         bdump($difficultyOptions);
 

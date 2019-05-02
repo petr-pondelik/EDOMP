@@ -26,7 +26,6 @@ class RoleRepository extends BaseRepository
             ->indexBy("r", "r.id")
             ->setParameter("id", $this->constHelper::ADMIN_ROLE);
 
-
         return $qb->getQuery()->getResult();
     }
 }

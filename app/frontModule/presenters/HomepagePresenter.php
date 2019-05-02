@@ -2,17 +2,16 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 26.4.19
- * Time: 17:23
+ * Date: 20.3.19
+ * Time: 20:26
  */
 
 namespace App\FrontModule\Presenters;
 
 /**
  * Class HomepagePresenter
- * @package App\FrontModule\Presenters
+ * @package app\frontModule\presenters
  */
-class HomepagePresenter extends FrontPresenter
+final class HomepagePresenter extends FrontPresenter
 {
-
 }

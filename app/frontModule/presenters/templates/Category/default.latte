@@ -1,5 +1,5 @@
 {block headingFirst}
-    {$categoryLabel}
+    {$label}
 {/block}
 
 {block headingFirstLink}
@@ -12,7 +12,7 @@
 
         <div class="card-header">
             <h1 class="mb-0 font-weight-bold card-heading">
-                {$categoryLabel}
+                {$label}
             </h1>
         </div>
 
@@ -97,7 +97,7 @@
                     <div class="col-12 mt-5 mb-5">
 
                         <div class="text-center latex-wrapper mb-5 mt-5">
-                            {$problem->structure}
+                            {$problem->getBody()}
                         </div>
 
                         <div class="col-12 text-right pl-0 pr-0">
@@ -107,8 +107,8 @@
                         </div>
 
                         <div class="text-center bg-light mt-3 pt-4 pb-4" id="result-wrapper">
-                            {if $problem->result}
-                                {$problem->result}
+                            {if $problem->getResult()}
+                                {$problem->getResult()}
                             {else}
                                 <p>Výsledek není k dispozici.</p>
                             {/if}
@@ -117,8 +117,8 @@
                     </div>
 
                     <div class="card-footer">
-                        <p>ID: {$problem->problem_id}, Téma: {$problem->sub_category_label},
-                            Obtížnost: {$problem->difficulty_label}
+                        <p>ID: {$problem->getId()}, Téma: {$problem->getSubCategory()->getLabel()},
+                            Obtížnost: {$problem->getDifficulty()->getLabel()}
                         </p>
                     </div>
 

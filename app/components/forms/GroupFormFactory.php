@@ -42,7 +42,7 @@ class GroupFormFactory extends BaseForm
     {
         $form = parent::create();
 
-        $superGroupOptions = $this->superGroupRepository->findAssoc([], "id");
+        $superGroupOptions = $this->superGroupRepository->findWithoutAdmin();
 
         $form->addText("label", "Název")
             ->setHtmlAttribute("class", "form-control");

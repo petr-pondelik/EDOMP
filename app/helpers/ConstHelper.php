@@ -18,8 +18,8 @@ class ConstHelper
     //Admin role ID
     const ADMIN_ROLE = 1;
 
-    //Admin supergroup ID
-    const ADMIN_SUPERGROUP = 4;
+    //Admin supergroup and group ID
+    const ADMIN_GROUP = 1;
 
     //Result conditions constants
     const RESULT = 1;

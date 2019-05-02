@@ -1,0 +1,79 @@
+{block sign}
+
+    <div class="col-sm-12 col-md-8 col-lg-4 centered">
+
+        <div class="text-center mb-5" id="page-header">
+            <p id="title">EDOMP</p>
+        </div>
+
+        <div class="card card-shadow border-light">
+            <div class="card-header">
+                <h1 class="card-heading font-weight-bold">Přihlášení: Administrace</h1>
+            </div>
+            <div class="card-body">
+
+                {form signInForm}
+
+                    <div class="form-group">
+                        <div class="control-label col-12">
+                            {label username}
+                        </div>
+                        <div class="col-12">
+                            {input username}
+                        </div>
+                        <div n:snippet="usernameErrorSnippet" class="col-12">
+                            {var $form = $control['signInForm']}
+                            <div n:if="$form->hasErrors()" class="mt-2">
+                                <p n:foreach="$form['username']->errors as $error" class="alert alert-danger">
+                                    {$error}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="control-label col-12">
+                            {label password}
+                        </div>
+                        <div class="col-12">
+                            {input password}
+                        </div>
+                        <div n:snippet="passwordErrorSnippet" class="col-12">
+                            {var $form = $control['signInForm']}
+                            <div n:if="$form->hasErrors()" class="mt-2">
+                                <p n:foreach="$form['password']->errors as $error" class="alert alert-danger">
+                                    {$error}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="control-label col-12">
+                            {label signIn}
+                        </div>
+                        <div class="col-12">
+                            {input signIn}
+                        </div>
+                        <div n:snippet="signInErrorSnippet" class="col-12">
+                            {var $form = $control['signInForm']}
+                            <div n:if="$form->hasErrors()" class="mt-4">
+                                <p n:foreach="$form['signIn']->errors as $error" class="alert alert-danger">
+                                    {$error}
+                                </p>
+                            </div>
+                        </div>
+                        {snippet flashesSnippet}
+                            <div class="col-12 mt-3">
+                                <div n:foreach="$flashes as $flash"
+                                        class="flash alert alert-{$flash->type}">{$flash->message}</div>
+                            </div>
+                        {/snippet}
+                    </div>
+
+                {/form}
+
+            </div>
+        </div>
+    </div>
+{/block}

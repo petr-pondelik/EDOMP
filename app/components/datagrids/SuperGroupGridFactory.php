@@ -8,6 +8,7 @@
 
 namespace App\Components\DataGrids;
 
+use App\Helpers\ConstHelper;
 use App\Model\Repository\SuperGroupRepository;
 use Ublaboo\DataGrid\DataGrid;
 
@@ -23,16 +24,23 @@ class SuperGroupGridFactory extends BaseGrid
     protected $superGroupRepository;
 
     /**
+     * @var ConstHelper
+     */
+    protected $constHelper;
+
+    /**
      * SuperGroupGridFactory constructor.
      * @param SuperGroupRepository $superGroupRepository
+     * @param ConstHelper $constHelper
      */
     public function __construct
     (
-        SuperGroupRepository $superGroupRepository
+        SuperGroupRepository $superGroupRepository, ConstHelper $constHelper
     )
     {
         parent::__construct();
         $this->superGroupRepository = $superGroupRepository;
+        $this->constHelper = $constHelper;
     }
 
     /**
@@ -47,7 +55,11 @@ class SuperGroupGridFactory extends BaseGrid
 
         $grid->setPrimaryKey("id");
 
-        $grid->setDataSource($this->superGroupRepository->createQueryBuilder("er"));
+        $grid->setDataSource(
+            $this->superGroupRepository->createQueryBuilder("er")
+                ->where("er.id != :id")
+                ->setParameter("id", $this->constHelper::ADMIN_GROUP)
+        );
 
         $grid->addColumnNumber('id', 'ID')
             ->setSortable();

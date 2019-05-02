@@ -20,7 +20,7 @@
 
 <body>
 
-{*{if $user->isInRole("admin")}*}
+{if $user->isInRole("admin")}
 
     <nav id="sidebar" class="scrollbar scrollbar-primary">
         <div id="jquery-accordion-menu" class="jquery-accordion-menu">
@@ -156,7 +156,7 @@
                         <i class="fas fa-user"></i>
                     </a>
                     <div class="dropdown-menu">
-                        {*<h6 class="dropdown-header">{$user->getIdentity()->username}</h6>*}
+                        <h6 class="dropdown-header">{$user->getIdentity()->username}</h6>
                         <div class="dropdown-divider"></div>
                         <a href={link Sign:in do => logout} class="dropdown-item">Odhlásit</a>
                     </div>
@@ -223,7 +223,7 @@
     </script>
 {/snippet}
 
-{*{/if}*}
+{/if}
 
 <main n:if="!$user->isInRole('admin')">
     {ifset sign}
