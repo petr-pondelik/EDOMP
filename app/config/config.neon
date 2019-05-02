@@ -186,5 +186,6 @@ services:
 	helper.const: App\Helpers\ConstHelper
 	helper.strings: App\Helpers\StringsHelper
 	helper.latex: App\Helpers\LatexHelper
+	helper.formatter: App\Helpers\FormatterHelper
 
 includes:

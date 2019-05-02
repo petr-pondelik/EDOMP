@@ -8,6 +8,7 @@
 
 namespace App\Model\Functionality;
 
+use App\Helpers\FormatterHelper;
 use App\Model\Entity\ProblemFinal;
 use App\Model\Entity\ProblemCondition;
 use App\Model\Repository\DifficultyRepository;
@@ -53,6 +54,11 @@ class ProblemFinalFunctionality extends BaseFunctionality
     protected $subCategoryRepository;
 
     /**
+     * @var FormatterHelper
+     */
+    protected $formatterHelper;
+
+    /**
      * ProblemFinalFunctionality constructor.
      * @param EntityManager $entityManager
      * @param ProblemFinalRepository $repository
@@ -61,6 +67,7 @@ class ProblemFinalFunctionality extends BaseFunctionality
      * @param ProblemConditionRepository $problemConditionRepository
      * @param DifficultyRepository $difficultyRepository
      * @param SubCategoryRepository $subCategoryRepository
+     * @param FormatterHelper $formatterHelper
      */
     public function __construct
     (
@@ -68,7 +75,8 @@ class ProblemFinalFunctionality extends BaseFunctionality
         ProblemFinalRepository $repository,
         ProblemRepository $problemRepository,
         ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository
+        DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
+        FormatterHelper $formatterHelper
     )
     {
         parent::__construct($entityManager);
@@ -78,6 +86,7 @@ class ProblemFinalFunctionality extends BaseFunctionality
         $this->problemConditionRepository = $problemConditionRepository;
         $this->difficultyRepository = $difficultyRepository;
         $this->subCategoryRepository = $subCategoryRepository;
+        $this->formatterHelper = $formatterHelper;
     }
 
     /**
@@ -93,10 +102,15 @@ class ProblemFinalFunctionality extends BaseFunctionality
         $problem->setTextBefore($data->text_before);
         $problem->setBody($data->body);
         $problem->setTextAfter($data->text_after);
+
         if(isset($data->result))
             $problem->setResult($data->result);
         if(isset($data->is_generated))
             $problem->setIsGenerated($data->is_generated);
+        if(isset($data->variable))
+            $problem->setVariable($data->variable);
+        if(isset($data->firstN))
+            $problem->setFirstN($data->firstN);
 
         $problem->setProblemType($this->problemTypeRepository->find($data->type));
         $problem->setDifficulty($this->difficultyRepository->find($data->difficulty));
@@ -181,5 +195,19 @@ class ProblemFinalFunctionality extends BaseFunctionality
         }
 
         return $problem;
+    }
+
+    /**
+     * @param int $id
+     * @param ArrayHash $result
+     * @throws \Exception
+     */
+    public function storeResult(int $id, ArrayHash $result)
+    {
+        $problem = $this->repository->find($id);
+        $result = $this->formatterHelper->formatResult($result);
+        $problem->setResult($result);
+        $this->em->persist($problem);
+        $this->em->flush();
     }
 }

@@ -229,8 +229,8 @@ class MathService
      */
     public function evaluateLinearEquation(ProblemFinal $problem)
     {
-        $standardized = $this->standardizeEquation($problem->structure);
-        $variable = $problem->variable;
+        $standardized = $this->standardizeEquation($problem->getBody());
+        $variable = $problem->getVariable();
         $variableExp = $this->stringsHelper::getLinearVariableExpresion($standardized, $variable);
 
         $res = [
@@ -247,10 +247,10 @@ class MathService
      */
     public function evaluateQuadraticEquation(ProblemFinal $problem)
     {
-        $standardized = $this->standardizeEquation($problem->structure);
-        $a = $this->getDiscriminantA($standardized, $problem->variable);
-        $b = $this->getDiscriminantB($standardized, $problem->variable);
-        $discriminant = $this->getDiscriminantExpression($standardized, $problem->variable, self::STANDARDIZED);
+        $standardized = $this->standardizeEquation($problem->getBody());
+        $a = $this->getDiscriminantA($standardized, $problem->getVariable());
+        $b = $this->getDiscriminantB($standardized, $problem->getVariable());
+        $discriminant = $this->getDiscriminantExpression($standardized, $problem->getVariable(), self::STANDARDIZED);
         $discriminant = $this->evaluateExpression($discriminant);
 
         $res = [];
@@ -260,21 +260,21 @@ class MathService
             $res2 = ((-$b) - sqrt($discriminant)) / (2*$a);
             $res = [
                 "type" => "double",
-                $problem->variable . "_1" => $res1,
-                $problem->variable . "_2" => $res2
+                $problem->getVariable() . "_1" => $res1,
+                $problem->getVariable() . "_2" => $res2
             ];
         }
         else if($discriminant === 0){
             $res1 = ((-$b) + sqrt($discriminant)) / (2*$a);
             $res = [
                 "type" => "single",
-                $problem->variable => $res1
+                $problem->getVariable() => $res1
             ];
         }
         else{
             $res = [
                 "type" => "complex",
-                $problem->variable => "complex"
+                $problem->getVariable() => "complex"
             ];
         }
 
@@ -285,13 +285,11 @@ class MathService
      * @param ProblemFinal $problem
      * @param bool $sequenceType
      * @return bool|ArrayHash
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
      */
     public function evaluateSequence(ProblemFinal $problem, bool $sequenceType = self::ARITHMETIC)
     {
-        $parsed = $this->latexHelper::parseLatex($problem->structure);
-        $variable = $problem->variable;
+        $parsed = $this->latexHelper::parseLatex($problem->getBody());
+        $variable = $problem->getVariable();
 
         try{
             $sides = $this->stringsHelper::getEquationSides($parsed, false);
@@ -302,7 +300,7 @@ class MathService
 
         bdump($seqName);
 
-        $problem = $this->problemRepository->find($problem->problem_id);
+        $problem = $this->problemRepository->find($problem->getId());
         $firstN = $problem->first_n;
         $res = [];
 

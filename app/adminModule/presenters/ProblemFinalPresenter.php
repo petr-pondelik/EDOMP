@@ -16,6 +16,7 @@ use App\Model\Functionality\ProblemFinalFunctionality;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemFinalRepository;
 use App\Model\Repository\ProblemTypeRepository;
+use App\Service\MathService;
 use App\Service\ValidationService;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
@@ -65,6 +66,11 @@ class ProblemFinalPresenter extends AdminPresenter
     protected $validationService;
 
     /**
+     * @var MathService
+     */
+    protected $mathService;
+
+    /**
      * @var ConstHelper
      */
     protected $constHelper;
@@ -78,6 +84,7 @@ class ProblemFinalPresenter extends AdminPresenter
      * @param ProblemFinalFunctionality $problemFunctionality
      * @param ProblemConditionRepository $problemConditionRepository
      * @param ValidationService $validationService
+     * @param MathService $mathService
      * @param ConstHelper $constHelper
      */
     public function __construct
@@ -86,7 +93,7 @@ class ProblemFinalPresenter extends AdminPresenter
         ProblemFinalRepository $problemRepository, ProblemTypeRepository $problemTypeRepository,
         ProblemFinalFunctionality $problemFunctionality,
         ProblemConditionRepository $problemConditionRepository,
-        ValidationService $validationService,
+        ValidationService $validationService, MathService $mathService,
         ConstHelper $constHelper
     )
     {
@@ -98,6 +105,7 @@ class ProblemFinalPresenter extends AdminPresenter
         $this->problemFunctionality = $problemFunctionality;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->validationService = $validationService;
+        $this->mathService = $mathService;
         $this->constHelper = $constHelper;
     }
 
@@ -284,29 +292,33 @@ class ProblemFinalPresenter extends AdminPresenter
         $this->redrawControl('mainFlashesSnippet');
     }
 
-    /*public function handleGetResult(int $id)
+    /**
+     * @param int $id
+     * @throws \Exception
+     */
+    public function handleGetResult(int $id)
     {
         bdump($id);
-        $problem = $this->problemManager->getById($id);
+        $problem = $this->problemRepository->find($id);
         bdump($problem);
 
         $result = null;
 
         try{
-            $result = $this->mathService->evaluate[(int) $problem->problem_type_id]($problem);
+            $result = $this->mathService->evaluate[(int) $problem->getProblemType()->getId()]($problem);
         } catch (StringFormatException $e){
             $this->flashMessage('Při výpočtu výsledku nastala chyba.', 'danger');
         }
 
         bdump($result);
 
-        $this->problemFinalManager->storeResult($id, $result);
+        $this->problemFunctionality->storeResult($id, $result);
 
         $this->flashMessage('Výsledek úspěšně získán.', 'success');
 
         $this["problemGrid"]->reload();
         $this->redrawControl('flashesSnippet');
-    }*/
+    }
 
     /**
      * @return Form

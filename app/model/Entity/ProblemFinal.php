@@ -39,6 +39,16 @@ class ProblemFinal extends Problem
     protected $isGenerated = false;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $variable;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $firstN;
+
+    /**
      * @ORM\Column(type="boolean", nullable=false)
      * @Assert\NotBlank()
      *
@@ -125,6 +135,38 @@ class ProblemFinal extends Problem
     public function setProblemTemplate(ProblemTemplate $problemTemplate): void
     {
         $this->problemTemplate = $problemTemplate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVariable()
+    {
+        return $this->variable;
+    }
+
+    /**
+     * @param mixed $variable
+     */
+    public function setVariable($variable): void
+    {
+        $this->variable = $variable;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFirstN()
+    {
+        return $this->firstN;
+    }
+
+    /**
+     * @param mixed $firstN
+     */
+    public function setFirstN($firstN): void
+    {
+        $this->firstN = $firstN;
     }
 
 }
