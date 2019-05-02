@@ -1,0 +1,43 @@
+{import 'default.latte'}
+
+{block headingFirstLink}
+    <li class="breadcrumb-item">
+        <a n:href="Settings:default">{include headingFirst}</a>
+    </li>
+{/block}
+
+{block headingSecond}
+    Oprávnění superskupin
+{/block}
+
+{block headingSecondLink}
+    <li class="breadcrumb-item font-weight-bold active">
+        {include headingSecond}
+    </li>
+{/block}
+
+{block content}
+
+    <div class="card-header d-flex justify-content-between">
+        <h1 class="mb-0 font-weight-bold card-heading">
+            {include icon}{include headingSecond}
+        </h2>
+    </div>
+
+    <div class="card-body">
+
+        <div id="ublaboo-datagrid" class="table-responsive">
+
+            {snippet mainFlashesSnippet}
+                <div class="mt-3">
+                    <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type}">{$flash->message}</div>
+                </div>
+            {/snippet}
+
+            {control superGroupGrid}
+
+        </div>
+
+    </div>
+
+{/block}

@@ -9,7 +9,7 @@
 {/block}
 
 {block headingSecond}
-    Uživatel {$userId}
+    Uživatel {$id}
 {/block}
 
 {block headingSecondLink}
@@ -24,7 +24,7 @@
 
         <div class="card-header d-flex justify-content-between">
             <h1 class="mb-0 font-weight-bold card-heading">
-                {include icon}Uživatel {$userId}
+                {include icon}Uživatel {$id}
             </h2>
             <div class="d-inline">
                 <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
@@ -35,11 +35,11 @@
         <div class="card-body">
 
             <div class="form-group">
-                {label user_id}
-                {input user_id}
+                {label id}
+                {input id}
             </div>
 
-            {input user_id_hidden}
+            {input id_hidden}
 
             <div class="form-group">
                 {label username}

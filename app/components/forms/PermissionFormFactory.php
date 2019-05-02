@@ -8,7 +8,8 @@
 
 namespace App\Components\Forms;
 
-use App\Model\Managers\CategoryManager;
+use App\Model\Repository\CategoryRepository;
+use Nette\Application\UI\Form;
 
 /**
  * Class PermissionFormFactory
@@ -17,29 +18,33 @@ use App\Model\Managers\CategoryManager;
 class PermissionFormFactory extends BaseForm
 {
     /**
-     * @var CategoryManager
+     * @var CategoryRepository
      */
-    protected $categoryManager;
+    protected $categoryRepository;
 
     /**
      * PermissionFormFactory constructor.
-     * @param CategoryManager $categoryManager
+     * @param CategoryRepository $categoryRepository
      */
     public function __construct
     (
-        CategoryManager $categoryManager
+        CategoryRepository $categoryRepository
     )
     {
-        $this->categoryManager = $categoryManager;
+        $this->categoryRepository = $categoryRepository;
     }
 
-    public function create()
+    /**
+     * @return \Nette\Application\UI\Form
+     * @throws \Exception
+     */
+    public function create(): Form
     {
         $form = parent::create();
 
-        $categoryOptions = $this->categoryManager->getAll("ASC");
+        $categoryOptions = $this->categoryRepository->findAssoc([], "id");
 
-        $form->addHidden("item_id");
+        $form->addHidden("id");
 
         $form->addMultiSelect("categories", "Kategorie", $categoryOptions)
             ->setHtmlAttribute("class", "form-control selectpicker");

@@ -48,6 +48,16 @@ class Category
     protected $subCategories;
 
     /**
+     * @ORM\ManyToMany(targetEntity="App\Model\Entity\Group", mappedBy="categories", cascade={"persist", "merge"})
+     */
+    protected $groups;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Model\Entity\SuperGroup", mappedBy="categories", cascade={"persist", "merge"})
+     */
+    protected $superGroups;
+
+    /**
      * Category constructor.
      * @throws \Exception
      */
@@ -55,6 +65,8 @@ class Category
     {
         $this->created = new DateTime();
         $this->subCategories = new ArrayCollection();
+        $this->groups = new ArrayCollection();
+        $this->superGroups = new ArrayCollection();
     }
 
     /**
@@ -111,6 +123,38 @@ class Category
     public function __toString(): string
     {
         return $this->label;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+
+    /**
+     * @param mixed $groups
+     */
+    public function setGroups($groups): void
+    {
+        $this->groups = $groups;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSuperGroups()
+    {
+        return $this->superGroups;
+    }
+
+    /**
+     * @param mixed $superGroups
+     */
+    public function setSuperGroups($superGroups): void
+    {
+        $this->superGroups = $superGroups;
     }
 
 }

@@ -9,8 +9,10 @@
 namespace App\Model\Functionality;
 
 use App\Model\Entity\Group;
+use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\SuperGroupRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
@@ -26,16 +28,27 @@ class GroupFunctionality extends BaseFunctionality
     protected $superGroupRepository;
 
     /**
+     * @var CategoryRepository
+     */
+    protected $categoryRepository;
+
+    /**
      * GroupFunctionality constructor.
      * @param EntityManager $entityManager
      * @param GroupRepository $repository
      * @param SuperGroupRepository $superGroupRepository
+     * @param CategoryRepository $categoryRepository
      */
-    public function __construct(EntityManager $entityManager, GroupRepository $repository, SuperGroupRepository $superGroupRepository)
+    public function __construct
+    (
+        EntityManager $entityManager, GroupRepository $repository,
+        SuperGroupRepository $superGroupRepository, CategoryRepository $categoryRepository
+    )
     {
         parent::__construct($entityManager);
         $this->repository = $repository;
         $this->superGroupRepository = $superGroupRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
     /**
@@ -68,6 +81,32 @@ class GroupFunctionality extends BaseFunctionality
             $group->setSuperGroup($this->superGroupRepository->find($data->super_group_id));
         $this->em->persist($group);
         $this->em->flush();
+        return $group;
+    }
+
+    /**
+     * @param int $id
+     * @param array $categories
+     * @throws \Exception
+     */
+    public function updatePermissions(int $id, array $categories): void
+    {
+        $group = $this->repository->find($id);
+        $group->setCategories(new ArrayCollection());
+        $group = $this->attachCategories($group, $categories);
+        $this->em->persist($group);
+        $this->em->flush();
+    }
+
+    /**
+     * @param Group $group
+     * @param array $categories
+     * @return Group
+     */
+    public function attachCategories(Group $group, array $categories): Group
+    {
+        foreach ($categories as $category)
+            $group->addCategory($this->categoryRepository->find($category));
         return $group;
     }
 }

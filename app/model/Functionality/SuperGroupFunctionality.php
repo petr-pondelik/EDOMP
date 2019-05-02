@@ -9,7 +9,9 @@
 namespace App\Model\Functionality;
 
 use App\Model\Entity\SuperGroup;
+use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\SuperGroupRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
@@ -21,14 +23,33 @@ class SuperGroupFunctionality extends BaseFunctionality
 {
 
     /**
+     * @var CategoryRepository
+     */
+    protected $categoryRepository;
+
+    /**
+     * @var GroupFunctionality
+     */
+    protected $groupFunctionality;
+
+    /**
      * SuperGroupFunctionality constructor.
      * @param EntityManager $entityManager
      * @param SuperGroupRepository $repository
+     * @param CategoryRepository $categoryRepository
+     * @param GroupFunctionality $groupFunctionality
      */
-    public function __construct(EntityManager $entityManager, SuperGroupRepository $repository)
+    public function __construct
+    (
+        EntityManager $entityManager, SuperGroupRepository $repository,
+        CategoryRepository $categoryRepository,
+        GroupFunctionality $groupFunctionality
+    )
     {
         parent::__construct($entityManager);
         $this->repository = $repository;
+        $this->categoryRepository = $categoryRepository;
+        $this->groupFunctionality = $groupFunctionality;
     }
 
     /**
@@ -57,6 +78,34 @@ class SuperGroupFunctionality extends BaseFunctionality
         $superGroup->setLabel($data->label);
         $this->em->persist($superGroup);
         $this->em->flush();
+        return $superGroup;
+    }
+
+    /**
+     * @param int $id
+     * @param $categories
+     * @throws \Exception
+     */
+    public function updatePermissions(int $id, $categories): void
+    {
+        $superGroup = $this->repository->find($id);
+        $superGroup->setCategories(new ArrayCollection());
+        $superGroup = $this->attachCategories($superGroup, $categories);
+        foreach ($superGroup->getGroups()->getValues() as $group)
+            $this->groupFunctionality->updatePermissions($group->getId(), $categories);
+        $this->em->persist($superGroup);
+        $this->em->flush();
+    }
+
+    /**
+     * @param SuperGroup $superGroup
+     * @param array $categories
+     * @return SuperGroup
+     */
+    public function attachCategories(SuperGroup $superGroup, array $categories): SuperGroup
+    {
+        foreach ($categories as $category)
+            $superGroup->addCategory($this->categoryRepository->find($category));
         return $superGroup;
     }
 }

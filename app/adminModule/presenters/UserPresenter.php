@@ -19,6 +19,7 @@ use App\Service\ValidationService;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class UserPresenter
@@ -106,27 +107,22 @@ class UserPresenter extends AdminPresenter
     /**
      * @param IComponent $form
      * @param User $user
-     * @throws \Dibi\Exception
      */
     public function setDefaults(IComponent $form, User $user)
     {
         $form["id"]->setDefaultValue($user->getId());
         $form["id_hidden"]->setDefaultValue($user->getId());
         $form["username"]->setDefaultValue($user->getUsername());
-        $form["roles"]->setDefaultValue($this->roleRepository->findPairs([
-            "user" => $user->getId()
-        ], "id"));
-        //$form["roles"]->setDefaultValue($this->userManager->getRoles($user->user_id, true));
-        //$form["groups"]->setDefaultValue($this->userManager->getGroupsIds($user->user_id));
+        $form["roles"]->setDefaultValue($user->getRolesId());
+        $form["groups"]->setDefaultValue($user->getGroupsId());
     }
 
     /**
      * @param $name
      * @return \Ublaboo\DataGrid\DataGrid
-     * @throws \Dibi\NotSupportedException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function createComponentUserGrid($name)
+    public function createComponentUserGrid($name): DataGrid
     {
         $grid = $this->userGridFactory->create($this, $name);
 
@@ -166,6 +162,7 @@ class UserPresenter extends AdminPresenter
 
     /**
      * @return \Nette\Application\UI\Form
+     * @throws \Exception
      */
     public function createComponentUserCreateForm()
     {
@@ -178,6 +175,7 @@ class UserPresenter extends AdminPresenter
     /**
      * @param Form $form
      * @param ArrayHash $values
+     * @throws \Exception
      */
     public function handleCreateFormSuccess(Form $form, ArrayHash $values)
     {
@@ -190,14 +188,15 @@ class UserPresenter extends AdminPresenter
 
     /**
      * @return Form
+     * @throws \Exception
      */
     public function createComponentUserEditForm()
     {
         $form = $this->userFormFactory->create();
-        $form->addInteger("user_id", "ID")
+        $form->addInteger("id", "ID")
             ->setHtmlAttribute("class", "form-control")
             ->setDisabled();
-        $form->addHidden("user_id_hidden");
+        $form->addHidden("id_hidden");
         $form->addSelect("change_password", "Změnit heslo", [
             0 => "Ne",
             1 => "Ano"
@@ -217,7 +216,7 @@ class UserPresenter extends AdminPresenter
     {
         $this->userFunctionality->update($values->id_hidden, $values);
         $this->flashMessage("Uživatel úspěšně editován.", "success");
-        $this->redirect("default");
+        //$this->redirect("default");
     }
 
     /**

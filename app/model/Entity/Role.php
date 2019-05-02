@@ -44,7 +44,7 @@ class Role
     protected $created;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Model\Entity\User", mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity="App\Model\Entity\User", mappedBy="roles", cascade={"persist", "merge"})
      */
     protected $users;
 

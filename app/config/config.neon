@@ -164,6 +164,7 @@ services:
 	factory.grid.test: App\Components\DataGrids\TestGridFactory
 	factory.form.test: App\Components\Forms\TestFormFactory
 	factory.form.test.statistics: App\Components\Forms\TestStatisticsFormFactory
+	factory.form.permission: App\Components\Forms\PermissionFormFactory
 
 	#Services
 	service.newtopapi.client: App\Service\NewtonApiClient

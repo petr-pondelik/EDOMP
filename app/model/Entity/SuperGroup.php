@@ -46,6 +46,12 @@ class SuperGroup
     protected $groups;
 
     /**
+     * @ORM\ManyToMany(targetEntity="App\Model\Entity\Category", inversedBy="superGroups", cascade={"persist", "merge"})
+     * @ORM\JoinTable(name="super_group_category_rel")
+     */
+    protected $categories;
+
+    /**
      * SuperGroup constructor.
      * @throws \Exception
      */
@@ -53,6 +59,7 @@ class SuperGroup
     {
         $this->created = new DateTime();
         $this->groups = new ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
 
     /**
@@ -109,5 +116,38 @@ class SuperGroup
     public function setGroups($groups): void
     {
         $this->groups = $groups;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param mixed $categories
+     */
+    public function setCategories($categories): void
+    {
+        $this->categories = $categories;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCategoriesId(): array
+    {
+        $res = [];
+        foreach ($this->getCategories()->getValues() as $key => $category)
+            array_push($res, $category->getId());
+        return $res;
+    }
+
+    public function addCategory(Category $category): void
+    {
+        if($this->categories->contains($category)) return;
+        $this->categories[] = $category;
     }
 }

@@ -49,13 +49,13 @@ class User
     protected $created;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Model\Entity\Group", inversedBy="users")
+     * @ORM\ManyToMany(targetEntity="App\Model\Entity\Group", inversedBy="users", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="user_group_rel")
      */
     protected $groups;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Model\Entity\Role", inversedBy="users")
+     * @ORM\ManyToMany(targetEntity="App\Model\Entity\Role", inversedBy="users", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="user_role_rel")
      */
     protected $roles;
@@ -108,7 +108,7 @@ class User
      */
     public function getCreated(): DateTime
     {
-        return $this->created;
+        return DateTime::from($this->created);
     }
 
     /**
@@ -167,5 +167,27 @@ class User
     {
         if($this->roles->contains($role)) return;
         $this->roles[] = $role;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRolesId(): array
+    {
+        $res = [];
+        foreach ($this->getRoles()->getValues() as $key => $role)
+            array_push($res, $role->getId());
+        return $res;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGroupsId(): array
+    {
+        $res = [];
+        foreach ($this->getGroups()->getValues() as $key => $group)
+            array_push($res, $group->getId());
+        return $res;
     }
 }

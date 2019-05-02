@@ -12,6 +12,7 @@ use App\Model\Entity\User;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\RoleRepository;
 use App\Model\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Security\Passwords;
 use Nette\Utils\ArrayHash;
@@ -58,14 +59,11 @@ class UserFunctionality extends BaseFunctionality
      */
     public function create(ArrayHash $data): int
     {
-        bdump($data);
         $user = new User();
         $user->setUsername($data->username);
         $user->setPassword(Passwords::hash($data->password));
-        foreach ($data->roles as $role)
-            $user->addRole($this->roleRepository->find($role));
-        foreach ($data->groups as $group)
-            $user->addGroup($this->groupRepository->find($group));
+        $user = $this->attachRoles($user, $data->roles);
+        $user = $this->attachGroups($user, $data->groups);
         $this->em->persist($user);
         $this->em->flush();
         return $user->getId();
@@ -75,9 +73,46 @@ class UserFunctionality extends BaseFunctionality
      * @param int $id
      * @param ArrayHash $data
      * @return Object
+     * @throws \Exception
      */
     public function update(int $id, ArrayHash $data): ?Object
     {
         // TODO: Implement update() method.
+        bdump($data);
+        $user = $this->repository->find($id);
+        $user->setUsername($data->username);
+        if($data->change_password)
+            $user->setPassword(Passwords::hash($data->password));
+        $user->setRoles(new ArrayCollection());
+        $user->setGroups(new ArrayCollection());
+        $user = $this->attachRoles($user, $data->roles);
+        $user = $this->attachGroups($user, $data->groups);
+        $this->em->persist($user);
+        $this->em->flush();
+        return null;
+    }
+
+    /**
+     * @param User $user
+     * @param array $roles
+     * @return User
+     */
+    public function attachRoles(User $user, array $roles): User
+    {
+        foreach ($roles as $role)
+            $user->addRole($this->roleRepository->find($role));
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     * @param array $groups
+     * @return User
+     */
+    public function attachGroups(User $user, array $groups): User
+    {
+        foreach ($groups as $group)
+            $user->addGroup($this->groupRepository->find($group));
+        return $user;
     }
 }
