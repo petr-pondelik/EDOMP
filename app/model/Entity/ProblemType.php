@@ -8,6 +8,7 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,30 +22,33 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ProblemType extends BaseEntity
 {
+    use LabelTrait;
+
     /**
      * @var string
      */
     protected $toStringAttr = "label";
 
     /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    protected $label;
-
-    /**
      * @ORM\Column(type="integer", nullable=false)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="Accessor can't be blank."
+     * )
+     * @Assert\Type(
+     *     type="int",
+     *     message="Accessor must be {{ type }}."
+     * )
      *
      * @var int
      */
     protected $accessor;
 
     /**
-     * @ORM\Column(type="boolean", nullable=false)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Assert\Type(
+     *     type="bool",
+     *     message="IsGeneratable must be {{ type }}."
+     * )
      *
      * @var bool
      */
@@ -73,22 +77,6 @@ class ProblemType extends BaseEntity
         $this->isGeneratable = false;
         $this->problems = new ArrayCollection();
         $this->conditionTypes = new ArrayCollection();
-    }
-
-    /**
-     * @return string
-     */
-    public function getLabel(): string
-    {
-        return $this->label;
-    }
-
-    /**
-     * @param string $label
-     */
-    public function setLabel(string $label): void
-    {
-        $this->label = $label;
     }
 
     /**

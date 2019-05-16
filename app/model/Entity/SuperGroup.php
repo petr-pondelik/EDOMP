@@ -8,9 +8,9 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Model\Repository\SuperGroupRepository")
@@ -20,18 +20,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class SuperGroup extends BaseEntity
 {
+    use LabelTrait;
+
     /**
      * @var string
      */
     protected $toStringAttr = "label";
-
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    protected $label;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Model\Entity\Group", mappedBy="superGroup", cascade={"all"})
@@ -53,22 +47,6 @@ class SuperGroup extends BaseEntity
         parent::__construct();
         $this->groups = new ArrayCollection();
         $this->categories = new ArrayCollection();
-    }
-
-    /**
-     * @return string
-     */
-    public function getLabel(): string
-    {
-        return $this->label;
-    }
-
-    /**
-     * @param string $label
-     */
-    public function setLabel(string $label): void
-    {
-        $this->label = $label;
     }
 
     /**

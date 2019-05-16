@@ -28,14 +28,23 @@ class Test extends BaseEntity
 
     /**
      * @ORM\Column(type="string", nullable=true)
-     *
+     * @Assert\Type(
+     *     type="string",
+     *     message="InstroductionText must be {{ type }}."
+     * )
      * @var string
      */
     protected $introductionText;
 
     /**
      * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="SchoolYear can't be blank."
+     * )
+     * @Assert\Regex(
+     *     value="/[0-9]{4}(\/|\-)([0-9]{4}|[0-9]{2})/",
+     *     message="SchoolYear is not valid."
+     * )
      *
      * @var string
      */
@@ -43,7 +52,17 @@ class Test extends BaseEntity
 
     /**
      * @ORM\Column(type="integer", nullable=false)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="TestNumber can't be blank."
+     * )
+     * @Assert\Type(
+     *     type="int",
+     *     message="TestNumber must be {{ type }}."
+     * )
+     * @Assert\GreaterThanOrEqual(
+     *     value="0",
+     *     message="TestNumber must be greater or equal to {{ value }}."
+     * )
      *
      * @var int
      */
@@ -51,6 +70,9 @@ class Test extends BaseEntity
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\Term", cascade={"persist", "merge"})
+     * @Assert\NotBlank(
+     *     message="Term can't be blank."
+     * )
      *
      * @var Term
      */
@@ -59,11 +81,17 @@ class Test extends BaseEntity
     /**
      * @ORM\ManyToMany(targetEntity="App\Model\Entity\Group", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="test_group_rel")
+     * @Assert\NotBlank(
+     *     message="Groups can't be blank."
+     * )
      */
     protected $groups;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\Logo", cascade={"persist", "merge"})
+     * @Assert\NotBlank(
+     *     message="Logo can't be blank."
+     * )
      *
      * @var Logo
      */
@@ -71,6 +99,9 @@ class Test extends BaseEntity
 
     /**
      * @ORM\OneToMany(targetEntity="App\Model\Entity\ProblemTestAssociation", mappedBy="test", cascade={"all"})
+     * @Assert\NotBlank(
+     *     message="ProblemAssociations can't be blank."
+     * )
      */
     protected $problemAssociations;
 

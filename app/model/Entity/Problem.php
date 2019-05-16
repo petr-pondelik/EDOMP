@@ -37,7 +37,13 @@ abstract class Problem extends BaseEntity
 
     /**
      * @ORM\Column(type="text", nullable=false)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="Body can't be blank."
+     * )
+     * @Assert\Type(
+     *     type="string",
+     *     message="Body must be {{ type }}."
+     * )
      *
      * @var string
      */
@@ -45,6 +51,10 @@ abstract class Problem extends BaseEntity
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Assert\Type(
+     *     type="string",
+     *     message="TextBefore must be {{ type }}."
+     * )
      *
      * @var string
      */
@@ -52,20 +62,31 @@ abstract class Problem extends BaseEntity
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     *
+     * @Assert\Type(
+     *     type="string",
+     *     message="TextAfter must be {{ type }}."
+     * )
      * @var string
      */
     protected $textAfter;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @Assert\Type(
+     *     type="float",
+     *     message="SuccessRate must be {{ type }}."
+     * )
      *
      * @var float
      */
     protected $successRate;
 
     /**
-     * @ORM\Column(type="boolean", nullable=false)
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Assert\Type(
+     *     type="bool",
+     *     message="IsTemplate must be {{ type }}."
+     * )
      *
      * @var bool
      */
@@ -73,6 +94,9 @@ abstract class Problem extends BaseEntity
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\ProblemType", cascade={"persist", "merge"})
+     * @Assert\NotBlank(
+     *     message="ProblemType can't be blank."
+     * )
      *
      * @var ProblemType
      */
@@ -80,7 +104,9 @@ abstract class Problem extends BaseEntity
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\Difficulty", cascade={"persist", "merge"})
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="Difficulty can't be blank."
+     * )
      *
      * @var Difficulty
      */
@@ -88,7 +114,9 @@ abstract class Problem extends BaseEntity
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\SubCategory", cascade={"persist", "merge"})
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="SubCategory can't be blank."
+     * )
      *
      * @var SubCategory
      */

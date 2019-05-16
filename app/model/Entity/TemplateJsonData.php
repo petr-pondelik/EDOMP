@@ -25,15 +25,24 @@ class TemplateJsonData extends BaseEntity
     protected $toStringAttr = "jsonData";
 
     /**
-     * @ORM\Column(type="text", nullable=true)
-     *
+     * @ORM\Column(type="json", nullable=true)
+     * @Assert\Type(
+     *     type="string",
+     *     message="JsonData must be {{ type }}."
+     * )
      * @var string
      */
     protected $jsonData;
 
     /**
      * @ORM\Column(type="integer", nullable=false)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="TemplateId can't be blank."
+     * )
+     * @Assert\Type(
+     *     type="int",
+     *     message="TamplateId must be {{ type }}."
+     * )
      *
      * @var int
      */

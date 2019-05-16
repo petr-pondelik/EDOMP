@@ -8,9 +8,8 @@
 
 namespace App\Model\Entity;
 
-use App\Model\Traits\ToStringTrait;
+use App\Model\Traits\LabelTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Model\Repository\TermRepository")
@@ -20,34 +19,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Term extends BaseEntity
 {
-    use ToStringTrait;
+    use LabelTrait;
 
     /**
      * @var string
      */
     protected $toStringAttr = "label";
-
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    protected $label;
-
-    /**
-     * @return string
-     */
-    public function getLabel(): string
-    {
-        return $this->label;
-    }
-
-    /**
-     * @param string $label
-     */
-    public function setLabel(string $label): void
-    {
-        $this->label = $label;
-    }
 }

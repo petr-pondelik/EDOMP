@@ -20,8 +20,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 class QuadraticEqTempl extends ProblemTemplate
 {
     /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="string", nullable=false, length=1)
+     * @Assert\NotBlank(
+     *     message="Variable can't be blank."
+     * )
+     * @Assert\Type(
+     *     type="string",
+     *     message="Variable must be {{ type }}."
+     * )
+     * @Assert\Length(
+     *     min=1,
+     *     max=1,
+     *     exactMessage="Variable must be string of length 1."
+     * )
      *
      * @var string
      */

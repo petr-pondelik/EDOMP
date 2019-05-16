@@ -8,10 +8,10 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Model\Repository\DifficultyRepository")
@@ -21,18 +21,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Difficulty extends BaseEntity
 {
+    use LabelTrait;
+
     /**
      * @var string
      */
     protected $toStringAttr = "label";
-
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    protected $label;
 
     /**
      * @ORM\OneToMany(targetEntity="ProblemFinal", mappedBy="difficulty", cascade={"persist", "merge"})
@@ -49,22 +43,6 @@ class Difficulty extends BaseEntity
     {
         parent::__construct();
         $this->problems = new ArrayCollection();
-    }
-
-    /**
-     * @return string
-     */
-    public function getLabel(): string
-    {
-        return $this->label;
-    }
-
-    /**
-     * @param string $label
-     */
-    public function setLabel(string $label): void
-    {
-        $this->label = $label;
     }
 
     /**

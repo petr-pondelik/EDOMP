@@ -8,6 +8,7 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,6 +22,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Category extends BaseEntity
 {
+    use LabelTrait;
+
     /**
      * @var string
      */
@@ -61,22 +64,6 @@ class Category extends BaseEntity
         $this->subCategories = new ArrayCollection();
         $this->groups = new ArrayCollection();
         $this->superGroups = new ArrayCollection();
-    }
-
-    /**
-     * @return string
-     */
-    public function getLabel(): string
-    {
-        return $this->label;
-    }
-
-    /**
-     * @param string $label
-     */
-    public function setLabel(string $label): void
-    {
-        $this->label = $label;
     }
 
     /**

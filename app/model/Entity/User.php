@@ -27,7 +27,9 @@ class User extends BaseEntity
 
     /**
      * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="Username can't be blank."
+     * )
      *
      * @var string
      */
@@ -35,15 +37,20 @@ class User extends BaseEntity
 
     /**
      * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="Password can't be blank."
+     * )
+     * @Assert\Length(
+     *     min="8",
+     *     exactMessage="Password must be at least 8 chars long."
+     * )
      *
      * @var string
      */
     protected $password;
 
     /**
-     * @ORM\Column(type="boolean", nullable=false)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="boolean", nullable=true)
      *
      * @var bool
      */
@@ -58,6 +65,9 @@ class User extends BaseEntity
     /**
      * @ORM\ManyToMany(targetEntity="App\Model\Entity\Role", inversedBy="users", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="user_role_rel")
+     * @Assert\NotBlank(
+     *     message="Roles can't be blank."
+     * )
      */
     protected $roles;
 

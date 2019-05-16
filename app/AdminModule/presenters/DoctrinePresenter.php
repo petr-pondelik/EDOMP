@@ -11,10 +11,12 @@ namespace App\AdminModule\Presenters;
 
 use App\Model\Entity\Category;
 use App\Model\Entity\Difficulty;
+use App\Model\Entity\Group;
 use App\Model\Entity\ProblemFinal;
 use App\Model\Entity\ProblemType;
 use App\Model\Entity\QuadraticEqTempl;
 use App\Model\Entity\SubCategory;
+use App\Model\Entity\Test;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemFinalRepository;
@@ -24,6 +26,7 @@ use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
 use App\Presenters\BasePresenter;
 use Kdyby\Doctrine\EntityManager;
+use Nette\Utils\DateTime;
 use Nette\Utils\Json;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -96,12 +99,32 @@ class DoctrinePresenter extends BasePresenter
 
     public function actionDefault()
     {
-
-        /*$errors = $this->validator->validate($category);
-
+        $category = new Category();
+        $errors = $this->validator->validate($category);
         bdump($errors);
 
-        $this->em->persist($category);
+        $difficulty = new Difficulty();
+        $errors = $this->validator->validate($difficulty);
+        bdump($errors);
+
+        $group = new Group();
+        $errors = $this->validator->validate($group);
+        bdump($errors);
+
+        $problemFinal = new ProblemFinal();
+        $problemFinal->setBody("$$ 15 x + 20 = 0 $$");
+        $problemFinal->setDifficulty($difficulty);
+        $problemFinal->setVariable("x");
+        $errors = $this->validator->validate($problemFinal);
+        bdump($errors);
+
+        $test = new Test();
+        $test->setTestNumber(-10);
+        $test->setSchoolYear("2018-19");
+        $errors = $this->validator->validate($test);
+        bdump($errors);
+
+        /*$this->em->persist($category);
         $this->em->flush();*/
 
     }

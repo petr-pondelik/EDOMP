@@ -9,7 +9,6 @@
 namespace App\Model\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Model\Repository\ProblemTemplateRepository")
@@ -21,7 +20,7 @@ class ProblemTemplate extends Problem
 {
     /**
      * @ORM\Column(type="json", nullable=true)
-     *
+     * @var string
      */
     protected $matches;
 

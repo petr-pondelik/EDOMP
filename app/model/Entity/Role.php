@@ -8,6 +8,7 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -20,18 +21,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Role extends BaseEntity
 {
+    use LabelTrait;
+
     protected $toStringAttr = "label";
 
     /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    protected $label;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Model\Entity\User", mappedBy="roles", cascade={"persist", "merge"})
+     * @ORM\ManyToMany(targetEntity="App\Model\Entity\User", mappedBy="roles", cascade={"all"})
      */
     protected $users;
 
@@ -43,22 +38,6 @@ class Role extends BaseEntity
     {
         parent::__construct();
         $this->users = new ArrayCollection();
-    }
-
-    /**
-     * @return string
-     */
-    public function getLabel(): string
-    {
-        return $this->label;
-    }
-
-    /**
-     * @param string $label
-     */
-    public function setLabel(string $label): void
-    {
-        $this->label = $label;
     }
 
     /**

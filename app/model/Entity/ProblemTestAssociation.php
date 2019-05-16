@@ -26,30 +26,43 @@ class ProblemTestAssociation extends BaseEntity
 
     /**
      * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="Variant can't be blank."
+     * )
      *
+     * @Assert\Type(
+     *     type="string",
+     *     message="Variant must be {{type}}."
+     * )
      * @var string
      */
     protected $variant;
 
     /**
-     * @ORM\Column(type="boolean", nullable=false)
-     * @Assert\NotBlank()
-     *
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Assert\Type(
+     *     type="bool",
+     *     message="NextPage must be {{ type }}."
+     * )
      * @var bool
      */
     protected $nextPage;
 
     /**
      * @ORM\Column(type="float", nullable=true)
-     *
+     * @Assert\Type(
+     *     type="float",
+     *     message="SuccessRate must be {{ type }}."
+     * )
      * @var float
      */
     protected $successRate;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\ProblemFinal", inversedBy="testAssociations", cascade={"persist", "merge"})
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="ProblemFinal can't be blank."
+     * )
      *
      * @var ProblemFinal
      */
@@ -64,7 +77,9 @@ class ProblemTestAssociation extends BaseEntity
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\Test", inversedBy="problemAssociations", cascade={"persist", "merge"})
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="Test can't be blank."
+     * )
      *
      * @var Test
      */

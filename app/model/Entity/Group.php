@@ -8,6 +8,7 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -21,28 +22,25 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Group extends BaseEntity
 {
+    use LabelTrait;
+
     /**
      * @var string
      */
     protected $toStringAttr = "label";
 
     /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    protected $label;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\SuperGroup", inversedBy="groups", cascade={"persist", "merge"})
+     * @Assert\NotBlank(
+     *     message="SuperGroup can't be blank."
+     * )
      *
      * @var SuperGroup
      */
     protected $superGroup;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Model\Entity\User", mappedBy="groups", cascade={"persist", "merge"})
+     * @ORM\ManyToMany(targetEntity="App\Model\Entity\User", mappedBy="groups", cascade={"all"})
      */
     protected $users;
 
@@ -61,22 +59,6 @@ class Group extends BaseEntity
         parent::__construct();
         $this->users = new ArrayCollection();
         $this->categories = new ArrayCollection();
-    }
-
-    /**
-     * @return string
-     */
-    public function getLabel(): string
-    {
-        return $this->label;
-    }
-
-    /**
-     * @param string $label
-     */
-    public function setLabel(string $label): void
-    {
-        $this->label = $label;
     }
 
     /**

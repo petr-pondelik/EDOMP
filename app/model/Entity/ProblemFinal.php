@@ -21,36 +21,52 @@ class ProblemFinal extends Problem
 {
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Assert\Type(
+     *     type="string",
+     *     message="Result must be {{ type }}."
+     * )
      *
      * @var string
      */
     protected $result;
 
     /**
-     * @ORM\Column(type="boolean", nullable=false)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Assert\Type(
+     *     type="bool",
+     *     message="IsGeneratable must be {{ type }}."
+     * )
      *
      * @var bool
      */
     protected $isGenerated = false;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", nullable=true, length=1)
+     * @Assert\Type(
+     *     type="string",
+     *     message="Variable must be {{ type }}."
+     * )
+     * @Assert\Length(
+     *     min=1,
+     *     max=1,
+     *     exactMessage="Variable must be string of length 1.",
+     * )
+     *
+     * @var string
      */
     protected $variable;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Assert\Type(
+     *     type="int",
+     *     message="FirstN must be {{ type }}."
+     * )
+     *
+     * @var int
      */
     protected $firstN;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var bool
-     */
-    protected $isUsed = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\ProblemTemplate", cascade={"persist", "merge"})
@@ -78,9 +94,9 @@ class ProblemFinal extends Problem
     }
 
     /**
-     * @param string $result
+     * @param string|null $result
      */
-    public function setResult(string $result): void
+    public function setResult(string $result = null): void
     {
         $this->result = $result;
     }
@@ -102,25 +118,9 @@ class ProblemFinal extends Problem
     }
 
     /**
-     * @return bool
+     * @return ProblemTemplate|null
      */
-    public function isUsed(): bool
-    {
-        return $this->isUsed;
-    }
-
-    /**
-     * @param bool $isUsed
-     */
-    public function setIsUsed(bool $isUsed): void
-    {
-        $this->isUsed = $isUsed;
-    }
-
-    /**
-     * @return ProblemTemplate
-     */
-    public function getProblemTemplate(): ProblemTemplate
+    public function getProblemTemplate(): ?ProblemTemplate
     {
         return $this->problemTemplate;
     }
@@ -134,33 +134,33 @@ class ProblemFinal extends Problem
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getVariable()
+    public function getVariable(): ?string
     {
         return $this->variable;
     }
 
     /**
-     * @param mixed $variable
+     * @param string|null $variable
      */
-    public function setVariable($variable): void
+    public function setVariable(string $variable = null): void
     {
         $this->variable = $variable;
     }
 
     /**
-     * @return mixed
+     * @return int|null
      */
-    public function getFirstN()
+    public function getFirstN(): ?int
     {
         return $this->firstN;
     }
 
     /**
-     * @param mixed $firstN
+     * @param int|null $firstN
      */
-    public function setFirstN($firstN): void
+    public function setFirstN(int $firstN = null): void
     {
         $this->firstN = $firstN;
     }
