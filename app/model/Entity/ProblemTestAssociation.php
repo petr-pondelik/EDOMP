@@ -9,8 +9,6 @@
 namespace App\Model\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -19,9 +17,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class ProblemTestAssociation
  * @package App\Model\Entity
  */
-class ProblemTestAssociation
+class ProblemTestAssociation extends BaseEntity
 {
-    use Identifier;
+    /**
+     * @var string
+     */
+    protected $toStringAttr = "variant";
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -47,14 +48,7 @@ class ProblemTestAssociation
     protected $successRate;
 
     /**
-     * @ORM\Column(type="datetime", nullable=false)
-     *
-     * @var DateTime
-     */
-    protected $created;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="ProblemFinal", inversedBy="testAssociations", cascade={"persist", "merge"})
+     * @ORM\ManyToOne(targetEntity="App\Model\Entity\ProblemFinal", inversedBy="testAssociations", cascade={"persist", "merge"})
      * @Assert\NotBlank()
      *
      * @var ProblemFinal
@@ -70,19 +64,11 @@ class ProblemTestAssociation
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\Test", inversedBy="problemAssociations", cascade={"persist", "merge"})
+     * @Assert\NotBlank()
      *
      * @var Test
      */
     protected $test;
-
-    /**
-     * ProblemTestAssociation constructor.
-     * @throws \Exception
-     */
-    public function __construct()
-    {
-        $this->created = new DateTime();
-    }
 
     /**
      * @return string
@@ -130,22 +116,6 @@ class ProblemTestAssociation
     public function setSuccessRate(float $successRate): void
     {
         $this->successRate = $successRate;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreated(): DateTime
-    {
-        return $this->created;
-    }
-
-    /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = $created;
     }
 
     /**

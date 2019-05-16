@@ -76,6 +76,8 @@ trait ProblemTemplateFunctionalityTrait
         if(isset($data->subcategory))
             $templ->setSubCategory($this->subCategoryRepository->find($data->subcategory));
 
+
+
         if(!$fromDataGrid){
             if(!$templateId)
                 $templateId = $this->repository->getSequenceVal();

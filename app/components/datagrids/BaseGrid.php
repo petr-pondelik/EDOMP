@@ -16,7 +16,7 @@ use Ublaboo\DataGrid\Localization\SimpleTranslator;
  * Class BaseGrid
  * @package app\components\datagrids
  */
-class BaseGrid extends Control
+abstract class BaseGrid extends Control
 {
 
     /**

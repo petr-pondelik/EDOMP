@@ -11,8 +11,6 @@ namespace App\Model\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -21,10 +19,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class Difficulty
  * @package App\Model\Entity
  */
-class Difficulty
+class Difficulty extends BaseEntity
 {
-    //Identifier trait for id column
-    use Identifier;
+    /**
+     * @var string
+     */
+    protected $toStringAttr = "label";
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -33,14 +33,6 @@ class Difficulty
      * @var string
      */
     protected $label;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var DateTime
-     */
-    protected $created;
 
     /**
      * @ORM\OneToMany(targetEntity="ProblemFinal", mappedBy="difficulty", cascade={"persist", "merge"})
@@ -55,7 +47,7 @@ class Difficulty
      */
     public function __construct()
     {
-        $this->created = new DateTime();
+        parent::__construct();
         $this->problems = new ArrayCollection();
     }
 
@@ -90,29 +82,5 @@ class Difficulty
     public function setProblems($problems): void
     {
         $this->problems = $problems;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreated(): DateTime
-    {
-        return $this->created;
-    }
-
-    /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = $created;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->label;
     }
 }

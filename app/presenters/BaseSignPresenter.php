@@ -104,8 +104,6 @@ class BaseSignPresenter extends BasePresenter
             $this->redirect('Homepage:default');
         } catch(AuthenticationException $e){
             $this->flashMessage($e->getMessage(), "danger");
-            //$form['signIn']->addError('Neplatné přihlašovací údaje.');
-            //$this->redrawControl('signInErrorSnippet');
         }
     }
 

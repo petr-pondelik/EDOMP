@@ -6,7 +6,7 @@
     "type": "git",
     "url": "git@gitlab.fit.cvut.cz:pondepe1/bi-bap-edomp.git"
   },
-  "author": "",
+  "author": "Petr Pondělík",
   "license": "ISC",
   "dependencies": {
     "bootstrap": "^4.3.1",

@@ -260,7 +260,7 @@ class SubCategoryPresenter extends AdminPresenter
     {
         bdump($values);
         $this->subCategoryFunctionality->update($values->sub_category_hidden, $values);
-        $this->flashMessage('Sub-Kategorie úspěšně editována.', 'success');
+        $this->flashMessage('Podkategorie úspěšně editována.', 'success');
         $this->redirect("default");
     }
 

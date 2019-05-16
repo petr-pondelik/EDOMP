@@ -9,13 +9,8 @@
 namespace App\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
-
-use App\Model\Traits\ToStringTrait;
 
 /**
  * @ORM\Entity(repositoryClass="App\Model\Repository\ProblemRepository")
@@ -33,12 +28,12 @@ use App\Model\Traits\ToStringTrait;
  * Class ProblemFinal
  * @package App\Model\Entity
  */
-abstract class Problem
+abstract class Problem extends BaseEntity
 {
-    //Identifier trait for id column
-    use Identifier;
-
-    use ToStringTrait;
+    /**
+     * @var string
+     */
+    protected $toStringAttr = "body";
 
     /**
      * @ORM\Column(type="text", nullable=false)
@@ -75,14 +70,6 @@ abstract class Problem
      * @var bool
      */
     protected $isTemplate;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var DateTime
-     */
-    protected $created;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\ProblemType", cascade={"persist", "merge"})
@@ -124,7 +111,7 @@ abstract class Problem
      */
     public function __construct()
     {
-        $this->created = new DateTime();
+        parent::__construct();
         $this->conditions = new ArrayCollection();
         $this->testAssociations = new ArrayCollection();
     }
@@ -148,7 +135,7 @@ abstract class Problem
     /**
      * @return string
      */
-    public function getTextBefore(): string
+    public function getTextBefore(): ?string
     {
         return $this->textBefore;
     }
@@ -164,7 +151,7 @@ abstract class Problem
     /**
      * @return string
      */
-    public function getTextAfter(): string
+    public function getTextAfter(): ?string
     {
         return $this->textAfter;
     }
@@ -191,22 +178,6 @@ abstract class Problem
     public function setSuccessRate(float $successRate): void
     {
         $this->successRate = $successRate;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreated(): DateTime
-    {
-        return DateTime::from($this->created);
-    }
-
-    /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = $created;
     }
 
     /**

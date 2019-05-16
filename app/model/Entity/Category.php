@@ -11,8 +11,6 @@ namespace App\Model\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -21,26 +19,22 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity(repositoryClass="App\Model\Repository\CategoryRepository")
  */
-class Category
+class Category extends BaseEntity
 {
-    //Identifier trait for id column
-    use Identifier;
+    /**
+     * @var string
+     */
+    protected $toStringAttr = "label";
 
     /**
      * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="Label can't be blank."
+     * )
      *
      * @var string
      */
     protected $label;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var DateTime
-     */
-    protected $created;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Model\Entity\SubCategory", mappedBy="category", cascade={"all"})
@@ -63,7 +57,7 @@ class Category
      */
     public function __construct()
     {
-        $this->created = new DateTime();
+        parent::__construct();
         $this->subCategories = new ArrayCollection();
         $this->groups = new ArrayCollection();
         $this->superGroups = new ArrayCollection();
@@ -83,22 +77,6 @@ class Category
     public function setLabel(string $label): void
     {
         $this->label = $label;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreated(): DateTime
-    {
-        return DateTime::from($this->created);
-    }
-
-    /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = $created;
     }
 
     /**

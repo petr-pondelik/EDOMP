@@ -11,8 +11,6 @@ namespace App\Model\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -21,10 +19,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class ProblemType
  * @package App\Model\Entity
  */
-class ProblemType
+class ProblemType extends BaseEntity
 {
-    //Identifier trait for id column
-    use Identifier;
+    /**
+     * @var string
+     */
+    protected $toStringAttr = "label";
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -51,13 +51,6 @@ class ProblemType
     protected $isGeneratable;
 
     /**
-     * @ORM\Column(type="datetime", nullable=false)
-     *
-     * @var DateTime
-     */
-    protected $created;
-
-    /**
      * @ORM\OneToMany(targetEntity="ProblemFinal", mappedBy="problemType", cascade={"persist", "merge"})
      *
      * @var ArrayCollection|ProblemFinal[]
@@ -76,8 +69,8 @@ class ProblemType
      */
     public function __construct()
     {
+        parent::__construct();
         $this->isGeneratable = false;
-        $this->created = new DateTime();
         $this->problems = new ArrayCollection();
         $this->conditionTypes = new ArrayCollection();
     }
@@ -96,22 +89,6 @@ class ProblemType
     public function setLabel(string $label): void
     {
         $this->label = $label;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreated(): DateTime
-    {
-        return $this->created;
-    }
-
-    /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = $created;
     }
 
     /**
@@ -144,14 +121,6 @@ class ProblemType
     public function setConditionTypes($conditionTypes): void
     {
         $this->conditionTypes = $conditionTypes;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->label;
     }
 
     /**

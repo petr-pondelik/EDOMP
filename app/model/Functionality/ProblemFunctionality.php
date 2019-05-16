@@ -66,6 +66,11 @@ class ProblemFunctionality extends BaseFunctionality
         return $problem;
     }
 
+    /**
+     * @param int $id
+     * @param bool $isTemplate
+     * @throws \Exception
+     */
     public function calculateSuccessRate(int $id, bool $isTemplate = false)
     {
 
@@ -97,26 +102,5 @@ class ProblemFunctionality extends BaseFunctionality
         $this->update($id, ArrayHash::from([
             "success_rate" => null
         ]));
-
-        /*$rows = $this->db->select("success_rate")
-            ->from($this->testRelTable)
-            ->where(!$prototype ? "problem_final_id = " . $problemId : "problem_prototype_id = " . $problemId)
-            ->fetchAll();
-
-        $cnt = 0;
-        $ratingsSum = 0;
-
-        foreach ($rows as $row){
-            if(!empty($row->success_rate)){
-                $cnt++;
-                $ratingsSum += $row->success_rate;
-            }
-        }
-
-        if($cnt > 0){
-            $this->update($problemId, [
-                "success_rate" => ($ratingsSum/$cnt)
-            ]);
-        }*/
     }
 }

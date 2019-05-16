@@ -9,10 +9,7 @@
 namespace App\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -21,10 +18,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class ProblemCondition
  * @package App\Model\Entity
  */
-class ProblemCondition
+class ProblemCondition extends BaseEntity
 {
-    //Identifier trait for id column
-    use Identifier;
+    /**
+     * @var string
+     */
+    protected $toStringAttr = "label";
 
     /**
      * @ORM\Column(type="integer", nullable=false)
@@ -41,14 +40,6 @@ class ProblemCondition
      * @var string
      */
     protected $label;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var DateTime
-     */
-    protected $created;
 
     /**
      * @ORM\ManyToOne(targetEntity="ProblemConditionType", inversedBy="conditions", cascade={"persist", "merge"})
@@ -68,7 +59,7 @@ class ProblemCondition
      */
     public function __construct()
     {
-        $this->created = new DateTime();
+        parent::__construct();
         $this->problems = new ArrayCollection();
     }
 
@@ -105,38 +96,6 @@ class ProblemCondition
     }
 
     /**
-     * @return DateTime
-     */
-    public function getCreated(): DateTime
-    {
-        return $this->created;
-    }
-
-    /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = $created;
-    }
-
-    /**
-     * @return ProblemConditionType
-     */
-    public function getConditionType(): ProblemConditionType
-    {
-        return $this->conditionType;
-    }
-
-    /**
-     * @param ProblemConditionType $conditionType
-     */
-    public function setConditionType(ProblemConditionType $conditionType): void
-    {
-        $this->conditionType = $conditionType;
-    }
-
-    /**
      * @return mixed
      */
     public function getProblems()
@@ -167,13 +126,4 @@ class ProblemCondition
     {
         $this->problemConditionType = $problemConditionType;
     }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->label;
-    }
-
 }

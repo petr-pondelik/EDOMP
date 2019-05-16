@@ -8,6 +8,7 @@
 
 namespace App\Model\Traits;
 
+use App\Model\Entity\Logo;
 use App\Model\Entity\Role;
 use App\Model\Entity\Term;
 
@@ -22,8 +23,8 @@ trait ToStringTrait
      */
     public function __toString(): string
     {
-        if($this instanceof Term || $this instanceof Role)
-            return $this->label;
-        return $this->body;
+        if($this instanceof Logo)
+            return "<img src='" . $this->{$this->toStringAttr} . "'/>";
+        return $this->{$this->toStringAttr};
     }
 }

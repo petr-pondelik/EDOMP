@@ -28,14 +28,15 @@ final class RouterFactory
             'presenter' => 'Homepage',
             'action' => 'default'
         ]);
-		$defaultRouter = new RouteList('Auth');
+
+		/*$defaultRouter = new RouteList('Auth');
         $frontRouter[] = new Route('/<presenter>/<action>[/<id>]', [
             'presenter' => 'Sign',
             'action' => 'in'
-        ]);
+        ]);*/
 		$router[] = $adminRouter;
 		$router[] = $frontRouter;
-		$router[] = $defaultRouter;
+		//$router[] = $defaultRouter;
 		return $router;
 	}
 }

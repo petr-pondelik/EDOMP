@@ -10,8 +10,6 @@ namespace App\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -20,9 +18,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class SuperGroup
  * @package App\Model\Entity
  */
-class SuperGroup
+class SuperGroup extends BaseEntity
 {
-    use Identifier;
+    /**
+     * @var string
+     */
+    protected $toStringAttr = "label";
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -31,14 +32,6 @@ class SuperGroup
      * @var string
      */
     protected $label;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var DateTime
-     */
-    protected $created;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Model\Entity\Group", mappedBy="superGroup", cascade={"all"})
@@ -57,7 +50,7 @@ class SuperGroup
      */
     public function __construct()
     {
-        $this->created = new DateTime();
+        parent::__construct();
         $this->groups = new ArrayCollection();
         $this->categories = new ArrayCollection();
     }
@@ -76,30 +69,6 @@ class SuperGroup
     public function setLabel(string $label): void
     {
         $this->label = $label;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreated(): DateTime
-    {
-        return DateTime::from($this->created);
-    }
-
-    /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = $created;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->label;
     }
 
     /**

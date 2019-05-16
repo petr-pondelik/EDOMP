@@ -8,11 +8,7 @@
 
 namespace App\Model\Entity;
 
-use App\Model\Traits\ToStringTrait;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**

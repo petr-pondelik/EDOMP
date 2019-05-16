@@ -23,6 +23,10 @@ class ArithmeticSeqTempl extends ProblemTemplate
     /**
      * @ORM\Column(type="string", nullable=false)
      * @Assert\NotBlank()
+     * @Assert\Type(
+     *     type="string",
+     *     message="Variable must be {{ type }}."
+     * )
      *
      * @var string
      */
@@ -31,27 +35,25 @@ class ArithmeticSeqTempl extends ProblemTemplate
     /**
      * @ORM\Column(type="integer", nullable=false)
      * @Assert\NotBlank()
+     * @Assert\Type(
+     *     type="integer",
+     *     message="FirstN must be {{ type }}."
+     * )
      *
      * @var int
      */
     protected $firstN;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="float", nullable=true)
+     * @Assert\Type(
+     *     type="float",
+     *     message="Difference must be {{ type }}."
+     * )
      *
      * @var float
      */
     protected $difference;
-
-    /**
-     * ProblemTemplate constructor.
-     * @throws \Exception
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->isTemplate = true;
-    }
 
     /**
      * @return string

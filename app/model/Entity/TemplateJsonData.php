@@ -9,9 +9,7 @@
 namespace App\Model\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
 use Symfony\Component\Validator\Constraints as Assert;
-use Nette\Utils\DateTime;
 
 /**
  * @ORM\Entity(repositoryClass="App\Model\Repository\TemplateJsonDataRepository")
@@ -19,9 +17,12 @@ use Nette\Utils\DateTime;
  * Class TemplateJsonData
  * @package App\Model\Entity
  */
-class TemplateJsonData
+class TemplateJsonData extends BaseEntity
 {
-    use Identifier;
+    /**
+     * @var string
+     */
+    protected $toStringAttr = "jsonData";
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -37,23 +38,6 @@ class TemplateJsonData
      * @var int
      */
     protected $templateId;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var DateTime
-     */
-    protected $created;
-
-    /**
-     * TemplateJsonData constructor.
-     * @throws \Exception
-     */
-    public function __construct()
-    {
-        $this->created = new DateTime();
-    }
 
     /**
      * @return string
@@ -85,21 +69,5 @@ class TemplateJsonData
     public function setTemplateId(int $templateId): void
     {
         $this->templateId = $templateId;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreated(): DateTime
-    {
-        return DateTime::from($this->created);
-    }
-
-    /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = $created;
     }
 }

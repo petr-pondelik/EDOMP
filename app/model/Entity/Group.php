@@ -10,8 +10,6 @@ namespace App\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -21,9 +19,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class Group
  * @package App\Model\Entity
  */
-class Group
+class Group extends BaseEntity
 {
-    use Identifier;
+    /**
+     * @var string
+     */
+    protected $toStringAttr = "label";
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -32,14 +33,6 @@ class Group
      * @var string
      */
     protected $label;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var DateTime
-     */
-    protected $created;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\SuperGroup", inversedBy="groups", cascade={"persist", "merge"})
@@ -65,7 +58,7 @@ class Group
      */
     public function __construct()
     {
-        $this->created = new DateTime();
+        parent::__construct();
         $this->users = new ArrayCollection();
         $this->categories = new ArrayCollection();
     }
@@ -87,22 +80,6 @@ class Group
     }
 
     /**
-     * @return DateTime
-     */
-    public function getCreated(): DateTime
-    {
-        return DateTime::from($this->created);
-    }
-
-    /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = $created;
-    }
-
-    /**
      * @return SuperGroup
      */
     public function getSuperGroup(): SuperGroup
@@ -116,14 +93,6 @@ class Group
     public function setSuperGroup(SuperGroup $superGroup): void
     {
         $this->superGroup = $superGroup;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return $this->getLabel();
     }
 
     /**

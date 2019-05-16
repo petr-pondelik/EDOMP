@@ -10,8 +10,6 @@ namespace App\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -20,10 +18,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class ProblemConditionType
  * @package App\Model\Entity
  */
-class ProblemConditionType
+class ProblemConditionType extends BaseEntity
 {
-    //Identifier trait for id column
-    use Identifier;
+    /**
+     * @var string
+     */
+    protected $toStringAttr = "label";
 
     /**
      * @ORM\Column(type="integer", nullable=false)
@@ -42,13 +42,6 @@ class ProblemConditionType
     protected $label;
 
     /**
-     * @ORM\Column(type="datetime", nullable=false)
-     *
-     * @var DateTime
-     */
-    protected $created;
-
-    /**
      * @ORM\OneToMany(targetEntity="ProblemCondition", mappedBy="conditionType", cascade={"persist", "merge"})
      */
     protected $conditions;
@@ -64,7 +57,7 @@ class ProblemConditionType
      */
     public function __construct()
     {
-        $this->created = new DateTime();
+        parent::__construct();
         $this->conditions = new ArrayCollection();
         $this->problemTypes = new ArrayCollection();
     }
@@ -99,22 +92,6 @@ class ProblemConditionType
     public function setLabel(string $label): void
     {
         $this->label = $label;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreated(): DateTime
-    {
-        return $this->created;
-    }
-
-    /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = $created;
     }
 
     /**

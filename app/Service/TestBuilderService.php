@@ -235,10 +235,6 @@ class TestBuilderService
 
         $test = $this->testRepository->find($testId);
 
-        /*$this->logoFunctionality->update($data->logo_file_hidden, ArrayHash::from([
-            "is_used" => true
-        ]));*/
-
         foreach($variants as $variant){
             //Catch if there is one final problem more than once
             try{

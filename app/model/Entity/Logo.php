@@ -8,10 +8,7 @@
 
 namespace App\Model\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -20,9 +17,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class Logo
  * @package App\Model\Entity
  */
-class Logo
+class Logo extends BaseEntity
 {
-    use Identifier;
+    /**
+     * @var string
+     */
+    protected $toStringAttr = "path";
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -60,22 +60,6 @@ class Logo
      * @var string
      */
     protected $label;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
-     *
-     * @var DateTime
-     */
-    protected $created;
-
-    /**
-     * Logo constructor.
-     * @throws \Exception
-     */
-    public function __construct()
-    {
-        $this->created = new DateTime();
-    }
 
     /**
      * @return string
@@ -125,7 +109,6 @@ class Logo
         $this->extensionTmp = $extensionTmp;
     }
 
-
     /**
      * @return string
      */
@@ -143,22 +126,6 @@ class Logo
     }
 
     /**
-     * @return DateTime
-     */
-    public function getCreated(): DateTime
-    {
-        return DateTime::from($this->created);
-    }
-
-    /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = $created;
-    }
-
-    /**
      * @return bool
      */
     public function isUsed(): bool
@@ -172,10 +139,5 @@ class Logo
     public function setIsUsed(bool $isUsed): void
     {
         $this->isUsed = $isUsed;
-    }
-
-    public function __toString(): string
-    {
-        return "<img src='".$this->getPath()."'/>";
     }
 }

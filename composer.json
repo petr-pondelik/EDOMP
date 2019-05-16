@@ -19,7 +19,7 @@
 		"nette/robot-loader": "^2.4 || ^3.0",
 		"nette/security": "^2.4",
 		"nette/utils": "^2.4",
-		"latte/latte": "^2.4",
+		"latte/latte": "~2.4.0",
 		"tracy/tracy": "^2.4",
 		"dibi/dibi": "^3.2",
 		"webrouse/n-asset-macro": "^2.0",
@@ -32,8 +32,8 @@
 		"ipub/visual-paginator": "@dev",
 		"kdyby/doctrine": "^4.0@dev",
 		"kdyby/events": "^3.1",
-		"symfony/validator": "^4.2",
-		"doctrine/annotations": "^1.6"
+		"doctrine/annotations": "^1.6",
+		"kdyby/validator": "^0.6.1"
 	},
 	"require-dev": {
 		"nette/tester": "^2.0"

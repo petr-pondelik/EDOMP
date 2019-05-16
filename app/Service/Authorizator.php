@@ -34,8 +34,6 @@ class Authorizator implements IAuthorizator
      */
     public function isCategoryAllowed(IIdentity $userIdentity, int $categoryId): bool
     {
-        //bdump($userIdentity)
-
         foreach ($userIdentity->categories as $key => $category){
             if($key === $categoryId)
                 return true;

@@ -185,8 +185,7 @@ class CategoryPresenter extends FrontPresenter
 
     /**
      * @return Form
-     * @throws \Dibi\Exception
-     * @throws \Dibi\NotSupportedException
+     * @throws \Exception
      */
     public function createComponentProblemFilterForm()
     {

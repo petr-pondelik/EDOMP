@@ -25,6 +25,7 @@ use App\Model\Repository\TemplateJsonDataRepository;
 use App\Presenters\BasePresenter;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\Json;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DoctrinePresenter extends BasePresenter
 {
@@ -58,11 +59,27 @@ class DoctrinePresenter extends BasePresenter
      */
     protected $em;
 
+    /**
+     * @var ValidatorInterface
+     */
+    protected $validator;
+
+    /**
+     * DoctrinePresenter constructor.
+     * @param EntityManager $em
+     * @param ProblemFinalRepository $problemRepository
+     * @param CategoryRepository $categoryRepository
+     * @param TemplateJsonDataRepository $templateJsonDataRepository
+     * @param ProblemTemplateRepository $problemTemplateRepository
+     * @param QuadraticEqTemplRepository $quadraticEqTemplRepository
+     * @param ValidatorInterface $validator
+     */
     public function __construct
     (
         EntityManager $em, ProblemFinalRepository $problemRepository, CategoryRepository $categoryRepository,
         TemplateJsonDataRepository $templateJsonDataRepository,
-        ProblemTemplateRepository $problemTemplateRepository, QuadraticEqTemplRepository $quadraticEqTemplRepository
+        ProblemTemplateRepository $problemTemplateRepository, QuadraticEqTemplRepository $quadraticEqTemplRepository,
+        ValidatorInterface $validator
     )
     {
         parent::__construct();
@@ -74,41 +91,18 @@ class DoctrinePresenter extends BasePresenter
         $this->problemTemplateRepository = $problemTemplateRepository;
         $this->quadraticEqTemplRepository = $quadraticEqTemplRepository;
         $this->em = $em;
+        $this->validator = $validator;
     }
 
     public function actionDefault()
     {
-        //bdump(Json::decode($this->problemTemplateRepository->findOneBy(["id" => 4])->getMatches()));
-        //$this->em->getConnection()->get
-        //bdump($this->quadraticEqTemplRepository->getLastId());
 
-        $category = new Category();
-        $category->setLabel("TEXT");
+        /*$errors = $this->validator->validate($category);
+
+        bdump($errors);
+
         $this->em->persist($category);
-
-        $subCategory = new SubCategory();
-        $subCategory->setLabel("test label");
-        $subCategory->setCategory($category);
-        $this->em->persist($subCategory);
-
-        $difficulty = new Difficulty();
-        $difficulty->setLabel("test label");
-        $this->em->persist($difficulty);
-
-        $problemType = new ProblemType();
-        $problemType->setLabel("test label");
-        $problemType->setAccessor("1");
-        $this->em->persist($problemType);
-
-        $templ = new QuadraticEqTempl();
-        $templ->setBody("test body");
-        $templ->setVariable("x");
-        $templ->setProblemType($problemType);
-        $templ->setSubCategory($subCategory);
-        $templ->setDifficulty($difficulty);
-        $this->em->persist($templ);
-
-        $this->em->flush();
+        $this->em->flush();*/
 
     }
 }

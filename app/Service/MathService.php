@@ -204,7 +204,7 @@ class MathService
         $expression = $this->latexHelper::parseLatex($expression);
 
         $parameterized = $this->stringsHelper::getParametrized($expression);
-        $parameterized = $this->stringsHelper::newtonFractions($parameterized->expression);
+        $parameterized = $this->stringsHelper::newtonFormat($parameterized->expression);
 
         bdump($parameterized);
 
@@ -216,7 +216,7 @@ class MathService
         bdump($sides);
 
         $expression = $this->stringsHelper::mergeEqSides($sides);
-        $expression = $this->stringsHelper::newtonFractions($expression);
+        $expression = $this->stringsHelper::newtonFormat($expression);
         $expression = $this->newtonApiClient->simplify($expression);
 
         return $expression;

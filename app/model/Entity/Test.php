@@ -10,8 +10,6 @@ namespace App\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -21,9 +19,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class Test
  * @package App\Model\Entity
  */
-class Test
+class Test extends BaseEntity
 {
-    use Identifier;
+    /**
+     * @var string
+     */
+    protected $toStringAttr = "id";
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -47,14 +48,6 @@ class Test
      * @var int
      */
     protected $testNumber;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var DateTime
-     */
-    protected $created;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\Term", cascade={"persist", "merge"})
@@ -87,7 +80,7 @@ class Test
      */
     public function __construct()
     {
-        $this->created = new DateTime();
+        parent::__construct();
         $this->groups = new ArrayCollection();
         $this->problemAssociations = new ArrayCollection();
     }
@@ -138,22 +131,6 @@ class Test
     public function setTestNumber(int $testNumber): void
     {
         $this->testNumber = $testNumber;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreated(): DateTime
-    {
-        return DateTime::from($this->created);
-    }
-
-    /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = $created;
     }
 
     /**

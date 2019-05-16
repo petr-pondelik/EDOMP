@@ -10,8 +10,6 @@ namespace App\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -20,9 +18,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class User
  * @package App\Model\Entity
  */
-class User
+class User extends BaseEntity
 {
-    use Identifier;
+    /**
+     * @var string
+     */
+    protected $toStringAttr = "username";
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -49,14 +50,6 @@ class User
     protected $isAdmin = false;
 
     /**
-     * @ORM\Column(type="datetime", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var DateTime
-     */
-    protected $created;
-
-    /**
      * @ORM\ManyToMany(targetEntity="App\Model\Entity\Group", inversedBy="users", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="user_group_rel")
      */
@@ -74,7 +67,7 @@ class User
      */
     public function __construct()
     {
-        $this->created = new DateTime();
+        parent::__construct();
         $this->groups = new ArrayCollection();
         $this->roles = new ArrayCollection();
     }
@@ -109,22 +102,6 @@ class User
     public function setPassword(string $password): void
     {
         $this->password = $password;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreated(): DateTime
-    {
-        return DateTime::from($this->created);
-    }
-
-    /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = $created;
     }
 
     /**

@@ -10,8 +10,6 @@ namespace App\Model\Entity;
 
 use App\Model\Traits\ToStringTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -20,11 +18,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class Term
  * @package App\Model\Entity
  */
-class Term
+class Term extends BaseEntity
 {
-    use Identifier;
-
     use ToStringTrait;
+
+    /**
+     * @var string
+     */
+    protected $toStringAttr = "label";
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -33,23 +34,6 @@ class Term
      * @var string
      */
     protected $label;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var DateTime
-     */
-    protected $created;
-
-    /**
-     * Term constructor.
-     * @throws \Exception
-     */
-    public function __construct()
-    {
-        $this->created = new DateTime();
-    }
 
     /**
      * @return string
@@ -65,21 +49,5 @@ class Term
     public function setLabel(string $label): void
     {
         $this->label = $label;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreated(): DateTime
-    {
-        return $this->created;
-    }
-
-    /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = DateTime::from($created);
     }
 }

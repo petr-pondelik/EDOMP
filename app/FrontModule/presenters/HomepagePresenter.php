@@ -10,7 +10,7 @@ namespace App\FrontModule\Presenters;
 
 /**
  * Class HomepagePresenter
- * @package app\frontModule\presenters
+ * @package app\FrontModule\presenters
  */
 final class HomepagePresenter extends FrontPresenter
 {

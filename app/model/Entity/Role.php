@@ -8,11 +8,8 @@
 
 namespace App\Model\Entity;
 
-use App\Model\Traits\ToStringTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Nette\Utils\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -21,11 +18,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class Role
  * @package App\Model\Entity
  */
-class Role
+class Role extends BaseEntity
 {
-    use Identifier;
-
-    use ToStringTrait;
+    protected $toStringAttr = "label";
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -34,14 +29,6 @@ class Role
      * @var string
      */
     protected $label;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var DateTime
-     */
-    protected $created;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Model\Entity\User", mappedBy="roles", cascade={"persist", "merge"})
@@ -54,7 +41,7 @@ class Role
      */
     public function __construct()
     {
-        $this->created = new DateTime();
+        parent::__construct();
         $this->users = new ArrayCollection();
     }
 
@@ -72,22 +59,6 @@ class Role
     public function setLabel(string $label): void
     {
         $this->label = $label;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreated(): DateTime
-    {
-        return $this->created;
-    }
-
-    /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = $created;
     }
 
     /**
