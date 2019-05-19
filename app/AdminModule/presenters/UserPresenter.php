@@ -127,6 +127,7 @@ class UserPresenter extends AdminPresenter
     /**
      * @param $name
      * @return \Ublaboo\DataGrid\DataGrid
+     * @throws \Doctrine\ORM\Query\QueryException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
     public function createComponentUserGrid($name): DataGrid

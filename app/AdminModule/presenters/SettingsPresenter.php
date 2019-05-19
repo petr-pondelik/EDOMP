@@ -92,26 +92,38 @@ class SettingsPresenter extends AdminPresenter
 
     /**
      * @param int $id
+     * @throws \Nette\Application\AbortException
      */
     public function actionGroupPermissionEdit(int $id)
     {
+        $group = $this->groupRepository->find($id);
+        if($this->user->isInRole("teacher") && !$this->authorizator->isGroupAllowed($this->user->identity, $group)){
+            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
+            $this->redirect("Homepage:default");
+        }
         $form = $this["groupPermissionForm"];
         if(!$form->isSubmitted()){
             $this->template->id = $id;
-            $categories = $this->groupRepository->find($id)->getCategoriesId();
+            $categories = $group->getCategoriesId();
             $this->setDefaults($form, $id, $categories);
         }
     }
 
     /**
      * @param int $id
+     * @throws \Nette\Application\AbortException
      */
     public function actionSuperGroupPermissionEdit(int $id)
     {
+        $superGroup = $this->superGroupRepository->find($id);
+        if($this->user->isInRole("teacher") && !$this->authorizator->isSuperGroupAllowed($this->user->identity, $superGroup)){
+            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
+            $this->redirect("Homepage:default");
+        }
         $form = $this["superGroupPermissionForm"];
         if(!$form->isSubmitted()){
             $this->template->id = $id;
-            $categories = $this->superGroupRepository->find($id)->getCategoriesId();
+            $categories = $superGroup->getCategoriesId();
             $this->setDefaults($form, $id, $categories);
         }
     }
