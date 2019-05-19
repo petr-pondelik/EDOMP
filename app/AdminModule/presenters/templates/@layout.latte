@@ -20,7 +20,7 @@
 
 <body>
 
-{if $user->isInRole("admin")}
+{if $user->isInRole("admin") || $user->isInRole("teacher")}
 
     <nav id="sidebar" class="scrollbar scrollbar-primary">
         <div id="jquery-accordion-menu" class="jquery-accordion-menu">
@@ -96,27 +96,27 @@
                     </a>
                 </li>
 
-                <li class="nav-small-cap">
-                    <a href="javascript:void(0)" class="disabled">
-                        <i class="fas fa-ellipsis-h mr-2"></i> UŽIVATELÉ
-                    </a>
-                </li>
+                    <li class="nav-small-cap">
+                        <a href="javascript:void(0)" class="disabled">
+                            <i class="fas fa-ellipsis-h mr-2"></i> UŽIVATELÉ
+                        </a>
+                    </li>
 
-                <li n:class="$presenter->isLinkCurrent('User:*') ? active">
-                    <a n:href="User:default">
-                        <i class="fas fa-user mr-2"></i> Uživatelé
-                    </a>
-                </li>
-                <li n:class="$presenter->isLinkCurrent('Group:*') ? active">
-                    <a n:href="Group:default">
-                        <i class="fas fa-user-friends mr-2"></i> Skupiny
-                    </a>
-                </li>
-                <li n:class="$presenter->isLinkCurrent('SuperGroup:*') ? active">
-                    <a n:href="SuperGroup:default">
-                        <i class="fas fa-users mr-2"></i> Superskupiny
-                    </a>
-                </li>
+                    <li n:class="$presenter->isLinkCurrent('User:*') ? active">
+                        <a n:href="User:default">
+                            <i class="fas fa-user mr-2"></i> Uživatelé
+                        </a>
+                    </li>
+                    <li n:class="$presenter->isLinkCurrent('Group:*') ? active">
+                        <a n:href="Group:default">
+                            <i class="fas fa-user-friends mr-2"></i> Skupiny
+                        </a>
+                    </li>
+                    <li n:class="$presenter->isLinkCurrent('SuperGroup:*') ? active">
+                        <a n:href="SuperGroup:default">
+                            <i class="fas fa-users mr-2"></i> Superskupiny
+                        </a>
+                    </li>
 
                 <li class="nav-small-cap">
                     <a href="javascript:void(0)" class="disabled">
@@ -135,6 +135,7 @@
                         <i class="fas fa-cog mr-2"></i>Nastavení
                     </a>
                 </li>
+
             </ul>
             <footer class="jquery-accordion-menu-footer">FIT ČVUT @ 2019</footer>
         </div>
@@ -157,6 +158,7 @@
                     </a>
                     <div class="dropdown-menu">
                         <h6 class="dropdown-header">{$user->getIdentity()->username}</h6>
+                        <h6 class="dropdown-header">{$user->getIdentity()->roleLabel}</h6>
                         <div class="dropdown-divider"></div>
                         <a href={link Sign:in do => logout} class="dropdown-item">Odhlásit</a>
                     </div>

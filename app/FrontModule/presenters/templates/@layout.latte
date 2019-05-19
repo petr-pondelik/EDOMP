@@ -74,7 +74,7 @@
                 <i class="fas fa-bars"></i>
             </a>
             <div id="header-bar-right">
-                {if $user->isInRole("admin")}
+                {if $user->isInRole("admin") || $user->isInRole("teacher")}
                     <div class="btn-group">
                         <a n:href=":Admin:Homepage:default" class="admin mr-3" title="Administrace">
                             <i class="fas fa-cog"></i>
@@ -87,6 +87,7 @@
                     </a>
                     <div class="dropdown-menu">
                         <h6 class="dropdown-header">{$user->getIdentity()->username}</h6>
+                        <h6 class="dropdown-header">{$user->getIdentity()->roleLabel}</h6>
                         <div class="dropdown-divider"></div>
                         <a href={link Sign:in do => logout} class="dropdown-item">Odhlásit</a>
                     </div>

@@ -40,6 +40,13 @@ class Group extends BaseEntity
     protected $superGroup;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Model\Entity\User", inversedBy="groupsCreated", cascade={"persist", "merge"})
+     *
+     * @var User
+     */
+    protected $createdBy;
+
+    /**
      * @ORM\ManyToMany(targetEntity="App\Model\Entity\User", mappedBy="groups", cascade={"all"})
      */
     protected $users;

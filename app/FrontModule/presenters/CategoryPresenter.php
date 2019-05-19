@@ -95,7 +95,7 @@ class CategoryPresenter extends FrontPresenter
     public function actionDefault(int $id, bool $clear_filters = false, int $page = 1, array $filters = null): void
     {
         if(!$this->authorizator->isCategoryAllowed($this->user->identity, $id)){
-            $this->flashMessage("Nemáte oprávnění k přístupu.", "danger");
+            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
             $this->redirect("Homepage:default");
         }
 

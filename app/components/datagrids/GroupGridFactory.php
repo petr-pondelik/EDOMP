@@ -68,6 +68,7 @@ class GroupGridFactory extends BaseGrid
         $grid->setDataSource(
             $this->groupRepository->createQueryBuilder("er")
                 ->where("er.id != :id")
+                //->andWhere("")
                 ->setParameter("id", $this->constHelper::ADMIN_GROUP)
         );
 

@@ -9,6 +9,7 @@
 namespace App\Components\DataGrids;
 
 use App\Helpers\ConstHelper;
+use App\Model\Repository\RoleRepository;
 use App\Model\Repository\UserRepository;
 
 /**
@@ -23,6 +24,11 @@ class UserGridFactory extends BaseGrid
     protected $userRepository;
 
     /**
+     * @var RoleRepository
+     */
+    protected $roleRepository;
+
+    /**
      * @var ConstHelper
      */
     protected $constHelper;
@@ -30,15 +36,18 @@ class UserGridFactory extends BaseGrid
     /**
      * UserGridFactory constructor.
      * @param UserRepository $userRepository
+     * @param RoleRepository $roleRepository
      * @param ConstHelper $constHelper
      */
     public function __construct
     (
-        UserRepository $userRepository, ConstHelper $constHelper
+        UserRepository $userRepository, RoleRepository $roleRepository,
+        ConstHelper $constHelper
     )
     {
         parent::__construct();
         $this->userRepository = $userRepository;
+        $this->roleRepository = $roleRepository;
         $this->constHelper = $constHelper;
     }
 
@@ -46,28 +55,46 @@ class UserGridFactory extends BaseGrid
      * @param $container
      * @param $name
      * @return \Ublaboo\DataGrid\DataGrid
+     * @throws \Doctrine\ORM\Query\QueryException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
     public function create($container, $name)
     {
         $grid = parent::create($container, $name);
 
+        $roleOptions = $this->roleRepository->findWithoutAdmin();
+
         $grid->setPrimaryKey("id");
 
-        $grid->setDataSource(
-            $this->userRepository->createQueryBuilder("er")
-                ->where("er.isAdmin = false")
-        );
+        $qb = $this->userRepository->createQueryBuilder("er")
+            ->where("er.isAdmin = false");
+
+        if($container->user->isInRole("teacher"))
+            $qb = $qb->andWhere("er.role != :roleId")
+                    ->setParameter("roleId", 2);
+
+        $grid->setDataSource($qb);
 
         $grid->addColumnNumber("id", "ID")
-            ->setSortable();
+            ->addAttributes(['class' => 'text-center'])
+            ->setSortable()
+            ->setFilterText();
 
         $grid->addColumnDateTime("created", "Vytvořeno")
-            ->addAttributes(['class' => 'text-center'] )
+            ->addAttributes(['class' => 'text-center'])
             ->setFormat('d.m.Y H:i:s')
             ->setSortable();
 
-        $grid->addColumnText("username", "Uživatelské jméno");
+        $grid->addColumnText("username", "Uživatelské jméno")
+            ->addAttributes(['class' => 'text-center'])
+            ->setFilterText();
+
+        $grid->addColumnNumber('role', 'Role')
+            ->setSortable('er.id')
+            ->addAttributes(['class' => 'text-center'])
+            ->setReplacement($roleOptions)
+            ->setFilterMultiSelect($roleOptions);
+
 
         return $grid;
     }

@@ -59,18 +59,19 @@ class Authenticator implements IAuthenticator
         if(!$user || !Passwords::verify($password, $user->getPassword()))
             throw new AuthenticationException('Zadáno neplatné uživatelské jméno nebo heslo.');
 
-        $roles = $user->getRolesLabel();
+        $role = $user->getRole();
 
-        bdump($roles);
+        bdump($role);
 
-        if(!in_array("admin", $roles))
-            $categories = $this->userManager->getCategories((int) $user->user_id);
+        if(!strcmp("student", $role->getKey()))
+            $categories = $user->getCategoriesId();
         else
             $categories = $this->categoryRepository->findPairs([], "label");
 
-        return new Identity($user->getId(), $roles, [
+        return new Identity($user->getId(), $role->getKey(), [
             "username" => $user->getUsername(),
-            "categories" => $categories
+            "categories" => $categories,
+            "roleLabel" => $role->getLabel()
         ]);
     }
 

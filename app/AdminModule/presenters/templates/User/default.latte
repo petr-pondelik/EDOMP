@@ -99,12 +99,12 @@
                     </div>
 
                     <div class="form-group col-12">
-                        {label roles}
-                        {input roles}
-                        {snippet rolesErrorSnippet}
+                        {label role}
+                        {input role}
+                        {snippet roleErrorSnippet}
                             {var $form = $control['userCreateForm']}
                             <div n:if="$form->hasErrors()" class="mt-2">
-                                <p n:foreach="$form['roles']->errors as $error" class="alert alert-danger">
+                                <p n:foreach="$form['role']->errors as $error" class="alert alert-danger">
                                     {$error}
                                 </p>
                             </div>

@@ -62,7 +62,7 @@ class UserFunctionality extends BaseFunctionality
         $user = new User();
         $user->setUsername($data->username);
         $user->setPassword(Passwords::hash($data->password));
-        $user = $this->attachRoles($user, $data->roles);
+        $user->setRole($this->roleRepository->find($data->role));
         $user = $this->attachGroups($user, $data->groups);
         $this->em->persist($user);
         $this->em->flush();
@@ -83,25 +83,12 @@ class UserFunctionality extends BaseFunctionality
         $user->setUsername($data->username);
         if($data->change_password)
             $user->setPassword(Passwords::hash($data->password));
-        $user->setRoles(new ArrayCollection());
+        $user->setRole($this->roleRepository->find($data->role));
         $user->setGroups(new ArrayCollection());
-        $user = $this->attachRoles($user, $data->roles);
         $user = $this->attachGroups($user, $data->groups);
         $this->em->persist($user);
         $this->em->flush();
         return null;
-    }
-
-    /**
-     * @param User $user
-     * @param array $roles
-     * @return User
-     */
-    public function attachRoles(User $user, array $roles): User
-    {
-        foreach ($roles as $role)
-            $user->addRole($this->roleRepository->find($role));
-        return $user;
     }
 
     /**

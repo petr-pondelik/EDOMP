@@ -23,10 +23,23 @@ class Role extends BaseEntity
 {
     use LabelTrait;
 
+    /**
+     * @var string
+     */
     protected $toStringAttr = "label";
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Model\Entity\User", mappedBy="roles", cascade={"all"})
+     * @ORM\Column(type="string", nullable=false)
+     * @Assert\NotBlank(
+     *     message="Key can't be blank"
+     * )
+     *
+     * @var string
+     */
+    protected $key;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\User", mappedBy="role", cascade={"all"})
      */
     protected $users;
 
@@ -54,5 +67,21 @@ class Role extends BaseEntity
     public function setUsers($users): void
     {
         $this->users = $users;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey(): string
+    {
+        return $this->key;
+    }
+
+    /**
+     * @param string $key
+     */
+    public function setKey(string $key): void
+    {
+        $this->key = $key;
     }
 }

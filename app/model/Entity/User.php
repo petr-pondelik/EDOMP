@@ -57,19 +57,42 @@ class User extends BaseEntity
     protected $isAdmin = false;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Model\Entity\User", inversedBy="usersCreated", cascade={"persist", "merge"})
+     *
+     * @var User
+     */
+    protected $createdBy;
+
+    /**
      * @ORM\ManyToMany(targetEntity="App\Model\Entity\Group", inversedBy="users", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="user_group_rel")
      */
     protected $groups;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Model\Entity\Role", inversedBy="users", cascade={"persist", "merge"})
-     * @ORM\JoinTable(name="user_role_rel")
-     * @Assert\NotBlank(
-     *     message="Roles can't be blank."
-     * )
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\Group", indexBy="createdBy", cascade={"persist", "merge"})
      */
-    protected $roles;
+    protected $groupsCreated;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\SuperGroup", indexBy="createdBy", cascade={"persist", "merge"})
+     */
+    protected $superGroupsCreated;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\User", indexBy="createdBy", cascade={"persist", "merge"})
+     */
+    protected $usersCreated;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Model\Entity\Role", inversedBy="users", cascade={"persist", "merge"})
+     * @Assert\NotBlank(
+     *     message="Role can't be blank."
+     * )
+     *
+     * @var Role
+     */
+    protected $role;
 
     /**
      * User constructor.
@@ -79,7 +102,6 @@ class User extends BaseEntity
     {
         parent::__construct();
         $this->groups = new ArrayCollection();
-        $this->roles = new ArrayCollection();
     }
 
     /**
@@ -140,64 +162,6 @@ class User extends BaseEntity
     }
 
     /**
-     * @return mixed
-     */
-    public function getRoles()
-    {
-        return $this->roles;
-    }
-
-    /**
-     * @param mixed $roles
-     */
-    public function setRoles($roles): void
-    {
-        $this->roles = $roles;
-    }
-
-    /**
-     * @param Role $role
-     */
-    public function addRole(Role $role): void
-    {
-        if($this->roles->contains($role)) return;
-        $this->roles[] = $role;
-    }
-
-    /**
-     * @return array
-     */
-    public function getRolesId(): array
-    {
-        $res = [];
-        foreach ($this->getRoles()->getValues() as $key => $role)
-            array_push($res, $role->getId());
-        return $res;
-    }
-
-    /**
-     * @return array
-     */
-    public function getRolesLabel(): array
-    {
-        $res = [];
-        foreach ($this->getRoles()->getValues() as $key => $role)
-            array_push($res, $role->getLabel());
-        return $res;
-    }
-
-    /**
-     * @return array
-     */
-    public function getGroupsId(): array
-    {
-        $res = [];
-        foreach ($this->getGroups()->getValues() as $key => $group)
-            array_push($res, $group->getId());
-        return $res;
-    }
-
-    /**
      * @return bool
      */
     public function isAdmin(): bool
@@ -212,4 +176,51 @@ class User extends BaseEntity
     {
         $this->isAdmin = $isAdmin;
     }
+
+    /**
+     * @return Role
+     */
+    public function getRole(): Role
+    {
+        return $this->role;
+    }
+
+    /**
+     * @param Role $role
+     */
+    public function setRole(Role $role): void
+    {
+        $this->role = $role;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCategoriesId(): array
+    {
+        $res = [];
+
+        foreach($this->groups as $grkey => $group)
+        {
+            foreach ($group->getCategories() as $catKey => $category)
+            {
+                if(!in_array($catKey, $res))
+                    array_push($res, $catKey);
+            }
+        }
+
+        return $res;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGroupsId(): array
+    {
+        $res = [];
+        foreach ($this->getGroups()->getValues() as $key => $group)
+            array_push($res, $group->getId());
+        return $res;
+    }
+
 }

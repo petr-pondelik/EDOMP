@@ -111,12 +111,6 @@ class ValidationService
                 return -1;
             },
 
-            "roles" => function(ArrayHash $filledVal){
-                if(count($filledVal) < 1)
-                    return 0;
-                return -1;
-            },
-
             "groups" => function(ArrayHash $filledVal){
                 if(count($filledVal) < 1)
                     return 0;
@@ -260,9 +254,6 @@ class ValidationService
                 1 => "Heslo musí mít délku alespoň 8 znaků."
             ],
 
-            "roles" => [
-                0 => "Zvolte alespoň jednu roli."
-            ],
 
             "groups" => [
                 0 => "Zvolte alespoň jednu skupinu."

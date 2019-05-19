@@ -47,7 +47,7 @@ class GroupFormFactory extends BaseForm
         $form->addText("label", "Název")
             ->setHtmlAttribute("class", "form-control");
 
-        $form->addSelect("super_group_id", "Super-Skupina", $superGroupOptions)
+        $form->addSelect("super_group_id", "Superskupina", $superGroupOptions)
             ->setHtmlAttribute("class", "form-control");
 
         $form->addSubmit("submit", "Vytvořit")

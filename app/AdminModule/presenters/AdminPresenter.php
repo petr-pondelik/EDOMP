@@ -23,7 +23,9 @@ abstract class AdminPresenter extends BasePresenter
     public function startup()
     {
         parent::startup();
-        if(!($this->user->isInRole("admin"))){
+        if(!(
+            $this->user->isInRole("admin") || $this->user->isInRole("teacher")
+        )){
             if($this->user->isLoggedIn())
                 $this->flashMessage("Nedostatečná přístupová práva.", "danger");
             $this->redirect('Sign:in');

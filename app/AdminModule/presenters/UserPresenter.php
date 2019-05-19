@@ -91,8 +91,19 @@ class UserPresenter extends AdminPresenter
     }
 
     /**
+     * @throws \Nette\Application\AbortException
+     */
+    public function startup()
+    {
+        parent::startup();
+        /*if(!$this->user->isInRole("admin")){
+            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
+            $this->redirect("Homepage:default");
+        }*/
+    }
+
+    /**
      * @param int $id
-     * @throws \Dibi\Exception
      */
     public function actionEdit(int $id)
     {
@@ -113,7 +124,7 @@ class UserPresenter extends AdminPresenter
         $form["id"]->setDefaultValue($user->getId());
         $form["id_hidden"]->setDefaultValue($user->getId());
         $form["username"]->setDefaultValue($user->getUsername());
-        $form["roles"]->setDefaultValue($user->getRolesId());
+        $form["role"]->setDefaultValue($user->getRole()->getId());
         $form["groups"]->setDefaultValue($user->getGroupsId());
     }
 
@@ -216,7 +227,7 @@ class UserPresenter extends AdminPresenter
     {
         $this->userFunctionality->update($values->id_hidden, $values);
         $this->flashMessage("Uživatel úspěšně editován.", "success");
-        //$this->redirect("default");
+        $this->redirect("default");
     }
 
     /**
@@ -226,8 +237,6 @@ class UserPresenter extends AdminPresenter
     {
         $values = $form->values;
 
-        bdump($values);
-
         $validateFields["username"] = $values->username;
         if(!isset($values->change_password) || $values->change_password){
             $validateFields["password_confirm"] = ArrayHash::from([
@@ -235,7 +244,6 @@ class UserPresenter extends AdminPresenter
                 "password_confirm" => $values->password_confirm
             ]);
         }
-        $validateFields["roles"] = ArrayHash::from($values->roles);
         $validateFields["groups"] = ArrayHash::from($values->groups);
 
         $validationErrors = $this->validationService->validate($validateFields);
@@ -249,7 +257,7 @@ class UserPresenter extends AdminPresenter
 
         $this->redrawControl("usernameErrorSnippet");
         $this->redrawControl("passwordConfirmErrorSnippet");
-        $this->redrawControl("rolesErrorSnippet");
+        $this->redrawControl("roleErrorSnippet");
         $this->redrawControl("groupsErrorSnippet");
     }
 }

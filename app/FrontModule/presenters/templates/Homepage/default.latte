@@ -12,22 +12,26 @@
 
     <div class="card-body" id="homepage-content">
 
-    <div class="card-deck mb-5">
-        <div class="card panel-card pr-0 pl-0">
-            <div class="card-header">
-                <h2 class="mb-0 card-heading"><i class="fas fa-archive mr-3"></i>Kategorie úloh</h2>
-            </div>
-            <div class="card-body">
-                <div class="alert alert-primary mb-0">
-                    <h3 class="alert-heading">
-                        Celkem zpřístupněno
-                    </h3>
-                    {dump $user->identity->roles}
-                    <p class="pb-0">{count($user->identity->categories)}</p>
+        <div>
+            <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type}">{$flash->message}</div>
+        </div>
+
+        <div class="card-deck mb-5">
+            <div class="card panel-card pr-0 pl-0">
+                <div class="card-header">
+                    <h2 class="mb-0 card-heading"><i class="fas fa-archive mr-3"></i>Kategorie úloh</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-primary mb-0">
+                        <h3 class="alert-heading">
+                            Celkem zpřístupněno
+                        </h3>
+                        {dump $user->identity->role}
+                        <p class="pb-0">{count($user->identity->categories)}</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
     </div>
 

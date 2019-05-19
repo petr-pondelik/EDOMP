@@ -73,8 +73,8 @@ class UserFormFactory extends BaseForm
 
         bdump($roleOptions);
 
-        $form->addMultiSelect("roles", "Role", $roleOptions)
-            ->setHtmlAttribute("class", "form-control selectpicker");
+        $form->addSelect("role", "Role", $roleOptions)
+            ->setHtmlAttribute("class", "form-control");
 
         $form->addMultiSelect("groups", "Skupiny", $groupOptions)
             ->setHtmlAttribute("class", "form-control selectpicker");

@@ -74,6 +74,18 @@ class SuperGroupPresenter extends AdminPresenter
     }
 
     /**
+     * @throws \Nette\Application\AbortException
+     */
+    public function startup()
+    {
+        parent::startup();
+        if(!$this->user->isInRole("admin")){
+            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
+            $this->redirect("Homepage:default");
+        }
+    }
+
+    /**
      * @param int $id
      */
     public function actionEdit(int $id): void

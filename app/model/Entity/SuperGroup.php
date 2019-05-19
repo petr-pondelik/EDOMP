@@ -39,6 +39,11 @@ class SuperGroup extends BaseEntity
     protected $categories;
 
     /**
+     * @var User
+     */
+    protected $createdBy;
+
+    /**
      * SuperGroup constructor.
      * @throws \Exception
      */

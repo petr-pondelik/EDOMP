@@ -189,5 +189,3 @@ services:
 	helper.strings: App\Helpers\StringsHelper
 	helper.latex: App\Helpers\LatexHelper
 	helper.formatter: App\Helpers\FormatterHelper
-
-includes:
