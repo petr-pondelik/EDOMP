@@ -16,6 +16,7 @@ use App\Model\Functionality\ProblemFinalFunctionality;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemFinalRepository;
 use App\Model\Repository\ProblemTypeRepository;
+use App\Service\Authorizator;
 use App\Service\MathService;
 use App\Service\ValidationService;
 use Nette\Application\UI\Form;
@@ -89,6 +90,7 @@ class ProblemFinalPresenter extends AdminPresenter
      */
     public function __construct
     (
+        Authorizator $authorizator,
         ProblemGridFactory $problemGridFactory, ProblemFormFactory $problemFormFactory,
         ProblemFinalRepository $problemRepository, ProblemTypeRepository $problemTypeRepository,
         ProblemFinalFunctionality $problemFunctionality,
@@ -97,7 +99,7 @@ class ProblemFinalPresenter extends AdminPresenter
         ConstHelper $constHelper
     )
     {
-        parent::__construct();
+        parent::__construct($authorizator);
         $this->problemGridFactory = $problemGridFactory;
         $this->problemFormFactory = $problemFormFactory;
         $this->problemRepository = $problemRepository;

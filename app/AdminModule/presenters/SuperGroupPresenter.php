@@ -14,6 +14,7 @@ use App\Components\Forms\SuperGroupFormFactory;
 use App\Model\Entity\SuperGroup;
 use App\Model\Functionality\SuperGroupFunctionality;
 use App\Model\Repository\SuperGroupRepository;
+use App\Service\Authorizator;
 use App\Service\ValidationService;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
@@ -52,6 +53,7 @@ class SuperGroupPresenter extends AdminPresenter
 
     /**
      * SuperGroupPresenter constructor.
+     * @param Authorizator $authorizator
      * @param SuperGroupRepository $superGroupRepository
      * @param SuperGroupFunctionality $superGroupFunctionality
      * @param SuperGroupGridFactory $superGroupGridFactory
@@ -60,12 +62,13 @@ class SuperGroupPresenter extends AdminPresenter
      */
     public function __construct
     (
+        Authorizator $authorizator,
         SuperGroupRepository $superGroupRepository, SuperGroupFunctionality $superGroupFunctionality,
         SuperGroupGridFactory $superGroupGridFactory, SuperGroupFormFactory $superGroupFormFactory,
         ValidationService $validationService
     )
     {
-        parent::__construct();
+        parent::__construct($authorizator);
         $this->superGroupRepository = $superGroupRepository;
         $this->superGroupFunctionality = $superGroupFunctionality;
         $this->superGroupGridFactory = $superGroupGridFactory;
@@ -79,17 +82,23 @@ class SuperGroupPresenter extends AdminPresenter
     public function startup()
     {
         parent::startup();
-        if(!$this->user->isInRole("admin")){
+        /*if(!$this->user->isInRole("admin")){
             $this->flashMessage("Nedostatečná přístupová práva.", "danger");
             $this->redirect("Homepage:default");
-        }
+        }*/
     }
 
     /**
      * @param int $id
+     * @throws \Nette\Application\AbortException
      */
     public function actionEdit(int $id): void
     {
+        $record = $this->superGroupRepository->find($id);
+        if($this->user->isInRole("teacher") && !$this->authorizator->isSuperGroupAllowed($this->user->identity, $record)){
+            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
+            $this->redirect("Homepage:default");
+        }
         $form = $this["superGroupEditForm"];
         if(!$form->isSubmitted()){
             $record = $this->superGroupRepository->find($id);

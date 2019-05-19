@@ -53,14 +53,15 @@ class UserFormFactory extends BaseForm
     }
 
     /**
+     * @param $container
      * @return \Nette\Application\UI\Form
-     * @throws \Exception
+     * @throws \Doctrine\ORM\Query\QueryException
      */
-    public function create()
+    public function create($container = null)
     {
         $form = parent::create();
         $groupOptions = $this->groupRepository->findWithoutAdmin();
-        $roleOptions = $this->roleRepository->findWithoutAdmin();
+        $roleOptions = $this->roleRepository->findWithoutAdmin($container->user->isInRole("teacher"));
 
         $form->addText("username", "Uživatelské jméno")
             ->setHtmlAttribute('class', 'form-control');

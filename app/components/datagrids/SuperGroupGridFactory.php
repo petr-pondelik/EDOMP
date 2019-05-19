@@ -55,11 +55,16 @@ class SuperGroupGridFactory extends BaseGrid
 
         $grid->setPrimaryKey("id");
 
-        $grid->setDataSource(
-            $this->superGroupRepository->createQueryBuilder("er")
-                ->where("er.id != :id")
-                ->setParameter("id", $this->constHelper::ADMIN_GROUP)
-        );
+        $qb = $this->superGroupRepository->createQueryBuilder("er")
+            ->where("er.id != :id")
+            ->setParameter("id", $this->constHelper::ADMIN_GROUP);
+
+        if($container->user->isInRole("teacher")){
+            $qb->andWhere("er.createdBy = :createdById")
+                ->setParameter("createdById", $container->user->identity->id);
+        }
+
+        $grid->setDataSource($qb);
 
         $grid->addColumnNumber('id', 'ID')
             ->setSortable();

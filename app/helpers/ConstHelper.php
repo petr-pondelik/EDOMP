@@ -15,8 +15,9 @@ namespace App\Helpers;
 class ConstHelper
 {
 
-    //Admin role ID
+    //Roles
     const ADMIN_ROLE = 1;
+    const TEACHER_ROLE = 2;
 
     //Admin supergroup and group ID
     const ADMIN_GROUP = 1;

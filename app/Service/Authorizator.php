@@ -9,6 +9,9 @@
 namespace App\Service;
 
 
+use App\Model\Entity\Group;
+use App\Model\Entity\SuperGroup;
+use App\Model\Entity\User;
 use Nette\Security\IAuthorizator;
 use Nette\Security\IIdentity;
 
@@ -39,5 +42,35 @@ class Authorizator implements IAuthorizator
                 return true;
         }
         return false;
+    }
+
+    /**
+     * @param IIdentity $userIdentity
+     * @param User $user
+     * @return bool
+     */
+    public function isUserAllowed(IIdentity $userIdentity, User $user): bool
+    {
+        return $userIdentity->getId() == $user->getCreatedBy()->getId();
+    }
+
+    /**
+     * @param IIdentity $userIdentity
+     * @param Group $group
+     * @return bool
+     */
+    public function isGroupAllowed(IIdentity $userIdentity, Group $group): bool
+    {
+        return $userIdentity->getId() == $group->getCreatedBy()->getId();
+    }
+
+    /**
+     * @param IIdentity $userIdentity
+     * @param SuperGroup $superGroup
+     * @return bool
+     */
+    public function isSuperGroupAllowed(IIdentity $userIdentity, SuperGroup $superGroup): bool
+    {
+        return $userIdentity->getId() == $superGroup->getCreatedBy()->getId();
     }
 }

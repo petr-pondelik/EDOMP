@@ -15,6 +15,7 @@ use App\Model\Entity\Group;
 use App\Model\Functionality\GroupFunctionality;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\SuperGroupRepository;
+use App\Service\Authorizator;
 use App\Service\ValidationService;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
@@ -58,6 +59,7 @@ class GroupPresenter extends AdminPresenter
 
     /**
      * GroupPresenter constructor.
+     * @param Authorizator $authorizator
      * @param GroupRepository $groupRepository
      * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupRepository $superGroupRepository
@@ -67,12 +69,13 @@ class GroupPresenter extends AdminPresenter
      */
     public function __construct
     (
+        Authorizator $authorizator,
         GroupRepository $groupRepository, GroupFunctionality $groupFunctionality, SuperGroupRepository $superGroupRepository,
         ValidationService $validationService,
         GroupGridFactory $groupGridFactory, GroupFormFactory $groupFormFactory
     )
     {
-        parent::__construct();
+        parent::__construct($authorizator);
         $this->groupRepository = $groupRepository;
         $this->groupFunctionality = $groupFunctionality;
         $this->superGroupRepository = $superGroupRepository;
@@ -87,20 +90,25 @@ class GroupPresenter extends AdminPresenter
     public function startup()
     {
         parent::startup();
-        if(!$this->user->isInRole("admin")){
+        /*if(!$this->user->isInRole("admin")){
             $this->flashMessage("Nedostatečná přístupová práva.", "danger");
             $this->redirect("Homepage:default");
-        }
+        }*/
     }
 
     /**
      * @param int $id
+     * @throws \Nette\Application\AbortException
      */
     public function actionEdit(int $id): void
     {
+        $record = $this->groupRepository->find($id);
+        if($this->user->isInRole("teacher") && !$this->authorizator->isGroupAllowed($this->user->identity, $record)){
+            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
+            $this->redirect("Homepage:default");
+        }
         $form = $this["groupEditForm"];
         if(!$form->isSubmitted()){
-            $record = $this->groupRepository->find($id);
             $this->template->id = $id;
             $this->setDefaults($form, $record);
         }

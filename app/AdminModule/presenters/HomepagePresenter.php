@@ -19,6 +19,7 @@ use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TestRepository;
 use App\Model\Repository\UserRepository;
+use App\Service\Authorizator;
 use Nette;
 
 /**
@@ -69,22 +70,24 @@ final class HomepagePresenter extends AdminPresenter
 
     /**
      * HomepagePresenter constructor.
+     * @param Authorizator $authorizator
      * @param ProblemTemplateRepository $problemTemplateRepository
      * @param ProblemFinalRepository $problemFinalRepository
      * @param CategoryRepository $categoryRepository
      * @param SubCategoryRepository $subCategoryRepository
      * @param TestRepository $testRepository
      * @param UserRepository $userRepository
-     * @param \App\AdminModule\Presenters\HomepageStatisticsManager $homepageStatisticsManager
+     * @param HomepageStatisticsManager $homepageStatisticsManager
      */
     public function __construct
     (
+        Authorizator $authorizator,
         ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemFinalRepository,
         CategoryRepository $categoryRepository, SubCategoryRepository $subCategoryRepository,
         TestRepository $testRepository, UserRepository $userRepository, HomepageStatisticsManager $homepageStatisticsManager
     )
     {
-        parent::__construct();
+        parent::__construct($authorizator);
         $this->problemTemplateRepository = $problemTemplateRepository;
         $this->problemFinalRepository = $problemFinalRepository;
         $this->categoryRepository = $categoryRepository;

@@ -39,6 +39,8 @@ class SuperGroup extends BaseEntity
     protected $categories;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Model\Entity\User", inversedBy="superGroupsCreated", cascade={"persist", "merge"})
+     *
      * @var User
      */
     protected $createdBy;
@@ -101,5 +103,21 @@ class SuperGroup extends BaseEntity
     {
         if($this->categories->contains($category)) return;
         $this->categories[] = $category;
+    }
+
+    /**
+     * @return User
+     */
+    public function getCreatedBy(): User
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * @param User $createdBy
+     */
+    public function setCreatedBy(User $createdBy): void
+    {
+        $this->createdBy = $createdBy;
     }
 }

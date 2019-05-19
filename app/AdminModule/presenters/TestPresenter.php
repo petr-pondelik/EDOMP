@@ -23,6 +23,7 @@ use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\ProblemTestAssociationRepository;
 use App\Model\Repository\TestRepository;
+use App\Service\Authorizator;
 use App\Service\FileService;
 use App\Service\GeneratorService;
 use App\Service\MathService;
@@ -150,6 +151,7 @@ class TestPresenter extends AdminPresenter
 
     /**
      * TestPresenter constructor.
+     * @param Authorizator $authorizator
      * @param EntityManager $entityManager
      * @param TestRepository $testRepository
      * @param TestFunctionality $testFunctionality
@@ -173,6 +175,7 @@ class TestPresenter extends AdminPresenter
      */
     public function __construct
     (
+        Authorizator $authorizator,
         EntityManager $entityManager,
         TestRepository $testRepository, TestFunctionality $testFunctionality,
         ProblemTemplateRepository $problemTemplateRepository,
@@ -185,7 +188,7 @@ class TestPresenter extends AdminPresenter
         StringsHelper $stringsHelper, LatexHelper $latexHelper, ConstHelper $constHelper
     )
     {
-        parent::__construct();
+        parent::__construct($authorizator);
         $this->entityManager = $entityManager;
         $this->testRepository = $testRepository;
         $this->testFunctionality = $testFunctionality;

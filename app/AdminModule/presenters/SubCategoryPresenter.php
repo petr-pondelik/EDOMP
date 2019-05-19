@@ -14,6 +14,7 @@ use App\Model\Entity\SubCategory;
 use App\Model\Functionality\SubCategoryFunctionality;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\SubCategoryRepository;
+use App\Service\Authorizator;
 use App\Service\ValidationService;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
@@ -58,6 +59,7 @@ class SubCategoryPresenter extends AdminPresenter
 
     /**
      * SubCategoryPresenter constructor.
+     * @param Authorizator $authorizator
      * @param SubCategoryRepository $subCategoryRepository
      * @param SubCategoryFunctionality $subCategoryFunctionality
      * @param CategoryRepository $categoryRepository
@@ -67,13 +69,14 @@ class SubCategoryPresenter extends AdminPresenter
      */
     public function __construct
     (
+        Authorizator $authorizator,
         SubCategoryRepository $subCategoryRepository, SubCategoryFunctionality $subCategoryFunctionality,
         CategoryRepository $categoryRepository,
         ValidationService $validationService,
         SubCategoryGridFactory $subCategoryGridFactory, SubCategoryFormFactory $subCategoryFormFactory
     )
     {
-        parent::__construct();
+        parent::__construct($authorizator);
         $this->subCategoryRepository = $subCategoryRepository;
         $this->subCategoryFunctionality = $subCategoryFunctionality;
         $this->categoryRepository = $categoryRepository;

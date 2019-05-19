@@ -69,9 +69,12 @@ class UserGridFactory extends BaseGrid
         $qb = $this->userRepository->createQueryBuilder("er")
             ->where("er.isAdmin = false");
 
-        if($container->user->isInRole("teacher"))
+        if($container->user->isInRole("teacher")){
             $qb = $qb->andWhere("er.role != :roleId")
-                    ->setParameter("roleId", 2);
+                    ->setParameter("roleId", 2)
+                    ->andWhere("er.createdBy = :createdById")
+                    ->setParameter("createdById", $container->user->identity->id);
+        }
 
         $grid->setDataSource($qb);
 

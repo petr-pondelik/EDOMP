@@ -15,6 +15,7 @@ use App\Model\Entity\ProblemTemplate;
 use App\Model\Functionality\ArithmeticSeqTemplFunctionality;
 use App\Model\Repository\ArithmeticSeqTemplRepository;
 use App\Model\Repository\ProblemTypeRepository;
+use App\Service\Authorizator;
 use App\Service\MathService;
 use App\Service\ValidationService;
 use Nette\ComponentModel\IComponent;
@@ -30,8 +31,21 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
      */
     protected $type = "ArithmeticSeqTemplate";
 
+    /**
+     * ArithmeticSeqTemplatePresenter constructor.
+     * @param Authorizator $authorizator
+     * @param ArithmeticSeqTemplRepository $repository
+     * @param ArithmeticSeqTemplFunctionality $functionality
+     * @param ProblemTypeRepository $problemTypeRepository
+     * @param TemplateGridFactory $templateGridFactory
+     * @param TemplateFormFactory $templateFormFactory
+     * @param ValidationService $validationService
+     * @param MathService $mathService
+     * @param ConstHelper $constHelper
+     */
     public function __construct
     (
+        Authorizator $authorizator,
         ArithmeticSeqTemplRepository $repository, ArithmeticSeqTemplFunctionality $functionality,
         ProblemTypeRepository $problemTypeRepository,
         TemplateGridFactory $templateGridFactory, TemplateFormFactory $templateFormFactory,
@@ -41,6 +55,7 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
     {
         parent::__construct
         (
+            $authorizator,
             $problemTypeRepository,
             $templateGridFactory, $templateFormFactory,
             $validationService, $mathService,

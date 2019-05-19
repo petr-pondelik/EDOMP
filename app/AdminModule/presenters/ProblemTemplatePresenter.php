@@ -16,6 +16,7 @@ use App\Model\Entity\ProblemTemplate;
 use App\Model\Functionality\BaseFunctionality;
 use App\Model\Repository\BaseRepository;
 use App\Model\Repository\ProblemTypeRepository;
+use App\Service\Authorizator;
 use App\Service\MathService;
 use App\Service\ValidationService;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
@@ -82,6 +83,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
 
     /**
      * ProblemTemplatePresenter constructor.
+     * @param Authorizator $authorizator
      * @param ProblemTypeRepository $problemTypeRepository
      * @param TemplateGridFactory $templateGridFactory
      * @param TemplateFormFactory $templateFormFactory
@@ -91,13 +93,14 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
      */
     public function __construct
     (
+        Authorizator $authorizator,
         ProblemTypeRepository $problemTypeRepository,
         TemplateGridFactory $templateGridFactory, TemplateFormFactory $templateFormFactory,
         ValidationService $validationService, MathService $mathService,
         ConstHelper $constHelper
     )
     {
-        parent::__construct();
+        parent::__construct($authorizator);
         $this->problemTypeRepository = $problemTypeRepository;
         $this->templateGridFactory = $templateGridFactory;
         $this->templateFormFactory = $templateFormFactory;

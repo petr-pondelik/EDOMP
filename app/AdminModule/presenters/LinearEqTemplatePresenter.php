@@ -16,6 +16,7 @@ use App\Model\Entity\ProblemTemplate;
 use App\Model\Functionality\LinearEqTemplFunctionality;
 use App\Model\Repository\LinearEqTemplRepository;
 use App\Model\Repository\ProblemTypeRepository;
+use App\Service\Authorizator;
 use App\Service\MathService;
 use App\Service\ValidationService;
 use Nette\ComponentModel\IComponent;
@@ -33,6 +34,7 @@ class LinearEqTemplatePresenter extends ProblemTemplatePresenter
 
     /**
      * LinearEqTemplatePresenter constructor.
+     * @param Authorizator $authorizator
      * @param LinearEqTemplRepository $repository
      * @param LinearEqTemplFunctionality $functionality
      * @param ProblemTypeRepository $problemTypeRepository
@@ -44,6 +46,7 @@ class LinearEqTemplatePresenter extends ProblemTemplatePresenter
      */
     public function __construct
     (
+        Authorizator $authorizator,
         LinearEqTemplRepository $repository, LinearEqTemplFunctionality $functionality,
         ProblemTypeRepository $problemTypeRepository,
         TemplateGridFactory $templateGridFactory, TemplateFormFactory $templateFormFactory,
@@ -53,6 +56,7 @@ class LinearEqTemplatePresenter extends ProblemTemplatePresenter
     {
         parent::__construct
         (
+            $authorizator,
             $problemTypeRepository,
             $templateGridFactory, $templateFormFactory,
             $validationService, $mathService,

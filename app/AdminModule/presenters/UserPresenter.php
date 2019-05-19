@@ -15,6 +15,7 @@ use App\Model\Functionality\UserFunctionality;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\RoleRepository;
 use App\Model\Repository\UserRepository;
+use App\Service\Authorizator;
 use App\Service\ValidationService;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
@@ -64,6 +65,7 @@ class UserPresenter extends AdminPresenter
 
     /**
      * UserPresenter constructor.
+     * @param Authorizator $authorizator
      * @param UserRepository $userRepository
      * @param UserFunctionality $userFunctionality
      * @param RoleRepository $roleRepository
@@ -74,13 +76,14 @@ class UserPresenter extends AdminPresenter
      */
     public function __construct
     (
+        Authorizator $authorizator,
         UserRepository $userRepository, UserFunctionality $userFunctionality,
         RoleRepository $roleRepository, GroupRepository $groupRepository,
         ValidationService $validationService,
         UserGridFactory $userGridFactory, UserFormFactory $userFormFactory
     )
     {
-        parent::__construct();
+        parent::__construct($authorizator);
         $this->userRepository = $userRepository;
         $this->userFunctionality = $userFunctionality;
         $this->roleRepository = $roleRepository;
@@ -91,25 +94,18 @@ class UserPresenter extends AdminPresenter
     }
 
     /**
-     * @throws \Nette\Application\AbortException
-     */
-    public function startup()
-    {
-        parent::startup();
-        /*if(!$this->user->isInRole("admin")){
-            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
-            $this->redirect("Homepage:default");
-        }*/
-    }
-
-    /**
      * @param int $id
+     * @throws \Nette\Application\AbortException
      */
     public function actionEdit(int $id)
     {
+        $record = $this->userRepository->find($id);
+        if($this->user->isInRole("teacher") && !$this->authorizator->isUserAllowed($this->user->identity, $record)){
+            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
+            $this->redirect("Homepage:default");
+        }
         $form = $this["userEditForm"];
         if(!$form->isSubmitted()){
-            $record = $this->userRepository->find($id);
             $this->template->id = $id;
             $this->setDefaults($form, $record);
         }
@@ -177,7 +173,7 @@ class UserPresenter extends AdminPresenter
      */
     public function createComponentUserCreateForm()
     {
-        $form = $this->userFormFactory->create();
+        $form = $this->userFormFactory->create($this);
         $form->onValidate[] = [$this, "handleFormValidate"];
         $form->onSuccess[] = [$this, "handleCreateFormSuccess"];
         return $form;
@@ -203,7 +199,7 @@ class UserPresenter extends AdminPresenter
      */
     public function createComponentUserEditForm()
     {
-        $form = $this->userFormFactory->create();
+        $form = $this->userFormFactory->create($this);
         $form->addInteger("id", "ID")
             ->setHtmlAttribute("class", "form-control")
             ->setDisabled();

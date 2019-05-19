@@ -13,6 +13,7 @@ use App\Components\Forms\CategoryFormFactory;
 use App\Model\Entity\Category;
 use App\Model\Functionality\CategoryFunctionality;
 use App\Model\Repository\CategoryRepository;
+use App\Service\Authorizator;
 use App\Service\ValidationService;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
@@ -52,6 +53,7 @@ class CategoryPresenter extends AdminPresenter
 
     /**
      * CategoryPresenter constructor.
+     * @param Authorizator $authorizator
      * @param CategoryRepository $categoryRepository
      * @param CategoryFunctionality $categoryFunctionality
      * @param CategoryGridFactory $categoryGridFactory
@@ -60,13 +62,14 @@ class CategoryPresenter extends AdminPresenter
      */
     public function __construct
     (
+        Authorizator $authorizator,
         CategoryRepository $categoryRepository,
         CategoryFunctionality $categoryFunctionality,
         CategoryGridFactory $categoryGridFactory, CategoryFormFactory $categoryFormFactory,
         ValidationService $validationService
     )
     {
-        parent::__construct();
+        parent::__construct($authorizator);
         $this->categoryRepository = $categoryRepository;
         $this->categoryFunctionality = $categoryFunctionality;
         $this->categoryGridFactory = $categoryGridFactory;

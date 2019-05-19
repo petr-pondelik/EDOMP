@@ -65,12 +65,16 @@ class GroupGridFactory extends BaseGrid
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource(
-            $this->groupRepository->createQueryBuilder("er")
-                ->where("er.id != :id")
-                //->andWhere("")
-                ->setParameter("id", $this->constHelper::ADMIN_GROUP)
-        );
+        $qb = $this->groupRepository->createQueryBuilder("er")
+            ->where("er.id != :id")
+            ->setParameter("id", $this->constHelper::ADMIN_GROUP);
+
+        if($container->user->isInRole("teacher")){
+            $qb->andWhere("er.createdBy = :createdById")
+                ->setParameter("createdById", $container->user->identity->id);
+        }
+
+        $grid->setDataSource($qb);
 
         $grid->addColumnNumber('id', 'ID')
             ->setSortable();

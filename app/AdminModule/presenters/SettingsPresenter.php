@@ -15,6 +15,7 @@ use App\Model\Functionality\GroupFunctionality;
 use App\Model\Functionality\SuperGroupFunctionality;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\SuperGroupRepository;
+use App\Service\Authorizator;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
@@ -62,6 +63,7 @@ class SettingsPresenter extends AdminPresenter
 
     /**
      * SettingsPresenter constructor.
+     * @param Authorizator $authorizator
      * @param GroupRepository $groupRepository
      * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupRepository $superGroupRepository
@@ -72,12 +74,13 @@ class SettingsPresenter extends AdminPresenter
      */
     public function __construct
     (
+        Authorizator $authorizator,
         GroupRepository $groupRepository, GroupFunctionality $groupFunctionality,
         SuperGroupRepository $superGroupRepository, SuperGroupFunctionality $superGroupFunctionality,
         GroupGridFactory $groupGridFactory, SuperGroupGridFactory $superGroupGridFactory, PermissionFormFactory $permissionFormFactory
     )
     {
-        parent::__construct();
+        parent::__construct($authorizator);
         $this->groupRepository = $groupRepository;
         $this->groupFunctionality = $groupFunctionality;
         $this->superGroupRepository = $superGroupRepository;

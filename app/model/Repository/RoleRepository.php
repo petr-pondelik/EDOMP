@@ -15,16 +15,21 @@ namespace App\Model\Repository;
 class RoleRepository extends BaseRepository
 {
     /**
+     * @param bool $teacher
      * @return mixed
      * @throws \Doctrine\ORM\Query\QueryException
      */
-    public function findWithoutAdmin()
+    public function findWithoutAdmin(bool $teacher = false)
     {
         $qb = $this->createQueryBuilder("r")
             ->select("r")
-            ->where("r.id != :id")
+            ->where("r.id != :adminRoleId")
             ->indexBy("r", "r.id")
-            ->setParameter("id", $this->constHelper::ADMIN_ROLE);
+            ->setParameter("adminRoleId", $this->constHelper::ADMIN_ROLE);
+
+        if($teacher)
+            $qb = $qb->andWhere("r.id != :teacherRoleId")
+                ->setParameter("teacherRoleId", $this->constHelper::TEACHER_ROLE);
 
         return $qb->getQuery()->getResult();
     }

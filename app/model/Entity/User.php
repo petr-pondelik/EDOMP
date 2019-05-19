@@ -70,17 +70,17 @@ class User extends BaseEntity
     protected $groups;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\Group", indexBy="createdBy", cascade={"persist", "merge"})
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\Group", mappedBy="createdBy", cascade={"persist", "merge"})
      */
     protected $groupsCreated;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\SuperGroup", indexBy="createdBy", cascade={"persist", "merge"})
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\SuperGroup", mappedBy="createdBy", cascade={"persist", "merge"})
      */
     protected $superGroupsCreated;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\User", indexBy="createdBy", cascade={"persist", "merge"})
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\User", mappedBy="createdBy", cascade={"persist", "merge"})
      */
     protected $usersCreated;
 
@@ -221,6 +221,54 @@ class User extends BaseEntity
         foreach ($this->getGroups()->getValues() as $key => $group)
             array_push($res, $group->getId());
         return $res;
+    }
+
+    /**
+     * @return User
+     */
+    public function getCreatedBy(): User
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * @param User $createdBy
+     */
+    public function setCreatedBy(User $createdBy): void
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGroupsCreated()
+    {
+        return $this->groupsCreated;
+    }
+
+    /**
+     * @param mixed $groupsCreated
+     */
+    public function setGroupsCreated($groupsCreated): void
+    {
+        $this->groupsCreated = $groupsCreated;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSuperGroupsCreated()
+    {
+        return $this->superGroupsCreated;
+    }
+
+    /**
+     * @param mixed $superGroupsCreated
+     */
+    public function setSuperGroupsCreated($superGroupsCreated): void
+    {
+        $this->superGroupsCreated = $superGroupsCreated;
     }
 
 }

@@ -13,6 +13,7 @@ use App\Components\Forms\LogoFormFactory;
 use App\Model\Entity\Logo;
 use App\Model\Functionality\LogoFunctionality;
 use App\Model\Repository\LogoRepository;
+use App\Service\Authorizator;
 use App\Service\FileService;
 use App\Service\ValidationService;
 use Nette\Application\Responses\TextResponse;
@@ -58,6 +59,7 @@ class LogoPresenter extends AdminPresenter
 
     /**
      * SettingsPresenter constructor.
+     * @param Authorizator $authorizator
      * @param LogoRepository $logoRepository
      * @param LogoFunctionality $logoFunctionality
      * @param ValidationService $validationService
@@ -67,12 +69,13 @@ class LogoPresenter extends AdminPresenter
      */
     public function __construct
     (
+        Authorizator $authorizator,
         LogoRepository $logoRepository, LogoFunctionality $logoFunctionality,
         ValidationService $validationService, FileService $fileService,
         LogoGridFactory $logoGridFactory, LogoFormFactory $logoFormFactory
     )
     {
-        parent::__construct();
+        parent::__construct($authorizator);
         $this->logoRepository = $logoRepository;
         $this->logoFunctionality = $logoFunctionality;
         $this->validationService = $validationService;
