@@ -13,12 +13,14 @@ use App\Model\Managers\GroupManager;
 use App\Model\Managers\RoleManager;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\RoleRepository;
+use Nette\Application\UI\Form;
+use Nette\Utils\ArrayHash;
 
 /**
  * Class UserFormFactory
  * @package App\Components\Forms
  */
-class UserFormFactory extends BaseForm
+class UserFormFactory extends BaseFormControl
 {
     /**
      * @var GroupRepository
@@ -84,5 +86,36 @@ class UserFormFactory extends BaseForm
             ->setHtmlAttribute('class', 'btn btn-primary');
 
         return $form;
+    }
+
+    /**
+     * @param Form $form
+     */
+    public function handleFormValidate(Form $form): void
+    {
+        // TODO: Implement handleFormValidate() method.
+    }
+
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    {
+        // TODO: Implement handleCreateFormSuccess() method.
+    }
+
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function handleEditFormSuccess(Form $form, ArrayHash $values): void
+    {
+        // TODO: Implement handleEditFormSuccess() method.
+    }
+
+    public function render(): void
+    {
+        // TODO: Implement render() method.
     }
 }

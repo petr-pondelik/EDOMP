@@ -8,11 +8,14 @@
 
 namespace App\Components\Forms;
 
+use Nette\Application\UI\Form;
+use Nette\Utils\ArrayHash;
+
 /**
  * Class SignInFormFactory
  * @package app\components\forms
  */
-class SignInFormFactory extends BaseForm
+class SignInFormFactory extends BaseFormControl
 {
     /**
      * @return \Nette\Application\UI\Form
@@ -31,5 +34,36 @@ class SignInFormFactory extends BaseForm
             ->setHtmlAttribute('class', 'btn btn-primary col-12 btn-lg');
 
         return $form;
+    }
+
+    /**
+     * @param Form $form
+     */
+    public function handleFormValidate(Form $form): void
+    {
+        // TODO: Implement handleFormValidate() method.
+    }
+
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    {
+        // TODO: Implement handleCreateFormSuccess() method.
+    }
+
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function handleEditFormSuccess(Form $form, ArrayHash $values): void
+    {
+        // TODO: Implement handleEditFormSuccess() method.
+    }
+
+    public function render(): void
+    {
+        // TODO: Implement render() method.
     }
 }

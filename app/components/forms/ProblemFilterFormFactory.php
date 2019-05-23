@@ -12,12 +12,13 @@ use App\Model\Managers\DifficultyManager;
 use App\Model\Repository\DifficultyRepository;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\Checkbox;
+use Nette\Utils\ArrayHash;
 
 /**
  * Class ProblemFilterFormFactory
  * @package App\Components\Forms
  */
-class ProblemFilterFormFactory extends BaseForm
+class ProblemFilterFormFactory extends BaseFormControl
 {
     /**
      * @var DifficultyRepository
@@ -70,5 +71,36 @@ class ProblemFilterFormFactory extends BaseForm
             ->setHtmlAttribute("class", "btn btn-sm btn-success");
 
         return $form;
+    }
+
+    /**
+     * @param Form $form
+     */
+    public function handleFormValidate(Form $form): void
+    {
+        // TODO: Implement handleFormValidate() method.
+    }
+
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    {
+        // TODO: Implement handleCreateFormSuccess() method.
+    }
+
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function handleEditFormSuccess(Form $form, ArrayHash $values): void
+    {
+        // TODO: Implement handleEditFormSuccess() method.
+    }
+
+    public function render(): void
+    {
+        // TODO: Implement render() method.
     }
 }

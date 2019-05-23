@@ -17,7 +17,6 @@ use App\Model\Entity\Category;
 use App\Model\Functionality\CategoryFunctionality;
 use App\Model\Repository\CategoryRepository;
 use App\Service\Authorizator;
-use App\Service\ValidationService;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
@@ -49,11 +48,6 @@ class CategoryPresenter extends AdminPresenter
     protected $categoryFormFactory;
 
     /**
-     * @var ValidationService
-     */
-    protected $validationService;
-
-    /**
      * CategoryPresenter constructor.
      * @param Authorizator $authorizator
      * @param HeaderBarFactory $headerBarFactory
@@ -62,7 +56,6 @@ class CategoryPresenter extends AdminPresenter
      * @param CategoryFunctionality $categoryFunctionality
      * @param CategoryGridFactory $categoryGridFactory
      * @param CategoryFormFactory $categoryFormFactory
-     * @param ValidationService $validationService
      */
     public function __construct
     (
@@ -70,8 +63,7 @@ class CategoryPresenter extends AdminPresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
         CategoryRepository $categoryRepository,
         CategoryFunctionality $categoryFunctionality,
-        CategoryGridFactory $categoryGridFactory, CategoryFormFactory $categoryFormFactory,
-        ValidationService $validationService
+        CategoryGridFactory $categoryGridFactory, CategoryFormFactory $categoryFormFactory
     )
     {
         parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
@@ -79,7 +71,6 @@ class CategoryPresenter extends AdminPresenter
         $this->categoryFunctionality = $categoryFunctionality;
         $this->categoryGridFactory = $categoryGridFactory;
         $this->categoryFormFactory = $categoryFormFactory;
-        $this->validationService = $validationService;
     }
 
     /**
@@ -91,7 +82,7 @@ class CategoryPresenter extends AdminPresenter
         if(!$form->isSubmitted()){
             $record = $this->categoryRepository->find($id);
             $this["categoryEditForm"]->template->categoryLabel = $record->getLabel();
-            $this->template->categoryLabel = $record->getLabel();
+            $this->template->entityLabel = $record->getLabel();
             $this->setDefaults($form, $record);
         }
     }
@@ -102,8 +93,8 @@ class CategoryPresenter extends AdminPresenter
      */
     private function setDefaults(IComponent $form, Category $record)
     {
-        $form["category_id"]->setDefaultValue($record->getId());
-        $form["category_id_hidden"]->setDefaultValue($record->getId());
+        $form["id"]->setDefaultValue($record->getId());
+        $form["id_hidden"]->setDefaultValue($record->getId());
         $form["label"]->setDefaultValue($record->getLabel());
     }
 
@@ -185,7 +176,7 @@ class CategoryPresenter extends AdminPresenter
      */
     public function createComponentCategoryCreateForm(): CategoryFormControl
     {
-        $control = $this->categoryFormFactory->create($this->categoryFunctionality, $this->validationService);
+        $control = $this->categoryFormFactory->create();
         $control->onSuccess[] = function (){
             $this['categoryGrid']->reload();
             $this->informUser('Kategorie úspěšně vytvořena.', true);
@@ -201,7 +192,7 @@ class CategoryPresenter extends AdminPresenter
      */
     public function createComponentCategoryEditForm(): CategoryFormControl
     {
-        $control = $this->categoryFormFactory->create($this->categoryFunctionality, $this->validationService, true);
+        $control = $this->categoryFormFactory->create(true);
         $control->onSuccess[] = function (){
             $this->informUser('Kategorie úspěšně editována.');
             $this->redirect('default');

@@ -10,15 +10,16 @@ namespace App\AdminModule\Presenters;
 
 
 use App\Components\DataGrids\SuperGroupGridFactory;
-use App\Components\Forms\SuperGroupFormFactory;
+use App\Components\Forms\SuperGroupForm\SuperGroupFormControl;
+use App\Components\Forms\SuperGroupForm\SuperGroupFormFactory;
+use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SideBar\SideBarFactory;
 use App\Model\Entity\SuperGroup;
 use App\Model\Functionality\SuperGroupFunctionality;
 use App\Model\Repository\SuperGroupRepository;
 use App\Service\Authorizator;
 use App\Service\ValidationService;
-use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class SuperGroupPresenter
@@ -54,6 +55,8 @@ class SuperGroupPresenter extends AdminPresenter
     /**
      * SuperGroupPresenter constructor.
      * @param Authorizator $authorizator
+     * @param HeaderBarFactory $headerBarFactory
+     * @param SideBarFactory $sideBarFactory
      * @param SuperGroupRepository $superGroupRepository
      * @param SuperGroupFunctionality $superGroupFunctionality
      * @param SuperGroupGridFactory $superGroupGridFactory
@@ -63,29 +66,18 @@ class SuperGroupPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
         SuperGroupRepository $superGroupRepository, SuperGroupFunctionality $superGroupFunctionality,
         SuperGroupGridFactory $superGroupGridFactory, SuperGroupFormFactory $superGroupFormFactory,
         ValidationService $validationService
     )
     {
-        parent::__construct($authorizator);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
         $this->superGroupRepository = $superGroupRepository;
         $this->superGroupFunctionality = $superGroupFunctionality;
         $this->superGroupGridFactory = $superGroupGridFactory;
         $this->superGroupFormFactory = $superGroupFormFactory;
         $this->validationService = $validationService;
-    }
-
-    /**
-     * @throws \Nette\Application\AbortException
-     */
-    public function startup()
-    {
-        parent::startup();
-        /*if(!$this->user->isInRole("admin")){
-            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
-            $this->redirect("Homepage:default");
-        }*/
     }
 
     /**
@@ -99,10 +91,11 @@ class SuperGroupPresenter extends AdminPresenter
             $this->flashMessage("Nedostatečná přístupová práva.", "danger");
             $this->redirect("Homepage:default");
         }
-        $form = $this["superGroupEditForm"];
+        $form = $this["superGroupEditForm"]["form"];
         if(!$form->isSubmitted()){
             $record = $this->superGroupRepository->find($id);
-            $this->template->id = $id;
+            $this["superGroupEditForm"]->template->entityLabel = $record->getLabel();
+            $this->template->entityLabel = $record->getLabel();
             $this->setDefaults($form, $record);
         }
     }
@@ -175,6 +168,7 @@ class SuperGroupPresenter extends AdminPresenter
     /**
      * @param int $id
      * @param $row
+     * @throws \Exception
      */
     public function handleInlineUpdate(int $id, $row): void
     {
@@ -184,81 +178,35 @@ class SuperGroupPresenter extends AdminPresenter
     }
 
     /**
-     * @return \Nette\Application\UI\Form
+     * @return SuperGroupFormControl
      */
-    public function createComponentSuperGroupCreateForm(): Form
+    public function createComponentSuperGroupCreateForm(): SuperGroupFormControl
     {
-        $form = $this->superGroupFormFactory->create();
-        $form->onValidate[] = [$this, "handleFormValidate"];
-        $form->onSuccess[] = [$this, "handleCreateFormSuccess"];
-        return $form;
+        $control = $this->superGroupFormFactory->create();
+        $control->onSuccess[] = function (){
+            $this['superGroupGrid']->reload();
+            $this->informUser('Superskupina úspěšně vytvořena.', true);
+        };
+        $control->onError[] = function ($e){
+            $this->informUser('Chyba při vytváření superskupiny.', true, 'danger');
+        };
+        return $control;
     }
 
     /**
-     * @param Form $form
-     * @param ArrayHash $values
-     * @throws \Exception
+     * @return SuperGroupFormControl
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    public function createComponentSuperGroupEditForm(): SuperGroupFormControl
     {
-        bdump($values);
-        $this->superGroupFunctionality->create($values);
-        $this["superGroupGrid"]->reload();
-        $this->flashMessage("Superskupina úspěšně vytvořena.", "success");
-        $this->redrawControl("mainFlashesSnippet");
+        $control = $this->superGroupFormFactory->create(true);
+        $control->onSuccess[] = function (){
+            $this->informUser('Superskupina úspěšně editována.');
+            $this->redirect("default");
+        };
+        $control->onError[] = function ($e){
+            $this->informUser('Chyba při editaci superskupiny.', false, 'danger');
+            $this->redirect("default");
+        };
+        return $control;
     }
-
-    /**
-     * @return Form
-     */
-    public function createComponentSuperGroupEditForm(): Form
-    {
-        $form = $this->superGroupFormFactory->create();
-        $form->addInteger('id', 'ID')
-            ->setHtmlAttribute('class', 'form-control')
-            ->setDisabled();
-
-        $form->addHidden('id_hidden');
-        $form->onValidate[] = [$this, "handleFormValidate"];
-        $form->onSuccess[] = [$this, "handleEditFormSuccess"];
-        return $form;
-    }
-
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     * @throws \Nette\Application\AbortException
-     */
-    public function handleEditFormSuccess(Form $form, ArrayHash $values): void
-    {
-        $this->superGroupFunctionality->update($values->id_hidden, ArrayHash::from([
-            "label" => $values->label
-        ]));
-        $this->flashMessage('Superskupina úspěšně editována.', 'success');
-        $this->redirect("default");
-    }
-
-    /**
-     * @param Form $form
-     */
-    public function handleFormValidate(Form $form): void
-    {
-        $values = $form->values;
-
-        $validateFields["label"] = $values->label;
-
-        $validationErrors = $this->validationService->validate($validateFields);
-
-        bdump($validationErrors);
-
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
-                    $form[$veKey]->addError($error);
-            }
-        }
-
-        $this->redrawControl("labelErrorSnippet");
-    }
-
 }

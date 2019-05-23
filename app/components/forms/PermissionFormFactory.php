@@ -10,12 +10,13 @@ namespace App\Components\Forms;
 
 use App\Model\Repository\CategoryRepository;
 use Nette\Application\UI\Form;
+use Nette\Utils\ArrayHash;
 
 /**
  * Class PermissionFormFactory
  * @package App\Components\Forms
  */
-class PermissionFormFactory extends BaseForm
+class PermissionFormFactory extends BaseFormControl
 {
     /**
      * @var CategoryRepository
@@ -55,4 +56,34 @@ class PermissionFormFactory extends BaseForm
         return $form;
     }
 
+    /**
+     * @param Form $form
+     */
+    public function handleFormValidate(Form $form): void
+    {
+        // TODO: Implement handleFormValidate() method.
+    }
+
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    {
+        // TODO: Implement handleCreateFormSuccess() method.
+    }
+
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function handleEditFormSuccess(Form $form, ArrayHash $values): void
+    {
+        // TODO: Implement handleEditFormSuccess() method.
+    }
+
+    public function render(): void
+    {
+        // TODO: Implement render() method.
+    }
 }

@@ -14,11 +14,12 @@ use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use Nette\Application\UI\Form;
 use App\Helpers\ConstHelper;
+use Nette\Utils\ArrayHash;
 
 /**
  * Class ProblemFormFactory
  */
-class ProblemFormFactory extends BaseForm
+class ProblemFormFactory extends BaseFormControl
 {
     /**
      * @var DifficultyRepository
@@ -131,4 +132,34 @@ class ProblemFormFactory extends BaseForm
         return $form;
     }
 
+    /**
+     * @param Form $form
+     */
+    public function handleFormValidate(Form $form): void
+    {
+        // TODO: Implement handleFormValidate() method.
+    }
+
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    {
+        // TODO: Implement handleCreateFormSuccess() method.
+    }
+
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function handleEditFormSuccess(Form $form, ArrayHash $values): void
+    {
+        // TODO: Implement handleEditFormSuccess() method.
+    }
+
+    public function render(): void
+    {
+        // TODO: Implement render() method.
+    }
 }

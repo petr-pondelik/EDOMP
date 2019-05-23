@@ -6,54 +6,12 @@
     </li>
 {/block}
 
-{block headingSecond}
-    {$categoryLabel}
-{/block}
-
 {block headingSecondLink}
     <li class="breadcrumb-item font-weight-bold active">
-        {include headingSecond}
+        {$entityLabel}
     </li>
 {/block}
 
 {block content}
-
-    {*{form categoryEditForm}*}
-
-        {*<div class="card-header d-flex justify-content-between">
-            <h1 class="mb-0 font-weight-bold card-heading">
-                {include icon}{include headingSecond}
-            </h1>
-            <div class="d-inline">
-                <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
-                <a n:href="Category:default" class="btn btn-secondary btn-sm">Zpět</a>
-            </div>
-        </div>
-
-        <div class="card-body">
-
-            <div class="form-group">
-                {label category_id}
-                {input category_id}
-            </div>
-
-            <div class="form-group">
-                {label label}
-                {input label}
-                {snippet labelErrorSnippet}
-                    {var $form = $control['categoryEditForm']}
-                    <div n:if="$form->hasErrors()" class="mt-2">
-                        <p n:foreach="$form['label']->errors as $error" class="alert alert-danger">
-                            {$error}
-                        </p>
-                    </div>
-                {/snippet}
-            </div>
-
-        </div>*}
-
-    {*{/form}*}
-
     {control categoryEditForm}
-
 {/block}

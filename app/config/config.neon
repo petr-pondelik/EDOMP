@@ -154,7 +154,7 @@ services:
 	factory.grid.category: App\Components\DataGrids\CategoryGridFactory
 	factory.form.category: App\Components\Forms\CategoryForm\CategoryFormFactory
 	factory.grid.subcategory: App\Components\DataGrids\SubCategoryGridFactory
-	factory.form.subcategory: App\Components\Forms\SubCategoryFormFactory
+	factory.form.subcategory: App\Components\Forms\SubCategoryForm\SubCategoryFormFactory
 	factory.grid.problem: App\Components\DataGrids\ProblemGridFactory
 	factory.form.problem: App\Components\Forms\ProblemFormFactory
 	factory.grid.template: App\Components\DataGrids\TemplateGridFactory
@@ -162,7 +162,7 @@ services:
 	factory.grid.logo: App\Components\DataGrids\LogoGridFactory
 	factory.form.logo: App\Components\Forms\LogoFormFactory
 	factory.grid.supergroup: App\Components\DataGrids\SuperGroupGridFactory
-	factory.form.supergroup: App\Components\Forms\SuperGroupFormFactory
+	factory.form.supergroup: App\Components\Forms\SuperGroupForm\SuperGroupFormFactory
 	factory.grid.group: App\Components\DataGrids\GroupGridFactory
 	factory.form.group: App\Components\Forms\GroupFormFactory
 	factory.grid.test: App\Components\DataGrids\TestGridFactory

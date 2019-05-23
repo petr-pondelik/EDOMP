@@ -10,12 +10,14 @@ namespace App\Components\Forms;
 
 use App\Model\Managers\SuperGroupManager;
 use App\Model\Repository\SuperGroupRepository;
+use Nette\Application\UI\Form;
+use Nette\Utils\ArrayHash;
 
 /**
  * Class GroupFormFactory
  * @package App\Components\Forms
  */
-class GroupFormFactory extends BaseForm
+class GroupFormFactory extends BaseFormControl
 {
     /**
      * @var SuperGroupRepository
@@ -54,5 +56,36 @@ class GroupFormFactory extends BaseForm
             ->setHtmlAttribute("class", "btn btn-primary");
 
         return $form;
+    }
+
+    /**
+     * @param Form $form
+     */
+    public function handleFormValidate(Form $form): void
+    {
+        // TODO: Implement handleFormValidate() method.
+    }
+
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    {
+        // TODO: Implement handleCreateFormSuccess() method.
+    }
+
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function handleEditFormSuccess(Form $form, ArrayHash $values): void
+    {
+        // TODO: Implement handleEditFormSuccess() method.
+    }
+
+    public function render(): void
+    {
+        // TODO: Implement render() method.
     }
 }

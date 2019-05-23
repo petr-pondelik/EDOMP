@@ -2,59 +2,60 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 8.4.19
- * Time: 17:28
+ * Date: 23.5.19
+ * Time: 18:43
  */
 
-namespace App\Components\Forms\CategoryForm;
+namespace App\Components\Forms\SuperGroupForm;
+
 
 use App\Components\Forms\BaseFormControl;
-use App\Model\Functionality\CategoryFunctionality;
+use App\Model\Functionality\SuperGroupFunctionality;
 use App\Service\ValidationService;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class CategoryFormFactory
- * @package App\Components\Forms
+ * Class SuperGroupFormControl
+ * @package App\Components\Forms\SuperGroupForm
  */
-class CategoryFormControl extends BaseFormControl
+class SuperGroupFormControl extends BaseFormControl
 {
     /**
-     * @var CategoryFunctionality
+     * @var SuperGroupFunctionality
      */
-    protected $categoryFunctionality;
+    protected $superGroupFunctionality;
 
     /**
-     * CategoryFormControl constructor.
+     * SuperGroupFormControl constructor.
      * @param ValidationService $validationService
-     * @param CategoryFunctionality $categoryFunctionality
+     * @param SuperGroupFunctionality $superGroupFunctionality
      * @param bool $edit
      */
     public function __construct
     (
         ValidationService $validationService,
-        CategoryFunctionality $categoryFunctionality,
+        SuperGroupFunctionality $superGroupFunctionality,
         bool $edit = false
     )
     {
         parent::__construct($validationService, $edit);
-        $this->categoryFunctionality = $categoryFunctionality;
+        $this->superGroupFunctionality = $superGroupFunctionality;
     }
 
     /**
-     * @return \Nette\Application\UI\Form
+     * @return Form
      */
     public function createComponentForm(): Form
     {
         $form = parent::createComponentForm();
 
-        $form->addText('label', 'Název')
-            ->setHtmlAttribute('class', 'form-control');
+        $form->addText("label", "Název")
+                    ->setHtmlAttribute("class", "form-control");
 
-        $form->addSubmit('submit', 'Vytvořit')
-            ->setHtmlAttribute('class', 'btn btn-primary');
+        $form->addSubmit("submit", "Vytvořit")
+            ->setHtmlAttribute("class", "btn btn-primary");
 
         return $form;
     }
@@ -65,12 +66,16 @@ class CategoryFormControl extends BaseFormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->values;
+
         $validateFields["label"] = $values->label;
+
         $validationErrors = $this->validationService->validate($validateFields);
 
-        if ($validationErrors) {
-            foreach ($validationErrors as $veKey => $errorGroup) {
-                foreach ($errorGroup as $egKey => $error)
+        bdump($validationErrors);
+
+        if($validationErrors){
+            foreach($validationErrors as $veKey => $errorGroup){
+                foreach($errorGroup as $egKey => $error)
                     $form[$veKey]->addError($error);
             }
         }
@@ -84,12 +89,12 @@ class CategoryFormControl extends BaseFormControl
      */
     public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
     {
-        try {
-            $this->categoryFunctionality->create($values);
+        try{
+            $this->superGroupFunctionality->create($values);
             $this->onSuccess();
-        } catch (\Exception $e) {
+        } catch (\Exception $e){
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException)
+            if($e instanceof AbortException)
                 return;
             $this->onError($e);
         }
@@ -101,12 +106,14 @@ class CategoryFormControl extends BaseFormControl
      */
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
-        try {
-            $this->categoryFunctionality->update($values->id_hidden, $values);
+        try{
+            $this->superGroupFunctionality->update($values->id_hidden, ArrayHash::from([
+                "label" => $values->label
+            ]));
             $this->onSuccess();
-        } catch (\Exception $e) {
+        } catch (\Exception $e){
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException)
+            if($e instanceof AbortException)
                 return;
             $this->onError($e);
         }
@@ -114,7 +121,7 @@ class CategoryFormControl extends BaseFormControl
 
     public function render(): void
     {
-        if ($this->edit)
+        if($this->edit)
             $this->template->render(__DIR__ . DIRECTORY_SEPARATOR . "editForm.latte");
         else
             $this->template->render(__DIR__ . DIRECTORY_SEPARATOR . "createForm.latte");

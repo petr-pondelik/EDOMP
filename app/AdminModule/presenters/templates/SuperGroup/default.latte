@@ -17,7 +17,7 @@
     <div class="card-header d-flex justify-content-between">
         <h1 class="mb-0 font-weight-bold card-heading">
             {include icon}{include headingFirst}
-        </h2>
+        </h1>
         <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#createModal">
             <span class="fas fa-plus"></span>
         </button>
@@ -27,7 +27,7 @@
 
         <div id="ublaboo-datagrid" class="table-responsive">
 
-            {snippet mainFlashesSnippet}
+            {snippet flashesSnippet}
                 <div class="mt-3">
                     <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type}">{$flash->message}</div>
                 </div>
@@ -55,17 +55,9 @@
                     </button>
                 </div>
 
+                {*{form superGroupCreateForm}
 
                 <div class="modal-body">
-
-                    {snippet flashesSnippet}
-                        <div class="col-12 mt-3">
-                            <div n:foreach="$flashes as $flash"
-                                    class="flash alert alert-{$flash->type}">{$flash->message}</div>
-                        </div>
-                    {/snippet}
-
-                    {form superGroupCreateForm}
 
                     <div class="form-group col-12">
                         {label label}
@@ -88,10 +80,11 @@
                         <button type="button" class="btn btn-secondary" id="create-close" data-dismiss="modal">Zavřít
                         </button>
                     </div>
-
-                    {/form}
-
                 </div>
+
+                {/form}*}
+
+                {control superGroupCreateForm}
 
             </div>
         </div>

@@ -8,6 +8,7 @@
 
 namespace App\Components\Forms\CategoryForm;
 
+use App\Components\Forms\BaseFormFactory;
 use App\Model\Functionality\CategoryFunctionality;
 use App\Service\ValidationService;
 
@@ -15,16 +16,30 @@ use App\Service\ValidationService;
  * Class CategoryFormFactory
  * @package App\Components\Forms\CategoryForm
  */
-class CategoryFormFactory
+class CategoryFormFactory extends BaseFormFactory
 {
     /**
-     * @param CategoryFunctionality $categoryFunctionality
+     * @var CategoryFunctionality
+     */
+    protected $categoryFunctionality;
+
+    /**
+     * CategoryFormFactory constructor.
      * @param ValidationService $validationService
+     * @param CategoryFunctionality $categoryFunctionality
+     */
+    public function __construct(ValidationService $validationService, CategoryFunctionality $categoryFunctionality)
+    {
+        parent::__construct($validationService);
+        $this->categoryFunctionality = $categoryFunctionality;
+    }
+
+    /**
      * @param bool $edit
      * @return CategoryFormControl
      */
-    public function create(CategoryFunctionality $categoryFunctionality, ValidationService $validationService, bool $edit = false)
+    public function create(bool $edit = false): CategoryFormControl
     {
-        return new CategoryFormControl($categoryFunctionality, $validationService, $edit);
+        return new CategoryFormControl($this->validationService, $this->categoryFunctionality, $edit);
     }
 }

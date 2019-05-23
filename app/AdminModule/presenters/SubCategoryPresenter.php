@@ -9,7 +9,10 @@
 namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\SubCategoryGridFactory;
-use App\Components\Forms\SubCategoryFormFactory;
+use App\Components\Forms\SubCategoryForm\SubCategoryFormControl;
+use App\Components\Forms\SubCategoryForm\SubCategoryFormFactory;
+use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SideBar\SideBarFactory;
 use App\Model\Entity\SubCategory;
 use App\Model\Functionality\SubCategoryFunctionality;
 use App\Model\Repository\CategoryRepository;
@@ -60,6 +63,8 @@ class SubCategoryPresenter extends AdminPresenter
     /**
      * SubCategoryPresenter constructor.
      * @param Authorizator $authorizator
+     * @param HeaderBarFactory $headerBarFactory
+     * @param SideBarFactory $sideBarFactory
      * @param SubCategoryRepository $subCategoryRepository
      * @param SubCategoryFunctionality $subCategoryFunctionality
      * @param CategoryRepository $categoryRepository
@@ -70,13 +75,14 @@ class SubCategoryPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
         SubCategoryRepository $subCategoryRepository, SubCategoryFunctionality $subCategoryFunctionality,
         CategoryRepository $categoryRepository,
         ValidationService $validationService,
         SubCategoryGridFactory $subCategoryGridFactory, SubCategoryFormFactory $subCategoryFormFactory
     )
     {
-        parent::__construct($authorizator);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
         $this->subCategoryRepository = $subCategoryRepository;
         $this->subCategoryFunctionality = $subCategoryFunctionality;
         $this->categoryRepository = $categoryRepository;
@@ -87,10 +93,11 @@ class SubCategoryPresenter extends AdminPresenter
 
     public function actionEdit(int $id)
     {
-        $form = $this["subCategoryEditForm"];
+        $form = $this["subCategoryEditForm"]["form"];
         if(!$form->isSubmitted()){
             $record = $this->subCategoryRepository->find($id);
-            $this->template->subCategoryId = $id;
+            $this["subCategoryEditForm"]->template->subCategoryLabel = $record->getLabel();
+            $this->template->entityLabel = $record->getLabel();
             $this->setDefaults($form, $record);
         }
     }
@@ -101,9 +108,8 @@ class SubCategoryPresenter extends AdminPresenter
      */
     private function setDefaults(IComponent $form, SubCategory $record)
     {
-        bdump($record);
-        $form["sub_category"]->setDefaultValue($record->getId());
-        $form["sub_category_hidden"]->setDefaultValue($record->getId());
+        $form["id"]->setDefaultValue($record->getId());
+        $form["id_hidden"]->setDefaultValue($record->getId());
         $form["label"]->setDefaultValue($record->getLabel());
         $form["category"]->setDefaultValue($record->getCategory()->getId());
     }
@@ -134,7 +140,6 @@ class SubCategoryPresenter extends AdminPresenter
         };
 
         $grid->getInlineEdit()->onSetDefaults[] = function($cont, $item) {
-            bdump($item);
             $cont->setDefaults([ "label" => $item->getLabel() ]);
         };
 
@@ -208,81 +213,36 @@ class SubCategoryPresenter extends AdminPresenter
     }
 
     /**
-     * @return Form
-     * @throws \Exception
+     * @return SubCategoryFormControl
      */
-    public function createComponentSubCategoryCreateForm()
+    public function createComponentSubCategoryCreateForm(): SubCategoryFormControl
     {
-        $form = $this->subCategoryFormFactory->create();
-        $form->onValidate[] = [$this, "handleFormValidate"];
-        $form->onSuccess[] = [$this, "handleCreateFormSuccess"];
-        return $form;
-    }
-
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     * @throws \Exception
-     */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values)
-    {
-        try{
-            $this->subCategoryFunctionality->create($values);
-        } catch (\Exception $e){
-            $this->flashMessage("Chyba při vytváření podkategorie.", "danger");
-            $this->redrawControl("mainFlashesSnippet");
-            return;
-        }
-        $this["subCategoryGrid"]->reload();
-        $this->flashMessage("Podkategorie úspěšně vytvořena.", "success");
-        $this->redrawControl("mainFlashesSnippet");
+        $control = $this->subCategoryFormFactory->create();
+        $control->onSuccess[] = function (){
+            $this["subCategoryGrid"]->reload();
+            $this->informUser('Podkategorie úspěšně vytvořena.', true);
+        };
+        $control->onError[] = function ($e){
+            $this->informUser('Chyba při vytváření podkategorie.', true, 'danger');
+        };
+        return $control;
     }
 
     /**
      * @param $name
-     * @return Form
-     * @throws \Exception
+     * @return SubCategoryFormControl
      */
-    public function createComponentSubCategoryEditForm($name)
+    public function createComponentSubCategoryEditForm(): SubCategoryFormControl
     {
-        $form = $this->subCategoryFormFactory->create();
-
-        $form->addInteger("sub_category", "ID")
-            ->setHtmlAttribute("class", "form-control")
-            ->setDisabled();
-
-        $form->addHidden("sub_category_hidden");
-
-        $form->onValidate[] = [$this, "handleFormValidate"];
-        $form->onSuccess[] = [$this, "handleEditFormSuccess"];
-
-        return $form;
-    }
-
-    public function handleEditFormSuccess(Form $form, ArrayHash $values)
-    {
-        bdump($values);
-        $this->subCategoryFunctionality->update($values->sub_category_hidden, $values);
-        $this->flashMessage('Podkategorie úspěšně editována.', 'success');
-        $this->redirect("default");
-    }
-
-    /**
-     * @param Form $form
-     */
-    public function handleFormValidate(Form $form)
-    {
-        $values = $form->values;
-        $validateFields["label"] = $values->label;
-        $validationErrors = $this->validationService->validate($validateFields);
-
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
-                    $form[$veKey]->addError($error);
-            }
-        }
-
-        $this->redrawControl("labelErrorSnippet");
+        $control = $this->subCategoryFormFactory->create(true);
+        $control->onSuccess[] = function (){
+            $this->informUser('Podkategorie úspěšně editována.');
+            $this->redirect('default');
+        };
+        $control->onError[] = function ($e){
+            $this->informUser('Chyba při editaci podkategorie.', false, 'danger');
+            $this->redirect('default');
+        };
+        return $control;
     }
 }
