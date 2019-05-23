@@ -10,6 +10,8 @@ namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\ProblemGridFactory;
 use App\Components\Forms\ProblemFormFactory;
+use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SideBar\SideBarFactory;
 use App\Helpers\ConstHelper;
 use App\Model\Entity\ProblemFinal;
 use App\Model\Functionality\ProblemFinalFunctionality;
@@ -78,6 +80,9 @@ class ProblemFinalPresenter extends AdminPresenter
 
     /**
      * ProblemFinalPresenter constructor.
+     * @param Authorizator $authorizator
+     * @param HeaderBarFactory $headerBarFactory
+     * @param SideBarFactory $sideBarFactory
      * @param ProblemGridFactory $problemGridFactory
      * @param ProblemFormFactory $problemFormFactory
      * @param ProblemFinalRepository $problemRepository
@@ -91,6 +96,7 @@ class ProblemFinalPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
         ProblemGridFactory $problemGridFactory, ProblemFormFactory $problemFormFactory,
         ProblemFinalRepository $problemRepository, ProblemTypeRepository $problemTypeRepository,
         ProblemFinalFunctionality $problemFunctionality,
@@ -99,7 +105,7 @@ class ProblemFinalPresenter extends AdminPresenter
         ConstHelper $constHelper
     )
     {
-        parent::__construct($authorizator);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
         $this->problemGridFactory = $problemGridFactory;
         $this->problemFormFactory = $problemFormFactory;
         $this->problemRepository = $problemRepository;
@@ -241,7 +247,7 @@ class ProblemFinalPresenter extends AdminPresenter
     public function handleInlineUpdate(int $id, ArrayHash $data): void
     {
         try{
-            $this->problemFunctionality->update($id, $data);
+            $this->problemFunctionality->update($id, $data, false);
         } catch (\Exception $e){
             $this->flashMessage('Chyba při editaci příkladu.', 'danger');
             $this->redrawControl('mainFlashesSnippet');

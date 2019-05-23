@@ -8,18 +8,19 @@
 
 namespace App\Components\Forms;
 
+use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 
 /**
  * Class BaseForm
  * @package App\Components\Forms
  */
-class BaseForm
+class BaseForm extends Control
 {
     /**
      * @return Form
      */
-    public function create()
+    public function createComponentForm(): Form
     {
         $form = new Form();
 

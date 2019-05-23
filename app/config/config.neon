@@ -147,10 +147,12 @@ services:
 	functionality.template.jsondata: App\Model\Functionality\TemplateJsonDataFunctionality
 
 	#Factories
+	factory.header.bar: App\Components\HeaderBar\HeaderBarFactory
+	factory.side.bar: App\Components\SideBar\SideBarFactory
 	factory.grid.user: App\Components\DataGrids\UserGridFactory
 	factory.form.user: App\Components\Forms\UserFormFactory
 	factory.grid.category: App\Components\DataGrids\CategoryGridFactory
-	factory.form.category: App\Components\Forms\CategoryFormFactory
+	factory.form.category: App\Components\Forms\CategoryForm\CategoryFormFactory
 	factory.grid.subcategory: App\Components\DataGrids\SubCategoryGridFactory
 	factory.form.subcategory: App\Components\Forms\SubCategoryFormFactory
 	factory.grid.problem: App\Components\DataGrids\ProblemGridFactory

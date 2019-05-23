@@ -2,6 +2,8 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SideBar\SideBarFactory;
 use App\Model\Entity\Category;
 use App\Model\Entity\Group;
 use App\Model\Entity\Logo;
@@ -71,6 +73,8 @@ final class HomepagePresenter extends AdminPresenter
     /**
      * HomepagePresenter constructor.
      * @param Authorizator $authorizator
+     * @param HeaderBarFactory $headerBarFactory
+     * @param SideBarFactory $sideBarFactory
      * @param ProblemTemplateRepository $problemTemplateRepository
      * @param ProblemFinalRepository $problemFinalRepository
      * @param CategoryRepository $categoryRepository
@@ -82,12 +86,13 @@ final class HomepagePresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
         ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemFinalRepository,
         CategoryRepository $categoryRepository, SubCategoryRepository $subCategoryRepository,
         TestRepository $testRepository, UserRepository $userRepository, HomepageStatisticsManager $homepageStatisticsManager
     )
     {
-        parent::__construct($authorizator);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
         $this->problemTemplateRepository = $problemTemplateRepository;
         $this->problemFinalRepository = $problemFinalRepository;
         $this->categoryRepository = $categoryRepository;

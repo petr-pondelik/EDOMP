@@ -174,6 +174,7 @@ class ProblemFinalFunctionality extends BaseFunctionality
      */
     public function attachConditions(ProblemFinal $problem, ArrayHash $data): ProblemFinal
     {
+        bdump($data);
         $type = $this->problemTypeRepository->find($data->type);
         $problemCondTypes = $type->getConditionTypes()->getValues();
 

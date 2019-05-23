@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-
     <title n:snippet="titleSnippet">
         {ifset titleFirst}
             {include titleFirst|stripHtml}
@@ -13,90 +12,19 @@
         {/ifset}
         Elektronická sbírka
     </title>
-
     <link rel="stylesheet" type="text/css" href="{$basePath}/dist/app.bundle.css">
-
 </head>
 
 <body>
 
 {if $user->isLoggedIn()}
+    {control sideBar}
+    {control headerBar}
+{/if}
 
-    <nav id="sidebar" class="scrollbar scrollbar-primary">
-        <div id="jquery-accordion-menu" class="jquery-accordion-menu clearfix">
-            <header class="jquery-accordion-menu-header d-flex justify-content-between">
-                <a n:href="Homepage:default">EDOMP: Administrace</a>
-                <div class="pr-4" id="sidebar-close">
-                    <i class="fas fa-times"></i>
-                </div>
-            </header>
-            <ul class="clearfix mb-5 pb-4">
-                <li class="nav-small-cap">
-                    <a href="javascript:void(0)" class="disabled">
-                        <i class="fas fa-ellipsis-h mr-2"></i> PŘEHLED
-                    </a>
-                </li>
+<main id="content" class="mt-2">
 
-                <li n:class="$presenter->isLinkCurrent('Homepage:*') ? active">
-                    <a n:href="Homepage:default">
-                        <i class="fas fa-home mr-2"></i> Domů
-                    </a>
-                </li>
-
-                <li class="nav-small-cap">
-                    <a href="javascript:void(0)" class="disabled">
-                        <i class="fas fa-ellipsis-h mr-2"></i> CVIČEBNICE
-                    </a>
-                </li>
-
-                {dump $presenter->isLinkCurrent('Category:default', 1)}
-
-                <li n:class="$presenter->isLinkCurrent('Category:*') ? active">
-                    <a href="javascript:void(0)" class="submenu-indicator-minus">
-                        <i class="fas fa-archive mr-3"></i>Kategorie
-                    </a>
-                    <ul class="submenu">
-                        {foreach $user->identity->categories as $key => $category}
-                            <li n:class="$presenter->isLinkCurrent('Category:default', $key) ? active">
-                                <a n:href="Category:default 'id' => $key, 'clear_filters' => true">{$category}</a>
-                            </li>
-                        {/foreach}
-                    </ul>
-                </li>
-            </ul>
-            <footer class="jquery-accordion-menu-footer">FIT ČVUT @ 2019</footer>
-        </div>
-    </nav>
-
-    <header id="header-bar">
-        <nav class="header-bar-content" n:snippet="subHeaderSnippet">
-            <a href="#" id="sidebar-collapse" class="font-weight-lighter">
-                <i class="fas fa-bars"></i>
-            </a>
-            <div id="header-bar-right">
-                {if $user->isInRole("admin") || $user->isInRole("teacher")}
-                    <div class="btn-group">
-                        <a n:href=":Admin:Homepage:default" class="admin mr-3" title="Administrace">
-                            <i class="fas fa-cog"></i>
-                        </a>
-                    </div>
-                {/if}
-                <div class="btn-group">
-                    <a href="#" class="user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Nabídka uživatele">
-                        <i class="fas fa-user"></i>
-                    </a>
-                    <div class="dropdown-menu">
-                        <h6 class="dropdown-header">{$user->getIdentity()->username}</h6>
-                        <h6 class="dropdown-header">{$user->getIdentity()->roleLabel}</h6>
-                        <div class="dropdown-divider"></div>
-                        <a href={link Sign:in do => logout} class="dropdown-item">Odhlásit</a>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <main id="content" class="mt-2">
+    {if $user->isLoggedIn()}
 
         {if !$presenter->isLinkCurrent('Homepage:*')}
             <nav class="ml-4 mr-4 mt-3" id="breadcrumb-navigation" aria-label="breadcrumb">
@@ -118,9 +46,7 @@
         <div class="ml-4 mr-4 mt-4">
             <div class="card card-shadow border-light">
                 {ifset content}
-                    {snippet contentSnippet}
-                        {include content}
-                    {/snippet}
+                    {include content}
                 {/ifset}
             </div>
         </div>
@@ -129,43 +55,31 @@
             {include create}
         {/ifset}
 
-    </main>
+    {else}
 
-    <script src="{$basePath}/dist/app.bundle.js"></script>
+        {ifset sign}
+            {include sign}
+        {/ifset}
 
+    {/if}
 
-
-    <!-- MathJax Library -->
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML'></script>
-
-    {snippet mathJaxRender}
-        <!-- MathJax Config and Renderer function -->
-        <script type="text/javascript">
-
-            //function mathJaxRenderer() {
-                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-                console.log('RENDERING MATHJAX');
-                MathJax.Hub.Config({
-                    messageStyle: "none",
-                    ignoreClass: "tex2jax_ignore",
-                    "HTML-CSS": { linebreaks: { automatic: true, width: "75% container" } },
-                    "SVG": { linebreaks: { automatic: true, width: "75% container" } }
-                });
-
-            //}
-
-            //setTimeout(mathJaxRenderer, 1000);
-
-        </script>
-    {/snippet}
-
-{/if}
-
-<main n:if="!$user->isLoggedIn()">
-    {ifset sign}
-        {include sign}
-    {/ifset}
 </main>
+
+<script src="{$basePath}/dist/app.bundle.js"></script>
+
+<!-- MathJax Library -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML'></script>
+
+{snippet mathJaxRender}
+    <!-- MathJax Config and Renderer function -->
+    <script type="text/javascript">
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        MathJax.Hub.Config({
+            messageStyle: "none",
+            ignoreClass: "tex2jax_ignore",
+        });
+    </script>
+{/snippet}
 
 </body>
 </html>

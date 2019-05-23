@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-
     <title>
         {ifset headingFirst}
             {include headingFirst|stripHtml}
@@ -13,161 +12,19 @@
         {/ifset}
         EDOMP
     </title>
-
     <link rel="stylesheet" type="text/css" href="{$basePath}/dist/app.bundle.css">
-
 </head>
 
 <body>
 
 {if $user->isInRole("admin") || $user->isInRole("teacher")}
+    {control sideBar}
+    {control headerBar}
+{/if}
 
-    <nav id="sidebar" class="scrollbar scrollbar-primary">
-        <div id="jquery-accordion-menu" class="jquery-accordion-menu">
-            <header class="jquery-accordion-menu-header d-flex justify-content-between">
-                <a n:href="Homepage:default">EDOMP: Administrace</a>
-                <div class="pr-4" id="sidebar-close">
-                    <i class="fas fa-times"></i>
-                </div>
-            </header>
-            <ul class="clearfix mb-5 pb-4">
-                <li class="nav-small-cap">
-                    <a href="javascript:void(0)" class="disabled">
-                        <i class="fas fa-ellipsis-h mr-2"></i> PŘEHLED
-                    </a>
-                </li>
+<main id="content" class="mt-2">
 
-                <li n:class="$presenter->isLinkCurrent('Homepage:*') ? active">
-                    <a n:href="Homepage:default">
-                        <i class="fas fa-home mr-2"></i> Domů
-                    </a>
-                </li>
-
-                <li class="nav-small-cap">
-                    <a href="javascript:void(0)" class="disabled">
-                        <i class="fas fa-ellipsis-h mr-2"></i> ÚLOHY
-                    </a>
-                </li>
-
-                <li {ifset templateActive}class="active"{/ifset}>
-                    <a href="javascript:void(0)" class="submenu-indicator-minus">
-                        <i class="fas fa-file mr-3"></i>Šablony
-                    </a>
-                    <ul class="submenu">
-                        <li n:class="$presenter->isLinkCurrent('LinearEqTemplate:*') ? active">
-                            <a n:href="LinearEqTemplate:default">Lineární rovnice</a>
-                        </li>
-                        <li n:class="$presenter->isLinkCurrent('QuadraticEqTemplate:*') ? active">
-                            <a n:href="QuadraticEqTemplate:default">Kvadratické rovnice</a>
-                        </li>
-                        <li n:class="$presenter->isLinkCurrent('ArithmeticSeqTemplate:*') ? active">
-                            <a n:href="ArithmeticSeqTemplate:default">Aritmetické posloupnosti</a>
-                        </li>
-                        <li n:class="$presenter->isLinkCurrent('GeometricSeqTemplate:*') ? active">
-                            <a n:href="GeometricSeqTemplate:default">Geometrické posloupnosti</a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li n:class="$presenter->isLinkCurrent('ProblemFinal:*') ? active">
-                    <a n:href="ProblemFinal:default">
-                        <i class="fas fa-calculator mr-2"></i> Příklady
-                    </a>
-                </li>
-                <li n:class="$presenter->isLinkCurrent('Category:*') ? active">
-                    <a n:href="Category:default">
-                        <i class="fas fa-archive mr-2"></i> Kategorie
-                    </a>
-                </li>
-                <li n:class="$presenter->isLinkCurrent('SubCategory:*') ? active">
-                    <a n:href="SubCategory:default">
-                        <i class="fas fa-folder-open mr-2"></i> Podkategorie
-                    </a>
-                </li>
-                <li class="nav-small-cap">
-                    <a href="javascript:void(0)" class="disabled">
-                        <i class="fas fa-ellipsis-h mr-2"></i> TESTY
-                    </a>
-                </li>
-
-                <li n:class="$presenter->isLinkCurrent('Test:*') ? active">
-                    <a n:href="Test:default">
-                        <i class="fas fa-file-alt mr-2"></i> Testy
-                    </a>
-                </li>
-
-                    <li class="nav-small-cap">
-                        <a href="javascript:void(0)" class="disabled">
-                            <i class="fas fa-ellipsis-h mr-2"></i> UŽIVATELÉ
-                        </a>
-                    </li>
-
-                    <li n:class="$presenter->isLinkCurrent('User:*') ? active">
-                        <a n:href="User:default">
-                            <i class="fas fa-user mr-2"></i> Uživatelé
-                        </a>
-                    </li>
-                    <li n:class="$presenter->isLinkCurrent('Group:*') ? active">
-                        <a n:href="Group:default">
-                            <i class="fas fa-user-friends mr-2"></i> Skupiny
-                        </a>
-                    </li>
-                    <li n:class="$presenter->isLinkCurrent('SuperGroup:*') ? active">
-                        <a n:href="SuperGroup:default">
-                            <i class="fas fa-users mr-2"></i> Superskupiny
-                        </a>
-                    </li>
-
-                <li class="nav-small-cap">
-                    <a href="javascript:void(0)" class="disabled">
-                        <i class="fas fa-ellipsis-h mr-2"></i> NASTAVENÍ
-                    </a>
-                </li>
-
-                <li n:class="$presenter->isLinkCurrent('Logo:*') ? active">
-                    <a n:href="Logo:default">
-                        <i class="fas fa-images mr-2"></i> Loga
-                    </a>
-                </li>
-
-                <li n:class="$presenter->isLinkCurrent('Settings:*') ? active">
-                    <a n:href="Settings:default">
-                        <i class="fas fa-cog mr-2"></i>Nastavení
-                    </a>
-                </li>
-
-            </ul>
-            <footer class="jquery-accordion-menu-footer">FIT ČVUT @ 2019</footer>
-        </div>
-    </nav>
-
-    <header id="header-bar">
-        <div class="header-bar-content" n:snippet="subHeaderSnippet">
-            <a href="#" id="sidebar-collapse" class="font-weight-lighter">
-                <i class="fas fa-bars"></i>
-            </a>
-            <div id="header-bar-right">
-                <div class="btn-group">
-                    <a n:href=":Front:Homepage:default" class="admin mr-3" title="Cvičebnice">
-                        <i class="fas fa-square-root-alt"></i>
-                    </a>
-                </div>
-                <div class="btn-group">
-                    <a href="#" class="user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-user"></i>
-                    </a>
-                    <div class="dropdown-menu">
-                        <h6 class="dropdown-header">{$user->getIdentity()->username}</h6>
-                        <h6 class="dropdown-header">{$user->getIdentity()->roleLabel}</h6>
-                        <div class="dropdown-divider"></div>
-                        <a href={link Sign:in do => logout} class="dropdown-item">Odhlásit</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main id="content" class="mt-2">
+    {if $user->isInRole("admin") || $user->isInRole("teacher")}
 
         {if !$presenter->isLinkCurrent('Homepage:*')}
             <nav class="ml-4 mr-4 mt-3" id="breadcrumb-navigation" aria-label="breadcrumb">
@@ -189,9 +46,7 @@
         <div class="ml-4 mr-4 mt-4">
             <div class="card card-shadow border-light">
                 {ifset content}
-                    {snippet contentSnippet}
-                        {include content}
-                    {/snippet}
+                    {include content}
                 {/ifset}
             </div>
         </div>
@@ -200,38 +55,34 @@
             {include create}
         {/ifset}
 
-    </main>
+    {else}
 
-    <script src="{$basePath}/dist/app.bundle.js"></script>
+        {ifset sign}
+            {include sign}
+        {/ifset}
 
-    <!-- MathJax Library -->
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML'></script>
+    {/if}
 
+</main>
+
+<script src="{$basePath}/dist/app.bundle.js"></script>
+
+<!-- MathJax Library -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML'></script>
+
+<!-- MathJax Config and Renderer function -->
 {snippet mathJaxRender}
-    <!-- MathJax Config and Renderer function -->
     <script type="text/javascript">
-
         function mathJaxRenderer() {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-            console.log('RENDERING MATHJAX');
             MathJax.Hub.Config({
                 messageStyle: "none",
                 ignoreClass: "tex2jax_ignore"
             });
         }
-
         setTimeout(mathJaxRenderer, 1000);
-
     </script>
 {/snippet}
-
-{/if}
-
-<main n:if="!$user->isInRole('admin')">
-    {ifset sign}
-        {include sign}
-    {/ifset}
-</main>
 
 </body>
 </html>

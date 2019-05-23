@@ -7,7 +7,7 @@
 {/block}
 
 {block headingSecond}
-    Kategorie {$categoryId}
+    {$categoryLabel}
 {/block}
 
 {block headingSecondLink}
@@ -18,9 +18,9 @@
 
 {block content}
 
-    {form categoryEditForm}
+    {*{form categoryEditForm}*}
 
-        <div class="card-header d-flex justify-content-between">
+        {*<div class="card-header d-flex justify-content-between">
             <h1 class="mb-0 font-weight-bold card-heading">
                 {include icon}{include headingSecond}
             </h1>
@@ -50,8 +50,10 @@
                 {/snippet}
             </div>
 
-        </div>
+        </div>*}
 
-    {/form}
+    {*{/form}*}
+
+    {control categoryEditForm}
 
 {/block}

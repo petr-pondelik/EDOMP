@@ -8,12 +8,12 @@
 
 namespace App\Presenters;
 
-use App\Model\Managers\BaseManager;
-use App\Services\Authorizator;
+use App\Components\HeaderBar\HeaderBarControl;
+use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SideBar\SideBarControl;
+use App\Components\SideBar\SideBarFactory;
 use Nette\Application\UI\Presenter;
 
-use WebLoader\Nette\CssLoader;
-use WebLoader\Nette\JavaScriptLoader;
 
 /**
  * Class BasePresenter
@@ -21,9 +21,69 @@ use WebLoader\Nette\JavaScriptLoader;
  */
 class BasePresenter extends Presenter
 {
-    public function beforeRender()
+    /**
+     * @var HeaderBarFactory
+     */
+    protected $headerBarFactory;
+
+    /**
+     * @var SideBarFactory
+     */
+    protected $sideBarFactory;
+
+    /**
+     * BasePresenter constructor.
+     * @param HeaderBarFactory $headerBarFactory
+     * @param SideBarFactory $sideBarFactory
+     */
+    public function __construct
+    (
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory
+    )
+    {
+        parent::__construct();
+        $this->headerBarFactory = $headerBarFactory;
+        $this->sideBarFactory = $sideBarFactory;
+
+    }
+
+    public function beforeRender(): void
     {
         parent::beforeRender();
         $this->redrawControl('mathJaxRender');
+    }
+
+    /**
+     * @return \App\Components\HeaderBar\HeaderBarControl
+     */
+    public function createComponentHeaderBar(): HeaderBarControl
+    {
+        return $this->headerBarFactory->create();
+    }
+
+    /**
+     * @return \App\Components\SideBar\SideBarControl
+     */
+    public function createComponentSideBar(): SideBarControl
+    {
+        return $this->sideBarFactory->create();
+    }
+
+    /**
+     * @param string $message
+     * @param bool $ajax
+     * @param string $type
+     * @param \Exception|null $exception
+     * @param bool $main
+     */
+    public function informUser(string $message, bool $ajax = false, string $type = 'success', \Exception $exception = null, bool $main = false): void
+    {
+        $this->flashMessage($message, $type);
+        if($ajax){
+            if($main)
+                $this->redrawControl('mainFlashesSnippet');
+            else
+                $this->redrawControl('flashesSnippet');
+        }
     }
 }

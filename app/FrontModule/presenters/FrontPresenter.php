@@ -8,6 +8,8 @@
 
 namespace App\FrontModule\Presenters;
 
+use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SideBar\SideBarFactory;
 use App\Presenters\BasePresenter;
 use App\Service\Authorizator;
 
@@ -25,13 +27,16 @@ class FrontPresenter extends BasePresenter
     /**
      * FrontPresenter constructor.
      * @param Authorizator $authorizator
+     * @param HeaderBarFactory $headerBarFactory
+     * @param SideBarFactory $sideBarFactory
      */
     public function __construct
     (
-        Authorizator $authorizator
+        Authorizator $authorizator,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory
     )
     {
-        parent::__construct();
+        parent::__construct($headerBarFactory, $sideBarFactory);
         $this->authorizator = $authorizator;
     }
 

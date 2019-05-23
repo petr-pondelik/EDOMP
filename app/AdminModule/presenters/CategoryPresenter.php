@@ -9,13 +9,15 @@
 namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\CategoryGridFactory;
-use App\Components\Forms\CategoryFormFactory;
+use App\Components\Forms\CategoryForm\CategoryFormControl;
+use App\Components\Forms\CategoryForm\CategoryFormFactory;
+use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SideBar\SideBarFactory;
 use App\Model\Entity\Category;
 use App\Model\Functionality\CategoryFunctionality;
 use App\Model\Repository\CategoryRepository;
 use App\Service\Authorizator;
 use App\Service\ValidationService;
-use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
@@ -54,6 +56,8 @@ class CategoryPresenter extends AdminPresenter
     /**
      * CategoryPresenter constructor.
      * @param Authorizator $authorizator
+     * @param HeaderBarFactory $headerBarFactory
+     * @param SideBarFactory $sideBarFactory
      * @param CategoryRepository $categoryRepository
      * @param CategoryFunctionality $categoryFunctionality
      * @param CategoryGridFactory $categoryGridFactory
@@ -63,13 +67,14 @@ class CategoryPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
         CategoryRepository $categoryRepository,
         CategoryFunctionality $categoryFunctionality,
         CategoryGridFactory $categoryGridFactory, CategoryFormFactory $categoryFormFactory,
         ValidationService $validationService
     )
     {
-        parent::__construct($authorizator);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
         $this->categoryRepository = $categoryRepository;
         $this->categoryFunctionality = $categoryFunctionality;
         $this->categoryGridFactory = $categoryGridFactory;
@@ -82,10 +87,11 @@ class CategoryPresenter extends AdminPresenter
      */
     public function actionEdit(int $id)
     {
-        $form = $this["categoryEditForm"];
+        $form = $this["categoryEditForm"]["form"];
         if(!$form->isSubmitted()){
             $record = $this->categoryRepository->find($id);
-            $this->template->categoryId = $id;
+            $this["categoryEditForm"]->template->categoryLabel = $record->getLabel();
+            $this->template->categoryLabel = $record->getLabel();
             $this->setDefaults($form, $record);
         }
     }
@@ -143,13 +149,11 @@ class CategoryPresenter extends AdminPresenter
         try{
             $this->categoryFunctionality->delete($id);
         } catch (\Exception $e){
-            $this->flashMessage('Chyba při odstraňování kategorie.', 'danger');
-            $this->redrawControl('mainFlashesSnippet');
+            $this->informUser('Chyba při odstraňování kategorie.', true,'danger');
             return;
         }
         $this['categoryGrid']->reload();
-        $this->flashMessage('Kategorie úspěšně odstraněna.', 'success');
-        $this->redrawControl('mainFlashesSnippet');
+        $this->informUser('Kategorie úspěšně odstraněna.', true);
     }
 
     /**
@@ -170,94 +174,43 @@ class CategoryPresenter extends AdminPresenter
         try{
             $this->categoryFunctionality->update($id, $data);
         } catch (\Exception $e){
-            $this->flashMessage('Chyba při editaci kategorie.', 'danger');
-            $this->redrawControl('mainFlashesSnippet');
+            $this->informUser('Chyba při editaci kategorie.', true,'danger');
             return;
         }
-        $this->flashMessage('Kategorie úspěšně editována.', 'success');
-        $this->redrawControl('mainFlashesSnippet');
+        $this->informUser('Kategorie úspěšně editována.', true, 'success');
     }
 
     /**
-     * @return Form
+     * @return CategoryFormControl
      */
-    public function createComponentCategoryCreateForm(): Form
+    public function createComponentCategoryCreateForm(): CategoryFormControl
     {
-        $form = $this->categoryFormFactory->create();
-        $form->onValidate[] = [$this, 'handleFormValidate'];
-        $form->onSuccess[] = [$this, 'handleCreateFormSuccess'];
-        return $form;
+        $control = $this->categoryFormFactory->create($this->categoryFunctionality, $this->validationService);
+        $control->onSuccess[] = function (){
+            $this['categoryGrid']->reload();
+            $this->informUser('Kategorie úspěšně vytvořena.', true);
+        };
+        $control->onError[] = function ($e){
+            $this->informUser('Chyba při vytváření kategorie.', true, 'danger');
+        };
+        return $control;
     }
 
     /**
-     * @param Form $form
-     * @param ArrayHash $values
+     * @return CategoryFormControl
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values)
+    public function createComponentCategoryEditForm(): CategoryFormControl
     {
-        try{
-            $this->categoryFunctionality->create($values);
-        } catch (\Exception $e){
-            $this->flashMessage('Chyba při vytváření kategorie.', 'danger');
-            $this->redrawControl('mainFlashesSnippet');
-            return;
-        }
-        $this['categoryGrid']->reload();
-        $this->flashMessage('Kategorie úspěšně vytvořena.', 'success');
-        $this->redrawControl('flashesSnippet');
+        $control = $this->categoryFormFactory->create($this->categoryFunctionality, $this->validationService, true);
+        $control->onSuccess[] = function (){
+            $this->informUser('Kategorie úspěšně editována.');
+            $this->redirect('default');
+        };
+        $control->onError[] = function ($e){
+            $this->informUser('Chyba při editaci kategorie.', false, 'danger');
+            $this->redirect('default');
+        };
+        return $control;
     }
 
-    /**
-     * @return Form
-     */
-    public function createComponentCategoryEditForm(): Form
-    {
-        $form = $this->categoryFormFactory->create();
-
-        $form->addInteger('category_id', 'ID')
-            ->setHtmlAttribute('class', 'form-control')
-            ->setDisabled();
-
-        $form->addHidden('category_id_hidden');
-
-        $form->onValidate[] = [$this, "handleFormValidate"];
-        $form->onSuccess[] = [$this, "handleEditFormSuccess"];
-        return $form;
-    }
-
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     * @throws \Nette\Application\AbortException
-     */
-    public function handleEditFormSuccess(Form $form, ArrayHash $values)
-    {
-        try{
-            $this->categoryFunctionality->update($values->category_id_hidden, $values);
-        } catch (\Exception $e){
-            $this->flashMessage('Chyba při editaci kategorie.', 'danger');
-            $this->redirect("default");
-        }
-        $this->flashMessage('Kategorie úspěšně editována.', 'success');
-        $this->redirect("default");
-    }
-
-    /**
-     * @param Form $form
-     */
-    public function handleFormValidate(Form $form)
-    {
-        $values = $form->values;
-        $validateFields["label"] = $values->label;
-        $validationErrors = $this->validationService->validate($validateFields);
-
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
-                    $form[$veKey]->addError($error);
-            }
-        }
-
-        $this->redrawControl("labelErrorSnippet");
-    }
 }
