@@ -19,11 +19,6 @@ use App\Service\ValidationService;
 class CategoryFormFactory extends BaseFormFactory
 {
     /**
-     * @var CategoryFunctionality
-     */
-    protected $categoryFunctionality;
-
-    /**
      * CategoryFormFactory constructor.
      * @param ValidationService $validationService
      * @param CategoryFunctionality $categoryFunctionality
@@ -31,7 +26,7 @@ class CategoryFormFactory extends BaseFormFactory
     public function __construct(ValidationService $validationService, CategoryFunctionality $categoryFunctionality)
     {
         parent::__construct($validationService);
-        $this->categoryFunctionality = $categoryFunctionality;
+        $this->functionality = $categoryFunctionality;
     }
 
     /**
@@ -40,6 +35,6 @@ class CategoryFormFactory extends BaseFormFactory
      */
     public function create(bool $edit = false): CategoryFormControl
     {
-        return new CategoryFormControl($this->validationService, $this->categoryFunctionality, $edit);
+        return new CategoryFormControl($this->validationService, $this->functionality, $edit);
     }
 }

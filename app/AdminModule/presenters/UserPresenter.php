@@ -9,17 +9,16 @@
 namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\UserGridFactory;
-use App\Components\Forms\UserFormFactory;
+use App\Components\Forms\UserForm\UserFormControl;
+use App\Components\Forms\UserForm\UserFormFactory;
+use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SideBar\SideBarFactory;
 use App\Model\Entity\User;
 use App\Model\Functionality\UserFunctionality;
-use App\Model\Repository\GroupRepository;
-use App\Model\Repository\RoleRepository;
 use App\Model\Repository\UserRepository;
 use App\Service\Authorizator;
 use App\Service\ValidationService;
-use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
-use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
@@ -39,16 +38,6 @@ class UserPresenter extends AdminPresenter
     protected $userFunctionality;
 
     /**
-     * @var RoleRepository
-     */
-    protected $roleRepository;
-
-    /**
-     * @var GroupRepository
-     */
-    protected $groupRepository;
-
-    /**
      * @var ValidationService
      */
     protected $validationService;
@@ -66,10 +55,10 @@ class UserPresenter extends AdminPresenter
     /**
      * UserPresenter constructor.
      * @param Authorizator $authorizator
+     * @param HeaderBarFactory $headerBarFactory
+     * @param SideBarFactory $sideBarFactory
      * @param UserRepository $userRepository
      * @param UserFunctionality $userFunctionality
-     * @param RoleRepository $roleRepository
-     * @param GroupRepository $groupRepository
      * @param ValidationService $validationService
      * @param UserGridFactory $userGridFactory
      * @param UserFormFactory $userFormFactory
@@ -77,17 +66,15 @@ class UserPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
         UserRepository $userRepository, UserFunctionality $userFunctionality,
-        RoleRepository $roleRepository, GroupRepository $groupRepository,
         ValidationService $validationService,
         UserGridFactory $userGridFactory, UserFormFactory $userFormFactory
     )
     {
-        parent::__construct($authorizator);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
         $this->userRepository = $userRepository;
         $this->userFunctionality = $userFunctionality;
-        $this->roleRepository = $roleRepository;
-        $this->groupRepository = $groupRepository;
         $this->validationService = $validationService;
         $this->userGridFactory = $userGridFactory;
         $this->userFormFactory = $userFormFactory;
@@ -104,9 +91,10 @@ class UserPresenter extends AdminPresenter
             $this->flashMessage("Nedostatečná přístupová práva.", "danger");
             $this->redirect("Homepage:default");
         }
-        $form = $this["userEditForm"];
+        $form = $this['userEditForm']['form'];
         if(!$form->isSubmitted()){
-            $this->template->id = $id;
+            $this->template->entityLabel = $record->getUsername();
+            $this['userEditForm']->template->entityLabel = $record->getUsername();
             $this->setDefaults($form, $record);
         }
     }
@@ -133,17 +121,14 @@ class UserPresenter extends AdminPresenter
     public function createComponentUserGrid($name): DataGrid
     {
         $grid = $this->userGridFactory->create($this, $name);
-
         $grid->addAction("delete", "", "delete!")
             ->setIcon("trash")
             ->setTitle("Odstranit uživatele")
             ->setClass("btn btn-danger btn-sm ajax");
-
         $grid->addAction("edit", "", "edit!")
             ->setIcon("edit")
             ->setTitle("Editovat uživatele")
             ->setClass("btn btn-primary btn-sm");
-
         return $grid;
     }
 
@@ -155,8 +140,7 @@ class UserPresenter extends AdminPresenter
     {
         $this->userFunctionality->delete($id);
         $this["userGrid"]->reload();
-        $this->flashMessage("Uživatel úspěšně odstraněn.", "success");
-        $this->redrawControl("mainFlashesSnippet");
+        $this->informUser('Uživatel úspěšně odstraněn.', true, 'success');
     }
 
     /**
@@ -169,92 +153,36 @@ class UserPresenter extends AdminPresenter
     }
 
     /**
-     * @return \Nette\Application\UI\Form
-     * @throws \Exception
+     * @return UserFormControl
      */
-    public function createComponentUserCreateForm()
+    public function createComponentUserCreateForm(): UserFormControl
     {
-        $form = $this->userFormFactory->create($this);
-        $form->onValidate[] = [$this, "handleFormValidate"];
-        $form->onSuccess[] = [$this, "handleCreateFormSuccess"];
-        return $form;
+        $control = $this->userFormFactory->create();
+        $control->onSuccess[] = function (){
+            $this["userGrid"]->reload();
+            $this->informUser('Uživatel úspěšně vytvořen.', true);
+        };
+        $control->onError[] = function ($e){
+            $this->informUser('Chyba při vytváření uživatele.', true, 'danger');
+        };
+        return $control;
     }
 
     /**
-     * @param Form $form
-     * @param ArrayHash $values
-     * @throws \Exception
+     * @return UserFormControl
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values)
+    public function createComponentUserEditForm(): UserFormControl
     {
-        $this->userFunctionality->create($values);
-        $this["userGrid"]->reload();
-        $this->flashMessage("Uživatel úspěšně vytvořen", "success");
-        $this->redrawControl("mainFlashesSnippet");
-        $this->redrawControl("mainFlashesSnippet");
-    }
-
-    /**
-     * @return Form
-     * @throws \Exception
-     */
-    public function createComponentUserEditForm()
-    {
-        $form = $this->userFormFactory->create($this);
-        $form->addInteger("id", "ID")
-            ->setHtmlAttribute("class", "form-control")
-            ->setDisabled();
-        $form->addHidden("id_hidden");
-        $form->addSelect("change_password", "Změnit heslo", [
-            0 => "Ne",
-            1 => "Ano"
-        ])
-            ->setHtmlAttribute("class", "form-control");
-        $form->onValidate[] = [$this, "handleFormValidate"];
-        $form->onSuccess[] = [$this, "handleEditFormSuccess"];
-        return $form;
-    }
-
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     * @throws \Nette\Application\AbortException
-     */
-    public function handleEditFormSuccess(Form $form, ArrayHash $values)
-    {
-        $this->userFunctionality->update($values->id_hidden, $values);
-        $this->flashMessage("Uživatel úspěšně editován.", "success");
-        $this->redirect("default");
-    }
-
-    /**
-     * @param Form $form
-     */
-    public function handleFormValidate(Form $form)
-    {
-        $values = $form->values;
-
-        $validateFields["username"] = $values->username;
-        if(!isset($values->change_password) || $values->change_password){
-            $validateFields["password_confirm"] = ArrayHash::from([
-                "password" => $values->password,
-                "password_confirm" => $values->password_confirm
-            ]);
-        }
-        $validateFields["groups"] = ArrayHash::from($values->groups);
-
-        $validationErrors = $this->validationService->validate($validateFields);
-
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
-                    $form[$veKey]->addError($error);
-            }
-        }
-
-        $this->redrawControl("usernameErrorSnippet");
-        $this->redrawControl("passwordConfirmErrorSnippet");
-        $this->redrawControl("roleErrorSnippet");
-        $this->redrawControl("groupsErrorSnippet");
+        $control = $this->userFormFactory->create(true);
+        $control->onSuccess[] = function (){
+            $this["userGrid"]->reload();
+            $this->informUser('Uživatel úspěšně editován.');
+            $this->redirect('default');
+        };
+        $control->onError[] = function ($e){
+            $this->informUser('Chyba při editaci uživatele.', false, 'danger');
+            $this->redirect('default');
+        };
+        return $control;
     }
 }

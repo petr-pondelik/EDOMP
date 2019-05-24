@@ -18,7 +18,7 @@ class SuperGroupRepository extends BaseRepository
      * @return mixed
      * @throws \Doctrine\ORM\Query\QueryException
      */
-    public function findWithoutAdmin()
+    public function findAllowed()
     {
         $qb = $this->createQueryBuilder("sg")
             ->select("sg")

@@ -19,11 +19,6 @@ use App\Service\ValidationService;
 class SuperGroupFormFactory extends BaseFormFactory
 {
     /**
-     * @var SuperGroupFunctionality
-     */
-    protected $superGroupFunctionality;
-
-    /**
      * SuperGroupFormFactory constructor.
      * @param ValidationService $validationService
      * @param SuperGroupFunctionality $superGroupFunctionality
@@ -31,7 +26,7 @@ class SuperGroupFormFactory extends BaseFormFactory
     public function __construct(ValidationService $validationService, SuperGroupFunctionality $superGroupFunctionality)
     {
         parent::__construct($validationService);
-        $this->superGroupFunctionality = $superGroupFunctionality;
+        $this->functionality = $superGroupFunctionality;
     }
 
     /**
@@ -40,6 +35,6 @@ class SuperGroupFormFactory extends BaseFormFactory
      */
     public function create(bool $edit = false): SuperGroupFormControl
     {
-        return new SuperGroupFormControl($this->validationService, $this->superGroupFunctionality, $edit);
+        return new SuperGroupFormControl($this->validationService, $this->functionality, $edit);
     }
 }

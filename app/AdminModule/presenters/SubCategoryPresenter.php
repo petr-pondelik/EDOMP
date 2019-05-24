@@ -19,7 +19,6 @@ use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Service\Authorizator;
 use App\Service\ValidationService;
-use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
@@ -96,7 +95,7 @@ class SubCategoryPresenter extends AdminPresenter
         $form = $this["subCategoryEditForm"]["form"];
         if(!$form->isSubmitted()){
             $record = $this->subCategoryRepository->find($id);
-            $this["subCategoryEditForm"]->template->subCategoryLabel = $record->getLabel();
+            $this["subCategoryEditForm"]->template->entityLabel = $record->getLabel();
             $this->template->entityLabel = $record->getLabel();
             $this->setDefaults($form, $record);
         }
@@ -111,7 +110,7 @@ class SubCategoryPresenter extends AdminPresenter
         $form["id"]->setDefaultValue($record->getId());
         $form["id_hidden"]->setDefaultValue($record->getId());
         $form["label"]->setDefaultValue($record->getLabel());
-        $form["category"]->setDefaultValue($record->getCategory()->getId());
+        $form["category_id"]->setDefaultValue($record->getCategory()->getId());
     }
 
     /**

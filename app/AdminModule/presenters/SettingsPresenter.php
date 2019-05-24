@@ -10,15 +10,14 @@ namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\GroupGridFactory;
 use App\Components\DataGrids\SuperGroupGridFactory;
-use App\Components\Forms\PermissionFormFactory;
-use App\Model\Functionality\GroupFunctionality;
-use App\Model\Functionality\SuperGroupFunctionality;
+use App\Components\Forms\PermissionForm\PermissionFormControl;
+use App\Components\Forms\PermissionForm\PermissionFormFactory;
+use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SideBar\SideBarFactory;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\SuperGroupRepository;
 use App\Service\Authorizator;
-use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class SettingsPresenter
@@ -32,19 +31,9 @@ class SettingsPresenter extends AdminPresenter
     protected $groupRepository;
 
     /**
-     * @var GroupFunctionality
-     */
-    protected $groupFunctionality;
-
-    /**
      * @var SuperGroupRepository
      */
     protected $superGroupRepository;
-
-    /**
-     * @var SuperGroupFunctionality
-     */
-    protected $superGroupFunctionality;
 
     /**
      * @var GroupGridFactory
@@ -64,10 +53,10 @@ class SettingsPresenter extends AdminPresenter
     /**
      * SettingsPresenter constructor.
      * @param Authorizator $authorizator
+     * @param HeaderBarFactory $headerBarFactory
+     * @param SideBarFactory $sideBarFactory
      * @param GroupRepository $groupRepository
-     * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupRepository $superGroupRepository
-     * @param SuperGroupFunctionality $superGroupFunctionality
      * @param GroupGridFactory $groupGridFactory
      * @param SuperGroupGridFactory $superGroupGridFactory
      * @param PermissionFormFactory $permissionFormFactory
@@ -75,16 +64,14 @@ class SettingsPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
-        GroupRepository $groupRepository, GroupFunctionality $groupFunctionality,
-        SuperGroupRepository $superGroupRepository, SuperGroupFunctionality $superGroupFunctionality,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
+        GroupRepository $groupRepository, SuperGroupRepository $superGroupRepository,
         GroupGridFactory $groupGridFactory, SuperGroupGridFactory $superGroupGridFactory, PermissionFormFactory $permissionFormFactory
     )
     {
-        parent::__construct($authorizator);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
         $this->groupRepository = $groupRepository;
-        $this->groupFunctionality = $groupFunctionality;
         $this->superGroupRepository = $superGroupRepository;
-        $this->superGroupFunctionality = $superGroupFunctionality;
         $this->groupGridFactory = $groupGridFactory;
         $this->superGroupGridFactory = $superGroupGridFactory;
         $this->permissionFormFactory = $permissionFormFactory;
@@ -101,9 +88,10 @@ class SettingsPresenter extends AdminPresenter
             $this->flashMessage("Nedostatečná přístupová práva.", "danger");
             $this->redirect("Homepage:default");
         }
-        $form = $this["groupPermissionForm"];
+        $form = $this['groupPermissionForm']['form'];
         if(!$form->isSubmitted()){
-            $this->template->id = $id;
+            $this->template->entityLabel = $group->getLabel();
+            $this['groupPermissionForm']->template->entityLabel = $group->getLabel();
             $categories = $group->getCategoriesId();
             $this->setDefaults($form, $id, $categories);
         }
@@ -120,9 +108,10 @@ class SettingsPresenter extends AdminPresenter
             $this->flashMessage("Nedostatečná přístupová práva.", "danger");
             $this->redirect("Homepage:default");
         }
-        $form = $this["superGroupPermissionForm"];
+        $form = $this["superGroupPermissionForm"]['form'];
         if(!$form->isSubmitted()){
-            $this->template->id = $id;
+            $this->template->entityLabel = $superGroup->getLabel();
+            $this['superGroupPermissionForm']->template->entityLabel = $superGroup->getLabel();
             $categories = $superGroup->getCategoriesId();
             $this->setDefaults($form, $id, $categories);
         }
@@ -147,12 +136,10 @@ class SettingsPresenter extends AdminPresenter
     public function createComponentGroupGrid($name)
     {
         $grid = $this->groupGridFactory->create($this, $name, true);
-
         $grid->addAction("editPermissions", "", "groupPermissionEdit")
             ->setIcon("key")
             ->setTitle("Nastavit oprávnění")
             ->setClass("btn btn-primary btn-sm");
-
         return $grid;
     }
 
@@ -163,7 +150,6 @@ class SettingsPresenter extends AdminPresenter
     public function createComponentSuperGroupGrid($name)
     {
         $grid = $this->superGroupGridFactory->create($this, $name);
-
         $grid->addAction("editPermission", "", "superGroupPermissionEdit")
             ->setIcon("key")
             ->setTitle("Nastavit oprávnění")
@@ -171,51 +157,36 @@ class SettingsPresenter extends AdminPresenter
     }
 
     /**
-     * @return Form
-     * @throws \Exception
+     * @return PermissionFormControl
      */
-    public function createComponentGroupPermissionForm(): Form
+    public function createComponentGroupPermissionForm(): PermissionFormControl
     {
-        $form = $this->permissionFormFactory->create();
-        $form->onSuccess[] = [$this, "handleGroupPermissionFormSuccess"];
-        return $form;
+        $control = $this->permissionFormFactory->create();
+        $control->onSuccess[] = function (){
+            $this->informUser('Oprávnění skupiny úspěšně změněna.', false);
+            $this->redirect('groupPermission');
+        };
+        $control->onError[] = function ($e){
+            $this->informUser('Chyba při změně oprávnění skupiny.', false, 'danger');
+            $this->redirect('groupPermission');
+        };
+        return $control;
     }
 
     /**
-     * @param Form $form
-     * @param ArrayHash $values
-     * @throws \Nette\Application\AbortException
-     * @throws \Exception
+     * @return PermissionFormControl
      */
-    public function handleGroupPermissionFormSuccess(Form $form, ArrayHash $values)
+    public function createComponentSuperGroupPermissionForm(): PermissionFormControl
     {
-        bdump($values);
-        $this->groupFunctionality->updatePermissions($values->id, $values->categories);
-        $this->flashMessage("Oprávnění skupiny úspěšně změněna.", "success");
-        $this->redirect("groupPermission");
-    }
-
-    /**
-     * @return Form
-     * @throws \Exception
-     */
-    public function createComponentSuperGroupPermissionForm(): Form
-    {
-        $form = $this->permissionFormFactory->create();
-        $form->onSuccess[] = [$this, "handleSuperGroupPermissionFormSuccess"];
-        return $form;
-    }
-
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     * @throws \Nette\Application\AbortException
-     * @throws \Exception
-     */
-    public function handleSuperGroupPermissionFormSuccess(Form $form, ArrayHash $values)
-    {
-        $this->superGroupFunctionality->updatePermissions($values->id, $values->categories);
-        $this->flashMessage("Oprávnění superskupiny úspěšně změněna.", "success");
-        $this->redirect("superGroupPermission");
+        $control = $this->permissionFormFactory->create(true);
+        $control->onSuccess[] = function (){
+            $this->informUser('Oprávnění superskupiny úspěšně změněna.', false);
+            $this->redirect('superGroupPermission');
+        };
+        $control->onError[] = function ($e){
+            $this->informUser('Chyba při změně oprávnění superskupiny.', false, 'danger');
+            $this->redirect('superGroupPermission');
+        };
+        return $control;
     }
 }

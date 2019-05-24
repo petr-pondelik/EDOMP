@@ -1,0 +1,24 @@
+{form form}
+
+    <div class="card-header d-flex justify-content-between">
+        <h1 class="mb-0 font-weight-bold card-heading">
+            <i class="fas fa-cog mr-3"></i>{$entityLabel}
+        </h1>
+        <div class="d-inline">
+            {input submit}
+            <a href={plink :Admin:Settings:groupPermission} class="btn btn-secondary btn-sm">Zpět</a>
+        </div>
+    </div>
+
+    <div class="card-body">
+
+        {input id}
+
+        <div class="form-group">
+            {label categories}
+            {input categories}
+        </div>
+
+    </div>
+
+{/form}

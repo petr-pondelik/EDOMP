@@ -20,11 +20,6 @@ use App\Service\ValidationService;
 class SubCategoryFormFactory extends BaseFormFactory
 {
     /**
-     * @var SubCategoryFunctionality
-     */
-    protected $subCategoryFunctionality;
-
-    /**
      * @var CategoryRepository
      */
     protected $categoryRepository;
@@ -41,7 +36,7 @@ class SubCategoryFormFactory extends BaseFormFactory
     )
     {
         parent::__construct($validationService);
-        $this->subCategoryFunctionality = $subCategoryFunctionality;
+        $this->functionality = $subCategoryFunctionality;
         $this->categoryRepository = $categoryRepository;
     }
 
@@ -51,6 +46,6 @@ class SubCategoryFormFactory extends BaseFormFactory
      */
     public function create(bool $edit = false): SubCategoryFormControl
     {
-        return new SubCategoryFormControl($this->validationService, $this->subCategoryFunctionality, $this->categoryRepository, $edit);
+        return new SubCategoryFormControl($this->validationService, $this->functionality, $this->categoryRepository, $edit);
     }
 }

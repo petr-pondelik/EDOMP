@@ -19,7 +19,7 @@ class RoleRepository extends BaseRepository
      * @return mixed
      * @throws \Doctrine\ORM\Query\QueryException
      */
-    public function findWithoutAdmin(bool $teacher = false)
+    public function findAllowed(bool $teacher = false)
     {
         $qb = $this->createQueryBuilder("r")
             ->select("r")

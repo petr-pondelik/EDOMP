@@ -18,7 +18,7 @@ class GroupRepository extends BaseRepository
      * @return mixed
      * @throws \Doctrine\ORM\Query\QueryException
      */
-    public function findWithoutAdmin()
+    public function findAllowed()
     {
         $qb = $this->createQueryBuilder("g")
             ->select("g")

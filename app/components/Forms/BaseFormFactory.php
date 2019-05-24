@@ -8,6 +8,7 @@
 
 namespace App\Components\Forms;
 
+use App\Model\Functionality\BaseFunctionality;
 use App\Service\ValidationService;
 
 /**
@@ -20,6 +21,11 @@ abstract class BaseFormFactory
      * @var ValidationService
      */
     protected $validationService;
+
+    /**
+     * @var BaseFunctionality
+     */
+    protected $functionality;
 
     /**
      * BaseFormFactory constructor.

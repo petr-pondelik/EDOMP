@@ -3,68 +3,64 @@
  * Created by PhpStorm.
  * User: wiedzmin
  * Date: 23.5.19
- * Time: 15:01
+ * Time: 19:53
  */
 
-namespace App\Components\Forms\SubCategoryForm;
+namespace App\Components\Forms\GroupForm;
+
 
 use App\Components\Forms\BaseFormControl;
-use App\Model\Functionality\SubCategoryFunctionality;
-use App\Model\Repository\CategoryRepository;
+use App\Model\Functionality\GroupFunctionality;
+use App\Model\Repository\SuperGroupRepository;
 use App\Service\ValidationService;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class SubCategoryFormControl
- * @package App\Components\Forms\SubCategoryForm
+ * Class GroupFormControl
+ * @package App\Components\Forms\GroupForm
  */
-class SubCategoryFormControl extends BaseFormControl
+class GroupFormControl extends BaseFormControl
 {
     /**
-     * @var SubCategoryFunctionality
+     * @var SuperGroupRepository
      */
-    protected $subCategoryFunctionality;
+    protected $superGroupRepository;
 
     /**
-     * @var CategoryRepository
-     */
-    protected $categoryRepository;
-
-    /**
-     * SubCategoryFormControl constructor.
+     * GroupFormControl constructor.
      * @param ValidationService $validationService
-     * @param SubCategoryFunctionality $subCategoryFunctionality
-     * @param CategoryRepository $categoryRepository
+     * @param GroupFunctionality $groupFunctionality
+     * @param SuperGroupRepository $superGroupRepository
      * @param bool $edit
      */
     public function __construct
     (
         ValidationService $validationService,
-        SubCategoryFunctionality $subCategoryFunctionality, CategoryRepository $categoryRepository,
+        GroupFunctionality $groupFunctionality, SuperGroupRepository $superGroupRepository,
         bool $edit = false
     )
     {
         parent::__construct($validationService, $edit);
-        $this->subCategoryFunctionality = $subCategoryFunctionality;
-        $this->categoryRepository = $categoryRepository;
+        $this->functionality = $groupFunctionality;
+        $this->superGroupRepository = $superGroupRepository;
     }
 
     /**
      * @return Form
-     * @throws \Exception
+     * @throws \Doctrine\ORM\Query\QueryException
      */
     public function createComponentForm(): Form
     {
         $form = parent::createComponentForm();
 
-        $categoryOptions = $this->categoryRepository->findAssoc([], "id");
+        $superGroupOptions = $this->superGroupRepository->findAllowed();
 
         $form->addText("label", "Název")
             ->setHtmlAttribute("class", "form-control");
 
-        $form->addSelect("category", "Kategorie", $categoryOptions)
+        $form->addSelect("super_group_id", "Superskupina", $superGroupOptions)
             ->setHtmlAttribute("class", "form-control");
 
         $form->addSubmit("submit", "Vytvořit")
@@ -79,12 +75,14 @@ class SubCategoryFormControl extends BaseFormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->values;
+
         $validateFields["label"] = $values->label;
+
         $validationErrors = $this->validationService->validate($validateFields);
 
-        if ($validationErrors) {
-            foreach ($validationErrors as $veKey => $errorGroup) {
-                foreach ($errorGroup as $egKey => $error)
+        if($validationErrors){
+            foreach($validationErrors as $veKey => $errorGroup){
+                foreach($errorGroup as $egKey => $error)
                     $form[$veKey]->addError($error);
             }
         }
@@ -98,10 +96,10 @@ class SubCategoryFormControl extends BaseFormControl
      */
     public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
     {
-        try {
-            $this->subCategoryFunctionality->create($values);
+        try{
+            $this->functionality->create($values);
             $this->onSuccess();
-        } catch (\Exception $e) {
+        } catch (\Exception $e){
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
             if ($e instanceof AbortException)
                 return;
@@ -115,10 +113,13 @@ class SubCategoryFormControl extends BaseFormControl
      */
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
-        try {
-            $this->subCategoryFunctionality->update($values->id_hidden, $values);
+        try{
+            $this->functionality->update($values->id_hidden, ArrayHash::from([
+                "label" => $values->label,
+                "super_group_id" => $values->super_group_id
+            ]));
             $this->onSuccess();
-        } catch (\Exception $e) {
+        } catch (\Exception $e){
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
             if ($e instanceof AbortException)
                 return;
@@ -129,8 +130,8 @@ class SubCategoryFormControl extends BaseFormControl
     public function render(): void
     {
         if ($this->edit)
-            $this->template->render(__DIR__ . DIRECTORY_SEPARATOR . "editForm.latte");
+            $this->template->render(__DIR__ . DIRECTORY_SEPARATOR . "edit.latte");
         else
-            $this->template->render(__DIR__ . DIRECTORY_SEPARATOR . "createForm.latte");
+            $this->template->render(__DIR__ . DIRECTORY_SEPARATOR . "create.latte");
     }
 }

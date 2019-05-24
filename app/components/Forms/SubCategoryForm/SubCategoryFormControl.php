@@ -2,59 +2,68 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 8.4.19
- * Time: 17:28
+ * Date: 23.5.19
+ * Time: 15:01
  */
 
-namespace App\Components\Forms\CategoryForm;
+namespace App\Components\Forms\SubCategoryForm;
 
 use App\Components\Forms\BaseFormControl;
-use App\Model\Functionality\CategoryFunctionality;
+use App\Model\Functionality\SubCategoryFunctionality;
+use App\Model\Repository\CategoryRepository;
 use App\Service\ValidationService;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class CategoryFormFactory
- * @package App\Components\Forms
+ * Class SubCategoryFormControl
+ * @package App\Components\Forms\SubCategoryForm
  */
-class CategoryFormControl extends BaseFormControl
+class SubCategoryFormControl extends BaseFormControl
 {
     /**
-     * @var CategoryFunctionality
+     * @var CategoryRepository
      */
-    protected $categoryFunctionality;
+    protected $categoryRepository;
 
     /**
-     * CategoryFormControl constructor.
+     * SubCategoryFormControl constructor.
      * @param ValidationService $validationService
-     * @param CategoryFunctionality $categoryFunctionality
+     * @param SubCategoryFunctionality $subCategoryFunctionality
+     * @param CategoryRepository $categoryRepository
      * @param bool $edit
      */
     public function __construct
     (
         ValidationService $validationService,
-        CategoryFunctionality $categoryFunctionality,
+        SubCategoryFunctionality $subCategoryFunctionality, CategoryRepository $categoryRepository,
         bool $edit = false
     )
     {
         parent::__construct($validationService, $edit);
-        $this->categoryFunctionality = $categoryFunctionality;
+        $this->functionality = $subCategoryFunctionality;
+        $this->categoryRepository = $categoryRepository;
     }
 
     /**
-     * @return \Nette\Application\UI\Form
+     * @return Form
+     * @throws \Exception
      */
     public function createComponentForm(): Form
     {
         $form = parent::createComponentForm();
 
-        $form->addText('label', 'Název')
-            ->setHtmlAttribute('class', 'form-control');
+        $categoryOptions = $this->categoryRepository->findAssoc([], "id");
 
-        $form->addSubmit('submit', 'Vytvořit')
-            ->setHtmlAttribute('class', 'btn btn-primary');
+        $form->addText("label", "Název")
+            ->setHtmlAttribute("class", "form-control");
+
+        $form->addSelect("category_id", "Kategorie", $categoryOptions)
+            ->setHtmlAttribute("class", "form-control");
+
+        $form->addSubmit("submit", "Vytvořit")
+            ->setHtmlAttribute("class", "btn btn-primary");
 
         return $form;
     }
@@ -85,7 +94,7 @@ class CategoryFormControl extends BaseFormControl
     public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
     {
         try {
-            $this->categoryFunctionality->create($values);
+            $this->functionality->create($values);
             $this->onSuccess();
         } catch (\Exception $e) {
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
@@ -102,7 +111,7 @@ class CategoryFormControl extends BaseFormControl
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
         try {
-            $this->categoryFunctionality->update($values->id_hidden, $values);
+            $this->functionality->update($values->id_hidden, $values);
             $this->onSuccess();
         } catch (\Exception $e) {
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
@@ -115,8 +124,8 @@ class CategoryFormControl extends BaseFormControl
     public function render(): void
     {
         if ($this->edit)
-            $this->template->render(__DIR__ . DIRECTORY_SEPARATOR . "editForm.latte");
+            $this->template->render(__DIR__ . DIRECTORY_SEPARATOR . "edit.latte");
         else
-            $this->template->render(__DIR__ . DIRECTORY_SEPARATOR . "createForm.latte");
+            $this->template->render(__DIR__ . DIRECTORY_SEPARATOR . "create.latte");
     }
 }

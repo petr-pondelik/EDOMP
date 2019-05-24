@@ -8,6 +8,7 @@
 
 namespace App\Components\Forms;
 
+use App\Model\Functionality\BaseFunctionality;
 use App\Service\ValidationService;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
@@ -20,6 +21,11 @@ use Nette\Utils\ArrayHash;
 abstract class BaseFormControl extends Control
 {
     /**
+     * @var BaseFunctionality
+     */
+    protected $functionality;
+
+    /**
      * @var ValidationService
      */
     protected $validationService;
@@ -28,6 +34,11 @@ abstract class BaseFormControl extends Control
      * @var bool
      */
     protected $edit;
+
+    /**
+     * @var bool
+     */
+    protected $super;
 
     /**
      * @var array
@@ -43,16 +54,17 @@ abstract class BaseFormControl extends Control
      * BaseFormControl constructor.
      * @param ValidationService $validationService
      * @param bool $edit
+     * @param bool $super
      */
     public function __construct
     (
-        ValidationService $validationService, bool $edit = false
+        ValidationService $validationService, bool $edit = false, bool $super = false
     )
     {
         parent::__construct();
         $this->validationService = $validationService;
         $this->edit = $edit;
-
+        $this->super = $super;
     }
 
     /**

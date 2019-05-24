@@ -1,0 +1,72 @@
+{form form}
+
+    <div class="modal-body">
+
+        <div class="form-group col-12">
+            {label username}
+            {input username}
+            {snippet usernameErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['username']->errors as $error" class="alert alert-danger">
+                        {$error}
+                    </p>
+                </div>
+            {/snippet}
+        </div>
+
+        <div class="form-group col-12">
+            {label password}
+            {input password}
+        </div>
+
+        <div class="form-group col-12">
+            {label password_confirm}
+            {input password_confirm}
+            {snippet passwordConfirmErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['password_confirm']->errors as $error" class="alert alert-danger">
+                        {$error}
+                    </p>
+                </div>
+            {/snippet}
+        </div>
+
+        <div class="form-group col-12">
+            {label role}
+            {input role}
+            {snippet roleErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['role']->errors as $error" class="alert alert-danger">
+                        {$error}
+                    </p>
+                </div>
+            {/snippet}
+        </div>
+
+        <div class="form-group col-12">
+            {label groups}
+            {input groups}
+            {snippet groupsErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['groups']->errors as $error" class="alert alert-danger">
+                        {$error}
+                    </p>
+                </div>
+            {/snippet}
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+        <div class="col-12 text-right">
+            <button n:name="submit" id="submit-btn" class="btn btn-primary mr-1"/>
+            <button type="button" class="btn btn-secondary" id="create-close" data-dismiss="modal">Zavřít
+            </button>
+        </div>
+    </div>
+
+{/form}

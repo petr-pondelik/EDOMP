@@ -81,7 +81,7 @@ class CategoryPresenter extends AdminPresenter
         $form = $this["categoryEditForm"]["form"];
         if(!$form->isSubmitted()){
             $record = $this->categoryRepository->find($id);
-            $this["categoryEditForm"]->template->categoryLabel = $record->getLabel();
+            $this["categoryEditForm"]->template->entityLabel = $record->getLabel();
             $this->template->entityLabel = $record->getLabel();
             $this->setDefaults($form, $record);
         }

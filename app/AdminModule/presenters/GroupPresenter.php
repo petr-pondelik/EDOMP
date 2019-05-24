@@ -10,7 +10,10 @@ namespace App\AdminModule\Presenters;
 
 
 use App\Components\DataGrids\GroupGridFactory;
-use App\Components\Forms\GroupFormFactory;
+use App\Components\Forms\GroupForm\GroupFormControl;
+use App\Components\Forms\GroupForm\GroupFormFactory;
+use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SideBar\SideBarFactory;
 use App\Model\Entity\Group;
 use App\Model\Functionality\GroupFunctionality;
 use App\Model\Repository\GroupRepository;
@@ -60,6 +63,8 @@ class GroupPresenter extends AdminPresenter
     /**
      * GroupPresenter constructor.
      * @param Authorizator $authorizator
+     * @param HeaderBarFactory $headerBarFactory
+     * @param SideBarFactory $sideBarFactory
      * @param GroupRepository $groupRepository
      * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupRepository $superGroupRepository
@@ -70,30 +75,19 @@ class GroupPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
         GroupRepository $groupRepository, GroupFunctionality $groupFunctionality, SuperGroupRepository $superGroupRepository,
         ValidationService $validationService,
         GroupGridFactory $groupGridFactory, GroupFormFactory $groupFormFactory
     )
     {
-        parent::__construct($authorizator);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
         $this->groupRepository = $groupRepository;
         $this->groupFunctionality = $groupFunctionality;
         $this->superGroupRepository = $superGroupRepository;
         $this->validationService = $validationService;
         $this->groupGridFactory = $groupGridFactory;
         $this->groupFormFactory = $groupFormFactory;
-    }
-
-    /**
-     * @throws \Nette\Application\AbortException
-     */
-    public function startup()
-    {
-        parent::startup();
-        /*if(!$this->user->isInRole("admin")){
-            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
-            $this->redirect("Homepage:default");
-        }*/
     }
 
     /**
@@ -107,9 +101,10 @@ class GroupPresenter extends AdminPresenter
             $this->flashMessage("Nedostatečná přístupová práva.", "danger");
             $this->redirect("Homepage:default");
         }
-        $form = $this["groupEditForm"];
+        $form = $this["groupEditForm"]["form"];
         if(!$form->isSubmitted()){
-            $this->template->id = $id;
+            $this->template->entityLabel = $record->getLabel();
+            $this["groupEditForm"]->template->entityLabel = $record->getLabel();
             $this->setDefaults($form, $record);
         }
     }
@@ -209,79 +204,35 @@ class GroupPresenter extends AdminPresenter
     }
 
     /**
-     * @return Form
-     * @throws \Exception
+     * @return GroupFormControl
      */
-    public function createComponentGroupCreateForm(): Form
+    public function createComponentGroupCreateForm(): GroupFormControl
     {
-        $form = $this->groupFormFactory->create();
-        $form->onValidate[] = [$this, "handleFormValidate"];
-        $form->onSuccess[] = [$this, "handleCreateFormSuccess"];
-        return $form;
+        $control = $this->groupFormFactory->create();
+        $control->onSuccess[] = function (){
+            $this["groupGrid"]->reload();
+            $this->informUser('Skupina úspěšně vytvořena.', true);
+        };
+        $control->onError[] = function ($e){
+            $this->informUser('Chyba při vytváření skupiny.', true, 'danger');
+        };
+        return $control;
     }
 
     /**
-     * @param Form $form
-     * @param ArrayHash $values
-     * @throws \Exception
+     * @return GroupFormControl
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    public function createComponentGroupEditForm(): GroupFormControl
     {
-        $this->groupFunctionality->create($values);
-        $this->flashMessage("Skupina úspěšně vytvořena.", "success");
-        $this["groupGrid"]->reload();
-        $this->redrawControl("mainFlashesSnippet");
-    }
-
-    /**
-     * @return Form
-     * @throws \Exception
-     */
-    public function createComponentGroupEditForm(): Form
-    {
-        $form = $this->groupFormFactory->create();
-        $form->addInteger("id", "ID")
-            ->setHtmlAttribute("class", "form-control")
-            ->setDisabled();
-        $form->addHidden("id_hidden");
-        $form->onValidate[] = [$this, "handleFormValidate"];
-        $form->onSuccess[] = [$this, "handleEditFormSuccess"];
-        return $form;
-    }
-
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     * @throws \Nette\Application\AbortException
-     */
-    public function handleEditFormSuccess(Form $form, ArrayHash $values): void
-    {
-        $this->groupFunctionality->update($values->id_hidden, ArrayHash::from([
-            "label" => $values->label,
-            "super_group_id" => $values->super_group_id
-        ]));
-        $this->flashMessage("Skupina úspěšně editována.", "success");
-        $this->redirect("default");
-    }
-
-    /**
-     * @param Form $form
-     */
-    public function handleFormValidate(Form $form)
-    {
-        $values = $form->values;
-
-        $validateFields["label"] = $values->label;
-
-        $validationErrors = $this->validationService->validate($validateFields);
-
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
-                    $form[$veKey]->addError($error);
-            }
-        }
-
-        $this->redrawControl("labelErrorSnippet");
+        $control = $this->groupFormFactory->create(true);
+        $control->onSuccess[] = function (){
+            $this->informUser('Skupina úspěšně editována.');
+            $this->redirect('default');
+        };
+        $control->onError[] = function ($e){
+            $this->informUser('Chyba při editaci skupiny.', false, 'danger');
+            $this->redirect('default');
+        };
+        return $control;
     }
 }

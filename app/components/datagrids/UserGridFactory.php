@@ -62,7 +62,7 @@ class UserGridFactory extends BaseGrid
     {
         $grid = parent::create($container, $name);
 
-        $roleOptions = $this->roleRepository->findWithoutAdmin();
+        $roleOptions = $this->roleRepository->findAllowed();
 
         $grid->setPrimaryKey("id");
 
