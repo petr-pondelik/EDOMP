@@ -59,9 +59,6 @@ class LogoFormControl extends BaseFormControl
         $form->addText("logo_file", "Soubor")
             ->setHtmlAttribute("class", "file-pond-input");
 
-        $form->addSubmit("submit", "Vytvořit")
-            ->setHtmlAttribute("class", "btn btn-primary");
-
         if($this->edit){
             $form->addSelect("edit_logo", "Editovat soubor", [
                 0 => "Ne",

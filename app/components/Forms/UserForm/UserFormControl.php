@@ -82,9 +82,6 @@ class UserFormControl extends BaseFormControl
         $form->addMultiSelect("groups", "Skupiny", $groupOptions)
             ->setHtmlAttribute("class", "form-control selectpicker");
 
-        $form->addSubmit('submit', 'Vytvořit')
-            ->setHtmlAttribute('class', 'btn btn-primary');
-
         if($this->edit){
             $form->addSelect("change_password", "Změnit heslo", [
                 0 => "Ne",

@@ -9,19 +9,17 @@
 namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\ProblemGridFactory;
-use App\Components\Forms\ProblemFormFactory;
+use App\Components\Forms\ProblemFinalForm\ProblemFinalFormControl;
+use App\Components\Forms\ProblemFinalForm\ProblemFinalFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
-use App\Helpers\ConstHelper;
+use App\Exceptions\StringFormatException;
 use App\Model\Entity\ProblemFinal;
 use App\Model\Functionality\ProblemFinalFunctionality;
-use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemFinalRepository;
-use App\Model\Repository\ProblemTypeRepository;
 use App\Service\Authorizator;
 use App\Service\MathService;
 use App\Service\ValidationService;
-use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
@@ -32,16 +30,15 @@ use Ublaboo\DataGrid\DataGrid;
  */
 class ProblemFinalPresenter extends AdminPresenter
 {
-
     /**
      * @var ProblemGridFactory
      */
     protected $problemGridFactory;
 
     /**
-     * @var ProblemFormFactory
+     * @var ProblemFinalFormFactory
      */
-    protected $problemFormFactory;
+    protected $problemFinalFormFactory;
 
     /**
      * @var ProblemFinalRepository
@@ -54,16 +51,6 @@ class ProblemFinalPresenter extends AdminPresenter
     protected $problemFunctionality;
 
     /**
-     * @var ProblemTypeRepository
-     */
-    protected $problemTypeRepository;
-
-    /**
-     * @var ProblemConditionRepository
-     */
-    protected $problemConditionRepository;
-
-    /**
      * @var ValidationService
      */
     protected $validationService;
@@ -74,59 +61,33 @@ class ProblemFinalPresenter extends AdminPresenter
     protected $mathService;
 
     /**
-     * @var ConstHelper
-     */
-    protected $constHelper;
-
-    /**
      * ProblemFinalPresenter constructor.
      * @param Authorizator $authorizator
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param ProblemGridFactory $problemGridFactory
-     * @param ProblemFormFactory $problemFormFactory
+     * @param ProblemFinalFormFactory $problemFinalFormFactory
      * @param ProblemFinalRepository $problemRepository
-     * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemFinalFunctionality $problemFunctionality
-     * @param ProblemConditionRepository $problemConditionRepository
      * @param ValidationService $validationService
      * @param MathService $mathService
-     * @param ConstHelper $constHelper
      */
     public function __construct
     (
         Authorizator $authorizator,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
-        ProblemGridFactory $problemGridFactory, ProblemFormFactory $problemFormFactory,
-        ProblemFinalRepository $problemRepository, ProblemTypeRepository $problemTypeRepository,
-        ProblemFinalFunctionality $problemFunctionality,
-        ProblemConditionRepository $problemConditionRepository,
-        ValidationService $validationService, MathService $mathService,
-        ConstHelper $constHelper
+        ProblemGridFactory $problemGridFactory, ProblemFinalFormFactory $problemFinalFormFactory,
+        ProblemFinalRepository $problemRepository, ProblemFinalFunctionality $problemFunctionality,
+        ValidationService $validationService, MathService $mathService
     )
     {
         parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
         $this->problemGridFactory = $problemGridFactory;
-        $this->problemFormFactory = $problemFormFactory;
+        $this->problemFinalFormFactory = $problemFinalFormFactory;
         $this->problemRepository = $problemRepository;
-        $this->problemTypeRepository = $problemTypeRepository;
         $this->problemFunctionality = $problemFunctionality;
-        $this->problemConditionRepository = $problemConditionRepository;
         $this->validationService = $validationService;
         $this->mathService = $mathService;
-        $this->constHelper = $constHelper;
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function actionDefault()
-    {
-        $types = $this->problemTypeRepository->findAssoc([], "id");
-        $this->template->problemTypes = $types;
-        $this->template->condByProblemTypes = [];
-        foreach ($types as $key => $type)
-            $this->template->condByProblemTypes[$key] = $type->getConditionTypes()->getValues();
     }
 
     /**
@@ -135,11 +96,11 @@ class ProblemFinalPresenter extends AdminPresenter
      */
     public function actionEdit(int $id)
     {
-        $this->actionDefault();
-        $form = $this["problemEditForm"];
+        $form = $this['problemFinalEditForm']['form'];
         if(!$form->isSubmitted()){
             $record = $this->problemRepository->find($id);
-            $this->template->problemId = $id;
+            $this->template->id = $id;
+            $this['problemFinalEditForm']->template->id = $id;
             $this->setDefaults($form, $record);
         }
     }
@@ -148,7 +109,7 @@ class ProblemFinalPresenter extends AdminPresenter
      * @param IComponent $form
      * @param ProblemFinal $record
      */
-    private function setDefaults(IComponent $form, ProblemFinal $record)
+    private function setDefaults(IComponent $form, ProblemFinal $record): void
     {
         $form["id"]->setDefaultValue($record->getId());
         $form["id_hidden"]->setDefaultValue($record->getId());
@@ -156,11 +117,9 @@ class ProblemFinalPresenter extends AdminPresenter
         $form["body"]->setDefaultValue($record->getBody());
         $form["text_after"]->setDefaultValue($record->getTextAfter());
         $form["result"]->setDefaultValue($record->getResult());
-
         $form["type"]->setDefaultValue($record->getProblemType()->getId());
         $form["difficulty"]->setDefaultValue($record->getDifficulty()->getId());
         $form["subcategory"]->setDefaultValue($record->getSubCategory()->getId());
-
         $conditions = $record->getConditions()->getValues();
         foreach($conditions as $condition)
             $form['condition_' . $condition->getProblemConditionType()->getId()]->setValue($condition->getAccessor());
@@ -199,7 +158,6 @@ class ProblemFinalPresenter extends AdminPresenter
         };
 
         $grid->getInlineEdit()->onSetDefaults[] = function($cont, $item) {
-            bdump($item);
             $cont->setDefaults([
                 'text_before' => $item->getTextBefore(),
                 'body' => $item->getBody(),
@@ -216,19 +174,16 @@ class ProblemFinalPresenter extends AdminPresenter
     /**
      * @param int $id
      */
-    public function handleDelete(int $id)
+    public function handleDelete(int $id): void
     {
-        bdump($id);
         try{
             $this->problemFunctionality->delete($id);
         } catch (\Exception $e){
-            $this->flashMessage('Chyba při odstraňování příkladu.', 'danger');
-            $this->redrawControl('mainFlashesSnippet');
+            $this->informUser('Chyba při odstraňování příkladu.', true, 'danger');
             return;
         }
         $this['problemGrid']->reload();
-        $this->flashMessage('Příklad úspěšně odstraněn.', 'success');
-        $this->redrawControl('mainFlashesSnippet');
+        $this->informUser('Příklad úspěšně odstraněn.', true);
     }
 
     /**
@@ -249,12 +204,10 @@ class ProblemFinalPresenter extends AdminPresenter
         try{
             $this->problemFunctionality->update($id, $data, false);
         } catch (\Exception $e){
-            $this->flashMessage('Chyba při editaci příkladu.', 'danger');
-            $this->redrawControl('mainFlashesSnippet');
+            $this->informUser('Chyba při editaci příkladu.', true,'danger');
             return;
         }
-        $this->flashMessage('Příklad úspěšně editován.', 'success');
-        $this->redrawControl('mainFlashesSnippet');
+        $this->informUser('Příklad úspoěšně editován.', true);
     }
 
     /**
@@ -266,17 +219,14 @@ class ProblemFinalPresenter extends AdminPresenter
     {
         try{
             $this->problemFunctionality->update($problemId,
-                ArrayHash::from([
-                    "subcategory" => $subCategoryId
-            ]),false);
+                ArrayHash::from(["subcategory" => $subCategoryId]),false
+            );
         } catch (\Exception $e){
-            $this->flashMessage("Chyba při změně tématu.", "danger");
-            $this->redrawControl("mainFlashesSnippet");
+            $this->informUser('Chyba při změně tématu', true,'danger');
             return;
         }
         $this["problemGrid"]->reload();
-        $this->flashMessage("Téma úspěšně změněno.", "success");
-        $this->redrawControl("mainFlashesSnippet");
+        $this->informUser('Téma úspěšně změněno.', true);
     }
 
     /**
@@ -286,18 +236,15 @@ class ProblemFinalPresenter extends AdminPresenter
     public function handleDifficultyUpdate(int $problemId, int $difficultyId)
     {
         try{
-        $this->problemFunctionality->update($problemId,
-            ArrayHash::from([
-                'difficulty' => $difficultyId
-            ]), false);
+            $this->problemFunctionality->update($problemId,
+                ArrayHash::from(['difficulty' => $difficultyId]), false
+            );
         } catch (\Exception $e){
-            $this->flashMessage("Chyba při změně obtížnosti.", "danger");
-            $this->redrawControl("mainFlashesSnippet");
+            $this->informUser('Chyba při změně obtížnosti.', true,'danger');
             return;
         }
         $this['problemGrid']->reload();
-        $this->flashMessage('Obtížnost úspěšně změněna.', 'success');
-        $this->redrawControl('mainFlashesSnippet');
+        $this->informUser('Obtížnost úspěšně změněna.', true);
     }
 
     /**
@@ -306,115 +253,48 @@ class ProblemFinalPresenter extends AdminPresenter
      */
     public function handleGetResult(int $id)
     {
-        bdump($id);
         $problem = $this->problemRepository->find($id);
-        bdump($problem);
-
         $result = null;
-
         try{
             $result = $this->mathService->evaluate[(int) $problem->getProblemType()->getId()]($problem);
         } catch (StringFormatException $e){
             $this->flashMessage('Při výpočtu výsledku nastala chyba.', 'danger');
         }
-
-        bdump($result);
-
         $this->problemFunctionality->storeResult($id, $result);
-
-        $this->flashMessage('Výsledek úspěšně získán.', 'success');
-
         $this["problemGrid"]->reload();
-        $this->redrawControl('flashesSnippet');
+        $this->informUser('Výsledek úspěšně získán.', true,'success');
     }
 
     /**
-     * @return Form
-     * @throws \Exception
+     * @return ProblemFinalFormControl
      */
-    public function createComponentProblemCreateForm(): Form
+    public function createComponentProblemFinalCreateForm(): ProblemFinalFormControl
     {
-        $form = $this->problemFormFactory->create();
-        $form->addTextArea('result', 'Výsledek')
-            ->setHtmlAttribute('class', 'form-control');
-        $form->onValidate[] = [$this, 'handleFormValidate'];
-        $form->onSuccess[] = [$this, 'handleCreateFormSuccess'];
-        return $form;
+        $control = $this->problemFinalFormFactory->create();
+        $control->onSuccess[] = function (){
+            $this['problemGrid']->reload();
+            $this->informUser('Příklad úspěšně vytvořen.', true);
+        };
+        $control->onError[] = function ($e){
+            $this->informUser('Chyba při vytváření příkladu.', true, 'danger');
+        };
+        return $control;
     }
 
     /**
-     * @param Form $form
-     * @param ArrayHash $values
+     * @return ProblemFinalFormControl
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values)
+    public function createComponentProblemFinalEditForm(): ProblemFinalFormControl
     {
-        try{
-            $this->problemFunctionality->create($values);
-        } catch (\Exception $e){
-            $this->flashMessage('Chyba při vytváření příkladu..', 'danger');
-            $this->redrawControl('mainFlashesSnippet');
-            return;
-        }
-        $this['problemGrid']->reload();
-        $this->flashMessage('Příklad úspěšně vytvořen.', 'success');
-        $this->redrawControl('mainFlashesSnippet');
+        $control= $this->problemFinalFormFactory->create(true);
+        $control->onSuccess[] = function (){
+            $this->informUser('Příklad úspěšně vytvořen.', true);
+            $this->redirect('default');
+        };
+        $control->onError[] = function ($e){
+            $this->informUser('Chyba při vytváření příkladu.', true, 'danger');
+            $this->redirect('default');
+        };
+        return $control;
     }
-
-    /**
-     * @return Form
-     * @throws \Exception
-     */
-    public function createComponentProblemEditForm(): Form
-    {
-        $form = $this->problemFormFactory->create();
-        $form->addText('id', 'ID')
-            ->setDisabled()
-            ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlId('problem-id');
-        $form->addHidden('id_hidden');
-        $form->addTextArea('result', 'Výsledek')
-            ->setHtmlAttribute('class', 'form-control');
-        $form->onValidate[] = [$this, 'handleFormValidate'];
-        $form->onSuccess[] = [$this, "handleEditFormSuccess"];
-        return $form;
-    }
-
-    public function handleEditFormSuccess(Form $form, ArrayHash $values)
-    {
-        try{
-            $this->problemFunctionality->update($values->id_hidden, $values);
-        } catch (\Exception $e){
-            $this->flashMessage('Chyba při editaci příkladu.', 'danger');
-            $this->redirect("default");
-        }
-        $this->flashMessage('Příklad úspěšně editován.', 'success');
-        $this->redirect('default');
-    }
-
-    /**
-     * @param Form $form
-     */
-    public function handleFormValidate(Form $form)
-    {
-        $values = $form->getValues();
-
-        //First validate problem structure
-        $validateFields["body"] = ArrayHash::from([
-            "body" => $values->body,
-            "bodyType" => $this->constHelper::BODY_FINAL
-        ]);
-        $validationErrors = $this->validationService->validate($validateFields);
-
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
-                    $form[$veKey]->addError($error);
-                $this->redrawControl($veKey.'ErrorSnippet');
-            }
-        }
-
-        $this->redrawControl("flashesSnippet");
-        $this->redrawControl('bodyErrorSnippet');
-    }
-
 }

@@ -27,7 +27,7 @@
 
         <div id="ublaboo-datagrid" class="table-responsive">
 
-            {snippet mainFlashesSnippet}
+            {snippet flashesSnippet}
                 <div class="mt-3">
                     <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type}">{$flash->message}</div>
                 </div>
@@ -54,88 +54,7 @@
                     </button>
                 </div>
 
-                {* ProblemCreateForm component *}
-                {form problemCreateForm}
-                    <div class="modal-body">
-                        <div n:foreach="$flashes as $flash" n:class="flash, $flash->type">{$flash->message}</div>
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                {label type}
-                                {input type}
-                            </div>
-                        </div>
-                        <div class="form-group col-12">
-                            {label subcategory}
-                            {input subcategory}
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                {label text_before}
-                                {input text_before}
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                {label body}
-                                {input body}
-                                {snippet bodyErrorSnippet}
-                                    {var $form = $control['problemCreateForm']}
-                                    <div n:if="$form->hasErrors()" class="mt-2">
-                                        <p n:foreach="$form['body']->errors as $error" class="alert alert-danger">
-                                            {$error}
-                                        </p>
-                                    </div>
-                                {/snippet}
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                {label text_after}
-                                {input text_after}
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                {label result}
-                                {input result}
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                {label difficulty}
-                                {input difficulty}
-                            </div>
-                        </div>
-
-                        {foreach $problemTypes as $typeKey => $type}
-
-                            {dump $type}
-
-                            <div class="form-group type-wrapper" id="type-wrapper-{$typeKey}">
-
-                                {foreach $condByProblemTypes[$typeKey] as $condKey => $cond}
-                                    {dump $cond}
-                                    {var $id = $cond->getId()}
-                                    <div class="form-group cond-wrapper" id="cond-wrapper-{$id}">
-                                        <div class="col-12">
-                                            {label condition_$id}
-                                            {input condition_$id, data-key => $id}
-                                        </div>
-                                    </div>
-                                {/foreach}
-
-                            </div>
-
-                        {/foreach}
-
-                    </div>
-                    <div class="modal-footer">
-                        <div class="col-12 text-right">
-                            <button n:name="submit" class="btn btn-primary mr-1"/>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Zavřít</button>
-                        </div>
-                    </div>
-                {/form}
+                {control problemFinalCreateForm}
 
             </div>
         </div>

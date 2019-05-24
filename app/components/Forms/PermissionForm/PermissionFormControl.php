@@ -72,8 +72,7 @@ class PermissionFormControl extends BaseFormControl
         $form->addMultiSelect("categories", "Kategorie", $categoryOptions)
             ->setHtmlAttribute("class", "form-control selectpicker");
 
-        $form->addSubmit("submit", "Uložit")
-            ->setHtmlAttribute("class", "btn btn-primary btn-sm");
+        $form['submit']->caption = 'Uložit';
 
         if ($this->super)
             $form->onSuccess[] = [$this, 'handleSuperGroupFormSuccess'];

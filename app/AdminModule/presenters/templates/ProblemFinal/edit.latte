@@ -7,7 +7,7 @@
 {/block}
 
 {block headingSecond}
-    Příklad {$problemId}
+    Příklad {$id}
 {/block}
 
 {block headingSecondLink}
@@ -17,90 +17,5 @@
 {/block}
 
 {block content}
-
-    {form problemEditForm}
-
-        <div class="card-header d-flex justify-content-between">
-            <h1 class="mb-0 font-weight-bold card-heading">
-                {include icon}{include headingSecond}
-            </h1>
-            <div class="d-inline">
-                <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
-                <a n:href="default" class="btn btn-secondary btn-sm">Zpět</a>
-            </div>
-        </div>
-
-        <div class="card-body">
-
-            <div class="form-group">
-                {label id}
-                {input id}
-            </div>
-
-            <div class="form-group">
-                {label type}
-                {input type "data-final" => "true"}
-            </div>
-
-            <div class="form-group">
-                {label subcategory}
-                {input subcategory}
-            </div>
-
-            <div class="form-group">
-                {label text_before}
-                {input text_before}
-            </div>
-
-            <div class="form-group">
-                {label body}
-                {input body, "data-final" => "true"}
-                {snippet bodyErrorSnippet}
-                    {var $form = $control['problemCreateForm']}
-                    <div n:if="$form->hasErrors()" class="mt-2">
-                        <p n:foreach="$form['structure']->errors as $error" class="alert alert-danger">
-                            {$error}
-                        </p>
-                    </div>
-                {/snippet}
-            </div>
-
-            <div class="form-group">
-                {label text_after}
-                {input text_after}
-            </div>
-
-            <div class="form-group">
-                {label result}
-                {input result}
-            </div>
-
-            <div class="form-group">
-                {label difficulty}
-                {input difficulty}
-            </div>
-
-            {foreach $problemTypes as $typeKey => $type}
-
-                {dump $type}
-
-                <div class="form-group type-wrapper" id="type-wrapper-{$typeKey}">
-
-                    {foreach $condByProblemTypes[$typeKey] as $condKey => $cond}
-                        {dump $cond}
-                        {var $id = $cond->getId()}
-                        <div class="form-group cond-wrapper" id="cond-wrapper-{$id}">
-                            {label condition_$id}
-                            {input condition_$id, "data-key" => $id, "data-static" => "true"}
-                        </div>
-                    {/foreach}
-
-                </div>
-
-            {/foreach}
-
-        </div>
-
-    {/form}
-
+    {control problemFinalEditForm}
 {/block}

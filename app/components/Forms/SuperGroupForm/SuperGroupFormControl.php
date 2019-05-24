@@ -49,9 +49,6 @@ class SuperGroupFormControl extends BaseFormControl
         $form->addText("label", "Název")
                     ->setHtmlAttribute("class", "form-control");
 
-        $form->addSubmit("submit", "Vytvořit")
-            ->setHtmlAttribute("class", "btn btn-primary");
-
         return $form;
     }
 

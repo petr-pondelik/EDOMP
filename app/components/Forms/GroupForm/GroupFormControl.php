@@ -63,9 +63,6 @@ class GroupFormControl extends BaseFormControl
         $form->addSelect("super_group_id", "Superskupina", $superGroupOptions)
             ->setHtmlAttribute("class", "form-control");
 
-        $form->addSubmit("submit", "Vytvořit")
-            ->setHtmlAttribute("class", "btn btn-primary");
-
         return $form;
     }
 

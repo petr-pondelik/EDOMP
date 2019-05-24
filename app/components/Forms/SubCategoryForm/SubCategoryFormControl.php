@@ -62,9 +62,6 @@ class SubCategoryFormControl extends BaseFormControl
         $form->addSelect("category_id", "Kategorie", $categoryOptions)
             ->setHtmlAttribute("class", "form-control");
 
-        $form->addSubmit("submit", "Vytvořit")
-            ->setHtmlAttribute("class", "btn btn-primary");
-
         return $form;
     }
 

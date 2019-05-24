@@ -93,6 +93,9 @@ abstract class BaseFormControl extends Control
             $form->addHidden("id_hidden");
         }
 
+        $form->addSubmit("submit", "Vytvořit")
+            ->setHtmlAttribute("class", "btn btn-primary btn-sm");
+
         $form->onValidate[] = [$this, 'handleFormValidate'];
 
         if ($this->edit)
