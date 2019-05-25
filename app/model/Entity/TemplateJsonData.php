@@ -51,7 +51,7 @@ class TemplateJsonData extends BaseEntity
     /**
      * @return string
      */
-    public function getJsonData(): string
+    public function getJsonData()
     {
         return $this->jsonData;
     }

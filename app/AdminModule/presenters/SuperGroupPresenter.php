@@ -9,11 +9,13 @@
 namespace App\AdminModule\Presenters;
 
 
+use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\SuperGroupGridFactory;
 use App\Components\Forms\SuperGroupForm\SuperGroupFormControl;
 use App\Components\Forms\SuperGroupForm\SuperGroupFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
+use App\Helpers\FlashesTranslator;
 use App\Model\Entity\SuperGroup;
 use App\Model\Functionality\SuperGroupFunctionality;
 use App\Model\Repository\SuperGroupRepository;
@@ -57,6 +59,7 @@ class SuperGroupPresenter extends AdminPresenter
      * @param Authorizator $authorizator
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      * @param SuperGroupRepository $superGroupRepository
      * @param SuperGroupFunctionality $superGroupFunctionality
      * @param SuperGroupGridFactory $superGroupGridFactory
@@ -66,13 +69,13 @@ class SuperGroupPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         SuperGroupRepository $superGroupRepository, SuperGroupFunctionality $superGroupFunctionality,
         SuperGroupGridFactory $superGroupGridFactory, SuperGroupFormFactory $superGroupFormFactory,
         ValidationService $validationService
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->superGroupRepository = $superGroupRepository;
         $this->superGroupFunctionality = $superGroupFunctionality;
         $this->superGroupGridFactory = $superGroupGridFactory;
@@ -150,10 +153,13 @@ class SuperGroupPresenter extends AdminPresenter
      */
     public function handleDelete(int $id): void
     {
-        $this->superGroupFunctionality->delete($id);
+        try{
+            $this->superGroupFunctionality->delete($id);
+        } catch (\Exception $e){
+            $this->informUser(new UserInformArgs('delete', true,'error', $e));
+        }
         $this["superGroupGrid"]->reload();
-        $this->flashMessage("Superskupina úspěšně odstraněna.", "success");
-        $this->redrawControl("mainFlashesSnippet");
+        $this->informUser(new UserInformArgs('delete', true));
     }
 
     /**
@@ -172,9 +178,12 @@ class SuperGroupPresenter extends AdminPresenter
      */
     public function handleInlineUpdate(int $id, $row): void
     {
-        $this->superGroupFunctionality->update($id, $row);
-        $this->flashMessage("Superskupina úspěšně editována.", "success");
-        $this->redrawControl("mainFlashesSnippet");
+        try{
+            $this->superGroupFunctionality->update($id, $row);
+        } catch (\Exception $e){
+            $this->informUser(new UserInformArgs('edit', true,'error', $e));
+        }
+        $this->informUser(new UserInformArgs('edit', true));
     }
 
     /**
@@ -185,10 +194,10 @@ class SuperGroupPresenter extends AdminPresenter
         $control = $this->superGroupFormFactory->create();
         $control->onSuccess[] = function (){
             $this['superGroupGrid']->reload();
-            $this->informUser('Superskupina úspěšně vytvořena.', true);
+            $this->informUser(new UserInformArgs('create', true));
         };
         $control->onError[] = function ($e){
-            $this->informUser('Chyba při vytváření superskupiny.', true, 'danger');
+            $this->informUser(new UserInformArgs('create', true,'error', $e));
         };
         return $control;
     }
@@ -200,11 +209,11 @@ class SuperGroupPresenter extends AdminPresenter
     {
         $control = $this->superGroupFormFactory->create(true);
         $control->onSuccess[] = function (){
-            $this->informUser('Superskupina úspěšně editována.');
+            $this->informUser(new UserInformArgs('edit'));
             $this->redirect("default");
         };
         $control->onError[] = function ($e){
-            $this->informUser('Chyba při editaci superskupiny.', false, 'danger');
+            $this->informUser(new UserInformArgs('edit', false, 'error', $e));
             $this->redirect("default");
         };
         return $control;

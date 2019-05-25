@@ -76,14 +76,12 @@ trait ProblemTemplateFunctionalityTrait
         if(isset($data->subcategory))
             $templ->setSubCategory($this->subCategoryRepository->find($data->subcategory));
 
-
-
         if(!$fromDataGrid){
             if(!$templateId)
                 $templateId = $this->repository->getSequenceVal();
             $templJsonData = null;
             if($jsonDataObj = $this->templateJsonDataRepository->findOneBy([ "templateId" => $templateId]))
-                $templJsonData = $jsonDataObj->getJsonData();
+                bdump($templJsonData = $jsonDataObj->getJsonData());
             $templ->setMatches($templJsonData);
             $templ = $this->attachConditions($templ, $data);
         }

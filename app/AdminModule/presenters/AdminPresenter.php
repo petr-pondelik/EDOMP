@@ -11,6 +11,7 @@ namespace App\AdminModule\Presenters;
 
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
+use App\Helpers\FlashesTranslator;
 use App\Presenters\BasePresenter;
 use App\Service\Authorizator;
 
@@ -30,14 +31,15 @@ abstract class AdminPresenter extends BasePresenter
      * @param Authorizator $authorizator
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      */
     public function __construct
     (
         Authorizator $authorizator,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator
     )
     {
-        parent::__construct($headerBarFactory, $sideBarFactory);
+        parent::__construct($headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->authorizator = $authorizator;
     }
 

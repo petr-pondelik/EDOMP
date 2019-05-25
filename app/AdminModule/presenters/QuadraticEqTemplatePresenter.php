@@ -9,15 +9,15 @@
 namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\TemplateGridFactory;
-use App\Components\Forms\TemplateFormFactory;
+use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
+use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SideBar\SideBarFactory;
 use App\Helpers\ConstHelper;
+use App\Helpers\FlashesTranslator;
 use App\Model\Entity\ProblemTemplate;
 use App\Model\Functionality\QuadraticEqTemplFunctionality;
-use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\QuadraticEqTemplRepository;
 use App\Service\Authorizator;
-use App\Service\MathService;
-use App\Service\ValidationService;
 use Nette\ComponentModel\IComponent;
 
 /**
@@ -34,31 +34,29 @@ class QuadraticEqTemplatePresenter extends ProblemTemplatePresenter
     /**
      * QuadraticEqTemplatePresenter constructor.
      * @param Authorizator $authorizator
+     * @param HeaderBarFactory $headerBarFactory
+     * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      * @param QuadraticEqTemplRepository $repository
      * @param QuadraticEqTemplFunctionality $functionality
-     * @param ProblemTypeRepository $problemTypeRepository
      * @param TemplateGridFactory $templateGridFactory
-     * @param TemplateFormFactory $templateFormFactory
-     * @param ValidationService $validationService
-     * @param MathService $mathService
+     * @param ProblemTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
      */
     public function __construct
     (
         Authorizator $authorizator,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         QuadraticEqTemplRepository $repository, QuadraticEqTemplFunctionality $functionality,
-        ProblemTypeRepository $problemTypeRepository,
-        TemplateGridFactory $templateGridFactory, TemplateFormFactory $templateFormFactory,
-        ValidationService $validationService, MathService $mathService,
+        TemplateGridFactory $templateGridFactory, ProblemTemplateFormFactory $problemTemplateFormFactory,
         ConstHelper $constHelper
     )
     {
         parent::__construct
         (
             $authorizator,
-            $problemTypeRepository,
-            $templateGridFactory, $templateFormFactory,
-            $validationService, $mathService,
+            $headerBarFactory, $sideBarFactory, $flashesTranslator,
+            $templateGridFactory, $problemTemplateFormFactory,
             $constHelper
         );
         $this->repository = $repository;

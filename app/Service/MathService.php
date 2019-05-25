@@ -150,7 +150,7 @@ class MathService
         $bExp = $this->stringsHelper::trimOperators($bExp);
         bdump($bExp);
         if($bExp == "")
-            return "1";
+            return "0";
         return $bExp;
     }
 
@@ -163,10 +163,13 @@ class MathService
     public function getDiscriminantC(string $expression, string $variable)
     {
         $cExp = Strings::after($expression, $variable, 2);
-        if($cExp == "")
-            return "0";
+        if($cExp == ''){
+            $cExp = Strings::after($expression, $variable . '^2', 1);
+            if($cExp === '')
+                return "0";
+        }
         $cExp = $this->newtonApiClient->simplify($cExp);
-        bdump($cExp);
+        bdump('C EXPR:' . $cExp);
         return $this->stringsHelper::wrap($cExp);
     }
 
@@ -181,6 +184,8 @@ class MathService
     {
         if(!$standardized)
             $expression = $this->standardizeEquation($expression);
+        bdump("CHECK");
+        bdump($expression);
         return $this->getDiscriminantB($expression, $variable) . '^2' . ' - 4 * ' . $this->getDiscriminantA($expression, $variable) . ' * ' . $this->getDiscriminantC($expression, $variable);
     }
 

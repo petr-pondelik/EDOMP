@@ -532,6 +532,8 @@ class ValidationService
         $parametrized = $this->stringsHelper::getParametrized($body);
         $discriminantExp = $this->mathService->getDiscriminantExpression($parametrized->expression, $variable);
 
+        bdump($discriminantExp);
+
         $matches = $this->conditionMatchingService->findConditionsMatches([
             $this->constHelper::DISCRIMINANT => [
                 $accessor => [

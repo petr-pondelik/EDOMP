@@ -54,14 +54,11 @@ class Authenticator implements IAuthenticator
         $user = $this->userRepository->findOneBy([
             "username" => $username
         ]);
-        bdump($user);
 
         if(!$user || !Passwords::verify($password, $user->getPassword()))
             throw new AuthenticationException('Zadáno neplatné uživatelské jméno nebo heslo.');
 
         $role = $user->getRole();
-
-        bdump($role);
 
         if(!strcmp("student", $role->getKey()))
             $categories = $user->getCategoriesId();

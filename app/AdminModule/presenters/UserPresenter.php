@@ -8,11 +8,13 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\UserGridFactory;
 use App\Components\Forms\UserForm\UserFormControl;
 use App\Components\Forms\UserForm\UserFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
+use App\Helpers\FlashesTranslator;
 use App\Model\Entity\User;
 use App\Model\Functionality\UserFunctionality;
 use App\Model\Repository\UserRepository;
@@ -57,6 +59,7 @@ class UserPresenter extends AdminPresenter
      * @param Authorizator $authorizator
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      * @param UserRepository $userRepository
      * @param UserFunctionality $userFunctionality
      * @param ValidationService $validationService
@@ -66,13 +69,13 @@ class UserPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         UserRepository $userRepository, UserFunctionality $userFunctionality,
         ValidationService $validationService,
         UserGridFactory $userGridFactory, UserFormFactory $userFormFactory
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->userRepository = $userRepository;
         $this->userFunctionality = $userFunctionality;
         $this->validationService = $validationService;
@@ -138,9 +141,13 @@ class UserPresenter extends AdminPresenter
      */
     public function handleDelete(int $id)
     {
-        $this->userFunctionality->delete($id);
+        try{
+            $this->userFunctionality->delete($id);
+        } catch (\Exception $e){
+            $this->informUser(new UserInformArgs('delete', true, 'error', $e));
+        }
         $this["userGrid"]->reload();
-        $this->informUser('Uživatel úspěšně odstraněn.', true, 'success');
+        $this->informUser(new UserInformArgs('delete', true));
     }
 
     /**
@@ -160,10 +167,10 @@ class UserPresenter extends AdminPresenter
         $control = $this->userFormFactory->create();
         $control->onSuccess[] = function (){
             $this["userGrid"]->reload();
-            $this->informUser('Uživatel úspěšně vytvořen.', true);
+            $this->informUser(new UserInformArgs('create', true));
         };
         $control->onError[] = function ($e){
-            $this->informUser('Chyba při vytváření uživatele.', true, 'danger');
+            $this->informUser(new UserInformArgs('create', true, 'error', $e));
         };
         return $control;
     }
@@ -176,11 +183,11 @@ class UserPresenter extends AdminPresenter
         $control = $this->userFormFactory->create(true);
         $control->onSuccess[] = function (){
             $this["userGrid"]->reload();
-            $this->informUser('Uživatel úspěšně editován.');
+            $this->informUser(new UserInformArgs('edit'));
             $this->redirect('default');
         };
         $control->onError[] = function ($e){
-            $this->informUser('Chyba při editaci uživatele.', false, 'danger');
+            $this->informUser(new UserInformArgs('edit', false, 'error', $e));
             $this->redirect('default');
         };
         return $control;

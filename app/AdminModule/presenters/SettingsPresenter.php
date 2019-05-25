@@ -8,12 +8,14 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\GroupGridFactory;
 use App\Components\DataGrids\SuperGroupGridFactory;
 use App\Components\Forms\PermissionForm\PermissionFormControl;
 use App\Components\Forms\PermissionForm\PermissionFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
+use App\Helpers\FlashesTranslator;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\SuperGroupRepository;
 use App\Service\Authorizator;
@@ -55,6 +57,7 @@ class SettingsPresenter extends AdminPresenter
      * @param Authorizator $authorizator
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      * @param GroupRepository $groupRepository
      * @param SuperGroupRepository $superGroupRepository
      * @param GroupGridFactory $groupGridFactory
@@ -64,12 +67,12 @@ class SettingsPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         GroupRepository $groupRepository, SuperGroupRepository $superGroupRepository,
         GroupGridFactory $groupGridFactory, SuperGroupGridFactory $superGroupGridFactory, PermissionFormFactory $permissionFormFactory
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->groupRepository = $groupRepository;
         $this->superGroupRepository = $superGroupRepository;
         $this->groupGridFactory = $groupGridFactory;
@@ -163,11 +166,11 @@ class SettingsPresenter extends AdminPresenter
     {
         $control = $this->permissionFormFactory->create();
         $control->onSuccess[] = function (){
-            $this->informUser('Oprávnění skupiny úspěšně změněna.', false);
+            $this->informUser(new UserInformArgs('groupPermissions',false));
             $this->redirect('groupPermission');
         };
         $control->onError[] = function ($e){
-            $this->informUser('Chyba při změně oprávnění skupiny.', false, 'danger');
+            $this->informUser(new UserInformArgs('groupPermissions', false, 'error', $e));
             $this->redirect('groupPermission');
         };
         return $control;
@@ -180,11 +183,11 @@ class SettingsPresenter extends AdminPresenter
     {
         $control = $this->permissionFormFactory->create(true);
         $control->onSuccess[] = function (){
-            $this->informUser('Oprávnění superskupiny úspěšně změněna.', false);
+            $this->informUser(new UserInformArgs('superGroupPermissions', false));
             $this->redirect('superGroupPermission');
         };
         $control->onError[] = function ($e){
-            $this->informUser('Chyba při změně oprávnění superskupiny.', false, 'danger');
+            $this->informUser(new UserInformArgs('superGroupPermissions', false, 'error', $e));
             $this->redirect('superGroupPermission');
         };
         return $control;

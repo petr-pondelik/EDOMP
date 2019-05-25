@@ -117,7 +117,7 @@ class LogoFormControl extends BaseFormControl
                 //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
                 if ($e instanceof AbortException)
                     return;
-                $this->onError();
+                $this->onError($e);
             }
         }
     }
@@ -140,7 +140,7 @@ class LogoFormControl extends BaseFormControl
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
             if ($e instanceof AbortException)
                 return;
-            $this->onError();
+            $this->onError($e);
         }
     }
 

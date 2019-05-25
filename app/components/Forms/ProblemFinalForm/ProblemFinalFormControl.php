@@ -12,7 +12,6 @@ namespace App\Components\Forms\ProblemFinalForm;
 use App\Components\Forms\BaseFormControl;
 use App\Helpers\ConstHelper;
 use App\Model\Functionality\ProblemFinalFunctionality;
-use App\Model\Functionality\ProblemFunctionality;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemTypeRepository;
@@ -207,15 +206,16 @@ class ProblemFinalFormControl extends BaseFormControl
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function render(): void
     {
         $types = $this->problemTypeRepository->findAssoc([], 'id');
         $this->template->problemTypes = $types;
         $this->template->condByProblemTypes = [];
-        foreach ($types as $key => $type){
+        foreach ($types as $key => $type)
             $this->template->condByProblemTypes[$key] = $type->getConditionTypes()->getValues();
-            $this->template->condByProblemTypes[$key] = $type->getConditionTypes()->getValues();
-        }
         if ($this->edit)
             $this->template->render(__DIR__ . DIRECTORY_SEPARATOR . "edit.latte");
         else

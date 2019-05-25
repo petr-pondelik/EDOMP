@@ -8,12 +8,13 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\ProblemGridFactory;
 use App\Components\Forms\ProblemFinalForm\ProblemFinalFormControl;
 use App\Components\Forms\ProblemFinalForm\ProblemFinalFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
-use App\Exceptions\StringFormatException;
+use App\Helpers\FlashesTranslator;
 use App\Model\Entity\ProblemFinal;
 use App\Model\Functionality\ProblemFinalFunctionality;
 use App\Model\Repository\ProblemFinalRepository;
@@ -65,6 +66,7 @@ class ProblemFinalPresenter extends AdminPresenter
      * @param Authorizator $authorizator
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      * @param ProblemGridFactory $problemGridFactory
      * @param ProblemFinalFormFactory $problemFinalFormFactory
      * @param ProblemFinalRepository $problemRepository
@@ -75,13 +77,13 @@ class ProblemFinalPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ProblemGridFactory $problemGridFactory, ProblemFinalFormFactory $problemFinalFormFactory,
         ProblemFinalRepository $problemRepository, ProblemFinalFunctionality $problemFunctionality,
         ValidationService $validationService, MathService $mathService
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->problemGridFactory = $problemGridFactory;
         $this->problemFinalFormFactory = $problemFinalFormFactory;
         $this->problemRepository = $problemRepository;
@@ -179,11 +181,11 @@ class ProblemFinalPresenter extends AdminPresenter
         try{
             $this->problemFunctionality->delete($id);
         } catch (\Exception $e){
-            $this->informUser('Chyba při odstraňování příkladu.', true, 'danger');
+            $this->informUser(new UserInformArgs('delete', true, 'error', $e));
             return;
         }
         $this['problemGrid']->reload();
-        $this->informUser('Příklad úspěšně odstraněn.', true);
+        $this->informUser(new UserInformArgs('delete', true));
     }
 
     /**
@@ -204,10 +206,9 @@ class ProblemFinalPresenter extends AdminPresenter
         try{
             $this->problemFunctionality->update($id, $data, false);
         } catch (\Exception $e){
-            $this->informUser('Chyba při editaci příkladu.', true,'danger');
-            return;
+            $this->informUser(new UserInformArgs('edit', true, 'error', $e));
         }
-        $this->informUser('Příklad úspoěšně editován.', true);
+        $this->informUser(new UserInformArgs('edit', true));
     }
 
     /**
@@ -222,11 +223,11 @@ class ProblemFinalPresenter extends AdminPresenter
                 ArrayHash::from(["subcategory" => $subCategoryId]),false
             );
         } catch (\Exception $e){
-            $this->informUser('Chyba při změně tématu', true,'danger');
+            $this->informUser(new UserInformArgs('subCategory', true, 'error', $e));
             return;
         }
         $this["problemGrid"]->reload();
-        $this->informUser('Téma úspěšně změněno.', true);
+        $this->informUser(new UserInformArgs('subCategory', true));
     }
 
     /**
@@ -240,11 +241,11 @@ class ProblemFinalPresenter extends AdminPresenter
                 ArrayHash::from(['difficulty' => $difficultyId]), false
             );
         } catch (\Exception $e){
-            $this->informUser('Chyba při změně obtížnosti.', true,'danger');
+            $this->informUser(new UserInformArgs('difficulty', true, 'error', $e));
             return;
         }
         $this['problemGrid']->reload();
-        $this->informUser('Obtížnost úspěšně změněna.', true);
+        $this->informUser(new UserInformArgs('difficulty', true));
     }
 
     /**
@@ -257,12 +258,12 @@ class ProblemFinalPresenter extends AdminPresenter
         $result = null;
         try{
             $result = $this->mathService->evaluate[(int) $problem->getProblemType()->getId()]($problem);
-        } catch (StringFormatException $e){
-            $this->flashMessage('Při výpočtu výsledku nastala chyba.', 'danger');
+        } catch (\Exception $e){
+            $this->informUser(new UserInformArgs('getRes', true, 'error', $e));
         }
         $this->problemFunctionality->storeResult($id, $result);
         $this["problemGrid"]->reload();
-        $this->informUser('Výsledek úspěšně získán.', true,'success');
+        $this->informUser(new UserInformArgs('getRes', true));
     }
 
     /**
@@ -273,10 +274,10 @@ class ProblemFinalPresenter extends AdminPresenter
         $control = $this->problemFinalFormFactory->create();
         $control->onSuccess[] = function (){
             $this['problemGrid']->reload();
-            $this->informUser('Příklad úspěšně vytvořen.', true);
+            $this->informUser(new UserInformArgs('create'));
         };
         $control->onError[] = function ($e){
-            $this->informUser('Chyba při vytváření příkladu.', true, 'danger');
+            $this->informUser(new UserInformArgs('create', true, 'error', $e));
         };
         return $control;
     }
@@ -288,11 +289,11 @@ class ProblemFinalPresenter extends AdminPresenter
     {
         $control= $this->problemFinalFormFactory->create(true);
         $control->onSuccess[] = function (){
-            $this->informUser('Příklad úspěšně vytvořen.', true);
+            $this->informUser(new UserInformArgs('edit'));
             $this->redirect('default');
         };
         $control->onError[] = function ($e){
-            $this->informUser('Chyba při vytváření příkladu.', true, 'danger');
+            $this->informUser(new UserInformArgs('edit', false, 'error', $e));
             $this->redirect('default');
         };
         return $control;

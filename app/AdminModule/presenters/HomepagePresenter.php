@@ -4,6 +4,7 @@ namespace App\AdminModule\Presenters;
 
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
+use App\Helpers\FlashesTranslator;
 use App\Model\Entity\Category;
 use App\Model\Entity\Group;
 use App\Model\Entity\Logo;
@@ -75,6 +76,7 @@ final class HomepagePresenter extends AdminPresenter
      * @param Authorizator $authorizator
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      * @param ProblemTemplateRepository $problemTemplateRepository
      * @param ProblemFinalRepository $problemFinalRepository
      * @param CategoryRepository $categoryRepository
@@ -86,13 +88,13 @@ final class HomepagePresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemFinalRepository,
         CategoryRepository $categoryRepository, SubCategoryRepository $subCategoryRepository,
         TestRepository $testRepository, UserRepository $userRepository, HomepageStatisticsManager $homepageStatisticsManager
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->problemTemplateRepository = $problemTemplateRepository;
         $this->problemFinalRepository = $problemFinalRepository;
         $this->categoryRepository = $categoryRepository;
@@ -105,26 +107,14 @@ final class HomepagePresenter extends AdminPresenter
     /**
      * @throws Nette\Application\AbortException
      */
-    public function startup()
+    public function startup(): void
     {
         parent::startup();
         $this->getStats();
     }
 
-    public function getStats()
+    public function getStats(): void
     {
-        /*$this->template->problemPrototypeCnt = $this->homepageStatisticsManager->getProblemPrototypeCnt();
-        $this->template->problemFinalCnt = $this->homepageStatisticsManager->getProblemFinalCnt();
-        $this->template->categoryCnt = $this->homepageStatisticsManager->getCategoryCnt();
-        $this->template->subCategoryCnt = $this->homepageStatisticsManager->getSubCategoryCnt();
-        $this->template->testCnt = $this->homepageStatisticsManager->getTestCnt();
-        $this->template->userCnt = $this->homepageStatisticsManager->getUserCnt();
-        $this->template->groupCnt = $this->homepageStatisticsManager->getGroupCnt();
-        $this->template->superGroupCnt = $this->homepageStatisticsManager->getSuperGroupCnt();
-        $this->template->logoCnt = $this->homepageStatisticsManager->getLogoCnt();*/
-
-        //$this->template->problemTemplateCnt = $this->problemTemplateRepository->getCnt();
-
         $this->template->problemTemplateCnt = $this->homepageStatisticsManager->getCnt(ProblemTemplate::class);
         $this->template->problemFinalCnt = $this->homepageStatisticsManager->getCnt(ProblemFinal::class);
         $this->template->categoryCnt = $this->homepageStatisticsManager->getCnt(Category::class);
@@ -134,11 +124,5 @@ final class HomepagePresenter extends AdminPresenter
         $this->template->groupCnt = $this->homepageStatisticsManager->getCnt(Group::class);
         $this->template->superGroupCnt = $this->homepageStatisticsManager->getCnt(SuperGroup::class);
         $this->template->logoCnt = $this->homepageStatisticsManager->getCnt(Logo::class);
-
-        /*$this->template->problemFinalCnt = $this->problemFinalRepository->getCnt();
-        $this->template->categoryCnt = $this->categoryRepository->getCnt();
-        $this->template->subCategoryCnt = $this->subCategoryRepository->getCnt();
-        $this->template->testCnt = $this->testRepository->getCnt();*/
-
     }
 }

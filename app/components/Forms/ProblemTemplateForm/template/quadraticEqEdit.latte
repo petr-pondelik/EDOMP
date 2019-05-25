@@ -1,0 +1,125 @@
+{form form}
+
+    <div class="card-header d-flex justify-content-between">
+        <h1 class="mb-0 font-weight-bold card-heading">
+            <i class="fas fa-file mr-3"></i>Šablona {$id}
+        </h1>
+        <div class="d-inline">
+            <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
+            <a href={plink :Admin:QuadraticEqTemplate:default} class="btn btn-secondary btn-sm">Zpět</a>
+        </div>
+    </div>
+
+    <div class="card-body">
+
+        <div class="mt-3" n:snippet="flashesSnippet">
+            <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type}">{$flash->message}</div>
+        </div>
+
+        <div class="form-group">
+            {label id}
+            {input id, "id" => "problem-id"}
+        </div>
+
+        <div class="form-group">
+            {label type}
+            {input type}
+            {snippet typeErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-1">
+                    <p n:foreach="$form['type']->errors as $error" class="alert alert-danger">
+                        {$error}
+                    </p>
+                </div>
+            {/snippet}
+        </div>
+
+        <div class="form-group">
+            {label subcategory}
+            {input subcategory}
+        </div>
+
+        <div class="form-group">
+            {label text_before}
+            {input text_before}
+        </div>
+
+        <div class="form-group">
+            {label body}
+            {input body, 'data-edit' => true}
+            {snippet bodyErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['body']->errors as $error" class="alert alert-danger">
+                        {$error}
+                    </p>
+                </div>
+            {/snippet}
+        </div>
+
+        <div class="form-group">
+            {label variable}
+            {input variable}
+            {snippet variableErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['variable']->errors as $error" class="alert alert-danger">
+                        {$error}
+                    </p>
+                </div>
+            {/snippet}
+        </div>
+
+        <div class="form-group">
+            {label text_after}
+            {input text_after}
+        </div>
+
+        <div class="form-group">
+            {label difficulty}
+            {input difficulty}
+        </div>
+
+        {foreach $problemTypes as $typeKey => $type}
+
+            <div class="form-group {if $typeKey !== \App\Helpers\ConstHelper::QUADRATIC_EQ}hidden{/if}"
+                 id="type-wrapper-{$typeKey}">
+
+                {foreach $condByProblemTypes[$typeKey] as $condKey => $cond}
+
+                    {var $id = $cond->getId()}
+                    <div class="form-group cond-wrapper" id="cond-wrapper-{$id}">
+                        {label condition_$id}
+                        {input condition_$id, data-key => $id}
+                        <div class="col-12 text-right mt-3 mb-3"
+                             id="condition-validation-{$id}">
+                            <button type="button" class="btn btn-primary condition-validation-btn"
+                                    id="condition-validation-btn-{$id}"
+                                    data-key="{$id}" data-edit="false">
+                                Ověřit splnitelnost
+                            </button>
+                        </div>
+                    </div>
+                {/foreach}
+
+            </div>
+
+        {/foreach}
+
+
+        {snippet conditionsErrorSnippet}
+            {var $form = $control['form']}
+            <div class="col-12">
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    {for $i = 1; $i < 3; $i++}
+                        <p n:foreach="$form['condition_' . $i]->errors as $error" class="alert alert-danger">
+                            {$error}
+                        </p>
+                    {/for}
+                </div>
+            </div>
+        {/snippet}
+
+    </div>
+
+{/form}

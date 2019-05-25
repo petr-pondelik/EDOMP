@@ -5,14 +5,16 @@
         </a>
         <div id="header-bar-right">
             <div class="btn-group">
-                {if $adminModule}
-                    <a href={plink :Front:Homepage:default} class="admin mr-3" title="Cvičebnice">
-                        <i class="fas fa-square-root-alt"></i>
-                    </a>
-                    {else}
-                    <a href={plink :Admin:Homepage:default} class="admin mr-3" title="Administrace">
-                        <i class="fas fa-cog"></i>
-                    </a>
+                {if $user->isInRole('teacher') || $user->isInRole('admin')}
+                    {if $adminModule}
+                        <a href={plink :Front:Homepage:default} class="admin mr-3" title="Cvičebnice">
+                            <i class="fas fa-square-root-alt"></i>
+                        </a>
+                        {else}
+                        <a href={plink :Admin:Homepage:default} class="admin mr-3" title="Administrace">
+                            <i class="fas fa-cog"></i>
+                        </a>
+                    {/if}
                 {/if}
             </div>
             <div class="btn-group">

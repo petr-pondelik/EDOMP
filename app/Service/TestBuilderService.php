@@ -222,6 +222,8 @@ class TestBuilderService
      */
     public function buildTest(ArrayHash $data)
     {
+        //TODO: HANDLE NOT SUPPORTED EXCEPTION -> MAKE OWN EXCEPTION
+
         $variants = $this->testVariantsToArray($data);
 
         $testId = $this->testFunctionality->create(ArrayHash::from([

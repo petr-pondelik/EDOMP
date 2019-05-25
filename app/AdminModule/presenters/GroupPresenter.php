@@ -9,18 +9,19 @@
 namespace App\AdminModule\Presenters;
 
 
+use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\GroupGridFactory;
 use App\Components\Forms\GroupForm\GroupFormControl;
 use App\Components\Forms\GroupForm\GroupFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
+use App\Helpers\FlashesTranslator;
 use App\Model\Entity\Group;
 use App\Model\Functionality\GroupFunctionality;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\SuperGroupRepository;
 use App\Service\Authorizator;
 use App\Service\ValidationService;
-use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
 
@@ -65,6 +66,7 @@ class GroupPresenter extends AdminPresenter
      * @param Authorizator $authorizator
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      * @param GroupRepository $groupRepository
      * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupRepository $superGroupRepository
@@ -75,13 +77,13 @@ class GroupPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         GroupRepository $groupRepository, GroupFunctionality $groupFunctionality, SuperGroupRepository $superGroupRepository,
         ValidationService $validationService,
         GroupGridFactory $groupGridFactory, GroupFormFactory $groupFormFactory
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->groupRepository = $groupRepository;
         $this->groupFunctionality = $groupFunctionality;
         $this->superGroupRepository = $superGroupRepository;
@@ -128,15 +130,12 @@ class GroupPresenter extends AdminPresenter
     public function createComponentGroupGrid($name)
     {
         $grid = $this->groupGridFactory->create($this, $name);
-
         $grid->addAction("delete", "", "delete!")
             ->setIcon("trash")
             ->setClass("btn btn-danger btn-sm ajax");
-
         $grid->addAction("edit", "", "edit!")
             ->setIcon("edit")
             ->setClass("btn btn-primary btn-sm");
-
         $grid->addInlineEdit()
             ->setIcon('pencil-alt')
             ->setTitle('Upravit inline')
@@ -144,14 +143,11 @@ class GroupPresenter extends AdminPresenter
             ->onControlAdd[] = function($container) {
             $container->addText('label', '');
         };
-
         $grid->getInlineEdit()->onSetDefaults[] = function($cont, $item) {
-            bdump($item);
             $cont->setDefaults([
                 "label" => $item->getLabel()
             ]);
         };
-
         $grid->getInlineEdit()->onSubmit[] = [$this, 'handleInlineUpdate'];
     }
 
@@ -161,10 +157,13 @@ class GroupPresenter extends AdminPresenter
      */
     public function handleDelete(int $id): void
     {
-        $this->groupFunctionality->delete($id);
+        try{
+            $this->groupFunctionality->delete($id);
+        } catch (\Exception $e){
+            $this->informUser(new UserInformArgs('delete', true,'error', $e));
+        }
         $this["groupGrid"]->reload();
-        $this->flashMessage("Skupina úspěšně odstraněna.", "success");
-        $this->redrawControl("mainFlashesSnippet");
+        $this->informUser(new UserInformArgs('delete', true));
     }
 
     /**
@@ -183,9 +182,12 @@ class GroupPresenter extends AdminPresenter
      */
     public function handleInlineUpdate(int $id, $row): void
     {
-        $this->groupFunctionality->update($id, $row);
-        $this->flashMessage("Skupina úspěšně editována.", "success");
-        $this->redrawControl("mainFlashesSnippet");
+        try{
+            $this->groupFunctionality->update($id, $row);
+        } catch (\Exception $e){
+            $this->informUser(new UserInformArgs('edit', true,'error', $e));
+        }
+        $this->informUser(new UserInformArgs('edit', true));
     }
 
     /**
@@ -195,12 +197,16 @@ class GroupPresenter extends AdminPresenter
      */
     public function handleSuperGroupUpdate(int $groupId, int $superGroupId): void
     {
-        $this->groupFunctionality->update($groupId, ArrayHash::from([
-            "super_group_id" => $superGroupId
-        ]));
+        try{
+            $this->groupFunctionality->update($groupId, ArrayHash::from([
+                "super_group_id" => $superGroupId
+            ]));
+        }
+        catch (\Exception $e){
+            $this->informUser(new UserInformArgs('superGroup', true, 'error', $e));
+        }
+        $this->informUser(new UserInformArgs('superGroup', true));
         $this["groupGrid"]->reload();
-        $this->flashMessage("Superskupina úspěšně změněna.", "success");
-        $this->redrawControl("mainFlashesSnippet");
     }
 
     /**
@@ -211,10 +217,10 @@ class GroupPresenter extends AdminPresenter
         $control = $this->groupFormFactory->create();
         $control->onSuccess[] = function (){
             $this["groupGrid"]->reload();
-            $this->informUser('Skupina úspěšně vytvořena.', true);
+            $this->informUser(new UserInformArgs('create', true));
         };
         $control->onError[] = function ($e){
-            $this->informUser('Chyba při vytváření skupiny.', true, 'danger');
+            $this->informUser(new UserInformArgs('create', true,'error', $e));
         };
         return $control;
     }
@@ -226,11 +232,11 @@ class GroupPresenter extends AdminPresenter
     {
         $control = $this->groupFormFactory->create(true);
         $control->onSuccess[] = function (){
-            $this->informUser('Skupina úspěšně editována.');
+            $this->informUser(new UserInformArgs('edit'));
             $this->redirect('default');
         };
         $control->onError[] = function ($e){
-            $this->informUser('Chyba při editaci skupiny.', false, 'danger');
+            $this->informUser(new UserInformArgs('edit', false,'error', $e));
             $this->redirect('default');
         };
         return $control;

@@ -8,17 +8,21 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\TestGridFactory;
-use App\Components\Forms\TestFormFactory;
+use App\Components\Forms\TestForm\TestFormControl;
+use App\Components\Forms\TestForm\TestFormFactory;
 use App\Components\Forms\TestStatisticsFormFactory;
+use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SideBar\SideBarFactory;
 use App\Helpers\ConstHelper;
+use App\Helpers\FlashesTranslator;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
 use App\Model\Functionality\ProblemFunctionality;
 use App\Model\Functionality\ProblemTestAssociationFunctionality;
 use App\Model\Functionality\TestFunctionality;
 use App\Model\Repository\LogoRepository;
-use App\Model\Repository\ProblemFinalRepository;
 use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\ProblemTestAssociationRepository;
@@ -31,7 +35,6 @@ use App\Service\TestBuilderService;
 use App\Service\ValidationService;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Application\Responses\CallbackResponse;
-use Nette\Application\Responses\TextResponse;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
 use Nette\Http\IRequest;
@@ -152,6 +155,9 @@ class TestPresenter extends AdminPresenter
     /**
      * TestPresenter constructor.
      * @param Authorizator $authorizator
+     * @param HeaderBarFactory $headerBarFactory
+     * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      * @param EntityManager $entityManager
      * @param TestRepository $testRepository
      * @param TestFunctionality $testFunctionality
@@ -176,6 +182,7 @@ class TestPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         EntityManager $entityManager,
         TestRepository $testRepository, TestFunctionality $testFunctionality,
         ProblemTemplateRepository $problemTemplateRepository,
@@ -188,7 +195,7 @@ class TestPresenter extends AdminPresenter
         StringsHelper $stringsHelper, LatexHelper $latexHelper, ConstHelper $constHelper
     )
     {
-        parent::__construct($authorizator);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->entityManager = $entityManager;
         $this->testRepository = $testRepository;
         $this->testFunctionality = $testFunctionality;
@@ -209,12 +216,6 @@ class TestPresenter extends AdminPresenter
         $this->stringsHelper = $stringsHelper;
         $this->latexHelper = $latexHelper;
         $this->constHelper = $constHelper;
-    }
-
-    public function renderCreate()
-    {
-        $this->template->logos = $this->logoRepository->findBy([], ["id" => "DESC"]);
-        $this->testRepository->findVariants(22);
     }
 
     /**
@@ -260,33 +261,7 @@ class TestPresenter extends AdminPresenter
      */
     public function handleFilterChange(array $filters): void
     {
-        bdump($filters);
-
-        foreach($filters as $problemKey => $problemFilters){
-
-            bdump($problemFilters);
-
-            if(!isset($problemFilters["filters"]["is_template"]) || $problemFilters["filters"]["is_template"])
-                $filterRes = $this->problemTemplateRepository->findFiltered($problemFilters["filters"]);
-            else
-                $filterRes = $this->problemRepository->findFiltered($problemFilters["filters"]);
-
-            bdump($filterRes);
-
-            if(isset($problemFilters['filters'])){
-                foreach ($problemFilters['filters'] as $filterType => $filterVal) {
-                    $this['createForm'][$filterType . '_' . $problemKey]->setValue($filterVal);
-                }
-            }
-
-            $this['createForm']['problem_' . $problemKey]->setItems($filterRes);
-
-            if(array_key_exists($problemFilters['selected'], $filterRes))
-                $this['createForm']['problem_' . $problemKey]->setValue($problemFilters['selected']);
-
-        }
-
-        $this->redrawControl('testCreateFormSnippet');
+        $this['testCreateForm']->handleFilterChange($filters);
     }
 
     /**
@@ -324,6 +299,7 @@ class TestPresenter extends AdminPresenter
      */
     public function handleDelete(int $id)
     {
+        //TODO: INFORM USER
         $this->testFunctionality->delete($id);
         $this["testGrid"]->reload();
         $this->flashMessage("Test úspěšně odstraněn.", "success");
@@ -346,8 +322,6 @@ class TestPresenter extends AdminPresenter
      */
     public function handleDownloadSource(int $id)
     {
-        //TODO: Create response decorator as Class
-
         $this->sendResponse(new CallbackResponse(function (IRequest $request, IResponse $response) use ($id) {
             $response = new Response();
             $response->setHeader('Content-type', 'application/zip');
@@ -377,81 +351,20 @@ class TestPresenter extends AdminPresenter
     }
 
     /**
-     * @return \Nette\Application\UI\Form
-     * @throws \Exception
+     * @return TestFormControl
      */
-    public function createComponentCreateForm()
+    public function createComponentTestCreateForm(): TestFormControl
     {
-        $form =  $this->testFormFactory->create();
-        $form->onValidate[] = [$this, 'handleFormValidate'];
-        $form->onSuccess[] = [$this, 'handleCreateFormSuccess'];
-        return $form;
-    }
-
-    /**
-     * @param Form $form
-     * @param $values
-     * @throws \Nette\Application\AbortException
-     * @throws \Nette\Utils\JsonException
-     */
-    public function handleCreateFormSuccess(Form $form, $values)
-    {
-        try{
-            $testData = $this->testBuilderService->buildTest($values);
-        }
-        catch(NotSupportedException $e){
-            $this->flashMessage($e->getMessage(), 'danger');
-            $this->redrawControl('flashesSnippet');
-            return;
-        }
-
-        $template = $this->getTemplate();
-
-        $template->setFile(__DIR__.'/templates/Test/export.latte');
-
-        $this->entityManager->flush();
-
-        $test = $this->testRepository->find($testData->testId);
-
-        bdump($this->testRepository->find($testData->testId));
-
-        foreach($testData->variants as $variant){
-            $template->variant = $variant;
-            $template->test = $test;
-            FileSystem::createDir( DATA_DIR.'/tests/'.$testData->testId);
-            file_put_contents( DATA_DIR.'/tests/'.$testData->testId.'/variant_'.Strings::lower($variant).'.tex', (string) $template);
-        }
-
-        $this->fileService->createTestZip($testData->testId);
-
-        $this->redirect('default');
-    }
-
-    /**
-     * @param Form $form
-     */
-    public function handleFormValidate(Form $form)
-    {
-        $values = $form->getValues();
-
-        bdump($values);
-
-        $validateFields["logo_file"] = $values->logo_file_hidden;
-        $validateFields["school_year"] = $values->school_year;
-        $validateFields["test_number"] = $values->test_number;
-
-        $validationErrors = $this->validationService->validate($validateFields);
-
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
-                    $form[$veKey]->addError($error);
-            }
-        }
-
-        $this->redrawControl("logoFileErrorSnippet");
-        $this->redrawControl("schoolYearErrorSnippet");
-        $this->redrawControl("testNumberErrorSnippet");
+        $control =  $this->testFormFactory->create();
+        $control->onSuccess[] = function (){
+            $this->informUser(new UserInformArgs('create'));
+            $this->redirect('default');
+        };
+        $control->onError[] = function ($e){
+            $this->informUser(new UserInformArgs('create', false, 'error', $e));
+            $this->redirect('default');
+        };
+        return $control;
     }
 
     /**
@@ -490,27 +403,4 @@ class TestPresenter extends AdminPresenter
                 $this->problemFunctionality->calculateSuccessRate($values->{"problem_prototype_id_" . $i}, true);
         }
     }
-
-    public function handleGetRes()
-    {
-        //$problem = $this->problemManager->getById(584);
-        //bdump($problem);
-
-        //bdump($this->stringsHelper::splitByParameters($problem->structure));
-        //bdump($this->stringsHelper::getParametrized($problem->structure));
-
-        //$this->latexHelper::parseLatex("\( \bigg(x+1\bigg)^2 + x + 3 = -3 x^2 \)");
-
-        //bdump($this->latexHelper::parseExponent("3^{n+1}"));
-        //bdump($this->problemManager->getByTestId(19));
-        //bdump($this->problemManager->isInUsage(630));
-        //bdump(Passwords::hash("6ysaz7dt"));
-
-        /*bdump($this->validationService->validateQuadraticEquation("1/4 y + p0 + p1^2", "y"));
-
-        bdump($this->stringsHelper::isEquation("15 x + 20 + p0 + 10 = 5"));*/
-
-        bdump(Strings::match("2 x + 15 x + 20 = 5", "~^\w_\w~"));
-    }
-
 }

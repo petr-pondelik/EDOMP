@@ -8,12 +8,13 @@
 
 namespace App\Presenters;
 
-use App\Components\Forms\SignInFormFactory;
+use App\Components\Forms\SignForm\SignFormControl;
+use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SideBar\SideBarFactory;
+use App\Helpers\FlashesTranslator;
+use App\Components\Forms\SignForm\SignFormFactory;
 use App\Service\Authenticator;
 use App\Service\ValidationService;
-use Nette\Application\UI\Form;
-use Nette\Security\AuthenticationException;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class BaseSignPresenter
@@ -21,7 +22,6 @@ use Nette\Utils\ArrayHash;
  */
 class BaseSignPresenter extends BasePresenter
 {
-
     /**
      * @var Authenticator
      */
@@ -33,78 +33,45 @@ class BaseSignPresenter extends BasePresenter
     protected $validationService;
 
     /**
-     * @var SignInFormFactory
+     * @var SignFormFactory
      */
-    protected $signInFormFactory;
+    protected $signFormFactory;
 
     /**
      * BaseSignPresenter constructor.
      * @param Authenticator $authenticator
+     * @param HeaderBarFactory $headerBarFactory
+     * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      * @param ValidationService $validationService
-     * @param SignInFormFactory $signInFormFactory
+     * @param SignFormFactory $signFormFactory
      */
     public function __construct
     (
         Authenticator $authenticator,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ValidationService $validationService,
-        SignInFormFactory $signInFormFactory
+        SignFormFactory $signFormFactory
     )
     {
-        parent::__construct();
+        parent::__construct($headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->authenticator = $authenticator;
         $this->validationService = $validationService;
-        $this->signInFormFactory = $signInFormFactory;
+        $this->signFormFactory = $signFormFactory;
     }
 
     /**
-     * @return \Nette\Application\UI\Form
+     * @return SignFormControl
      */
-    public function createComponentSignInForm()
+    public function createComponentSignForm(): SignFormControl
     {
-        $form = $this->signInFormFactory->create();
-        $form->onValidate[] = [$this, 'handleSignInValidate'];
-        $form->onSuccess[] = [$this, 'handleSignInSuccess'];
-        return $form;
-    }
-
-    /**
-     * @param Form $form
-     */
-    public function handleSignInValidate(Form $form)
-    {
-        $values = $form->getValues();
-
-        $validateFields = [];
-        foreach($values as $key => $value)
-            $validateFields[$key] = $value;
-
-        $validationErrors = $this->validationService->validate($validateFields);
-
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
-                    $form[$veKey]->addError($error);
-            }
-        }
-
-        $this->redrawControl('usernameErrorSnippet');
-        $this->redrawControl('passwordErrorSnippet');
-        $this->redrawControl('signInErrorSnippet');
-    }
-
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     * @throws \Nette\Application\AbortException
-     */
-    public function handleSignInSuccess(Form $form, ArrayHash $values)
-    {
-        try{
-            $this->user->login($values->username, $values->password);
+        $control = $this->signFormFactory->create();
+        $control->onSuccess[] = function (){
+            $this->flashMessage('Vítejte, ' . $this->user->identity->username . '.');
             $this->redirect('Homepage:default');
-        } catch(AuthenticationException $e){
-            $this->flashMessage($e->getMessage(), "danger");
-        }
+        };
+        $control->onError[] = function ($e){};
+        return $control;
     }
 
     public function handleLogout()

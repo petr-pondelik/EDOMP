@@ -8,11 +8,13 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\SubCategoryGridFactory;
 use App\Components\Forms\SubCategoryForm\SubCategoryFormControl;
 use App\Components\Forms\SubCategoryForm\SubCategoryFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
+use App\Helpers\FlashesTranslator;
 use App\Model\Entity\SubCategory;
 use App\Model\Functionality\SubCategoryFunctionality;
 use App\Model\Repository\CategoryRepository;
@@ -64,6 +66,7 @@ class SubCategoryPresenter extends AdminPresenter
      * @param Authorizator $authorizator
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      * @param SubCategoryRepository $subCategoryRepository
      * @param SubCategoryFunctionality $subCategoryFunctionality
      * @param CategoryRepository $categoryRepository
@@ -74,14 +77,14 @@ class SubCategoryPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         SubCategoryRepository $subCategoryRepository, SubCategoryFunctionality $subCategoryFunctionality,
         CategoryRepository $categoryRepository,
         ValidationService $validationService,
         SubCategoryGridFactory $subCategoryGridFactory, SubCategoryFormFactory $subCategoryFormFactory
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->subCategoryRepository = $subCategoryRepository;
         $this->subCategoryFunctionality = $subCategoryFunctionality;
         $this->categoryRepository = $categoryRepository;
@@ -142,7 +145,7 @@ class SubCategoryPresenter extends AdminPresenter
             $cont->setDefaults([ "label" => $item->getLabel() ]);
         };
 
-        $grid->getInlineEdit()->onSubmit[] = [$this, 'handleUpdate'];
+        $grid->getInlineEdit()->onSubmit[] = [$this, 'handleInlineUpdate'];
 
         return $grid;
     }
@@ -155,13 +158,11 @@ class SubCategoryPresenter extends AdminPresenter
         try{
             $this->subCategoryFunctionality->delete($id);
         } catch (\Exception $e){
-            $this->flashMessage("Chyba při odstaňování podkategorie.", "danger");
-            $this->redrawControl("mainFlashesSnippet");
+            $this->informUser(new UserInformArgs('delete', true, 'error', $e));
             return;
         }
         $this["subCategoryGrid"]->reload();
-        $this->flashMessage("Podkategorie úspěšně odstraněna.", "success");
-        $this->redrawControl("mainFlashesSnippet");
+        $this->informUser(new UserInformArgs('delete', true));
     }
 
     /**
@@ -177,17 +178,14 @@ class SubCategoryPresenter extends AdminPresenter
      * @param int $id
      * @param $row
      */
-    public function handleUpdate(int $id, $row)
+    public function handleInlineUpdate(int $id, $row)
     {
         try{
             $this->subCategoryFunctionality->update($id, $row);
         } catch (\Exception $e){
-            $this->flashMessage('Chyba při editaci podkategorie..', 'danger');
-            $this->redrawControl('mainFlashesSnippet');
-            return;
+            $this->informUser(new UserInformArgs('edit', true, 'error', $e));
         }
-        $this->flashMessage('Podkategorie úspěšně editována.', 'success');
-        $this->redrawControl('mainFlashesSnippet');
+        $this->informUser(new UserInformArgs('edit', true));
     }
 
     /**
@@ -198,17 +196,13 @@ class SubCategoryPresenter extends AdminPresenter
     {
         try{
             $this->subCategoryFunctionality->update($subCategoryId,
-                ArrayHash::from([
-                    "category" => $categoryId
-                ])
+                ArrayHash::from(["category" => $categoryId])
             );
         } catch (\Exception $e){
-            $this->flashMessage('Chyba při změně kategorie.', 'danger');
-            $this->redrawControl('mainFlashesSnippet');
+            $this->informUser(new UserInformArgs('category', true,'error', $e));
         }
         $this['subCategoryGrid']->reload();
-        $this->flashMessage('Kategorie úspěšně změněna.', 'success');
-        $this->redrawControl('mainFlashesSnippet');
+        $this->informUser(new UserInformArgs('category', true));
     }
 
     /**
@@ -219,10 +213,10 @@ class SubCategoryPresenter extends AdminPresenter
         $control = $this->subCategoryFormFactory->create();
         $control->onSuccess[] = function (){
             $this["subCategoryGrid"]->reload();
-            $this->informUser('Podkategorie úspěšně vytvořena.', true);
+            $this->informUser(new UserInformArgs('create', true));
         };
         $control->onError[] = function ($e){
-            $this->informUser('Chyba při vytváření podkategorie.', true, 'danger');
+            $this->informUser(new UserInformArgs('create', true,'error', $e));
         };
         return $control;
     }
@@ -235,11 +229,11 @@ class SubCategoryPresenter extends AdminPresenter
     {
         $control = $this->subCategoryFormFactory->create(true);
         $control->onSuccess[] = function (){
-            $this->informUser('Podkategorie úspěšně editována.');
+            $this->informUser(new UserInformArgs('edit'));
             $this->redirect('default');
         };
         $control->onError[] = function ($e){
-            $this->informUser('Chyba při editaci podkategorie.', false, 'danger');
+            $this->informUser(new UserInformArgs('edit', false,'error', $e));
             $this->redirect('default');
         };
         return $control;

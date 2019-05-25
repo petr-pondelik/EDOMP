@@ -8,11 +8,13 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\LogoGridFactory;
 use App\Components\Forms\LogoForm\LogoFormControl;
 use App\Components\Forms\LogoForm\LogoFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
+use App\Helpers\FlashesTranslator;
 use App\Model\Entity\Logo;
 use App\Model\Functionality\LogoFunctionality;
 use App\Model\Repository\LogoRepository;
@@ -63,6 +65,7 @@ class LogoPresenter extends AdminPresenter
      * @param Authorizator $authorizator
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      * @param LogoRepository $logoRepository
      * @param LogoFunctionality $logoFunctionality
      * @param ValidationService $validationService
@@ -73,13 +76,13 @@ class LogoPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         LogoRepository $logoRepository, LogoFunctionality $logoFunctionality,
         ValidationService $validationService, FileService $fileService,
         LogoGridFactory $logoGridFactory, LogoFormFactory $logoFormFactory
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->logoRepository = $logoRepository;
         $this->logoFunctionality = $logoFunctionality;
         $this->validationService = $validationService;
@@ -157,10 +160,14 @@ class LogoPresenter extends AdminPresenter
      */
     public function handleDelete(int $logoId)
     {
-        $this->logoFunctionality->delete($logoId);
-        $this->fileService->deleteLogoFile($logoId);
+        try{
+            $this->logoFunctionality->delete($logoId);
+            $this->fileService->deleteLogoFile($logoId);
+        } catch (\Exception $e){
+            $this->informUser(new UserInformArgs('delete', true, 'error', $e));
+        }
         $this["logoGrid"]->reload();
-        $this->informUser('Logo úspěšně odstraněno.', true);
+        $this->informUser(new UserInformArgs('delete', true));
     }
 
     /**
@@ -181,9 +188,9 @@ class LogoPresenter extends AdminPresenter
         try{
             $this->logoFunctionality->update($logoId, $row);
         } catch (\Exception $e){
-            $this->informUser('Chyba při editaci loga.', true, 'danger');
+            $this->informUser(new UserInformArgs('edit', true, 'error', $e));
         }
-        $this->informUser('Logo úspěšně editováno.', true);
+        $this->informUser(new UserInformArgs('edit', true));
     }
 
     /**
@@ -194,10 +201,10 @@ class LogoPresenter extends AdminPresenter
         $control = $this->logoFormFactory->create();
         $control->onSuccess[] = function (){
             $this['logoGrid']->reload();
-            $this->informUser('Logo úspěšně vytvořeno.', true);
+            $this->informUser(new UserInformArgs('create', true));
         };
-        $control->onError[] = function (){
-            $this->informUser('Chyba při vytváření loga.', true, 'danger');
+        $control->onError[] = function ($e){
+            $this->informUser(new UserInformArgs('create', true, 'error', $e));
         };
         return $control;
     }
@@ -209,11 +216,11 @@ class LogoPresenter extends AdminPresenter
     {
         $control = $this->logoFormFactory->create(true);
         $control->onSuccess[] = function (){
-            $this->informUser('Logo úspěšně editováno.');
+            $this->informUser(new UserInformArgs('edit'));
             $this->redirect('default');
         };
-        $control->onError[] = function (){
-            $this->informUser('Chyba při editaci loga.', false, 'danger');
+        $control->onError[] = function ($e){
+            $this->informUser(new UserInformArgs('edit', false, 'errpr', $e));
             $this->redirect('default');
         };
         return $control;

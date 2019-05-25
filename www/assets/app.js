@@ -77,7 +77,7 @@ import './scss/global.scss';
 $(document).ready(() => {
 
     $(document).find('#createModal .type-wrapper').hide();
-    $(document).find('#createModal #type-wrapper-1').show();
+    //$(document).find('#createModal #type-wrapper-1').show();
 
 });
 

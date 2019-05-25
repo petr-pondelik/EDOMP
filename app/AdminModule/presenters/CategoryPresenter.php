@@ -8,11 +8,13 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\CategoryGridFactory;
 use App\Components\Forms\CategoryForm\CategoryFormControl;
 use App\Components\Forms\CategoryForm\CategoryFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
+use App\Helpers\FlashesTranslator;
 use App\Model\Entity\Category;
 use App\Model\Functionality\CategoryFunctionality;
 use App\Model\Repository\CategoryRepository;
@@ -52,6 +54,7 @@ class CategoryPresenter extends AdminPresenter
      * @param Authorizator $authorizator
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      * @param CategoryRepository $categoryRepository
      * @param CategoryFunctionality $categoryFunctionality
      * @param CategoryGridFactory $categoryGridFactory
@@ -60,13 +63,13 @@ class CategoryPresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         CategoryRepository $categoryRepository,
         CategoryFunctionality $categoryFunctionality,
         CategoryGridFactory $categoryGridFactory, CategoryFormFactory $categoryFormFactory
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->categoryRepository = $categoryRepository;
         $this->categoryFunctionality = $categoryFunctionality;
         $this->categoryGridFactory = $categoryGridFactory;
@@ -140,11 +143,11 @@ class CategoryPresenter extends AdminPresenter
         try{
             $this->categoryFunctionality->delete($id);
         } catch (\Exception $e){
-            $this->informUser('Chyba při odstraňování kategorie.', true,'danger');
+            $this->informUser(new UserInformArgs('delete', true,'error', $e));
             return;
         }
         $this['categoryGrid']->reload();
-        $this->informUser('Kategorie úspěšně odstraněna.', true);
+        $this->informUser(new UserInformArgs('delete', true));
     }
 
     /**
@@ -165,10 +168,9 @@ class CategoryPresenter extends AdminPresenter
         try{
             $this->categoryFunctionality->update($id, $data);
         } catch (\Exception $e){
-            $this->informUser('Chyba při editaci kategorie.', true,'danger');
-            return;
+            $this->informUser(new UserInformArgs('edit', true,'error', $e));
         }
-        $this->informUser('Kategorie úspěšně editována.', true, 'success');
+        $this->informUser(new UserInformArgs('edit', true));
     }
 
     /**
@@ -179,10 +181,10 @@ class CategoryPresenter extends AdminPresenter
         $control = $this->categoryFormFactory->create();
         $control->onSuccess[] = function (){
             $this['categoryGrid']->reload();
-            $this->informUser('Kategorie úspěšně vytvořena.', true);
+            $this->informUser(new UserInformArgs('create', true));
         };
         $control->onError[] = function ($e){
-            $this->informUser('Chyba při vytváření kategorie.', true, 'danger');
+            $this->informUser(new UserInformArgs('create', true,'error', $e));
         };
         return $control;
     }
@@ -194,11 +196,11 @@ class CategoryPresenter extends AdminPresenter
     {
         $control = $this->categoryFormFactory->create(true);
         $control->onSuccess[] = function (){
-            $this->informUser('Kategorie úspěšně editována.');
+            $this->informUser(new UserInformArgs('edit'));
             $this->redirect('default');
         };
         $control->onError[] = function ($e){
-            $this->informUser('Chyba při editaci kategorie.', false, 'danger');
+            $this->informUser(new UserInformArgs('edit', false,'error', $e));
             $this->redirect('default');
         };
         return $control;

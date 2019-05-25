@@ -10,6 +10,7 @@ namespace App\FrontModule\Presenters;
 
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
+use App\Helpers\FlashesTranslator;
 use App\Presenters\BasePresenter;
 use App\Service\Authorizator;
 
@@ -29,21 +30,22 @@ class FrontPresenter extends BasePresenter
      * @param Authorizator $authorizator
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      */
     public function __construct
     (
         Authorizator $authorizator,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator
     )
     {
-        parent::__construct($headerBarFactory, $sideBarFactory);
+        parent::__construct($headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->authorizator = $authorizator;
     }
 
     /**
      * @throws \Nette\Application\AbortException
      */
-    public function startup()
+    public function startup(): void
     {
         parent::startup();
         if(!($this->user->isLoggedIn()))

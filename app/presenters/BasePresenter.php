@@ -8,10 +8,12 @@
 
 namespace App\Presenters;
 
+use App\Arguments\UserInformArgs;
 use App\Components\HeaderBar\HeaderBarControl;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarControl;
 use App\Components\SideBar\SideBarFactory;
+use App\Helpers\FlashesTranslator;
 use Nette\Application\UI\Presenter;
 
 
@@ -32,19 +34,25 @@ class BasePresenter extends Presenter
     protected $sideBarFactory;
 
     /**
+     * @var FlashesTranslator
+     */
+    protected $flashesTranslator;
+
+    /**
      * BasePresenter constructor.
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      */
     public function __construct
     (
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator
     )
     {
         parent::__construct();
         $this->headerBarFactory = $headerBarFactory;
         $this->sideBarFactory = $sideBarFactory;
-
+        $this->flashesTranslator = $flashesTranslator;
     }
 
     public function beforeRender(): void
@@ -70,17 +78,30 @@ class BasePresenter extends Presenter
     }
 
     /**
-     * @param string $message
-     * @param bool $ajax
-     * @param string $type
-     * @param \Exception|null $exception
-     * @param bool $main
+     * @param UserInformArgs $args
      */
-    public function informUser(string $message, bool $ajax = false, string $type = 'success', \Exception $exception = null, bool $main = false): void
+    public function informUser(UserInformArgs $args): void
     {
-        $this->flashMessage($message, $type);
-        if($ajax){
-            if($main)
+        //if($exception){
+            /*if($exception instanceof ForeignKeyConstraintViolationException){
+                $this->flashMessage('')
+            }
+            else{*/
+                //$this->flashMessage($exception->getMessage(), 'danger');
+            //}
+        //}
+        //else
+            //$this->flashMessage($message, $type);
+
+        $message = $this->flashesTranslator::translate($args->operation, $this->getName(), $args->type, $args->exception);
+
+        if($args->type === 'success')
+            $this->flashMessage($message, 'success');
+        else
+            $this->flashMessage($message, 'danger');
+
+        if($args->ajax){
+            if($args->main)
                 $this->redrawControl('mainFlashesSnippet');
             else
                 $this->redrawControl('flashesSnippet');
