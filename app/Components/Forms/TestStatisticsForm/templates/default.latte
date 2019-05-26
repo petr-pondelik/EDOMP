@@ -1,0 +1,68 @@
+{snippetArea successRateSnippetArea}
+
+    {form form}
+
+        <div class="card-header d-flex justify-content-between">
+            <h1 class="col-6 pl-0 mb-0 font-weight-bold card-heading">
+                <i class="fas fa-file-alt mr-3"></i>Statistika: Test {$id}
+            </h1>
+            <div>
+                <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
+                <a href={plink :Admin:Test:default} class="btn btn-secondary btn-sm" title="Zpět na přehled">Zpět</a>
+            </div>
+        </div>
+
+        <div class="card-body col-12">
+
+            {snippet flashesSnippet}
+                <div n:foreach="$flashes as $flash"
+                        class="mb-4 flash alert alert-{$flash->type}">{$flash->message}</div>
+            {/snippet}
+
+            {var $i = 0}
+
+            {foreach $problemAssociations as $association}
+
+                <div class="card card-shadow border-light mb-5">
+
+                    <div class="card-body">
+
+                        <div class="form-group">
+                            {label problem_final_id_disabled_$i}
+                            {input problem_final_id_disabled_$i}
+                        </div>
+
+                        <div class="form-group">
+                            {label problem_prototype_id_disabled_$i}
+                            {input problem_prototype_id_disabled_$i}
+                        </div>
+
+                        <p class="text-center mt-5 mb-5">{$association->getProblem()->getBody()}</p>
+
+                        <div class="form-group">
+                            {label success_rate_$i}
+                            {input success_rate_$i}
+                        </div>
+
+                        {snippet successRate{$i}ErrorSnippet}
+                            <div n:if="$control['form']->hasErrors()" class="mt-2">
+                                <p n:foreach="$control['form']['success_rate_' . $i]->errors as $error"
+                                        class="alert alert-danger">
+                                    {$error}
+                                </p>
+                            </div>
+                        {/snippet}
+
+                    </div>
+
+                </div>
+
+                {var $i += 1}
+
+            {/foreach}
+
+        </div>
+
+    {/form}
+
+{/snippetArea}

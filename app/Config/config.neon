@@ -1,0 +1,194 @@
+parameters:
+    imagesPath: 'assets/images/'
+
+extensions:
+    console: Kdyby\Console\DI\ConsoleExtension
+    events: Kdyby\Events\DI\EventsExtension
+    annotations: Kdyby\Annotations\DI\AnnotationsExtension
+    translation: Kdyby\Translation\DI\TranslationExtension
+    validator: Kdyby\Validator\DI\ValidatorExtension
+    doctrine: Kdyby\Doctrine\DI\OrmExtension
+    assetMacro: Webrouse\AssetMacro\DI\Extension
+    visualPaginator: IPub\VisualPaginator\DI\VisualPaginatorExtension
+
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
+
+session:
+	expiration: 14 days
+
+services:
+	router: App\RouterFactory::createRouter
+
+	#Repositories
+	repository.user:
+	    class: App\Model\Repository\UserRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\User
+
+	repository.role:
+	    class: App\Model\Repository\RoleRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\Role
+
+	repository.problem:
+	    class: App\Model\Repository\ProblemRepository
+	    tags:
+	       doctrine.repositoryEntity: App\Model\Entity\Problem
+
+	repository.problem.final:
+	    class: App\Model\Repository\ProblemFinalRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\ProblemFinal
+
+	repository.problem.template:
+	    class: App\Model\Repository\ProblemTemplateRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\ProblemTemplate
+
+	repository.problemtype:
+	    class: App\Model\Repository\ProblemTypeRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\ProblemType
+
+	repository.difficulty:
+	    class: App\Model\Repository\DifficultyRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\Difficulty
+
+	repository.subcategory:
+	    class: App\Model\Repository\SubCategoryRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\SubCategory
+
+	repository.category:
+	    class: App\Model\Repository\CategoryRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\Category
+
+	repository.condition:
+	    class: App\Model\Repository\ProblemConditionRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\ProblemCondition
+
+	repository.template.equation.linear:
+	    class: App\Model\Repository\LinearEqTemplRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\LinearEqTempl
+
+	repository.template.equation.quadratic:
+	    class: App\Model\Repository\QuadraticEqTemplRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\QuadraticEqTempl
+
+	repository.template.sequence.arithmetic:
+	    class: App\Model\Repository\ArithmeticSeqTemplRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\ArithmeticSeqTempl
+
+	repository.template.sequence.geometric:
+	    class: App\Model\Repository\GeometricSeqTemplRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\GeometricSeqTempl
+
+	repository.supergroup:
+	    class: App\Model\Repository\SuperGroupRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\SuperGroup
+
+	repository.group:
+	    class: App\Model\Repository\GroupRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\Group
+
+	repository.logo:
+	    class: App\Model\Repository\LogoRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\Logo
+
+	repository.term:
+	    class: App\Model\Repository\TermRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\Term
+
+	repository.test:
+	    class: App\Model\Repository\TestRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\Test
+
+	repository.problem.test.association:
+	    class: App\Model\Repository\ProblemTestAssociationRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\ProblemTestAssociation
+
+	repository.template.jsondata:
+	    class: App\Model\Repository\TemplateJsonDataRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\TemplateJsonData
+
+	#Functionalities
+	functionality.user: App\Model\Functionality\UserFunctionality
+	functionality.problem.final: App\Model\Functionality\ProblemFinalFunctionality
+	functionality.category: App\Model\Functionality\CategoryFunctionality
+	functionality.subcategory: App\Model\Functionality\SubCategoryFunctionality
+	functionality.problem: App\Model\Functionality\ProblemFunctionality
+	functionality.problem.test.association: App\Model\Functionality\ProblemTestAssociationFunctionality
+	functionality.template: App\Model\Functionality\ProblemTemplateFunctionality
+	functionality.template.equation.linear: App\Model\Functionality\LinearEqTemplFunctionality
+	functionality.template.equation.quadratic: App\Model\Functionality\QuadraticEqTemplFunctionality
+	functionality.template.sequence.arithmetic: App\Model\Functionality\ArithmeticSeqTemplFunctionality
+	functionality.template.sequence.geometric: App\Model\Functionality\GeometricSeqTemplFunctionality
+	functionality.supergroup: App\Model\Functionality\SuperGroupFunctionality
+	functionality.group: App\Model\Functionality\GroupFunctionality
+	functionality.logo: App\Model\Functionality\LogoFunctionality
+	functionality.test: App\Model\Functionality\TestFunctionality
+	functionality.template.jsondata: App\Model\Functionality\TemplateJsonDataFunctionality
+
+	#Factories
+	factory.header.bar: App\Components\HeaderBar\HeaderBarFactory
+	factory.side.bar: App\Components\SideBar\SideBarFactory
+	factory.grid.user: App\Components\DataGrids\UserGridFactory
+	factory.form.user: App\Components\Forms\UserForm\UserFormFactory
+	factory.grid.category: App\Components\DataGrids\CategoryGridFactory
+	factory.form.category: App\Components\Forms\CategoryForm\CategoryFormFactory
+	factory.grid.subcategory: App\Components\DataGrids\SubCategoryGridFactory
+	factory.form.subcategory: App\Components\Forms\SubCategoryForm\SubCategoryFormFactory
+	factory.grid.problem: App\Components\DataGrids\ProblemGridFactory
+	factory.form.problem.final: App\Components\Forms\ProblemFinalForm\ProblemFinalFormFactory
+	factory.grid.template: App\Components\DataGrids\TemplateGridFactory
+	factory.form.problem.template: App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory
+	factory.grid.logo: App\Components\DataGrids\LogoGridFactory
+	factory.form.logo: App\Components\Forms\LogoForm\LogoFormFactory
+	factory.grid.supergroup: App\Components\DataGrids\SuperGroupGridFactory
+	factory.form.supergroup: App\Components\Forms\SuperGroupForm\SuperGroupFormFactory
+	factory.grid.group: App\Components\DataGrids\GroupGridFactory
+	factory.form.group: App\Components\Forms\GroupForm\GroupFormFactory
+	factory.grid.test: App\Components\DataGrids\TestGridFactory
+	factory.form.test: App\Components\Forms\TestForm\TestFormFactory
+	factory.form.test.statistics: App\Components\Forms\TestStatisticsForm\TestStatisticsFormFactory
+	factory.form.permission: App\Components\Forms\PermissionForm\PermissionFormFactory
+	factory.form.sign: App\Components\Forms\SignForm\SignFormFactory
+	factory.form.problem.filter: App\Components\Forms\ProblemFilterFormFactory
+
+	#Services
+	service.newtopapi.client: App\Services\NewtonApiClient
+	service.validation: App\Services\ValidationService
+	service.math: App\Services\MathService
+	service.generator: App\Services\GeneratorService
+	service.condition.matching: App\Services\ConditionMatchingService
+	service.file: App\Services\FileService(%logosDir%, %logosTmpDir%)
+	service.test.builder: App\Services\TestBuilderService
+	service.authenticator: App\Services\Authenticator
+	service.authorizator: App\Services\Authorizator
+
+	#Managers
+	manager.homepage.statistics: App\Model\Manager\HomepageStatisticsManager
+
+	#Helpers
+	helper.const: App\Helpers\ConstHelper
+	helper.strings: App\Helpers\StringsHelper
+	helper.latex: App\Helpers\LatexHelper
+	helper.formatter: App\Helpers\FormatterHelper
+	helper.flashes.translator: App\Helpers\FlashesTranslator

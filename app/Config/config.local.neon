@@ -1,0 +1,30 @@
+parameters:
+
+doctrine:
+	user: root
+	password:
+	dbname: edomp_final
+	metadata:
+		App: %appDir%
+
+#Localhost
+#dibi:
+#    driver: mysqli
+#    database: edomp
+#    username: root
+#    password:
+#    lazy: TRUE
+
+#Deploy
+#dibi:
+#    driver: mysqli
+#    host: innodb.endora.cz
+#    database: edomp
+#    username: wiedzmin
+#    password: rok!1929.PLZ
+#    lazy: TRUE
+
+#database:
+#    dsn: 'mysql:host=127.0.0.1;dbname=edomp'
+#    user: root
+#    password:
