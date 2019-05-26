@@ -8,7 +8,7 @@
 
 namespace App\Components\Forms\CategoryForm;
 
-use App\Components\Forms\BaseFormControl;
+use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\CategoryFunctionality;
 use App\Services\ValidationService;
 use Nette\Application\AbortException;
@@ -19,7 +19,7 @@ use Nette\Utils\ArrayHash;
  * Class CategoryFormFactory
  * @package App\Components\Forms
  */
-class CategoryFormControl extends BaseFormControl
+class CategoryFormControl extends EntityFormControl
 {
     /**
      * CategoryFormControl constructor.
@@ -74,7 +74,7 @@ class CategoryFormControl extends BaseFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try {
             $this->functionality->create($values);

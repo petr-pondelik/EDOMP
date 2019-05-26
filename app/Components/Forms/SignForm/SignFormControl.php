@@ -9,27 +9,30 @@
 namespace App\Components\Forms\SignForm;
 
 
-use App\Components\Forms\BaseFormControl;
+use App\Components\Forms\FormControl;
 use App\Services\ValidationService;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
-use Nette\Security\AuthenticationException;
 use Nette\Utils\ArrayHash;
 
 /**
  * Class SignFormControl
  * @package App\Components\Forms\SignForm
  */
-class SignFormControl extends BaseFormControl
+class SignFormControl extends FormControl
 {
     /**
      * @var bool
      */
     protected $admin;
 
-    public function __construct(ValidationService $validationService, bool $edit = false, bool $super = false)
+    /**
+     * SignFormControl constructor.
+     * @param ValidationService $validationService
+     */
+    public function __construct(ValidationService $validationService)
     {
-        parent::__construct($validationService, $edit, $super);
+        parent::__construct($validationService);
     }
 
     /**
@@ -44,6 +47,7 @@ class SignFormControl extends BaseFormControl
             ->setHtmlAttribute('class', 'form-control');
         $form->addSubmit('signIn', 'Přihlásit se')
             ->setHtmlAttribute('class', 'btn btn-primary col-12 btn-lg');
+        $form->onSuccess[] = [$this, 'handleFormSuccess'];
         return $form;
     }
 
@@ -76,7 +80,7 @@ class SignFormControl extends BaseFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
             $this->presenter->user->login($values->username, $values->password);
@@ -89,12 +93,6 @@ class SignFormControl extends BaseFormControl
             $this->onError($e);
         }
     }
-
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     */
-    public function handleEditFormSuccess(Form $form, ArrayHash $values): void {}
 
     public function render(): void
     {

@@ -9,13 +9,13 @@
 namespace App\Components\Forms\SignForm;
 
 
-use App\Components\Forms\BaseFormFactory;
+use App\Components\Forms\FormFactory;
 
 /**
  * Class SignFormFactory
  * @package App\Components\Forms\SignForm
  */
-class SignFormFactory extends BaseFormFactory
+class SignFormFactory extends FormFactory
 {
     /**
      * @return SignFormControl

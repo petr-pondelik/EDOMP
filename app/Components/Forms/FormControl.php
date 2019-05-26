@@ -18,7 +18,7 @@ use Nette\Utils\ArrayHash;
  * Class BaseFormControl
  * @package App\Components\Forms
  */
-abstract class BaseFormControl extends Control
+abstract class FormControl extends Control
 {
     /**
      * @var BaseFunctionality
@@ -29,16 +29,6 @@ abstract class BaseFormControl extends Control
      * @var ValidationService
      */
     protected $validationService;
-
-    /**
-     * @var bool
-     */
-    protected $edit;
-
-    /**
-     * @var bool
-     */
-    protected $super;
 
     /**
      * @var array
@@ -53,18 +43,11 @@ abstract class BaseFormControl extends Control
     /**
      * BaseFormControl constructor.
      * @param ValidationService $validationService
-     * @param bool $edit
-     * @param bool $super
      */
-    public function __construct
-    (
-        ValidationService $validationService, bool $edit = false, bool $super = false
-    )
+    public function __construct(ValidationService $validationService)
     {
         parent::__construct();
         $this->validationService = $validationService;
-        $this->edit = $edit;
-        $this->super = $super;
     }
 
     /**
@@ -85,23 +68,10 @@ abstract class BaseFormControl extends Control
 
         $form->getElementPrototype()->class('form-horizontal ajax');
 
-        if ($this->edit) {
-            $form->addInteger("id", "ID")
-                ->setHtmlAttribute("class", "form-control")
-                ->setDisabled();
-
-            $form->addHidden("id_hidden");
-        }
-
         $form->addSubmit("submit", "Vytvořit")
             ->setHtmlAttribute("class", "btn btn-primary btn-sm");
 
         $form->onValidate[] = [$this, 'handleFormValidate'];
-
-        if ($this->edit)
-            $form->onSuccess[] = [$this, 'handleEditFormSuccess'];
-        else
-            $form->onSuccess[] = [$this, 'handleCreateFormSuccess'];
 
         return $form;
     }
@@ -115,13 +85,7 @@ abstract class BaseFormControl extends Control
      * @param Form $form
      * @param ArrayHash $values
      */
-    abstract public function handleCreateFormSuccess(Form $form, ArrayHash $values): void;
-
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     */
-    abstract public function handleEditFormSuccess(Form $form, ArrayHash $values): void;
+    abstract public function handleFormSuccess(Form $form, ArrayHash $values): void;
 
     abstract public function render(): void;
 }

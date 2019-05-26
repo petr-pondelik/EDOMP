@@ -53,34 +53,7 @@
                 >
 
                     {snippet filtersSnippet}
-                        {form problemFilterForm}
-
-                            <div class="form-group">
-                                {label difficulty}
-                                {input difficulty}
-                            </div>
-
-                            <div class="form-group">
-                                {label theme}
-                                {input theme}
-                            </div>
-
-                            <div class="form-group">
-                                {label result}
-                                {input result}
-                            </div>
-
-                            <div class="form-group">
-                                {label sort_by_difficulty}
-                                {input sort_by_difficulty}
-                            </div>
-
-                            <div class="text-right mt-4">
-                                {input submit}
-                                <a n:href="clearFilters!" class="btn btn-danger btn-sm ajax">Resetovat filtry</a>
-                            </div>
-
-                        {/form}
+                        {control problemFilterForm}
                     {/snippet}
 
                 </div>

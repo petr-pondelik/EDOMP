@@ -8,7 +8,7 @@
 
 namespace App\Components\Forms\SuperGroupForm;
 
-use App\Components\Forms\BaseFormFactory;
+use App\Components\Forms\FormFactory;
 use App\Model\Functionality\SuperGroupFunctionality;
 use App\Services\ValidationService;
 
@@ -16,7 +16,7 @@ use App\Services\ValidationService;
  * Class SuperGroupFormFactory
  * @package App\Components\Forms\SuperGroupForm
  */
-class SuperGroupFormFactory extends BaseFormFactory
+class SuperGroupFormFactory extends FormFactory
 {
     /**
      * SuperGroupFormFactory constructor.

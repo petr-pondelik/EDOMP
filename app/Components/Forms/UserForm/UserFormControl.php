@@ -9,7 +9,7 @@
 namespace App\Components\Forms\UserForm;
 
 
-use App\Components\Forms\BaseFormControl;
+use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\UserFunctionality;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\RoleRepository;
@@ -22,7 +22,7 @@ use Nette\Utils\ArrayHash;
  * Class UserFormControl
  * @package App\Components\Forms\UserForm
  */
-class UserFormControl extends BaseFormControl
+class UserFormControl extends EntityFormControl
 {
     /**
      * @var GroupRepository
@@ -128,7 +128,7 @@ class UserFormControl extends BaseFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
             $this->functionality->create($values);

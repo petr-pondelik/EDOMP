@@ -9,7 +9,7 @@
 namespace App\Components\Forms\ProblemTemplateForm;
 
 
-use App\Components\Forms\BaseFormControl;
+use App\Components\Forms\EntityFormControl;
 use App\Exceptions\StringFormatException;
 use App\Helpers\ConstHelper;
 use App\Model\Functionality\BaseFunctionality;
@@ -27,7 +27,7 @@ use Nette\Utils\ArrayHash;
  * Class ProblemTemplateFormControl
  * @package App\Components\Forms\ProblemTemplateForm
  */
-class ProblemTemplateFormControl extends BaseFormControl
+class ProblemTemplateFormControl extends EntityFormControl
 {
     /**
      * @var DifficultyRepository
@@ -76,7 +76,6 @@ class ProblemTemplateFormControl extends BaseFormControl
      * @param ConstHelper $constHelper
      * @param int $templateType
      * @param bool $edit
-     * @param bool $super
      */
     public function __construct
     (
@@ -85,11 +84,10 @@ class ProblemTemplateFormControl extends BaseFormControl
         DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository, ProblemConditionRepository $problemConditionRepository,
         MathService $mathService, ConstHelper $constHelper,
-        int $templateType,
-        bool $edit = false, bool $super = false
+        int $templateType, bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit, $super);
+        parent::__construct($validationService, $edit);
         $this->functionality = $functionality;
         $this->difficultyRepository = $difficultyRepository;
         $this->problemTypeRepository = $problemTypeRepository;
@@ -341,7 +339,7 @@ class ProblemTemplateFormControl extends BaseFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
             $this->functionality->create($values);

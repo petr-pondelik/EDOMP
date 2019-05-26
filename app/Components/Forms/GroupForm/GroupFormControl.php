@@ -9,7 +9,7 @@
 namespace App\Components\Forms\GroupForm;
 
 
-use App\Components\Forms\BaseFormControl;
+use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\GroupFunctionality;
 use App\Model\Repository\SuperGroupRepository;
 use App\Services\ValidationService;
@@ -21,7 +21,7 @@ use Nette\Utils\ArrayHash;
  * Class GroupFormControl
  * @package App\Components\Forms\GroupForm
  */
-class GroupFormControl extends BaseFormControl
+class GroupFormControl extends EntityFormControl
 {
     /**
      * @var SuperGroupRepository
@@ -91,7 +91,7 @@ class GroupFormControl extends BaseFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
             $this->functionality->create($values);

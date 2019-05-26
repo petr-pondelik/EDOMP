@@ -9,7 +9,7 @@
 namespace App\Components\Forms\TestStatisticsForm;
 
 
-use App\Components\Forms\BaseFormControl;
+use App\Components\Forms\FormControl;
 use App\Model\Functionality\ProblemFunctionality;
 use App\Model\Functionality\ProblemTestAssociationFunctionality;
 use App\Model\Repository\ProblemTestAssociationRepository;
@@ -21,7 +21,7 @@ use Nette\Utils\ArrayHash;
  * Class TestStatisticsFormControl
  * @package App\Components\Forms\TestStatisticsForm
  */
-class TestStatisticsFormControl extends BaseFormControl
+class TestStatisticsFormControl extends FormControl
 {
     /**
      * @var ProblemTestAssociationRepository
@@ -45,18 +45,16 @@ class TestStatisticsFormControl extends BaseFormControl
      * @param ProblemTestAssociationRepository $problemTestAssociationRepository
      * @param ProblemTestAssociationFunctionality $problemTestAssociationFunctionality
      * @param int $testId
-     * @param bool $edit
-     * @param bool $super
      */
     public function __construct
     (
         ValidationService $validationService,
         ProblemFunctionality $problemFunctionality,
         ProblemTestAssociationRepository $problemTestAssociationRepository, ProblemTestAssociationFunctionality $problemTestAssociationFunctionality,
-        int $testId, bool $edit = false, bool $super = false
+        int $testId
     )
     {
-        parent::__construct($validationService, $edit, $super);
+        parent::__construct($validationService);
         $this->functionality = $problemFunctionality;
         $this->problemTestAssociationRepository = $problemTestAssociationRepository;
         $this->problemTestAssociationFunctionality = $problemTestAssociationFunctionality;
@@ -69,10 +67,8 @@ class TestStatisticsFormControl extends BaseFormControl
     public function createComponentForm(): Form
     {
         $form = parent::createComponentForm();
-
         $form->addHidden("problems_cnt");
         $form->addHidden("test_id");
-
         for ($i = 0; $i < 160; $i++) {
             $form->addInteger("problem_final_id_disabled_" . $i, "ID příkladu")
                 ->setHtmlAttribute("class", "form-control")
@@ -85,7 +81,7 @@ class TestStatisticsFormControl extends BaseFormControl
             $form->addText("success_rate_" . $i, "Úspěšnost v testu")
                 ->setHtmlAttribute("class", "form-control");
         }
-
+        $form->onSuccess[] = [$this, 'handleFormSuccess'];
         return $form;
     }
 
@@ -98,7 +94,6 @@ class TestStatisticsFormControl extends BaseFormControl
         for($i = 0; $i < $values->problems_cnt; $i++){
             $validateFields['success_rate'] = $values->{'success_rate_' . $i};
             $validationErrors = $this->validationService->validate($validateFields);
-            bdump($validationErrors);
             if($validationErrors){
                 foreach($validationErrors as $veKey => $errorGroup){
                     foreach($errorGroup as $egKey => $error)
@@ -113,7 +108,7 @@ class TestStatisticsFormControl extends BaseFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         for ($i = 0; $i < $values->problems_cnt; $i++) {
             try{
@@ -146,12 +141,6 @@ class TestStatisticsFormControl extends BaseFormControl
 
         $this->onSuccess();
     }
-
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     */
-    public function handleEditFormSuccess(Form $form, ArrayHash $values): void {}
 
     public function render(): void
     {

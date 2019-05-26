@@ -9,7 +9,7 @@
 namespace App\Components\Forms\LogoForm;
 
 
-use App\Components\Forms\BaseFormFactory;
+use App\Components\Forms\FormFactory;
 use App\Model\Functionality\LogoFunctionality;
 use App\Services\FileService;
 use App\Services\ValidationService;
@@ -18,7 +18,7 @@ use App\Services\ValidationService;
  * Class LogoFormFactory
  * @package App\Components\Forms\LogoForm
  */
-class LogoFormFactory extends BaseFormFactory
+class LogoFormFactory extends FormFactory
 {
     /**
      * @var FileService

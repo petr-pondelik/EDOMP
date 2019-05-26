@@ -8,7 +8,7 @@
 
 namespace App\Components\Forms\SubCategoryForm;
 
-use App\Components\Forms\BaseFormFactory;
+use App\Components\Forms\FormFactory;
 use App\Model\Functionality\SubCategoryFunctionality;
 use App\Model\Repository\CategoryRepository;
 use App\Services\ValidationService;
@@ -17,7 +17,7 @@ use App\Services\ValidationService;
  * Class SubCategoryFormControlFactory
  * @package App\Components\Forms\SubCategoryForm
  */
-class SubCategoryFormFactory extends BaseFormFactory
+class SubCategoryFormFactory extends FormFactory
 {
     /**
      * @var CategoryRepository

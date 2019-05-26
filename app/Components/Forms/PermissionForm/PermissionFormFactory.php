@@ -9,7 +9,7 @@
 namespace App\Components\Forms\PermissionForm;
 
 
-use App\Components\Forms\BaseFormFactory;
+use App\Components\Forms\FormFactory;
 use App\Model\Functionality\GroupFunctionality;
 use App\Model\Functionality\SuperGroupFunctionality;
 use App\Model\Repository\CategoryRepository;
@@ -19,7 +19,7 @@ use App\Services\ValidationService;
  * Class PermissionFormFactory
  * @package App\Components\Forms\PermissionForm
  */
-class PermissionFormFactory extends BaseFormFactory
+class PermissionFormFactory extends FormFactory
 {
     /**
      * @var CategoryRepository
@@ -58,7 +58,7 @@ class PermissionFormFactory extends BaseFormFactory
     public function create(bool $super = false): PermissionFormControl
     {
         return new PermissionFormControl(
-            $this->validationService, $this->functionality, $this->superGroupFunctionality, $this->categoryRepository, false, $super
+            $this->validationService, $this->functionality, $this->superGroupFunctionality, $this->categoryRepository, $super
         );
     }
 }

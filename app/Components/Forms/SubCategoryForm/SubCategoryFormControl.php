@@ -8,7 +8,7 @@
 
 namespace App\Components\Forms\SubCategoryForm;
 
-use App\Components\Forms\BaseFormControl;
+use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\SubCategoryFunctionality;
 use App\Model\Repository\CategoryRepository;
 use App\Services\ValidationService;
@@ -20,7 +20,7 @@ use Nette\Utils\ArrayHash;
  * Class SubCategoryFormControl
  * @package App\Components\Forms\SubCategoryForm
  */
-class SubCategoryFormControl extends BaseFormControl
+class SubCategoryFormControl extends EntityFormControl
 {
     /**
      * @var CategoryRepository
@@ -88,7 +88,7 @@ class SubCategoryFormControl extends BaseFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try {
             $this->functionality->create($values);

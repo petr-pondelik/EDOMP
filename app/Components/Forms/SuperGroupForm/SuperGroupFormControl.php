@@ -9,7 +9,7 @@
 namespace App\Components\Forms\SuperGroupForm;
 
 
-use App\Components\Forms\BaseFormControl;
+use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\SuperGroupFunctionality;
 use App\Services\ValidationService;
 use Nette\Application\AbortException;
@@ -20,7 +20,7 @@ use Nette\Utils\ArrayHash;
  * Class SuperGroupFormControl
  * @package App\Components\Forms\SuperGroupForm
  */
-class SuperGroupFormControl extends BaseFormControl
+class SuperGroupFormControl extends EntityFormControl
 {
     /**
      * SuperGroupFormControl constructor.
@@ -73,7 +73,7 @@ class SuperGroupFormControl extends BaseFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
             $this->functionality->create($values);

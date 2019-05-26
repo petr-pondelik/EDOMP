@@ -9,7 +9,7 @@
 namespace App\Components\Forms\TestStatisticsForm;
 
 
-use App\Components\Forms\BaseFormFactory;
+use App\Components\Forms\FormFactory;
 use App\Model\Functionality\ProblemFunctionality;
 use App\Model\Functionality\ProblemTestAssociationFunctionality;
 use App\Model\Repository\ProblemTestAssociationRepository;
@@ -19,7 +19,7 @@ use App\Services\ValidationService;
  * Class TestStatisticsFormFactory
  * @package App\Components\Forms\TestStatisticsForm
  */
-class TestStatisticsFormFactory extends BaseFormFactory
+class TestStatisticsFormFactory extends FormFactory
 {
     /**
      * @var ProblemTestAssociationRepository

@@ -9,7 +9,7 @@
 namespace App\Components\Forms\ProblemFinalForm;
 
 
-use App\Components\Forms\BaseFormControl;
+use App\Components\Forms\EntityFormControl;
 use App\Helpers\ConstHelper;
 use App\Model\Functionality\ProblemFinalFunctionality;
 use App\Model\Repository\DifficultyRepository;
@@ -25,7 +25,7 @@ use Nette\Utils\ArrayHash;
  * Class ProblemFinalFormControl
  * @package App\Components\Forms\ProblemFinalForm
  */
-class ProblemFinalFormControl extends BaseFormControl
+class ProblemFinalFormControl extends EntityFormControl
 {
     /**
      * @var DifficultyRepository
@@ -71,10 +71,10 @@ class ProblemFinalFormControl extends BaseFormControl
         DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository, ProblemConditionRepository $problemConditionRepository,
         ConstHelper $constHelper,
-        bool $edit = false, bool $super = false
+        bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit, $super);
+        parent::__construct($validationService, $edit);
         $this->functionality = $problemFinalFunctionality;
         $this->difficultyRepository = $difficultyRepository;
         $this->problemTypeRepository = $problemTypeRepository;
@@ -177,7 +177,7 @@ class ProblemFinalFormControl extends BaseFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
             $this->functionality->create($values);

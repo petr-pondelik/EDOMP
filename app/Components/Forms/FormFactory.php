@@ -15,7 +15,7 @@ use App\Services\ValidationService;
  * Class BaseFormFactory
  * @package App\Components\Forms
  */
-abstract class BaseFormFactory
+abstract class FormFactory
 {
     /**
      * @var ValidationService

@@ -8,7 +8,7 @@
 
 namespace App\Components\Forms\CategoryForm;
 
-use App\Components\Forms\BaseFormFactory;
+use App\Components\Forms\FormFactory;
 use App\Model\Functionality\CategoryFunctionality;
 use App\Services\ValidationService;
 
@@ -16,7 +16,7 @@ use App\Services\ValidationService;
  * Class CategoryFormFactory
  * @package App\Components\Forms\CategoryForm
  */
-class CategoryFormFactory extends BaseFormFactory
+class CategoryFormFactory extends FormFactory
 {
     /**
      * CategoryFormFactory constructor.

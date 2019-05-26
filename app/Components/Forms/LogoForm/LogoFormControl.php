@@ -9,7 +9,7 @@
 namespace App\Components\Forms\LogoForm;
 
 
-use App\Components\Forms\BaseFormControl;
+use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\LogoFunctionality;
 use App\Services\FileService;
 use App\Services\ValidationService;
@@ -21,7 +21,7 @@ use Nette\Utils\ArrayHash;
  * Class LogoFormControl
  * @package App\Components\Forms\LogoForm
  */
-class LogoFormControl extends BaseFormControl
+class LogoFormControl extends EntityFormControl
 {
     /**
      * @var FileService
@@ -104,7 +104,7 @@ class LogoFormControl extends BaseFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         if($values->logo_file) {
             try{

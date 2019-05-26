@@ -170,7 +170,7 @@ services:
 	factory.form.test.statistics: App\Components\Forms\TestStatisticsForm\TestStatisticsFormFactory
 	factory.form.permission: App\Components\Forms\PermissionForm\PermissionFormFactory
 	factory.form.sign: App\Components\Forms\SignForm\SignFormFactory
-	factory.form.problem.filter: App\Components\Forms\ProblemFilterFormFactory
+	factory.form.problem.filter: App\Components\Forms\ProblemFilterForm\ProblemFilterFormFactory
 
 	#Services
 	service.newtopapi.client: App\Services\NewtonApiClient

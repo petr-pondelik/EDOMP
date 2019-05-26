@@ -8,7 +8,11 @@
 
 namespace App\FrontModule\Presenters;
 
-use App\Components\Forms\ProblemFilterFormFactory;
+use App\Components\Forms\ProblemFilterForm\ProblemFilterFormControl;
+use App\Components\Forms\ProblemFilterForm\ProblemFilterFormFactory;
+use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SideBar\SideBarFactory;
+use App\Helpers\FlashesTranslator;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemFinalRepository;
@@ -63,6 +67,9 @@ class CategoryPresenter extends FrontPresenter
     /**
      * CategoryPresenter constructor.
      * @param Authorizator $authorizator
+     * @param HeaderBarFactory $headerBarFactory
+     * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
      * @param CategoryRepository $categoryRepository
      * @param SubCategoryRepository $subCategoryRepository
      * @param DifficultyRepository $difficultyRepository
@@ -72,12 +79,13 @@ class CategoryPresenter extends FrontPresenter
     public function __construct
     (
         Authorizator $authorizator,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         CategoryRepository $categoryRepository, SubCategoryRepository $subCategoryRepository, DifficultyRepository $difficultyRepository,
         ProblemFinalRepository $problemFinalRepository,
         ProblemFilterFormFactory $problemFilterFormFactory
     )
     {
-        parent::__construct($authorizator);
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->categoryRepository = $categoryRepository;
         $this->subCategoryRepository = $subCategoryRepository;
         $this->difficultyRepository = $difficultyRepository;
@@ -106,8 +114,6 @@ class CategoryPresenter extends FrontPresenter
             $this->clearFilters();
 
         $this->setFilters();
-
-        $this->template->filters = $this->filters;
     }
 
     /**
@@ -143,18 +149,15 @@ class CategoryPresenter extends FrontPresenter
     public function clearFilters()
     {
         $this->filters = [];
-        $this["problemFilterForm"]["difficulty"]->setDefaultValue([]);
+        $this["problemFilterForm"]['form']["difficulty"]->setDefaultValue([]);
     }
 
-    /**
-     * @param ArrayHash|null $filters
-     */
     public function setFilters(ArrayHash $filters = null)
     {
         //Set filters values to the filter form
         if($filters === null){
             foreach($this->filters as $filterKey => $filter)
-                $this["problemFilterForm"][$filterKey]->setDefaultValue($filter);
+                $this["problemFilterForm"]['form'][$filterKey]->setDefaultValue($filter);
             return;
         }
 
@@ -184,17 +187,15 @@ class CategoryPresenter extends FrontPresenter
     }
 
     /**
-     * @return Form
-     * @throws \Exception
+     * @return ProblemFilterFormControl
      */
-    public function createComponentProblemFilterForm()
+    public function createComponentProblemFilterForm(): ProblemFilterFormControl
     {
-        $form = $this->problemFilterFormFactory->create();
-        $themeOptions = $this->subCategoryRepository->findAssoc(["category" => $this->id], "id");
-        $form->addMultiSelect("theme", "Témata", $themeOptions)
-            ->setHtmlAttribute("class", "form-control selectpicker");
-        $form->onSuccess[] = [$this, "handleFilterFormSuccess"];
-        return $form;
+        $control = $this->problemFilterFormFactory->create($this->id);
+        $control->onSuccess[] = function (){
+            $this->redirect("Category:default", $this->id, false, 1,  $this->filters);
+        };
+        return $control;
     }
 
     /**
@@ -202,18 +203,15 @@ class CategoryPresenter extends FrontPresenter
      * @param ArrayHash $values
      * @throws \Nette\Application\AbortException
      */
-    public function handleFilterFormSuccess(Form $form, ArrayHash $values)
+    /*public function handleFilterFormSuccess(Form $form, ArrayHash $values)
     {
-        bdump($values);
         $this->setFilters($values);
         $this->redirect("Category:default", $this->id, false, 1,  $this->filters);
-    }
+    }*/
 
     public function handleClearFilters()
     {
         $this->clearFilters();
-        bdump($this->filters);
-        //$this->setFilters();
         $this->redirect("Category:default", $this->id, false, 1,  $this->filters);
     }
 }

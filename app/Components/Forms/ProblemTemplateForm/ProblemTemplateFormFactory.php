@@ -8,7 +8,7 @@
 
 namespace App\Components\Forms\ProblemTemplateForm;
 
-use App\Components\Forms\BaseFormFactory;
+use App\Components\Forms\FormFactory;
 use App\Helpers\ConstHelper;
 use App\Model\Functionality\BaseFunctionality;
 use App\Model\Repository\DifficultyRepository;
@@ -22,7 +22,7 @@ use App\Services\ValidationService;
  * Class ProblemTemplateFormFactory
  * @package App\Components\Forms\ProblemTemplateForm
  */
-class ProblemTemplateFormFactory extends BaseFormFactory
+class ProblemTemplateFormFactory extends FormFactory
 {
     /**
      * @var DifficultyRepository

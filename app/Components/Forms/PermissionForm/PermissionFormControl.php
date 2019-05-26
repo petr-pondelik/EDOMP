@@ -9,7 +9,7 @@
 namespace App\Components\Forms\PermissionForm;
 
 
-use App\Components\Forms\BaseFormControl;
+use App\Components\Forms\FormControl;
 use App\Model\Functionality\GroupFunctionality;
 use App\Model\Functionality\SuperGroupFunctionality;
 use App\Model\Repository\CategoryRepository;
@@ -22,7 +22,7 @@ use Nette\Utils\ArrayHash;
  * Class PermissionFormControl
  * @package App\Components\Forms\PermissionForm
  */
-class PermissionFormControl extends BaseFormControl
+class PermissionFormControl extends FormControl
 {
     /**
      * @var SuperGroupFunctionality
@@ -35,12 +35,16 @@ class PermissionFormControl extends BaseFormControl
     protected $categoryRepository;
 
     /**
+     * @var bool
+     */
+    protected $super;
+
+    /**
      * PermissionFormControl constructor.
      * @param ValidationService $validationService
      * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupFunctionality $superGroupFunctionality
      * @param CategoryRepository $categoryRepository
-     * @param bool $edit
      * @param bool $super
      */
     public function __construct
@@ -48,13 +52,14 @@ class PermissionFormControl extends BaseFormControl
         ValidationService $validationService,
         GroupFunctionality $groupFunctionality, SuperGroupFunctionality $superGroupFunctionality,
         CategoryRepository $categoryRepository,
-        bool $edit = false, bool $super = false
+        bool $super = false
     )
     {
-        parent::__construct($validationService, $edit, $super);
+        parent::__construct($validationService);
         $this->functionality = $groupFunctionality;
         $this->superGroupFunctionality = $superGroupFunctionality;
         $this->categoryRepository = $categoryRepository;
+        $this->super = $super;
     }
 
     /**
@@ -75,9 +80,9 @@ class PermissionFormControl extends BaseFormControl
         $form['submit']->caption = 'Uložit';
 
         if ($this->super)
-            $form->onSuccess[] = [$this, 'handleSuperGroupFormSuccess'];
+            $form->onSuccess[] = [$this, 'handleSuperFormSuccess'];
         else
-            $form->onSuccess[] = [$this, 'handleGroupFormSuccess'];
+            $form->onSuccess[] = [$this, 'handleFormSuccess'];
 
         return $form;
     }
@@ -91,7 +96,7 @@ class PermissionFormControl extends BaseFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleGroupFormSuccess(Form $form, ArrayHash $values): void
+    public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
             $this->functionality->updatePermissions($values->id, $values->categories);
@@ -108,7 +113,7 @@ class PermissionFormControl extends BaseFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleSuperGroupFormSuccess(Form $form, ArrayHash $values): void
+    public function handleSuperFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
             $this->superGroupFunctionality->updatePermissions($values->id, $values->categories);
@@ -128,16 +133,4 @@ class PermissionFormControl extends BaseFormControl
         else
             $this->template->render(__DIR__ . '/templates/group.latte');
     }
-
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void {}
-
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     */
-    public function handleEditFormSuccess(Form $form, ArrayHash $values): void {}
 }

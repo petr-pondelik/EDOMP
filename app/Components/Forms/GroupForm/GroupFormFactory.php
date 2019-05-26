@@ -9,7 +9,7 @@
 namespace App\Components\Forms\GroupForm;
 
 
-use App\Components\Forms\BaseFormFactory;
+use App\Components\Forms\FormFactory;
 use App\Model\Functionality\GroupFunctionality;
 use App\Model\Repository\SuperGroupRepository;
 use App\Services\ValidationService;
@@ -18,7 +18,7 @@ use App\Services\ValidationService;
  * Class GroupFormFactory
  * @package App\Components\Forms\GroupForm
  */
-class GroupFormFactory extends BaseFormFactory
+class GroupFormFactory extends FormFactory
 {
     /**
      * @var SuperGroupRepository

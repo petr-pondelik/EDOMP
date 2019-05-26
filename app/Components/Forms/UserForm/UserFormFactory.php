@@ -9,7 +9,7 @@
 namespace App\Components\Forms\UserForm;
 
 
-use App\Components\Forms\BaseFormFactory;
+use App\Components\Forms\FormFactory;
 use App\Model\Functionality\UserFunctionality;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\RoleRepository;
@@ -19,7 +19,7 @@ use App\Services\ValidationService;
  * Class UserFormFactory
  * @package App\Components\Forms\UserForm
  */
-class UserFormFactory extends BaseFormFactory
+class UserFormFactory extends FormFactory
 {
     /**
      * @var GroupRepository

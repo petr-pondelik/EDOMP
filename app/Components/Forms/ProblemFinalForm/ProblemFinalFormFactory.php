@@ -9,7 +9,7 @@
 namespace App\Components\Forms\ProblemFinalForm;
 
 
-use App\Components\Forms\BaseFormFactory;
+use App\Components\Forms\FormFactory;
 use App\Helpers\ConstHelper;
 use App\Model\Functionality\ProblemFinalFunctionality;
 use App\Model\Functionality\ProblemFunctionality;
@@ -23,7 +23,7 @@ use App\Services\ValidationService;
  * Class ProblemFinalFormFactory
  * @package App\Components\Forms\ProblemFinalForm
  */
-class ProblemFinalFormFactory extends BaseFormFactory
+class ProblemFinalFormFactory extends FormFactory
 {
     /**
      * @var DifficultyRepository

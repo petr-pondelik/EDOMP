@@ -18,7 +18,7 @@ use Nette\Utils\ArrayHash;
  * Class ProblemFilterFormFactory
  * @package App\Components\Forms
  */
-class ProblemFilterFormFactory extends BaseFormControl
+class ProblemFilterFormFactory extends FormControl
 {
     /**
      * @var DifficultyRepository
@@ -102,5 +102,14 @@ class ProblemFilterFormFactory extends BaseFormControl
     public function render(): void
     {
         // TODO: Implement render() method.
+    }
+
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function handleFormSuccess(Form $form, ArrayHash $values): void
+    {
+        // TODO: Implement handleFormSuccess() method.
     }
 }

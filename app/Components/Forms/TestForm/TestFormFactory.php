@@ -8,7 +8,7 @@
 
 namespace App\Components\Forms\TestForm;
 
-use App\Components\Forms\BaseFormFactory;
+use App\Components\Forms\FormFactory;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\LogoRepository;
@@ -27,7 +27,7 @@ use Kdyby\Doctrine\EntityManager;
  * Class TestFormFactory
  * @package App\Components\Forms\TestForm
  */
-class TestFormFactory extends BaseFormFactory
+class TestFormFactory extends FormFactory
 {
     /**
      * @var EntityManager

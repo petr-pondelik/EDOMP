@@ -9,7 +9,7 @@
 namespace App\Components\Forms\TestForm;
 
 
-use App\Components\Forms\BaseFormControl;
+use App\Components\Forms\FormControl;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\LogoRepository;
@@ -32,7 +32,7 @@ use Nette\Utils\Strings;
  * Class TestFormControl
  * @package App\Components\Forms\TestForm
  */
-class TestFormControl extends BaseFormControl
+class TestFormControl extends FormControl
 {
     /**
      * @var EntityManager
@@ -109,8 +109,6 @@ class TestFormControl extends BaseFormControl
      * @param TermRepository $termRepository
      * @param TestBuilderService $testBuilderService
      * @param FileService $fileService
-     * @param bool $edit
-     * @param bool $super
      */
     public function __construct
     (
@@ -119,11 +117,10 @@ class TestFormControl extends BaseFormControl
         ProblemRepository $problemRepository, ProblemTemplateRepository $problemTemplateRepository, ProblemTypeRepository $problemTypeRepository,
         DifficultyRepository $difficultyRepository, LogoRepository $logoRepository, GroupRepository $groupRepository,
         SubCategoryRepository $subCategoryRepository, TermRepository $termRepository,
-        TestBuilderService $testBuilderService, FileService $fileService,
-        bool $edit = false, bool $super = false
+        TestBuilderService $testBuilderService, FileService $fileService
     )
     {
-        parent::__construct($validationService, $edit, $super);
+        parent::__construct($validationService);
         $this->entityManager = $entityManager;
         $this->testRepository = $testRepository;
         $this->problemRepository =$problemRepository;
@@ -239,8 +236,9 @@ class TestFormControl extends BaseFormControl
 
         }
 
-        $form->addSubmit('create', 'Vytvořit')
-            ->setHtmlAttribute('class', 'btn btn-primary col-12');
+        $form['submit']->caption = 'Vytvořit';
+        $form['submit']->setHtmlAttribute('class', 'btn btn-primary col-12');
+        $form->onSuccess[] = [$this, 'handleFormSuccess'];
 
         return $form;
     }
@@ -270,7 +268,7 @@ class TestFormControl extends BaseFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
             $testData = $this->testBuilderService->buildTest($values);
@@ -296,12 +294,6 @@ class TestFormControl extends BaseFormControl
         $this->fileService->createTestZip($testData->testId);
         $this->onSuccess();
     }
-
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     */
-    public function handleEditFormSuccess(Form $form, ArrayHash $values): void {}
 
     public function handleFilterChange(array $filters): void
     {
