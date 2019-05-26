@@ -129,6 +129,8 @@ class ValidationService
 
             "school_year" => function($filledVal){
                 if(empty($filledVal)) return 0;
+                if(!Strings::match($filledVal, '~[0-9]{4}(\/|\-)([0-9]{4}|[0-9]{2})~'))
+                    return 1;
                 return -1;
             },
 
@@ -277,7 +279,8 @@ class ValidationService
             ],
 
             "school_year" => [
-                0 => "Školní rok musí bý vyplněn."
+                0 => "Školní rok musí bý vyplněn.",
+                1 => 'Školní roku musí být ve formátu rrrr/rr(rr) nebo rrrr-rr(rr).'
             ],
 
             "test_number" => [

@@ -70,7 +70,9 @@ class TestFunctionality extends BaseFunctionality
         $test = new Test();
         $test->setLogo($this->logoRepository->find($data->logo_id));
         $test->setTerm($this->termRepository->find($data->term_id));
-        $test->setGroups([$this->groupRepository->find($data->group_id)]);
+        //$test->setGroups([$this->groupRepository->find($data->group_id)]);
+        $test = $this->attachGroups($test, $data->groups);
+        //bdump($data->groups);
         $test->setSchoolYear($data->school_year);
         $test->setTestNumber($data->test_number);
         $test->setIntroductionText($data->introduction_text);
@@ -92,13 +94,27 @@ class TestFunctionality extends BaseFunctionality
 
     /**
      * @param Test $test
+     * @param ArrayHash $groups
+     * @return Test
+     */
+    public function attachGroups(Test $test, ArrayHash $groups): Test
+    {
+        foreach ($groups as $groupId){
+            $group = $this->groupRepository->findOneBy(['id' => $groupId]);
+            $test->addGroup($group);
+        }
+        return $test;
+    }
+
+    /**
+     * @param Test $test
      * @param ProblemFinal $problem
      * @param string $variant
      * @param ProblemTemplate $template
      * @param bool $newPage
      * @throws \Exception
      */
-    public function attachProblem(Test $test, ProblemFinal $problem, string $variant, ProblemTemplate $template = null, bool $newPage = false)
+    public function attachProblem(Test $test, ProblemFinal $problem, string $variant, ProblemTemplate $template = null, bool $newPage = false): void
     {
         $association = new ProblemTestAssociation();
         $association->setTest($test);

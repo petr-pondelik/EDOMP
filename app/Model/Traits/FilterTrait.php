@@ -23,7 +23,7 @@ trait FilterTrait
     {
         $filterArr = [];
 
-        if(isset($filters["is_template"]) && $filters["is_template"] != 0)
+        if(isset($filters["is_template"]))
             $filterArr["isTemplate"] = $filters["is_template"];
 
         if(isset($filters["problem_type_id"]) && $filters["problem_type_id"] != 0)
@@ -37,6 +37,6 @@ trait FilterTrait
 
         bdump($filterArr);
 
-        return $this->findAssoc($filterArr, "id");
+        return $this->findBy($filterArr);
     }
 }

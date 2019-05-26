@@ -8,6 +8,7 @@
 
 namespace App\Helpers;
 
+use App\Exceptions\ProblemFinalCollisionException;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 
 /**
@@ -270,9 +271,11 @@ class FlashesTranslator
      */
     public static function translate(string $operation, string $presenterName, string $type = null, \Exception $e = null): string
     {
-        if($e instanceof ForeignKeyConstraintViolationException){
+        if($e instanceof ForeignKeyConstraintViolationException)
             return self::$presenterMessages[$presenterName]['constraintViolation'];
-        }
+        if($e instanceof ProblemFinalCollisionException)
+            return $e->getMessage();
+
         return self::$presenterMessages[$presenterName][$type][$operation];
     }
 }

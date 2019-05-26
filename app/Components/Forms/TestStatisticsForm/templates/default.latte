@@ -15,8 +15,7 @@
         <div class="card-body col-12">
 
             {snippet flashesSnippet}
-                <div n:foreach="$flashes as $flash"
-                        class="mb-4 flash alert alert-{$flash->type}">{$flash->message}</div>
+                <div n:foreach="$flashes as $flash" class="mb-4 flash alert alert-{$flash->type}">{$flash->message}</div>
             {/snippet}
 
             {var $i = 0}

@@ -91,8 +91,16 @@
                     <div class="row d-flex justify-content-between mb-4">
 
                         <div class="form-group col-md-6">
-                            {label group}
-                            {input group}
+                            {label groups}
+                            {input groups}
+                            {snippet groupsErrorSnippet}
+                                {var $form = $control['form']}
+                                <div n:if="$form->hasErrors()" class="mt-2">
+                                    <p n:foreach="$form['groups']->errors as $error" class="alert alert-danger">
+                                        {$error}
+                                    </p>
+                                </div>
+                            {/snippet}
                         </div>
 
                         <div class="form-group col-md-6">
@@ -273,14 +281,13 @@
             {/if}
         {/for}
 
+        {snippet flashesSnippet}
+            <div n:foreach="$flashes as $flash" class="col-12 flash alert alert-{$flash->type}">{$flash->message}</div>
+        {/snippet}
+
         <div class="form-group">
             {input submit}
         </div>
-
-        {snippet flashesSnippet}
-            <div n:foreach="$flashes as $flash"
-                    class="col-12 flash alert alert-{$flash->type}">{$flash->message}</div>
-        {/snippet}
 
     {/form}
 

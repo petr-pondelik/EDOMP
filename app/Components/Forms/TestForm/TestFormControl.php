@@ -13,6 +13,7 @@ use App\Components\Forms\FormControl;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\LogoRepository;
+use App\Model\Repository\ProblemFinalRepository;
 use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\ProblemTypeRepository;
@@ -53,6 +54,11 @@ class TestFormControl extends FormControl
      * @var ProblemTemplateRepository
      */
     protected $problemTemplateRepository;
+
+    /**
+     * @var ProblemFinalRepository
+     */
+    protected $problemFinalRepository;
 
     /**
      * @var ProblemTypeRepository
@@ -101,6 +107,7 @@ class TestFormControl extends FormControl
      * @param TestRepository $testRepository
      * @param ProblemRepository $problemRepository
      * @param ProblemTemplateRepository $problemTemplateRepository
+     * @param ProblemFinalRepository $problemFinalRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param DifficultyRepository $difficultyRepository
      * @param LogoRepository $logoRepository
@@ -114,7 +121,8 @@ class TestFormControl extends FormControl
     (
         ValidationService $validationService, EntityManager $entityManager,
         TestRepository $testRepository,
-        ProblemRepository $problemRepository, ProblemTemplateRepository $problemTemplateRepository, ProblemTypeRepository $problemTypeRepository,
+        ProblemRepository $problemRepository, ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemFinalRepository,
+        ProblemTypeRepository $problemTypeRepository,
         DifficultyRepository $difficultyRepository, LogoRepository $logoRepository, GroupRepository $groupRepository,
         SubCategoryRepository $subCategoryRepository, TermRepository $termRepository,
         TestBuilderService $testBuilderService, FileService $fileService
@@ -125,6 +133,7 @@ class TestFormControl extends FormControl
         $this->testRepository = $testRepository;
         $this->problemRepository =$problemRepository;
         $this->problemTemplateRepository = $problemTemplateRepository;
+        $this->problemFinalRepository = $problemFinalRepository;
         $this->problemTypeRepository = $problemTypeRepository;
         $this->difficultyRepository = $difficultyRepository;
         $this->logoRepository = $logoRepository;
@@ -174,8 +183,8 @@ class TestFormControl extends FormControl
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId("test-logo-id");
 
-        $form->addSelect('group', 'Skupina', $groups)
-            ->setHtmlAttribute('class', 'form-control');
+        $form->addMultiSelect('groups', 'Skupiny', $groups)
+            ->setHtmlAttribute('class', 'form-control selectpicker');
 
         $form->addSelect("test_term", "Období", $testTerms)
             ->setHtmlAttribute("class", "form-control");
@@ -227,7 +236,9 @@ class TestFormControl extends FormControl
 
             //bdump(array_merge($this->problemTemplateRepository->findAssoc([], "id"), $this->problemRepository->findAssoc([], "id")));
 
-            $form->addSelect('problem_'.$i, 'Úloha', $this->problemRepository->findAssoc([], "id"))
+            $form->addSelect('problem_'.$i, 'Úloha',
+                array_merge([-1 => 'Zvolit náhodně'], $this->problemRepository->findAll())
+            )
                 ->setHtmlAttribute('class', 'form-control problem-select')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlId('problem_'.$i);
@@ -250,6 +261,7 @@ class TestFormControl extends FormControl
     {
         $values = $form->getValues();
         $validateFields["logo_file"] = $values->logo_file_hidden;
+        $validateFields['groups'] = ArrayHash::from($values->groups);
         $validateFields["school_year"] = $values->school_year;
         $validateFields["test_number"] = $values->test_number;
         $validationErrors = $this->validationService->validate($validateFields);
@@ -260,6 +272,7 @@ class TestFormControl extends FormControl
             }
         }
         $this->redrawControl("logoFileErrorSnippet");
+        $this->redrawControl('groupsErrorSnippet');
         $this->redrawControl("schoolYearErrorSnippet");
         $this->redrawControl("testNumberErrorSnippet");
     }
@@ -295,14 +308,23 @@ class TestFormControl extends FormControl
         $this->onSuccess();
     }
 
+    /**
+     * @param array $filters
+     */
     public function handleFilterChange(array $filters): void
     {
         foreach($filters as $problemKey => $problemFilters){
 
-            if(!isset($problemFilters["filters"]["is_template"]) || $problemFilters["filters"]["is_template"])
+            if(!isset($problemFilters["filters"]["is_template"]) || $problemFilters['filters']['is_template'] == -1){
+                unset($problemFilters['filters']['is_template']);
+                $filterRes = $this->problemRepository->findFiltered($problemFilters['filters']);
+            }
+            else if($problemFilters["filters"]["is_template"]){
                 $filterRes = $this->problemTemplateRepository->findFiltered($problemFilters["filters"]);
-            else
-                $filterRes = $this->problemRepository->findFiltered($problemFilters["filters"]);
+            }
+            else{
+                $filterRes = $this->problemFinalRepository->findFiltered($problemFilters["filters"]);
+            }
 
             if(isset($problemFilters['filters'])){
                 foreach ($problemFilters['filters'] as $filterType => $filterVal) {
@@ -310,7 +332,7 @@ class TestFormControl extends FormControl
                 }
             }
 
-            $this['form']['problem_' . $problemKey]->setItems($filterRes);
+            $this['form']['problem_' . $problemKey]->setItems(array_merge(['-1' => 'Zvolit náhodně'], $filterRes));
 
             if(array_key_exists($problemFilters['selected'], $filterRes))
                 $this['form']['problem_' . $problemKey]->setValue($problemFilters['selected']);

@@ -12,6 +12,7 @@ use App\Components\Forms\FormFactory;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\LogoRepository;
+use App\Model\Repository\ProblemFinalRepository;
 use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\ProblemTypeRepository;
@@ -48,6 +49,11 @@ class TestFormFactory extends FormFactory
      * @var ProblemTemplateRepository
      */
     protected $problemTemplateRepository;
+
+    /**
+     * @var ProblemFinalRepository
+     */
+    protected $problemFinalRepository;
 
     /**
      * @var ProblemTypeRepository
@@ -96,6 +102,7 @@ class TestFormFactory extends FormFactory
      * @param TestRepository $testRepository
      * @param ProblemRepository $problemRepository
      * @param ProblemTemplateRepository $problemTemplateRepository
+     * @param ProblemFinalRepository $problemFinalRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param DifficultyRepository $difficultyRepository
      * @param LogoRepository $logoRepository
@@ -109,7 +116,8 @@ class TestFormFactory extends FormFactory
     (
         ValidationService $validationService, EntityManager $entityManager,
         TestRepository $testRepository,
-        ProblemRepository $problemRepository, ProblemTemplateRepository $problemTemplateRepository, ProblemTypeRepository $problemTypeRepository,
+        ProblemRepository $problemRepository, ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemFinalRepository,
+        ProblemTypeRepository $problemTypeRepository,
         DifficultyRepository $difficultyRepository, LogoRepository $logoRepository, GroupRepository $groupRepository,
         SubCategoryRepository $subCategoryRepository, TermRepository $termRepository,
         TestBuilderService $testBuilderService, FileService $fileService
@@ -120,6 +128,7 @@ class TestFormFactory extends FormFactory
         $this->testRepository = $testRepository;
         $this->problemRepository = $problemRepository;
         $this->problemTemplateRepository = $problemTemplateRepository;
+        $this->problemFinalRepository = $problemFinalRepository;
         $this->problemTypeRepository = $problemTypeRepository;
         $this->difficultyRepository = $difficultyRepository;
         $this->logoRepository = $logoRepository;
@@ -139,7 +148,8 @@ class TestFormFactory extends FormFactory
         (
             $this->validationService, $this->entityManager,
             $this->testRepository,
-            $this->problemRepository, $this->problemTemplateRepository, $this->problemTypeRepository, $this->difficultyRepository,
+            $this->problemRepository, $this->problemTemplateRepository, $this->problemFinalRepository,
+            $this->problemTypeRepository, $this->difficultyRepository,
             $this->logoRepository, $this->groupRepository, $this->subCategoryRepository, $this->termRepository,
             $this->testBuilderService, $this->fileService
         );

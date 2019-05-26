@@ -197,6 +197,15 @@ class Test extends BaseEntity
     }
 
     /**
+     * @param Group $group
+     */
+    public function addGroup(Group $group): void
+    {
+        if($this->groups->contains($group)) return;
+        $this->groups[] = $group;
+    }
+
+    /**
      * @return Logo
      */
     public function getLogo(): Logo

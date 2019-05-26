@@ -8,6 +8,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ProblemFinalCollisionException;
 use App\Model\Entity\Test;
 use App\Model\Functionality\LogoFunctionality;
 use App\Model\Functionality\ProblemFinalFunctionality;
@@ -161,6 +162,33 @@ class TestBuilderService
     }
 
     /**
+     * @param int $id
+     * @param ArrayHash $data
+     * @return array
+     */
+    public function getProblemFilters(int $id, ArrayHash $data): array
+    {
+        if($data['is_template_' . $id] !== -1)
+            $filters['is_template'] = $data['is_template_' . $id];
+        $filters['problem_type_id'] = $data['problem_type_id_' . $id];
+        $filters['difficulty_id'] = $data['difficulty_id_' . $id];
+        $filters['sub_category_id'] = $data['sub_category_id_' . $id];
+        return $filters;
+    }
+
+    /**
+     * @param array $arr
+     * @return bool
+     */
+    public function hasFree(array $arr): bool
+    {
+        foreach ($arr as $item){
+            if($item) return true;
+        }
+        return false;
+    }
+
+    /**
      * @param Test $test
      * @param string $variant
      * @param ArrayHash $data
@@ -169,12 +197,86 @@ class TestBuilderService
      */
     public function buildTestVariant(Test $test, string $variant, ArrayHash $data)
     {
+        //Array of chosen final problems IDs
+        $usedFinals = [];
+
+        //Array of all possible finals IDs
+        //$allFinals = [];
+
         for($i = 0; $i < $data->problems_cnt; $i++){
 
             $problemTemplate = null;
             $problemId = $data['problem_'.$i];
 
-            $problem = $this->problemRepository->find($problemId);
+            //In the case of random choice
+            if($problemId === 0){
+
+                $filters = $this->getProblemFilters($i, $data);
+                $problems = $this->problemRepository->findFiltered($filters);
+
+                $filters = array_merge(['is_template' => 0], $filters);
+                $finals = $this->problemRepository->findFiltered($filters);
+
+                $finalsFree = [];
+
+                foreach($finals as $final)
+                    $finalsFree[$final->getId()] = true;
+
+                while(true){
+                    $index = $this->generatorService->generateInteger(0, count($problems) - 1);
+
+                    $problem = $problems[$index];
+
+                    if(!$this->hasFree($finalsFree) && (count($problems) === count($finals)))
+                        throw new ProblemFinalCollisionException('Test nelze vygenerovat bez opakujících se úloh.');
+
+                    if(!$problem->isTemplate()){
+                        if(!in_array($problem->getId(), $usedFinals)){
+                            $usedFinals[] = $problem->getId();
+                            break;
+                        }
+                        $finalsFree[$problem->getId()] = false;
+                    }
+                    else{
+                        break;
+                    }
+                }
+
+                /*foreach ($finals as $final){
+                    if(!in_array($final->getId(), $allFinals)){
+                        $allFinals[] = $final->getId();
+                    }
+                }
+
+                bdump($problems);
+                bdump($finals);
+
+                do{
+
+                    bdump($chosenFinals);
+                    bdump($finals);
+
+                    if(count($chosenFinals) >= count($finals)){
+                        bdump('EXCEPTION');
+                        return;
+                    }
+
+                    $index = $this->generatorService->generateInteger(0, count($problems) - 1);
+                    $problem = $problems[$index];
+
+                    if(!$problem->isTemplate()){
+                        if(!in_array($problem->getId(), $chosenFinals)){
+                            $chosenFinals[] = $problem->getId();
+                            break;
+                        }
+                    }
+
+                } while(true);*/
+
+            }
+            else{
+                $problem = $this->problemRepository->find($problemId);
+            }
 
             //If the problem is prototype, it needs to be generated to it's final form
             if($problem->isTemplate()){
@@ -231,7 +333,7 @@ class TestBuilderService
             "term_id" => $data->test_term,
             "school_year" => $data->school_year,
             "test_number" => $data->test_number,
-            "group_id" => $data->group,
+            "groups" => $data->groups,
             "introduction_text" => $data->introduction_text
         ]));
 
