@@ -10,7 +10,6 @@ namespace App\Model\Functionality;
 
 use App\Helpers\FormatterHelper;
 use App\Model\Entity\ProblemFinal;
-use App\Model\Entity\ProblemCondition;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemFinalRepository;
@@ -92,13 +91,13 @@ class ProblemFinalFunctionality extends BaseFunctionality
     /**
      * @param ArrayHash $data
      * @param array|null $conditions
-     * @return int
+     * @param bool $flush
+     * @return Object|null
      * @throws \Exception
      */
-    public function create(ArrayHash $data, array $conditions = null): int
+    public function create(ArrayHash $data, array $conditions = null, bool $flush = true): ?Object
     {
         $problem = new ProblemFinal();
-
         $problem->setTextBefore($data->text_before);
         $problem->setBody($data->body);
         $problem->setTextAfter($data->text_after);
@@ -117,16 +116,16 @@ class ProblemFinalFunctionality extends BaseFunctionality
         $problem->setSubCategory($this->subCategoryRepository->find($data->subcategory));
         if(isset($data->problem_template_id))
             $problem->setProblemTemplate($this->problemRepository->find($data->problem_template_id));
-
         if($conditions === null)
             $problem = $this->attachConditions($problem, $data);
         else
             $problem->setConditions($conditions);
 
         $this->em->persist($problem);
-        $this->em->flush();
+        if($flush)
+            $this->em->flush();
 
-        return $problem->getId();
+        return $problem;
     }
 
     /**

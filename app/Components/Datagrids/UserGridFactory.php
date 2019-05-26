@@ -61,8 +61,7 @@ class UserGridFactory extends BaseGrid
     public function create($container, $name)
     {
         $grid = parent::create($container, $name);
-
-        $roleOptions = $this->roleRepository->findAllowed();
+        $roleOptions = $this->roleRepository->findAllowed($container->user);
 
         $grid->setPrimaryKey("id");
 

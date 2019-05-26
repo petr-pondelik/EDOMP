@@ -8,10 +8,8 @@
 
 namespace App\Model\Functionality;
 
-use App\Model\Entity\ProblemTemplate;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
-use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
@@ -55,6 +53,15 @@ class ProblemTemplateFunctionality extends BaseFunctionality
     }
 
     /**
+     * @param ArrayHash $data
+     * @return Object|null
+     */
+    public function create(ArrayHash $data): ?Object
+    {
+        return null;
+    }
+
+    /**
      * @param int $id
      * @param ArrayHash $data
      * @param bool $fromDataGrid
@@ -66,14 +73,5 @@ class ProblemTemplateFunctionality extends BaseFunctionality
         if(!$fromDataGrid)
             $templ->setConditions(new ArrayCollection());
         return $this->setBaseValues($templ, $data, $id, $fromDataGrid);
-    }
-
-    /**
-     * @param ArrayHash $data
-     * @return int
-     */
-    public function create(ArrayHash $data): int
-    {
-        return 0;
     }
 }

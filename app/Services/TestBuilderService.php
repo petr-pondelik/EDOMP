@@ -193,24 +193,20 @@ class TestBuilderService
      * @param string $variant
      * @param ArrayHash $data
      * @return void
+     * @throws ProblemFinalCollisionException
      * @throws \Nette\Utils\JsonException
-     */
+)     */
     public function buildTestVariant(Test $test, string $variant, ArrayHash $data)
     {
         //Array of chosen final problems IDs
         $usedFinals = [];
 
-        //Array of all possible finals IDs
-        //$allFinals = [];
-
         for($i = 0; $i < $data->problems_cnt; $i++){
-
             $problemTemplate = null;
             $problemId = $data['problem_'.$i];
 
             //In the case of random choice
             if($problemId === 0){
-
                 $filters = $this->getProblemFilters($i, $data);
                 $problems = $this->problemRepository->findFiltered($filters);
 
@@ -241,38 +237,6 @@ class TestBuilderService
                         break;
                     }
                 }
-
-                /*foreach ($finals as $final){
-                    if(!in_array($final->getId(), $allFinals)){
-                        $allFinals[] = $final->getId();
-                    }
-                }
-
-                bdump($problems);
-                bdump($finals);
-
-                do{
-
-                    bdump($chosenFinals);
-                    bdump($finals);
-
-                    if(count($chosenFinals) >= count($finals)){
-                        bdump('EXCEPTION');
-                        return;
-                    }
-
-                    $index = $this->generatorService->generateInteger(0, count($problems) - 1);
-                    $problem = $problems[$index];
-
-                    if(!$problem->isTemplate()){
-                        if(!in_array($problem->getId(), $chosenFinals)){
-                            $chosenFinals[] = $problem->getId();
-                            break;
-                        }
-                    }
-
-                } while(true);*/
-
             }
             else{
                 $problem = $this->problemRepository->find($problemId);
@@ -280,7 +244,6 @@ class TestBuilderService
 
             //If the problem is prototype, it needs to be generated to it's final form
             if($problem->isTemplate()){
-
                 $generatedFinal = $this->generatorService->generateWithConditions($problem);
 
                 //Build final problem object
@@ -306,29 +269,25 @@ class TestBuilderService
                 //Store generated final problem to DB and switch problemId to it's ID
                 $problemTemplate = $problem;
 
-                $problemId = $this->problemFinalFunctionality->create($finalData, $templateConditions->getValues());
-                $problem = $this->problemRepository->find($problemId);
-
+                $problem = $this->problemFinalFunctionality->create($finalData, $templateConditions->getValues(), false);
             }
 
             //Attach current problem to the created test
             $this->testFunctionality->attachProblem($test, $problem, $variant, $problemTemplate ?? null, $data->{"newpage_" . $i});
         }
-
     }
 
     /**
      * @param ArrayHash $data
      * @return bool|ArrayHash
+     * @throws ProblemFinalCollisionException
      * @throws \Nette\Utils\JsonException
      */
     public function buildTest(ArrayHash $data)
     {
-        //TODO: HANDLE NOT SUPPORTED EXCEPTION -> MAKE OWN EXCEPTION
-
         $variants = $this->testVariantsToArray($data);
 
-        $testId = $this->testFunctionality->create(ArrayHash::from([
+        $test = $this->testFunctionality->create(ArrayHash::from([
             "logo_id" => $data->logo_file_hidden,
             "term_id" => $data->test_term,
             "school_year" => $data->school_year,
@@ -337,17 +296,10 @@ class TestBuilderService
             "introduction_text" => $data->introduction_text
         ]));
 
-        $test = $this->testRepository->find($testId);
+        //$test = $this->testRepository->find($testId);
 
-        foreach($variants as $variant){
-            //Catch if there is one final problem more than once
-            try{
-                $this->buildTestVariant($test, $variant, $data);
-            }
-            catch(UniqueConstraintViolationException $e){
-                throw new NotSupportedException('V testu se vyskytují dvě shodné úlohy.');
-            }
-        }
+        foreach($variants as $variant)
+            $this->buildTestVariant($test, $variant, $data);
 
         $resArr = [
             "testId" => $testId,

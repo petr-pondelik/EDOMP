@@ -64,8 +64,8 @@ class UserFormControl extends EntityFormControl
     {
         $form = parent::createComponentForm();
 
-        $groupOptions = $this->groupRepository->findAllowed();
-        $roleOptions = $this->roleRepository->findAllowed($this->presenter->user->isInRole("teacher"));
+        $groupOptions = $this->groupRepository->findAllowed($this->presenter->user);
+        $roleOptions = $this->roleRepository->findAllowed($this->presenter->user);
 
         $form->addText("username", "Uživatelské jméno")
             ->setHtmlAttribute('class', 'form-control');

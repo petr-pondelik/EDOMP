@@ -53,17 +53,17 @@ class GroupFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return int
+     * @return Object|null
      * @throws \Exception
      */
-    public function create(ArrayHash $data): int
+    public function create(ArrayHash $data): ?Object
     {
         $group = new Group();
         $group->setLabel($data->label);
         $group->setSuperGroup($this->superGroupRepository->find($data->super_group_id));
         $this->em->persist($group);
         $this->em->flush();
-        return $group->getId();
+        return $group;
     }
 
     /**

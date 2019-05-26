@@ -154,7 +154,7 @@ class TestFormControl extends FormControl
 
         $problemTypes = $this->problemTypeRepository->findAssoc([], "id");
         $difficulties = $this->difficultyRepository->findAssoc([], "id");
-        $groups = $this->groupRepository->findAssoc([],"id");
+        $groups = $this->groupRepository->findAllowed($this->presenter->user);
         $testTerms = $this->termRepository->findAssoc([],"id");
         $subCategories = $this->subCategoryRepository->findAssoc([], "id");
 

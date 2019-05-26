@@ -55,7 +55,7 @@ class GroupFormControl extends EntityFormControl
     {
         $form = parent::createComponentForm();
 
-        $superGroupOptions = $this->superGroupRepository->findAllowed();
+        $superGroupOptions = $this->superGroupRepository->findAllowed($this->presenter->user);
 
         $form->addText("label", "Název")
             ->setHtmlAttribute("class", "form-control");

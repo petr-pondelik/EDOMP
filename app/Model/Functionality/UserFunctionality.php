@@ -54,10 +54,10 @@ class UserFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return int
+     * @return Object|null
      * @throws \Exception
      */
-    public function create(ArrayHash $data): int
+    public function create(ArrayHash $data): ?Object
     {
         $user = new User();
         $user->setUsername($data->username);
@@ -66,7 +66,7 @@ class UserFunctionality extends BaseFunctionality
         $user = $this->attachGroups($user, $data->groups);
         $this->em->persist($user);
         $this->em->flush();
-        return $user->getId();
+        return $user;
     }
 
     /**
@@ -77,8 +77,6 @@ class UserFunctionality extends BaseFunctionality
      */
     public function update(int $id, ArrayHash $data): ?Object
     {
-        // TODO: Implement update() method.
-        bdump($data);
         $user = $this->repository->find($id);
         $user->setUsername($data->username);
         if($data->change_password)

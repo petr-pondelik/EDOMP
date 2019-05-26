@@ -8,6 +8,8 @@
 
 namespace App\Model\Repository;
 
+use Nette\Security\User;
+
 /**
  * Class RoleRepository
  * @package App\Model\Repository
@@ -15,11 +17,11 @@ namespace App\Model\Repository;
 class RoleRepository extends BaseRepository
 {
     /**
-     * @param bool $teacher
+     * @param User $user
      * @return mixed
      * @throws \Doctrine\ORM\Query\QueryException
      */
-    public function findAllowed(bool $teacher = false)
+    public function findAllowed(User $user)
     {
         $qb = $this->createQueryBuilder("r")
             ->select("r")
@@ -27,7 +29,7 @@ class RoleRepository extends BaseRepository
             ->indexBy("r", "r.id")
             ->setParameter("adminRoleId", $this->constHelper::ADMIN_ROLE);
 
-        if($teacher)
+        if(!$user->isInRole('admin'))
             $qb = $qb->andWhere("r.id != :teacherRoleId")
                 ->setParameter("teacherRoleId", $this->constHelper::TEACHER_ROLE);
 

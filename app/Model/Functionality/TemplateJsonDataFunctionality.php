@@ -10,7 +10,6 @@ namespace App\Model\Functionality;
 
 use App\Model\Entity\TemplateJsonData;
 use App\Model\Repository\ProblemTemplateRepository;
-use App\Model\Repository\SequenceInfoRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
@@ -46,29 +45,25 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
     /**
      * @param ArrayHash $data
      * @param int|null $templateId
-     * @return int
+     * @return Object|null
      * @throws \Exception
      */
-    public function create(ArrayHash $data, int $templateId = null): int
+    public function create(ArrayHash $data, int $templateId = null): ?Object
     {
         if(!$templateId)
             $templateId = $this->problemTemplateRepository->getSequenceVal();
-
-        //find(1)->getProblemTemplateSeqVal() + 1;
-
         if($jsonData = $this->repository->findOneBy([ "templateId" => $templateId ])){
             $jsonData->setJsonData($data->jsonData);
             $this->em->persist($jsonData);
             $this->em->flush();
             return false;
         }
-
         $jsonData = new TemplateJsonData();
         $jsonData->setJsonData($data->jsonData);
         $jsonData->setTemplateId($templateId);
         $this->em->persist($jsonData);
         $this->em->flush();
-        return $jsonData->getId();
+        return $jsonData;
     }
 
     /**
@@ -78,7 +73,6 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
      */
     public function update(int $id, ArrayHash $data): ?Object
     {
-        // TODO: Implement update() method.
         return null;
     }
 }

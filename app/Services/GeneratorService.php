@@ -21,7 +21,6 @@ use Nette\Utils\Strings;
  */
 class GeneratorService
 {
-
     /**
      * @var ProblemTemplateRepository
      */
@@ -206,33 +205,21 @@ class GeneratorService
      */
     public function generateWithConditions(ProblemTemplate $problemTemplate)
     {
-        //TODO: Generate problem final that corresponds to prototype conditions
-        //Use JSON matches array of problemPrototype
-
-        bdump($problemTemplate);
-
         $parametrized = $this->stringsHelper::getParametrized($problemTemplate->getBody());
 
+        //Use JSON matches array of problemPrototype
         $prototypeJsonData = $this->problemTemplateRepository->find($problemTemplate->getId())->getMatches();
         $matchesArr = null;
 
-        bdump($prototypeJsonData);
-
         if($prototypeJsonData){
             $matchesArr = Json::decode($prototypeJsonData, Json::FORCE_ARRAY);
-            bdump($matchesArr);
             $matchesCnt = count($matchesArr["matches"]);
-            bdump($matchesCnt);
             $params = $matchesArr["matches"][$this->generateInteger(0, $matchesCnt - 1)];
         }
         else{
             $params = $this->generateParams($problemTemplate->getBody());
         }
 
-        bdump($params);
-
         return $this->stringsHelper::passValues($parametrized->expression, $params);
-
     }
-
 }

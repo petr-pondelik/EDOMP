@@ -43,12 +43,11 @@ class ProblemFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return int
+     * @return Object|null
      */
-    public function create(ArrayHash $data): int
+    public function create(ArrayHash $data): ?Object
     {
-        // TODO: Implement create() method.
-        return 0;
+        return null;
     }
 
     /**
@@ -73,32 +72,23 @@ class ProblemFunctionality extends BaseFunctionality
      */
     public function calculateSuccessRate(int $id, bool $isTemplate = false)
     {
-
         !$isTemplate ?
             $problems = $this->problemTestAssociationRepository->findBy(["problem.id" => $id]) :
             $problems = $this->problemTestAssociationRepository->findBy(["problemTemplate.id" => $id]);
-
-        bdump($problems);
-
         $cnt = 0;
         $ratingSum = 0;
-
         foreach ($problems as $problem){
             if(!empty($problem->getSuccessRate())){
                 $cnt++;
                 $ratingSum += $problem->getSuccessRate();
             }
         }
-
-        bdump($cnt);
-
         if($cnt > 0){
             $this->update($id, ArrayHash::from([
                 "success_rate" => ($ratingSum/$cnt)
             ]));
             return;
         }
-
         $this->update($id, ArrayHash::from([
             "success_rate" => null
         ]));

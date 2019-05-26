@@ -8,7 +8,6 @@
 
 namespace App\Model\Functionality;
 
-use App\Model\Entity\Problem;
 use App\Model\Entity\ProblemFinal;
 use App\Model\Entity\ProblemTemplate;
 use App\Model\Entity\ProblemTestAssociation;
@@ -62,23 +61,20 @@ class TestFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return int
+     * @return Object|null
      * @throws \Exception
      */
-    public function create(ArrayHash $data): int
+    public function create(ArrayHash $data): ?Object
     {
         $test = new Test();
         $test->setLogo($this->logoRepository->find($data->logo_id));
         $test->setTerm($this->termRepository->find($data->term_id));
-        //$test->setGroups([$this->groupRepository->find($data->group_id)]);
         $test = $this->attachGroups($test, $data->groups);
-        //bdump($data->groups);
         $test->setSchoolYear($data->school_year);
         $test->setTestNumber($data->test_number);
         $test->setIntroductionText($data->introduction_text);
         $this->em->persist($test);
-        $this->em->flush();
-        return $test->getId();
+        return $test;
     }
 
     /**
@@ -88,7 +84,6 @@ class TestFunctionality extends BaseFunctionality
      */
     public function update(int $id, ArrayHash $data): ?Object
     {
-        // TODO: Implement update() method.
         return null;
     }
 
@@ -126,6 +121,5 @@ class TestFunctionality extends BaseFunctionality
         $this->em->persist($association);
         $test->addProblemAssociation($association);
         $this->em->persist($test);
-        $this->em->flush();
     }
 }

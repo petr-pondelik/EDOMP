@@ -54,16 +54,16 @@ class SuperGroupFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return int
+     * @return Object|null
      * @throws \Exception
      */
-    public function create(ArrayHash $data): int
+    public function create(ArrayHash $data): ?Object
     {
         $superGroup = new SuperGroup();
         $superGroup->setLabel($data->label);
         $this->em->persist($superGroup);
         $this->em->flush();
-        return $superGroup->getId();
+        return $superGroup;
     }
 
     /**

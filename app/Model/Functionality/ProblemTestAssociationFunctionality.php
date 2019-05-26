@@ -32,12 +32,11 @@ class ProblemTestAssociationFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return int
+     * @return Object|null
      */
-    public function create(ArrayHash $data): int
+    public function create(ArrayHash $data): ?Object
     {
-        // TODO: Implement create() method.
-        return 0;
+        return null;
     }
 
     /**
@@ -52,7 +51,6 @@ class ProblemTestAssociationFunctionality extends BaseFunctionality
             "problem.id" => $id,
             "test.id" => $data->test_id
         ]);
-        bdump($association);
         if(empty($data->success_rate))
             $data->success_rate = null;
         $association->setSuccessRate($data->success_rate);

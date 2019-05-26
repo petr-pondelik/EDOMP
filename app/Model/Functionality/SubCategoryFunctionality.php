@@ -45,20 +45,18 @@ class SubCategoryFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return int
+     * @return Object|null
      * @throws \Exception
      */
-    public function create(ArrayHash $data): int
+    public function create(ArrayHash $data): ?Object
     {
         $subcategory = new SubCategory();
         $category = $this->categoryRepository->find($data->category_id);
-
         $subcategory->setLabel($data->label);
         $subcategory->setCategory($category);
-
         $this->em->persist($subcategory);
         $this->em->flush();
-        return $subcategory->getId();
+        return $subcategory;
     }
 
     /**
@@ -70,18 +68,14 @@ class SubCategoryFunctionality extends BaseFunctionality
     public function update(int $id, ArrayHash $data): ?Object
     {
         $subcategory = $this->repository->find($id);
-
         if(!empty($data->label))
             $subcategory->setLabel($data->label);
-
         if(!empty($data->category)) {
             $category = $this->categoryRepository->find($data->category);
             $subcategory->setCategory($category);
         }
-
         $this->em->persist($subcategory);
         $this->em->flush();
-
         return $subcategory;
     }
 }

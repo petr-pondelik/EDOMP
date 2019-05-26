@@ -55,13 +55,14 @@ class GroupGridFactory extends BaseGrid
      * @param $name
      * @param bool $isPermissions
      * @return \Ublaboo\DataGrid\DataGrid
+     * @throws \Doctrine\ORM\Query\QueryException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
     public function create($container, $name, bool $isPermissions = false)
     {
         $grid = parent::create($container, $name);
 
-        $superGroupOptions = $this->superGroupRepository->findAssoc([], "id");
+        $superGroupOptions = $this->superGroupRepository->findAllowed($container->user);
 
         $grid->setPrimaryKey('id');
 

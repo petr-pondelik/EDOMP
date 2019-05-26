@@ -58,17 +58,17 @@ class QuadraticEqTemplFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return int
+     * @return Object|null
      * @throws \Exception
      */
-    public function create(ArrayHash $data): int
+    public function create(ArrayHash $data): ?Object
     {
         $templ = new QuadraticEqTempl();
         $templ = $this->setBaseValues($templ, $data);
         $templ->setVariable($data->variable);
         $this->em->persist($templ);
         $this->em->flush();
-        return $templ->getId();
+        return $templ;
     }
 
     /**

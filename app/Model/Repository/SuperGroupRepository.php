@@ -8,6 +8,8 @@
 
 namespace App\Model\Repository;
 
+use Nette\Security\User;
+
 /**
  * Class SuperGroupRepository
  * @package App\Model\Repository
@@ -15,16 +17,22 @@ namespace App\Model\Repository;
 class SuperGroupRepository extends BaseRepository
 {
     /**
+     * @param User $user
      * @return mixed
      * @throws \Doctrine\ORM\Query\QueryException
      */
-    public function findAllowed()
+    public function findAllowed(User $user)
     {
         $qb = $this->createQueryBuilder("sg")
             ->select("sg")
-            ->where("sg.id != :id")
+            ->where("sg.id != :adminId")
             ->indexBy("sg", "sg.id")
-            ->setParameter("id", $this->constHelper::ADMIN_GROUP);
+            ->setParameter("adminId", $this->constHelper::ADMIN_GROUP);
+
+        if(!$user->isInRole('admin')){
+            $qb->andWhere('sg.createdBy = :userId')
+                ->setParameter('userId', $user->getId());
+        }
 
         return $qb->getQuery()->getResult();
     }
