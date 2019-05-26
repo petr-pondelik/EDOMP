@@ -14,13 +14,9 @@ use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Repository\CategoryRepository;
-use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemFinalRepository;
-use App\Model\Repository\SubCategoryRepository;
 use App\Services\Authorizator;
-
 use IPub\VisualPaginator\Components as VisualPaginator;
-use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -33,16 +29,6 @@ class CategoryPresenter extends FrontPresenter
      * @var CategoryRepository
      */
     protected $categoryRepository;
-
-    /**
-     * @var SubCategoryRepository
-     */
-    protected $subCategoryRepository;
-
-    /**
-     * @var DifficultyRepository
-     */
-    protected $difficultyRepository;
 
     /**
      * @var ProblemFinalRepository
@@ -71,8 +57,6 @@ class CategoryPresenter extends FrontPresenter
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param CategoryRepository $categoryRepository
-     * @param SubCategoryRepository $subCategoryRepository
-     * @param DifficultyRepository $difficultyRepository
      * @param ProblemFinalRepository $problemFinalRepository
      * @param ProblemFilterFormFactory $problemFilterFormFactory
      */
@@ -80,15 +64,12 @@ class CategoryPresenter extends FrontPresenter
     (
         Authorizator $authorizator,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        CategoryRepository $categoryRepository, SubCategoryRepository $subCategoryRepository, DifficultyRepository $difficultyRepository,
-        ProblemFinalRepository $problemFinalRepository,
+        CategoryRepository $categoryRepository, ProblemFinalRepository $problemFinalRepository,
         ProblemFilterFormFactory $problemFilterFormFactory
     )
     {
         parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->categoryRepository = $categoryRepository;
-        $this->subCategoryRepository = $subCategoryRepository;
-        $this->difficultyRepository = $difficultyRepository;
         $this->problemFinalRepository = $problemFinalRepository;
         $this->problemFilterFormFactory = $problemFilterFormFactory;
     }
@@ -106,13 +87,10 @@ class CategoryPresenter extends FrontPresenter
             $this->flashMessage("Nedostatečná přístupová práva.", "danger");
             $this->redirect("Homepage:default");
         }
-
         if($filters)
             $this->filters = $filters;
-
         if($clear_filters)
             $this->clearFilters();
-
         $this->setFilters();
     }
 
@@ -123,7 +101,6 @@ class CategoryPresenter extends FrontPresenter
     public function renderDefault(int $id): void
     {
         $category = $this->categoryRepository->find($id);
-        $this->template->id = $id;
         $this->template->label = $category->getLabel();
 
         $problemsCnt = $this->problemFinalRepository->getFilteredCnt($id, $this->filters);
@@ -137,7 +114,6 @@ class CategoryPresenter extends FrontPresenter
 
         $this->template->problems = $problems;
         $this->template->paginator = $paginator;
-        $this->template->difficulties = $this->difficultyRepository->findAssoc([], "id");
 
         $this->id = $id;
 
@@ -152,6 +128,10 @@ class CategoryPresenter extends FrontPresenter
         $this["problemFilterForm"]['form']["difficulty"]->setDefaultValue([]);
     }
 
+    /**
+     * @param ArrayHash|null $filters
+     * @throws \Nette\Application\AbortException
+     */
     public function setFilters(ArrayHash $filters = null)
     {
         //Set filters values to the filter form
@@ -162,7 +142,7 @@ class CategoryPresenter extends FrontPresenter
         }
 
         //Reset filters
-        $this->clearFilters();
+        $this->actionClearFilters();
 
         //Set new filters
         foreach($filters as $filterKey => $filter)
@@ -191,7 +171,7 @@ class CategoryPresenter extends FrontPresenter
      */
     public function createComponentProblemFilterForm(): ProblemFilterFormControl
     {
-        $control = $this->problemFilterFormFactory->create($this->id);
+        $control = $this->problemFilterFormFactory->create($this->getParameter('id'));
         $control->onSuccess[] = function (){
             $this->redirect("Category:default", $this->id, false, 1,  $this->filters);
         };
@@ -199,17 +179,9 @@ class CategoryPresenter extends FrontPresenter
     }
 
     /**
-     * @param Form $form
-     * @param ArrayHash $values
      * @throws \Nette\Application\AbortException
      */
-    /*public function handleFilterFormSuccess(Form $form, ArrayHash $values)
-    {
-        $this->setFilters($values);
-        $this->redirect("Category:default", $this->id, false, 1,  $this->filters);
-    }*/
-
-    public function handleClearFilters()
+    public function actionClearFilters()
     {
         $this->clearFilters();
         $this->redirect("Category:default", $this->id, false, 1,  $this->filters);

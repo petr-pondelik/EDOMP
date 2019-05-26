@@ -89,31 +89,10 @@ class ProblemFilterFormControl extends FormControl
         ])
             ->setHtmlAttribute("class", "form-control");
 
+        $form['submit']->caption = 'Filtrovat';
+        $form->onSuccess[] = [$this, 'handleFormSuccess'];
+
         return $form;
-    }
-
-    public function clearFilters()
-    {
-        $this->presenter->filters = [];
-        $this['form']["difficulty"]->setDefaultValue([]);
-    }
-
-    public function setFilters(ArrayHash $filters = null)
-    {
-        //Set filters values to the filter form
-        if($filters === null){
-            foreach($this->filters as $filterKey => $filter)
-                $this["problemFilterForm"]['form'][$filterKey]->setDefaultValue($filter);
-            return;
-        }
-
-        //Reset filters
-        $this->clearFilters();
-
-        //Set new filters
-        foreach($filters as $filterKey => $filter)
-            if( (is_array($filter) && count($filter) > 0) || !is_array($filter) )
-                $this->filters[$filterKey] = $filter;
     }
 
     /**
@@ -127,12 +106,8 @@ class ProblemFilterFormControl extends FormControl
      */
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
-        // TODO: Implement handleFormSuccess() method.
-    }
-
-    public function action(): void
-    {
-
+        $this->presenter->setFilters($values);
+        $this->onSuccess();
     }
 
     public function render(): void

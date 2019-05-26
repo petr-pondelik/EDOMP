@@ -18,7 +18,7 @@
             </li>
 
             <li n:class="$presenter->isLinkCurrent('Homepage:*') ? active">
-                {if adminModule}
+                {if $adminModule}
                     <a href={plink :Admin:Homepage:default}>
                         <i class="fas fa-home mr-2"></i> Domů
                     </a>
@@ -62,14 +62,14 @@
                         <i class="fas fa-calculator mr-2"></i> Příklady
                     </a>
                 </li>
-                <li n:class="$presenter->isLinkCurrent('Category:*') ? active">
-                    <a href={plink :Admin:Category:default}>
-                        <i class="fas fa-archive mr-2"></i> Kategorie
-                    </a>
-                </li>
                 <li n:class="$presenter->isLinkCurrent('SubCategory:*') ? active">
                     <a href={plink :Admin:SubCategory:default}>
                         <i class="fas fa-folder-open mr-2"></i> Podkategorie
+                    </a>
+                </li>
+                <li n:class="$presenter->isLinkCurrent('Category:*') ? active">
+                    <a href={plink :Admin:Category:default}>
+                        <i class="fas fa-archive mr-2"></i> Kategorie
                     </a>
                 </li>
                 <li class="nav-small-cap">
