@@ -21,8 +21,6 @@ use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\TermRepository;
 use App\Model\Repository\TestRepository;
-use Dibi\UniqueConstraintViolationException;
-use Nette\NotSupportedException;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -302,7 +300,7 @@ class TestBuilderService
             $this->buildTestVariant($test, $variant, $data);
 
         $resArr = [
-            "testId" => $testId,
+            "testId" => $this->testRepository->getSequenceVal(),
             "variants" => $variants,
             "test" => $test
         ];

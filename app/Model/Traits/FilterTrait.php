@@ -37,6 +37,6 @@ trait FilterTrait
 
         bdump($filterArr);
 
-        return $this->findBy($filterArr);
+        return $this->findAssoc($filterArr, 'id');
     }
 }

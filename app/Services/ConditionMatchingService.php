@@ -202,17 +202,14 @@ class ConditionMatchingService
     {
         $result = [];
         foreach((array)$fields as $keyType => $value){
-            bdump($keyType);
             if(!array_key_exists($keyType, $this->conditionsMatches))
                 throw new NotSupportedException('Nepodporovaný typ podmínky.');
             foreach((array)$value as $keyAccessor => $item){
-                bdump($keyAccessor);
                 if(!array_key_exists($keyAccessor, $this->conditionsMatches[$keyType]))
                     throw new NotSupportedException('Nepodporovaná podmínka.');
                 $result = $this->conditionsMatches[$keyType][$keyAccessor]($item);
             }
         }
-
         return $result;
     }
 
@@ -229,18 +226,7 @@ class ConditionMatchingService
         $matchesCnt = 0;
         $res = false;
 
-        bdump("FIND MATCHES");
-
-        bdump($expression);
-        bdump($parametersInfo);
-
-        if($parametersInfo->count === 0){
-            if( $this->validationFunctions[$typeAccessor][$accessor]($this->mathService->evaluateExpression($expression)) ){
-                $matches[] = true;
-                $res = true;
-            }
-        }
-        else if($parametersInfo->count === 1){
+        if($parametersInfo->count === 1){
             for($i = $parametersInfo["minMax"][0]["min"]; $i <= $parametersInfo["minMax"][0]["max"]; $i++){
                 $final = $this->stringsHelper::passValues($expression, [
                     "p0" =>  $i
@@ -380,8 +366,6 @@ class ConditionMatchingService
         }
 
         if(!$res) return false;
-
-        bdump($matches);
 
         return $matches;
     }

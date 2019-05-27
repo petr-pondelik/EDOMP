@@ -17,4 +17,9 @@ use App\Model\Traits\SequenceValTrait;
 class GeometricSeqTemplRepository extends BaseRepository
 {
     use SequenceValTrait;
+
+    /**
+     * @var string
+     */
+    protected $tableName = "problem";
 }

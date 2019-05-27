@@ -236,9 +236,12 @@ class TestFormControl extends FormControl
 
             //bdump(array_merge($this->problemTemplateRepository->findAssoc([], "id"), $this->problemRepository->findAssoc([], "id")));
 
-            $form->addSelect('problem_'.$i, 'Úloha',
-                array_merge([-1 => 'Zvolit náhodně'], $this->problemRepository->findAll())
-            )
+            $problems[0] = "Zvolit náhodně";
+            $foundProblems = $this->problemRepository->findAssoc([], 'id');
+            foreach ($foundProblems as $key => $item)
+                $problems[$key]  = $item;
+
+            $form->addSelect('problem_'.$i, 'Úloha', $problems)
                 ->setHtmlAttribute('class', 'form-control problem-select')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlId('problem_'.$i);
@@ -297,10 +300,9 @@ class TestFormControl extends FormControl
         } catch (\Exception $e){
             $this->onError($e);
         }
-        $test = $this->testRepository->find($testData->testId);
         foreach($testData->variants as $variant){
             $template->variant = $variant;
-            $template->test = $test;
+            $template->test = $testData->test;
             FileSystem::createDir( DATA_DIR . '/tests/' . $testData->testId);
             file_put_contents( DATA_DIR . '/tests/' . $testData->testId . '/variant_' . Strings::lower($variant) . '.tex', (string) $template);
         }
@@ -332,7 +334,11 @@ class TestFormControl extends FormControl
                 }
             }
 
-            $this['form']['problem_' . $problemKey]->setItems(array_merge(['-1' => 'Zvolit náhodně'], $filterRes));
+            $problems[0] = "Zvolit náhodně";
+            foreach ($filterRes as $key => $item)
+                $problems[$key] = $item;
+
+            $this['form']['problem_' . $problemKey]->setItems($problems);
 
             if(array_key_exists($problemFilters['selected'], $filterRes))
                 $this['form']['problem_' . $problemKey]->setValue($problemFilters['selected']);

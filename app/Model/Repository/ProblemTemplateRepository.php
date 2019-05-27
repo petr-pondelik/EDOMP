@@ -20,4 +20,9 @@ class ProblemTemplateRepository extends BaseRepository
     use SequenceValTrait;
 
     use FilterTrait;
+
+    /**
+     * @var string
+     */
+    protected $tableName = "problem";
 }

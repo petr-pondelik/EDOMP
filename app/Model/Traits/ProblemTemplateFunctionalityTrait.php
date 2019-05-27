@@ -77,13 +77,20 @@ trait ProblemTemplateFunctionalityTrait
             $templ->setSubCategory($this->subCategoryRepository->find($data->subcategory));
 
         if(!$fromDataGrid){
+            $attached = $this->attachConditions($templ, $data);
+            $templ = $attached->template;
+
             if(!$templateId)
                 $templateId = $this->repository->getSequenceVal();
+
             $templJsonData = null;
-            if($jsonDataObj = $this->templateJsonDataRepository->findOneBy([ "templateId" => $templateId]))
-                bdump($templJsonData = $jsonDataObj->getJsonData());
-            $templ->setMatches($templJsonData);
-            $templ = $this->attachConditions($templ, $data);
+            if($jsonDataObj = $this->templateJsonDataRepository->findOneBy([ "templateId" => $templateId ]))
+                $templJsonData = $jsonDataObj->getJsonData();
+
+            if($attached->hasCondition)
+                $templ->setMatches($templJsonData);
+            else
+                $templ->setMatches(null);
         }
 
         return $templ;
@@ -100,10 +107,12 @@ trait ProblemTemplateFunctionalityTrait
     /**
      * @param $templ
      * @param ArrayHash $data
-     * @return ProblemTemplate
+     * @return ArrayHash
      */
-    public function attachConditions($templ, ArrayHash $data): ProblemTemplate
+    public function attachConditions($templ, ArrayHash $data): ArrayHash
     {
+        $hasCondition = false;
+
         $type = $this->problemTypeRepository->find($data->type);
         $problemCondTypes = $type->getConditionTypes()->getValues();
 
@@ -115,6 +124,10 @@ trait ProblemTemplateFunctionalityTrait
             //Get ConditionType value from created problem
             $condTypeVal = $data->{"condition_" . $condTypeId};
 
+            //Template has condition
+            if($condTypeVal)
+                $hasCondition = true;
+
             $condition = $this->problemConditionRepository->findOneBy([
                 "problemConditionType.id" => $condTypeId,
                 "accessor" => $condTypeVal
@@ -124,6 +137,9 @@ trait ProblemTemplateFunctionalityTrait
 
         }
 
-        return $templ;
+        return ArrayHash::from([
+            "template" => $templ,
+            "hasCondition" => $hasCondition
+        ]);
     }
 }

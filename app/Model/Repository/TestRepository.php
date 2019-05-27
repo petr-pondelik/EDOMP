@@ -8,6 +8,7 @@
 
 namespace App\Model\Repository;
 
+use App\Model\Traits\SequenceValTrait;
 use Doctrine\ORM\Query\Expr\Join;
 
 /**
@@ -16,6 +17,13 @@ use Doctrine\ORM\Query\Expr\Join;
  */
 class TestRepository extends BaseRepository
 {
+    use SequenceValTrait;
+
+    /**
+     * @var string
+     */
+    protected $tableName = "test";
+
     /**
      * @param int $id
      * @return array

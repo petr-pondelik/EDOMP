@@ -24,7 +24,6 @@ use Nette\Utils\ArrayHash;
  */
 class ProblemTemplateFunctionality extends BaseFunctionality
 {
-
     use ProblemTemplateFunctionalityTrait;
 
     /**

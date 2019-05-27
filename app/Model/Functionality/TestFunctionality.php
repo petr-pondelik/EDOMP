@@ -16,6 +16,7 @@ use App\Model\Repository\GroupRepository;
 use App\Model\Repository\LogoRepository;
 use App\Model\Repository\TermRepository;
 use App\Model\Repository\TestRepository;
+use App\Model\Traits\SequenceValTrait;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 

@@ -43,9 +43,9 @@ class ProblemTemplate extends Problem
     }
 
     /**
-     * @param mixed $matches
+     * @param null $matches
      */
-    public function setMatches($matches): void
+    public function setMatches($matches = null): void
     {
         $this->matches = $matches;
     }

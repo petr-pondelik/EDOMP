@@ -25,7 +25,6 @@ use Nette\Utils\ArrayHash;
  */
 class QuadraticEqTemplFunctionality extends BaseFunctionality
 {
-
     use ProblemTemplateFunctionalityTrait;
 
     /**

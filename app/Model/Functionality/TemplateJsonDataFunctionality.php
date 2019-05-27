@@ -56,7 +56,7 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
             $jsonData->setJsonData($data->jsonData);
             $this->em->persist($jsonData);
             $this->em->flush();
-            return false;
+            return null;
         }
         $jsonData = new TemplateJsonData();
         $jsonData->setJsonData($data->jsonData);

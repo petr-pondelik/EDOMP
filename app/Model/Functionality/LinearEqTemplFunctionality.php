@@ -63,6 +63,7 @@ class LinearEqTemplFunctionality extends BaseFunctionality
      */
     public function create(ArrayHash $data): ?Object
     {
+        bdump($data);
         $templ = new LinearEqTempl();
         $templ = $this->setBaseValues($templ, $data);
         $templ->setVariable($data->variable);
