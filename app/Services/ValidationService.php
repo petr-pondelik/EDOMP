@@ -8,6 +8,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\InvalidParameterException;
 use App\Exceptions\StringFormatException;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
@@ -362,6 +363,7 @@ class ValidationService
      * @param int $type
      * @param string|null $variable
      * @return int
+     * @throws InvalidParameterException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function validateBody(string $body, int $type,  string $variable = null): int
@@ -373,15 +375,16 @@ class ValidationService
         if($type !== $this->constHelper::BODY_FINAL){
 
             $parsed = $this->latexHelper::parseLatex($body);
-            bdump("PARSED: " . $parsed);
+
+            //TODO: ADD VALIDATION OVER PARAMETERS
+            $this->validateParameters($parsed);
+
             $split = $this->stringsHelper::splitByParameters($parsed);
 
             if(empty($variable) || !$this->stringsHelper::containsVariable($split, $variable))
                 return 2;
 
             $parametrized = $this->stringsHelper::getParametrized($parsed);
-
-            bdump($parametrized);
 
             $parsedNewton = $this->stringsHelper::newtonFormat($parametrized->expression);
             $newtonApiRes = $this->newtonApiClient->simplify($parsedNewton);
@@ -391,6 +394,23 @@ class ValidationService
         }
 
         return -1;
+    }
+
+    /**
+     * @param string $expression
+     * @throws InvalidParameterException
+     */
+    private function validateParameters(string $expression)
+    {
+        $split = $this->stringsHelper::splitByParameters($expression);
+        foreach($split as $part){
+            if($part !== "" && Strings::startsWith($part, "<par")){
+                bdump($part);
+                if(!Strings::match($part, '~<par min="[0-9]+" max="[0-9]+"/>~'))
+                    throw new InvalidParameterException("Zadaná šablona obsahuje nevalidní parametr.");
+            }
+        }
+
     }
 
     public function validateEquation(string $expression, string $standardized, string $variable, int $eqType): bool
@@ -437,12 +457,7 @@ class ValidationService
     {
         $parametrized = $this->stringsHelper::getParametrized($expression);
         $parametersInfo = $this->stringsHelper::extractParametersInfo($expression);
-        //$parsed = $this->latexHelper::parseLatex($parametrized->expression);
         $expression = $parametrized->expression;
-
-        bdump("VALIDATE SEQUENCE");
-
-        bdump($expression);
 
         if(!$this->stringsHelper::isSequence($expression)) return false;
 
@@ -452,15 +467,11 @@ class ValidationService
             return false;
         }
 
-        bdump($sides);
-
         $params = [];
         for($i = 0; $i < $parametersInfo->count; $i++)
             $params['p' . $i] = 1;
 
         $final = $this->stringsHelper::passValues($sides->right, $params);
-
-        bdump($final);
 
         switch ($seqType){
             case $this->constHelper::ARITHMETIC_SEQ:    return $this->validateArithmeticSequence($final, $variable);
@@ -502,8 +513,6 @@ class ValidationService
         $expression = $this->newtonApiClient->simplify($this->stringsHelper::newtonFormat($expression));
         $expression = $this->stringsHelper::nxpFormat($expression, $variable);
 
-        bdump($expression);
-
         $a1 = $this->stringsHelper::passValues($expression, [ $variable => 1 ]);
         $a2 = $this->stringsHelper::passValues($expression, [ $variable => 2 ]);
         $a3 = $this->stringsHelper::passValues($expression, [ $variable => 3 ]);
@@ -514,11 +523,18 @@ class ValidationService
         return $quot1 == $quot2;
     }
 
+    /**
+     * @param int $accessor
+     * @param string $body
+     * @param string $standardized
+     * @param string $variable
+     * @param ArrayHash $parametersInfo
+     * @param null $problemId
+     * @return bool
+     * @throws \Nette\Utils\JsonException
+     */
     public function validateResultCond(int $accessor, string $body, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null): bool
     {
-        bdump("VALIDATE RESULT COND");
-        bdump($problemId);
-
         $variableExp = $this->stringsHelper::getLinearVariableExpresion($standardized, $variable);
 
         $matches = $this->conditionMatchingService->findConditionsMatches([
@@ -529,8 +545,6 @@ class ValidationService
                 ]
             ]
         ]);
-
-        bdump($matches);
 
         if(!$matches) return false;
 

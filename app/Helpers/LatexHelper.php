@@ -168,7 +168,6 @@ class LatexHelper
         $res = self::parseFractions($res);
         $res = self::parseExponent($res);
         $res = self::parseSubscription($res);
-        bdump($res);
         return $res;
     }
 

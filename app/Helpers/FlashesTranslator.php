@@ -8,6 +8,7 @@
 
 namespace App\Helpers;
 
+use App\Exceptions\InvalidParameterException;
 use App\Exceptions\ProblemFinalCollisionException;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 
@@ -273,7 +274,8 @@ class FlashesTranslator
     {
         if($e instanceof ForeignKeyConstraintViolationException)
             return self::$presenterMessages[$presenterName]['constraintViolation'];
-        if($e instanceof ProblemFinalCollisionException)
+
+        if($e instanceof ProblemFinalCollisionException || $e instanceof InvalidParameterException)
             return $e->getMessage();
 
         return self::$presenterMessages[$presenterName][$type][$operation];

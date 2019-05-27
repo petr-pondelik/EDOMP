@@ -10,6 +10,7 @@ namespace App\Components\Forms\ProblemTemplateForm;
 
 
 use App\Components\Forms\EntityFormControl;
+use App\Exceptions\InvalidParameterException;
 use App\Exceptions\StringFormatException;
 use App\Helpers\ConstHelper;
 use App\Model\Functionality\BaseFunctionality;
@@ -187,7 +188,13 @@ class ProblemTemplateFormControl extends EntityFormControl
             "bodyType" => $this->constHelper::LINEAR_EQ
         ]);
 
-        $validationErrors = $this->validationService->validate($validateFields);
+        try{
+            $validationErrors = $this->validationService->validate($validateFields);
+        } catch (InvalidParameterException $e){
+            $this->onError($e);
+            $this['form']->addError("");
+            return;
+        }
 
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){

@@ -164,12 +164,10 @@ class StringsHelper
     {
         $expression = Strings::replace($expression, '~(\d)(\s)(p)~', '$1*$3');
         $expression = Strings::replace($expression, '~(\d)(\s)(\d)~', '$1*$3');
-
         if($variable !== null){
             $expression = Strings::replace($expression, '~(\d)(\s)(' . $variable . ')~', '$1*$3');
             $expression = Strings::replace($expression, '~(' . $variable . ')(\s)(\d)~', '$1*$3');
         }
-
         return $expression;
     }
 
@@ -284,14 +282,12 @@ class StringsHelper
         $expressionSplit = self::splitByParameters($expression);
         $parametrized = [];
         $parametersCnt = 0;
-
         foreach ($expressionSplit as $splitKey => $splitItem){
             if($splitItem !== ""){
                 if(!Strings::match($splitItem, '~(<par.*\/>)~')) $parametrized[$splitKey] = $splitItem;
                 else $parametrized[$splitKey] = 'p'.$parametersCnt++;
             }
         }
-
         return ArrayHash::from([
             "expression" => join($parametrized),
             "parametersCnt" => $parametersCnt
@@ -306,11 +302,8 @@ class StringsHelper
     static public function getLinearVariableExpresion(string $expression, string $variable): string
     {
         $split = Strings::split($expression, '~(' . $variable . ')~');
-
         if(!$split[2]) return "0";
-
         $rightOp = "";
-
         if(self::firstOperator($split[2]) === self::IS_ADDITION) $rightOp = "-";
         $split[2] = self::trimOperators($split[2]);
         $split[2] = self::negateOperators($split[2]);
@@ -320,10 +313,6 @@ class StringsHelper
         else $rightSide = '(' . $rightOp . $split[2] .')';
 
         $rightSide = self::nxpFormat($rightSide);
-
-        //$rightSide = Strings::replace($rightSide, '~(\d)(\s)(p)~', '$1*$3');
-        //$rightSide = Strings::replace($rightSide, '~(\d)(\s)(\d)~', '$1*$3');
-
         return $rightSide;
     }
 
@@ -352,8 +341,6 @@ class StringsHelper
         $split = Strings::split($expression, "~ = ~");
         if(count($split) !== 2 || Strings::match($split[0], "~^\s*$~") || Strings::match($split[1], "~^\s*$~"))
             return false;
-        bdump("IS EQUATION");
-        bdump($expression);
         if(Strings::match($expression, "~^\w\w\s*=~"))
             return false;
         return true;
@@ -365,7 +352,6 @@ class StringsHelper
      */
     static public function isSequence(string $expression): bool
     {
-        bdump("IS SEQUENCE");
         $split = Strings::split($expression, "~ = ~");
         if(count($split) !== 2 || Strings::match($split[0], "~^\s*$~") || Strings::match($split[1], "~^\s*$~"))
             return false;
