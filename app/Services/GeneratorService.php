@@ -189,8 +189,9 @@ class GeneratorService
         foreach($expressionSplit as $splitKey => $splitItem){
             $expressionSplit[$splitKey] = $this->processBlock($splitItem);
             if($splitItem !== ""){
-                if(Strings::match($splitItem, '~(<par.*\/>)~')){
+                if(Strings::match($splitItem, '~(<par min="[0-9]+" max="[0-9]+"\/>)~')){
                     $parameters['p'.$paramsCnt++] = Strings::trim($expressionSplit[$splitKey]);
+                    bdump("TEST");
                 }
             }
         }
@@ -203,9 +204,11 @@ class GeneratorService
      * @return string
      * @throws \Nette\Utils\JsonException
      */
-    public function generateWithConditions(ProblemTemplate $problemTemplate)
+    public function generateWithConditions(ProblemTemplate $problemTemplate): string
     {
+        bdump("TEST");
         $parametrized = $this->stringsHelper::getParametrized($problemTemplate->getBody());
+        bdump($parametrized);
 
         //Use JSON matches array of problemPrototype
         $prototypeJsonData = $this->problemTemplateRepository->find($problemTemplate->getId())->getMatches();

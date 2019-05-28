@@ -402,12 +402,23 @@ class ValidationService
      */
     private function validateParameters(string $expression)
     {
-        $split = $this->stringsHelper::splitByParameters($expression);
+        $split = $this->stringsHelper::splitByParameters($expression, true);
+
+        if(count($split) <= 1)
+            throw new InvalidParameterException("Zadaná šablona neobsahuje parametr.");
+
         foreach($split as $part){
             if($part !== "" && Strings::startsWith($part, "<par")){
                 bdump($part);
-                if(!Strings::match($part, '~<par min="[0-9]+" max="[0-9]+"/>~'))
+                if(!Strings::match($part, '~<par min="[0-9]+" max="[0-9]+"/>~')){
                     throw new InvalidParameterException("Zadaná šablona obsahuje nevalidní parametr.");
+                }
+                else{
+                    $min = $this->stringsHelper::extractParAttr($part, "min");
+                    $max = $this->stringsHelper::extractParAttr($part, "max");
+                    if($min > $max)
+                        throw new InvalidParameterException("Neplatný interval parametru.");
+                }
             }
         }
 

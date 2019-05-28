@@ -186,10 +186,7 @@ class FileService
     public function revertFileUpdate(IRequest $httpRequest): string
     {
         $id = $httpRequest->getRawBody();
-        bdump($id);
-
         FileSystem::delete($this->logosTmpDir . DIRECTORY_SEPARATOR . $id);
-
         return "";
     }
 
@@ -222,8 +219,6 @@ class FileService
         $zip = new \ZipArchive();
 
         $variants = $this->testRepository->findVariants($testId);
-
-        bdump($variants);
 
         //Check files existence
         foreach ($variants as $variant){

@@ -42,9 +42,10 @@ class StringsHelper
 
     /**
      * @param string $expression
+     * @param bool $validation
      * @return array
      */
-    static public function splitByParameters(string $expression)
+    static public function splitByParameters(string $expression, bool $validation = false)
     {
         //Explode string by parameter marks and preserve the marks
 
@@ -59,7 +60,10 @@ class StringsHelper
             ( <par\s*min="[0-9]*"\s*max="[0-9]*"\s*\/> )
         */
 
-        return Strings::split($expression,'~(<par\s*\/>)|(<par\s*type="[a-z]*"\s*\/>)|(<par\s*type="[a-z]*"\s*min="[0-9]*"\s*\/>)|(<par\s*type="[a-z]*"\s*max="[0-9]*"\/>)|(<par\s*type="[a-z]*"\s*min="[0-9]*"\s*max="[0-9]*"\/>)|(<par\s*min="[0-9]*"\s*\/>)|(<par\s*max="[0-9]*"\s*\/>)|(<par\s*min="[0-9]*"\s*max="[0-9]*"\s*\/>)~');
+        if(!$validation)
+            return Strings::split($expression,'~(<par\s*min="[0-9]+"\s*max="[0-9]+"\s*\/>)~');
+        else
+            return Strings::split($expression,'~(<par\s*\/>)|(<par\s*type="[a-z]*"\s*\/>)|(<par\s*type="[a-z]*"\s*min="[0-9]*"\s*\/>)|(<par\s*type="[a-z]*"\s*max="[0-9]*"\/>)|(<par\s*type="[a-z]*"\s*min="[0-9]*"\s*max="[0-9]*"\/>)|(<par\s*min="[0-9]*"\s*\/>)|(<par\s*max="[0-9]*"\s*\/>)|(<par\s*min="[0-9]*"\s*max="[0-9]*"\s*\/>)~');
     }
 
     /**

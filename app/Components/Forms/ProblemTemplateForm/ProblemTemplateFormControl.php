@@ -191,8 +191,8 @@ class ProblemTemplateFormControl extends EntityFormControl
         try{
             $validationErrors = $this->validationService->validate($validateFields);
         } catch (InvalidParameterException $e){
-            $this->onError($e);
-            $this['form']->addError("");
+            $this["form"]["body"]->addError($e->getMessage());
+            $this->redrawControl("bodyErrorSnippet");
             return;
         }
 
@@ -254,6 +254,15 @@ class ProblemTemplateFormControl extends EntityFormControl
         $this->redrawFormErrors();
     }
 
+    /**
+     * @param string $body
+     * @param int $conditionType
+     * @param int $accessor
+     * @param int $problemType
+     * @param string $variable
+     * @param int|null $problemId
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function handleCondValidation(string $body, int $conditionType, int $accessor, int $problemType, string $variable, int $problemId = null)
     {
         $validationFields["variable"] = $variable;
