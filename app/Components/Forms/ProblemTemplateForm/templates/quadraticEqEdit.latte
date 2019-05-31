@@ -12,6 +12,15 @@
 
     <div class="card-body">
 
+        {snippet submitErrorSnippet}
+            {var $form = $control['form']}
+            <div n:if="$form->hasErrors()" class="mt-1">
+                <p n:foreach="$form['submit']->errors as $error" class="alert alert-danger border-0">
+                    {$error}
+                </p>
+            </div>
+        {/snippet}
+
         <div class="form-group">
             {label id}
             {input id, "id" => "problem-id"}

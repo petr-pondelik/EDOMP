@@ -226,6 +226,8 @@ class ConditionMatchingService
         $matchesCnt = 0;
         $res = false;
 
+        bdump($expression);
+
         if($parametersInfo->count === 1){
             for($i = $parametersInfo["minMax"][0]["min"]; $i <= $parametersInfo["minMax"][0]["max"]; $i++){
                 $final = $this->stringsHelper::passValues($expression, [

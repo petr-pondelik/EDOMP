@@ -71,7 +71,16 @@ class ValidationService
      */
     protected $validationMessages;
 
-
+    /**
+     * ValidationService constructor.
+     * @param NewtonApiClient $newtonApiClient
+     * @param MathService $mathService
+     * @param ConditionMatchingService $conditionMatchingService
+     * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
+     * @param ConstHelper $constHelper
+     * @param StringsHelper $stringsHelper
+     * @param LatexHelper $latexHelper
+     */
     public function __construct
     (
         NewtonApiClient $newtonApiClient,
@@ -230,10 +239,6 @@ class ValidationService
                     if($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX)
                         return 3;
 
-                    //TODO: Make ValidationService methods for handling conditions validation (based on it's accessors)
-                    //TODO: This methods should use StringsHelper and MathService classes functionality !!!
-                    //TODO: Extend prototype create validation by valid_$i fields checks (all the conditions have to be satisfied)
-
                     if(!$this->validateDiscriminantCond(
                         $filledVal->accessor, $filledVal->body, $filledVal->variable, $parametersInfo, $problemId)) {
                         return 4;
@@ -376,8 +381,6 @@ class ValidationService
 
         if($type !== $this->constHelper::BODY_FINAL){
 
-            bdump($this->latexHelper::latexWrapped($body));
-
             if(!$this->latexHelper::latexWrapped($body)) return 1;
 
             $parsed = $this->latexHelper::parseLatex($body);
@@ -471,6 +474,9 @@ class ValidationService
      * @param string $variable
      * @param int $seqType
      * @return bool
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function validateSequence(string $expression, string $variable, int $seqType): bool
@@ -479,7 +485,7 @@ class ValidationService
         $parametersInfo = $this->stringsHelper::extractParametersInfo($expression);
         $expression = $parametrized->expression;
 
-        if(!$this->stringsHelper::isSequence($expression)) return false;
+        if(!$this->stringsHelper::isSequence($expression, $variable)) return false;
 
         try{
             $sides = $this->stringsHelper::getEquationSides($expression, false);
@@ -505,6 +511,9 @@ class ValidationService
      * @param string $expression
      * @param string $variable
      * @return bool
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function validateArithmeticSequence(string $expression, string $variable): bool
@@ -526,6 +535,9 @@ class ValidationService
      * @param string $expression
      * @param string $variable
      * @return bool
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function validateGeometricSequence(string $expression, string $variable): bool
@@ -578,12 +590,20 @@ class ValidationService
         return true;
     }
 
+    /**
+     * @param int $accessor
+     * @param string $body
+     * @param string $variable
+     * @param ArrayHash $parametersInfo
+     * @param null $problemId
+     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Nette\Utils\JsonException
+     */
     private function validateDiscriminantCond(int $accessor, string $body, string $variable, ArrayHash $parametersInfo, $problemId = null): bool
     {
         $parametrized = $this->stringsHelper::getParametrized($body);
         $discriminantExp = $this->mathService->getDiscriminantExpression($parametrized->expression, $variable);
-
-        bdump($discriminantExp);
 
         $matches = $this->conditionMatchingService->findConditionsMatches([
             $this->constHelper::DISCRIMINANT => [
@@ -610,7 +630,7 @@ class ValidationService
      * @param $fields
      * @return array
      */
-    public function validate($fields)
+    public function validate($fields): array
     {
         $validationErrors = [];
 
@@ -641,7 +661,7 @@ class ValidationService
      * @param $problemId
      * @return array
      */
-    public function editValidate($fields, $problemId)
+    public function editValidate($fields, $problemId): array
     {
         $validationErrors = [];
 

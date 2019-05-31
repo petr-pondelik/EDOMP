@@ -270,7 +270,7 @@ class StringsHelper
      * @param iterable $values
      * @return string
      */
-    static public function passValues(string $expression, iterable $values)
+    static public function passValues(string $expression, iterable $values): string
     {
         foreach($values as $parameter => $value)
             $expression = Strings::replace($expression, '~' . $parameter . '~', $value);
@@ -281,7 +281,7 @@ class StringsHelper
      * @param string $expression
      * @return ArrayHash
      */
-    static public function getParametrized(string $expression)
+    static public function getParametrized(string $expression): ArrayHash
     {
         $expressionSplit = self::splitByParameters($expression);
         $parametrized = [];
@@ -345,21 +345,24 @@ class StringsHelper
         $split = Strings::split($expression, "~ = ~");
         if(count($split) !== 2 || Strings::match($split[0], "~^\s*$~") || Strings::match($split[1], "~^\s*$~"))
             return false;
-        if(Strings::match($expression, "~^\w\w\s*=~"))
+        bdump($expression);
+        if(Strings::match($expression, "~^\s+=\s+~"))
             return false;
         return true;
     }
 
     /**
      * @param string $expression
+     * @param string $variable
      * @return bool
      */
-    static public function isSequence(string $expression): bool
+    static public function isSequence(string $expression, string $variable): bool
     {
         $split = Strings::split($expression, "~ = ~");
-        if(count($split) !== 2 || Strings::match($split[0], "~^\s*$~") || Strings::match($split[1], "~^\s*$~"))
+        bdump($split);
+        if(count($split) !== 2)
             return false;
-        if(!Strings::match($expression, "~^\w\w\s*=~"))
+        if(!Strings::match($expression, '~^\s*\w' . $variable . '\s*=~'))
             return false;
         return true;
     }

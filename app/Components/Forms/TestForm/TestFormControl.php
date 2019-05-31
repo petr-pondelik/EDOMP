@@ -234,8 +234,6 @@ class TestFormControl extends FormControl
                 ->setHtmlAttribute('data-filter-type', 'difficulty_id')
                 ->setHtmlId('difficulty_id_'.$i);
 
-            //bdump(array_merge($this->problemTemplateRepository->findAssoc([], "id"), $this->problemRepository->findAssoc([], "id")));
-
             $problems[0] = "Zvolit náhodně";
             $foundProblems = $this->problemRepository->findAssoc([], 'id');
             foreach ($foundProblems as $key => $item)

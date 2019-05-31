@@ -244,7 +244,7 @@ class ProblemTemplateFormControl extends EntityFormControl
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
                 foreach($errorGroup as $egKey => $error)
-                    $form["prototype_create_submit"]->addError($error);
+                    $form["body"]->addError($error);
             }
             $this->redrawFormErrors();
             return;
@@ -258,7 +258,7 @@ class ProblemTemplateFormControl extends EntityFormControl
 
         if(isset($validationErrors['conditions_valid'])){
             foreach($validationErrors['conditions_valid'] as $error){
-                $form['prototype_create_submit']->addError($error);
+                $form['submit']->addError($error);
             }
         }
 
@@ -272,6 +272,9 @@ class ProblemTemplateFormControl extends EntityFormControl
      * @param int $problemType
      * @param string $variable
      * @param int|null $problemId
+     * @throws NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function handleCondValidation(string $body, int $conditionType, int $accessor, int $problemType, string $variable, int $problemId = null)
@@ -438,6 +441,6 @@ class ProblemTemplateFormControl extends EntityFormControl
         $this->redrawControl('conditionsErrorSnippet');
         $this->redrawControl("first_nErrorSnippet");
         $this->redrawControl("flashesSnippet");
-        $this->redrawControl('submit');
+        $this->redrawControl('submitErrorSnippet');
     }
 }

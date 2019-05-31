@@ -132,7 +132,6 @@ class MathService
     public function getDiscriminantA(string $expression, string $variable)
     {
         $aExp = Strings::before($expression, $variable . "^2", 1);
-        bdump($aExp);
         if($aExp == "")
             return "1";
         return $this->stringsHelper::trim($aExp, $this->stringsHelper::BRACKETS_SIMPLE);
@@ -148,7 +147,6 @@ class MathService
         $bExp = Strings::before($expression, $variable, 2);
         $bExp = Strings::after($bExp, $variable . "^2", 1);
         $bExp = $this->stringsHelper::trimOperators($bExp);
-        bdump($bExp);
         if($bExp == "")
             return "0";
         return $bExp;
@@ -158,6 +156,9 @@ class MathService
      * @param string $expression
      * @param string $variable
      * @return false|string
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getDiscriminantC(string $expression, string $variable)
@@ -169,7 +170,6 @@ class MathService
                 return "0";
         }
         $cExp = $this->newtonApiClient->simplify($cExp);
-        bdump('C EXPR:' . $cExp);
         return $this->stringsHelper::wrap($cExp);
     }
 
@@ -178,14 +178,15 @@ class MathService
      * @param string $variable
      * @param bool $standardized
      * @return string
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getDiscriminantExpression(string $expression, string $variable, bool $standardized = self::NON_STANDARDIZED)
+    public function getDiscriminantExpression(string $expression, string $variable, bool $standardized = self::NON_STANDARDIZED): string
     {
         if(!$standardized)
             $expression = $this->standardizeEquation($expression);
-        bdump("CHECK");
-        bdump($expression);
         return $this->getDiscriminantB($expression, $variable) . '^2' . ' - 4 * ' . $this->getDiscriminantA($expression, $variable) . ' * ' . $this->getDiscriminantC($expression, $variable);
     }
 
@@ -202,23 +203,21 @@ class MathService
     /**
      * @param string $expression
      * @return string
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function standardizeEquation(string $expression)
+    public function standardizeEquation(string $expression): string
     {
         $expression = $this->latexHelper::parseLatex($expression);
 
         $parameterized = $this->stringsHelper::getParametrized($expression);
         $parameterized = $this->stringsHelper::newtonFormat($parameterized->expression);
 
-        bdump($parameterized);
-
         $sides = $this->stringsHelper::getEquationSides($parameterized);
-        bdump($sides);
         $sides->left = $this->newtonApiClient->simplify($sides->left);
         $sides->right = $this->newtonApiClient->simplify($sides->right);
-
-        bdump($sides);
 
         $expression = $this->stringsHelper::mergeEqSides($sides);
         $expression = $this->stringsHelper::newtonFormat($expression);
@@ -230,6 +229,9 @@ class MathService
     /**
      * @param ProblemFinal $problem
      * @return ArrayHash
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function evaluateLinearEquation(ProblemFinal $problem)
@@ -248,9 +250,12 @@ class MathService
     /**
      * @param ProblemFinal $problem
      * @return ArrayHash
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function evaluateQuadraticEquation(ProblemFinal $problem)
+    public function evaluateQuadraticEquation(ProblemFinal $problem): ArrayHash
     {
         $standardized = $this->standardizeEquation($problem->getBody());
         $a = $this->getDiscriminantA($standardized, $problem->getVariable());

@@ -40,7 +40,7 @@ class ConstHelper
     const LINEAR_EQ = 1;
     const QUADRATIC_EQ = 2;
     const ARITHMETIC_SEQ = 3;
-    const GEOMETRIC_SEQ = 5;
+    const GEOMETRIC_SEQ = 4;
 
     //Types group of equations
     const EQUATIONS = [self::LINEAR_EQ, self::QUADRATIC_EQ];

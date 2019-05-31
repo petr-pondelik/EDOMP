@@ -9,7 +9,6 @@
 namespace App\Model\Repository;
 
 use App\Model\Traits\FilterTrait;
-use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * Class ProblemRepository
