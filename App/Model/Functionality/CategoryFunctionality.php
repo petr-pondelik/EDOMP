@@ -6,6 +6,8 @@
  * Time: 16:13
  */
 
+declare(strict_types=1);
+
 namespace App\Model\Functionality;
 
 use App\Model\Entity\Category;
@@ -17,7 +19,7 @@ use Nette\Utils\ArrayHash;
  * Class CategoryFunctionality
  * @package App\Model\Functionality
  */
-class CategoryFunctionality extends BaseFunctionality
+final class CategoryFunctionality extends BaseFunctionality
 {
     /**
      * CategoryFunctionality constructor.
@@ -61,5 +63,10 @@ class CategoryFunctionality extends BaseFunctionality
         $this->em->persist($category);
         $this->em->flush();
         return $category;
+    }
+
+    public function getTest(): int
+    {
+        return 1;
     }
 }
