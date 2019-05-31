@@ -10,6 +10,7 @@ namespace App\Model\Functionality;
 
 use App\Helpers\FormatterHelper;
 use App\Model\Entity\ProblemFinal;
+use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemFinalRepository;
@@ -17,7 +18,6 @@ use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -59,7 +59,7 @@ class ProblemFinalFunctionality extends BaseFunctionality
 
     /**
      * ProblemFinalFunctionality constructor.
-     * @param EntityManager $entityManager
+     * @param ConstraintEntityManager $entityManager
      * @param ProblemFinalRepository $repository
      * @param ProblemRepository $problemRepository
      * @param ProblemTypeRepository $problemTypeRepository
@@ -70,7 +70,7 @@ class ProblemFinalFunctionality extends BaseFunctionality
      */
     public function __construct
     (
-        EntityManager $entityManager,
+        ConstraintEntityManager $entityManager,
         ProblemFinalRepository $repository,
         ProblemRepository $problemRepository,
         ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,

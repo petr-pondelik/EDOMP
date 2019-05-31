@@ -2,18 +2,18 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 27.5.19
- * Time: 23:35
+ * Date: 31.5.19
+ * Time: 10:37
  */
 
 namespace App\Exceptions;
 
 
 /**
- * Class InvalidParameterException
+ * Class EntityException
  * @package App\Exceptions
  */
-class InvalidParameterException extends \Exception
+class EntityException extends \Exception
 {
 
 }

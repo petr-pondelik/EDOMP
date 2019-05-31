@@ -61,7 +61,7 @@ class Test extends BaseEntity
      * )
      * @Assert\GreaterThanOrEqual(
      *     value="0",
-     *     message="TestNumber must be greater or equal to {{ value }}."
+     *     message="TestNumber must be greater or equal to 0."
      * )
      *
      * @var int

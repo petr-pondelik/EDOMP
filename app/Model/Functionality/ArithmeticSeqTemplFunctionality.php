@@ -9,6 +9,7 @@
 namespace App\Model\Functionality;
 
 use App\Model\Entity\ArithmeticSeqTempl;
+use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\ArithmeticSeqTemplRepository;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
@@ -16,7 +17,6 @@ use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
 use App\Model\Traits\ProblemTemplateFunctionalityTrait;
-use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -28,9 +28,19 @@ class ArithmeticSeqTemplFunctionality extends BaseFunctionality
 
     use ProblemTemplateFunctionalityTrait;
 
+    /**
+     * ArithmeticSeqTemplFunctionality constructor.
+     * @param ConstraintEntityManager $entityManager
+     * @param ArithmeticSeqTemplRepository $repository
+     * @param ProblemTypeRepository $problemTypeRepository
+     * @param ProblemConditionRepository $problemConditionRepository
+     * @param DifficultyRepository $difficultyRepository
+     * @param SubCategoryRepository $subCategoryRepository
+     * @param TemplateJsonDataRepository $templateJsonDataRepository
+     */
     public function __construct
     (
-        EntityManager $entityManager,
+        ConstraintEntityManager $entityManager,
         ArithmeticSeqTemplRepository $repository,
         ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,

@@ -21,7 +21,7 @@ use Kdyby\Doctrine\EntityManager;
 class HomepageStatisticsManager
 {
     /**
-     * @var EntityManager
+     * @var ConstraintEntityManager
      */
     protected $em;
 
@@ -32,7 +32,7 @@ class HomepageStatisticsManager
 
     /**
      * HomepageStatisticsManager constructor.
-     * @param EntityManager $entityManager
+     * @param ConstraintEntityManager $entityManager
      * @param ConstHelper $constHelper
      */
     public function __construct(EntityManager $entityManager, ConstHelper $constHelper)

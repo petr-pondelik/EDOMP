@@ -16,14 +16,5 @@ use Nette\InvalidArgumentException;
  */
 class StringFormatException extends InvalidArgumentException
 {
-    /**
-     * StringFormatException constructor.
-     * @param string $message
-     * @param int $code
-     * @param InvalidArgumentException|null $previous
-     */
-    public function __construct(string $message, int $code = 601, InvalidArgumentException $previous = null)
-    {
-        parent::__construct($message, $code, $previous);
-    }
+
 }

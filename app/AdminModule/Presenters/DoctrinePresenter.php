@@ -9,6 +9,10 @@
 namespace App\AdminModule\Presenters;
 
 
+use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SideBar\SideBarFactory;
+use App\Exceptions\EntityException;
+use App\Helpers\FlashesTranslator;
 use App\Model\Entity\Category;
 use App\Model\Entity\Difficulty;
 use App\Model\Entity\Group;
@@ -17,6 +21,7 @@ use App\Model\Entity\ProblemType;
 use App\Model\Entity\QuadraticEqTempl;
 use App\Model\Entity\SubCategory;
 use App\Model\Entity\Test;
+use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemFinalRepository;
@@ -25,12 +30,13 @@ use App\Model\Repository\QuadraticEqTemplRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
 use App\Presenters\BasePresenter;
+use App\Services\Authorizator;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\DateTime;
 use Nette\Utils\Json;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class DoctrinePresenter extends BasePresenter
+class DoctrinePresenter extends AdminPresenter
 {
     /**
      * @var ProblemFinalRepository
@@ -58,7 +64,7 @@ class DoctrinePresenter extends BasePresenter
     protected $quadraticEqTemplRepository;
 
     /**
-     * @var EntityManager
+     * @var ConstraintEntityManager
      */
     protected $em;
 
@@ -69,7 +75,11 @@ class DoctrinePresenter extends BasePresenter
 
     /**
      * DoctrinePresenter constructor.
-     * @param EntityManager $em
+     * @param Authorizator $authorizator
+     * @param HeaderBarFactory $headerBarFactory
+     * @param SideBarFactory $sideBarFactory
+     * @param FlashesTranslator $flashesTranslator
+     * @param ConstraintEntityManager $em
      * @param ProblemFinalRepository $problemRepository
      * @param CategoryRepository $categoryRepository
      * @param TemplateJsonDataRepository $templateJsonDataRepository
@@ -79,53 +89,66 @@ class DoctrinePresenter extends BasePresenter
      */
     public function __construct
     (
-        EntityManager $em, ProblemFinalRepository $problemRepository, CategoryRepository $categoryRepository,
+        Authorizator $authorizator,
+        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        ConstraintEntityManager $em, ProblemFinalRepository $problemRepository, CategoryRepository $categoryRepository,
         TemplateJsonDataRepository $templateJsonDataRepository,
         ProblemTemplateRepository $problemTemplateRepository, QuadraticEqTemplRepository $quadraticEqTemplRepository,
         ValidatorInterface $validator
     )
     {
-        parent::__construct();
+        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->problemRepository = $problemRepository;
         $this->categoryRepository = $categoryRepository;
         $this->templateJsonDataRepository = $templateJsonDataRepository;
-        //$this->difficultyRepository = $difficultyRepository;
-        //$this->subCategoryRepository = $subCategoryRepository;
         $this->problemTemplateRepository = $problemTemplateRepository;
         $this->quadraticEqTemplRepository = $quadraticEqTemplRepository;
         $this->em = $em;
         $this->validator = $validator;
     }
 
+    /**
+     * @throws EntityException
+     */
     public function actionDefault()
     {
         $category = new Category();
-        $errors = $this->validator->validate($category);
-        bdump($errors);
+        $category->setLabel("TESTCATEGORY1");
+        $this->em->persist($category);
 
         $difficulty = new Difficulty();
-        $errors = $this->validator->validate($difficulty);
-        bdump($errors);
+        $difficulty->setLabel("TESTDIFFICULTY1");
+        $this->em->persist($difficulty);
 
-        $group = new Group();
-        $errors = $this->validator->validate($group);
-        bdump($errors);
+
+        /*$group = new Group();
+        $this->em->persist($group);*/
+
+        $subCategory = new SubCategory();
+        $subCategory->setLabel("TESTSUBCATEGORY1");
+        $subCategory->setCategory($category);
+        $this->em->persist($subCategory);
+
+        $problemType = new ProblemType();
+        $problemType->setAccessor(7);
+        $problemType->setLabel("Funkce");
+        $this->em->persist($problemType);
 
         $problemFinal = new ProblemFinal();
         $problemFinal->setBody("$$ 15 x + 20 = 0 $$");
         $problemFinal->setDifficulty($difficulty);
         $problemFinal->setVariable("x");
-        $errors = $this->validator->validate($problemFinal);
-        bdump($errors);
+        $problemFinal->setProblemType($problemType);
+        $problemFinal->setSubCategory($subCategory);
+        $this->em->persist($problemFinal);
 
         $test = new Test();
         $test->setTestNumber(-10);
         $test->setSchoolYear("2018-19");
-        $errors = $this->validator->validate($test);
-        bdump($errors);
+        $this->em->persist($test);
 
-        /*$this->em->persist($category);
-        $this->em->flush();*/
+        /*$this->em->persist($category);*/
+
 
     }
 }

@@ -9,9 +9,9 @@
 namespace App\Model\Functionality;
 
 use App\Model\Entity\SubCategory;
+use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\SubCategoryRepository;
-use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -28,13 +28,13 @@ class SubCategoryFunctionality extends BaseFunctionality
 
     /**
      * SubCategoryFunctionality constructor.
-     * @param EntityManager $entityManager
+     * @param ConstraintEntityManager $entityManager
      * @param SubCategoryRepository $subCategoryRepository
      * @param CategoryRepository $categoryRepository
      */
     public function __construct
     (
-        EntityManager $entityManager,
+        ConstraintEntityManager $entityManager,
         SubCategoryRepository $subCategoryRepository, CategoryRepository $categoryRepository
     )
     {

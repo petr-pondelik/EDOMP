@@ -8,6 +8,7 @@
 
 namespace App\Model\Functionality;
 
+use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemTypeRepository;
@@ -15,7 +16,6 @@ use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
 use App\Model\Traits\ProblemTemplateFunctionalityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
-use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -28,7 +28,7 @@ class ProblemTemplateFunctionality extends BaseFunctionality
 
     /**
      * ProblemFinalFunctionality constructor.
-     * @param EntityManager $entityManager
+     * @param ConstraintEntityManager $entityManager
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param DifficultyRepository $difficultyRepository
@@ -37,7 +37,7 @@ class ProblemTemplateFunctionality extends BaseFunctionality
      */
     public function __construct
     (
-        EntityManager $entityManager,
+        ConstraintEntityManager $entityManager,
         ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
         TemplateJsonDataRepository $templateJsonDataRepository

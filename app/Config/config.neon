@@ -184,6 +184,7 @@ services:
 	service.authorizator: App\Services\Authorizator
 
 	#Managers
+	manager.entity.constraint: App\Model\Manager\ConstraintEntityManager
 	manager.homepage.statistics: App\Model\Manager\HomepageStatisticsManager
 
 	#Helpers

@@ -9,6 +9,7 @@
 namespace App\Model\Functionality;
 
 use App\Model\Entity\LinearEqTempl;
+use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\LinearEqTemplRepository;
 use App\Model\Repository\ProblemConditionRepository;
@@ -16,7 +17,6 @@ use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
 use App\Model\Traits\ProblemTemplateFunctionalityTrait;
-use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -30,7 +30,7 @@ class LinearEqTemplFunctionality extends BaseFunctionality
 
     /**
      * LinearEqTemplFunctionality constructor.
-     * @param EntityManager $entityManager
+     * @param ConstraintEntityManager $entityManager
      * @param LinearEqTemplRepository $repository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
@@ -40,7 +40,7 @@ class LinearEqTemplFunctionality extends BaseFunctionality
      */
     public function __construct
     (
-        EntityManager $entityManager,
+        ConstraintEntityManager $entityManager,
         LinearEqTemplRepository $repository,
         ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,

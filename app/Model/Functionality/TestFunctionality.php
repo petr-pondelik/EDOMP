@@ -12,12 +12,11 @@ use App\Model\Entity\ProblemFinal;
 use App\Model\Entity\ProblemTemplate;
 use App\Model\Entity\ProblemTestAssociation;
 use App\Model\Entity\Test;
+use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\LogoRepository;
 use App\Model\Repository\TermRepository;
 use App\Model\Repository\TestRepository;
-use App\Model\Traits\SequenceValTrait;
-use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -43,14 +42,14 @@ class TestFunctionality extends BaseFunctionality
 
     /**
      * TestFunctionality constructor.
-     * @param EntityManager $entityManager
+     * @param ConstraintEntityManager $entityManager
      * @param TestRepository $repository
      * @param LogoRepository $logoRepository
      * @param TermRepository $termRepository
      * @param GroupRepository $groupRepository
      */
     public function __construct(
-        EntityManager $entityManager, TestRepository $repository,
+        ConstraintEntityManager $entityManager, TestRepository $repository,
         LogoRepository $logoRepository, TermRepository $termRepository, GroupRepository $groupRepository)
     {
         parent::__construct($entityManager);

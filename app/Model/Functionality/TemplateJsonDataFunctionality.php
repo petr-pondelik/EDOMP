@@ -9,9 +9,9 @@
 namespace App\Model\Functionality;
 
 use App\Model\Entity\TemplateJsonData;
+use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
-use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -27,13 +27,13 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
 
     /**
      * TemplateJsonDataFunctionality constructor.
-     * @param EntityManager $entityManager
+     * @param ConstraintEntityManager $entityManager
      * @param TemplateJsonDataRepository $repository
      * @param ProblemTemplateRepository $problemTemplateRepository
      */
     public function __construct
     (
-        EntityManager $entityManager,
+        ConstraintEntityManager $entityManager,
         TemplateJsonDataRepository $repository, ProblemTemplateRepository $problemTemplateRepository
     )
     {

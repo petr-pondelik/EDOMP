@@ -9,11 +9,11 @@
 namespace App\Model\Functionality;
 
 use App\Model\Entity\User;
+use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\RoleRepository;
 use App\Model\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Kdyby\Doctrine\EntityManager;
 use Nette\Security\Passwords;
 use Nette\Utils\ArrayHash;
 
@@ -35,14 +35,14 @@ class UserFunctionality extends BaseFunctionality
 
     /**
      * UserFunctionality constructor.
-     * @param EntityManager $entityManager
+     * @param ConstraintEntityManager $entityManager
      * @param UserRepository $userRepository
      * @param RoleRepository $roleRepository
      * @param GroupRepository $groupRepository
      */
     public function __construct
     (
-        EntityManager $entityManager, UserRepository $userRepository,
+        ConstraintEntityManager $entityManager, UserRepository $userRepository,
         RoleRepository $roleRepository, GroupRepository $groupRepository
     )
     {

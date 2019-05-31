@@ -8,9 +8,9 @@
 
 namespace App\Model\Functionality;
 
+use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTestAssociationRepository;
-use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -26,13 +26,13 @@ class ProblemFunctionality extends BaseFunctionality
 
     /**
      * ProblemFunctionality constructor.
-     * @param EntityManager $entityManager
+     * @param ConstraintEntityManager $entityManager
      * @param ProblemRepository $problemRepository
      * @param ProblemTestAssociationRepository $problemTestAssociationRepository
      */
     public function __construct
     (
-        EntityManager $entityManager, ProblemRepository $problemRepository,
+        ConstraintEntityManager $entityManager, ProblemRepository $problemRepository,
         ProblemTestAssociationRepository $problemTestAssociationRepository
     )
     {

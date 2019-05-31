@@ -9,10 +9,10 @@
 namespace App\Model\Functionality;
 
 use App\Model\Entity\SuperGroup;
+use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\SuperGroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -34,14 +34,14 @@ class SuperGroupFunctionality extends BaseFunctionality
 
     /**
      * SuperGroupFunctionality constructor.
-     * @param EntityManager $entityManager
+     * @param ConstraintEntityManager $entityManager
      * @param SuperGroupRepository $repository
      * @param CategoryRepository $categoryRepository
      * @param GroupFunctionality $groupFunctionality
      */
     public function __construct
     (
-        EntityManager $entityManager, SuperGroupRepository $repository,
+        ConstraintEntityManager $entityManager, SuperGroupRepository $repository,
         CategoryRepository $categoryRepository,
         GroupFunctionality $groupFunctionality
     )

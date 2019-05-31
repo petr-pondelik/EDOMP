@@ -9,8 +9,8 @@
 namespace App\Model\Functionality;
 
 use App\Model\Entity\Logo;
+use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\LogoRepository;
-use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -21,12 +21,12 @@ class LogoFunctionality extends BaseFunctionality
 {
     /**
      * LogoFunctionality constructor.
-     * @param EntityManager $entityManager
+     * @param ConstraintEntityManager $entityManager
      * @param LogoRepository $logoRepository
      */
     public function __construct
     (
-        EntityManager $entityManager,
+        ConstraintEntityManager $entityManager,
         LogoRepository $logoRepository
     )
     {

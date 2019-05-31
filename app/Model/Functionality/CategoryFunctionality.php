@@ -9,8 +9,8 @@
 namespace App\Model\Functionality;
 
 use App\Model\Entity\Category;
+use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\CategoryRepository;
-use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -21,12 +21,12 @@ class CategoryFunctionality extends BaseFunctionality
 {
     /**
      * CategoryFunctionality constructor.
-     * @param EntityManager $entityManager
+     * @param ConstraintEntityManager $entityManager
      * @param CategoryRepository $categoryRepository
      */
     public function __construct
     (
-        EntityManager $entityManager,
+        ConstraintEntityManager $entityManager,
         CategoryRepository $categoryRepository
     )
     {

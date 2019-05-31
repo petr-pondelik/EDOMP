@@ -8,8 +8,8 @@
 
 namespace App\Model\Functionality;
 
+use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\BaseRepository;
-use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -19,7 +19,7 @@ use Nette\Utils\ArrayHash;
 abstract class BaseFunctionality
 {
     /**
-     * @var EntityManager
+     * @var ConstraintEntityManager
      */
     protected $em;
 
@@ -30,11 +30,11 @@ abstract class BaseFunctionality
 
     /**
      * BaseFunctionality constructor.
-     * @param EntityManager $entityManager
+     * @param ConstraintEntityManager $entityManager
      */
     public function __construct
     (
-        EntityManager $entityManager
+        ConstraintEntityManager $entityManager
     )
     {
         $this->em = $entityManager;
