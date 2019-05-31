@@ -197,7 +197,7 @@ class MathService
     public function evaluateExpression(string $expression)
     {
         $executor = new MathExecutor();
-        return $executor->execute($expression);
+        return $executor->execute($this->stringsHelper::nxpFormat($expression));
     }
 
     /**
@@ -308,10 +308,8 @@ class MathService
             return false;
         }
 
-        bdump($seqName);
-
         $problem = $this->problemRepository->find($problem->getId());
-        $firstN = $problem->first_n;
+        $firstN = $problem->getFirstN();
         $res = [];
 
         for($i = 1; $i <= $firstN; $i++){

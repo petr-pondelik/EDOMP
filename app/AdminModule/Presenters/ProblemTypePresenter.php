@@ -2,22 +2,22 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 26.4.19
- * Time: 16:07
+ * Date: 31.5.19
+ * Time: 21:13
  */
 
 namespace App\AdminModule\Presenters;
 
 use App\Arguments\UserInformArgs;
-use App\Components\DataGrids\CategoryGridFactory;
-use App\Components\Forms\CategoryForm\CategoryFormControl;
-use App\Components\Forms\CategoryForm\CategoryFormFactory;
+use App\Components\DataGrids\ProblemTypeGridFactory;
+use App\Components\Forms\ProblemTypeForm\ProblemTypeFormControl;
+use App\Components\Forms\ProblemTypeForm\ProblemTypeFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
-use App\Model\Entity\Category;
-use App\Model\Functionality\CategoryFunctionality;
-use App\Model\Repository\CategoryRepository;
+use App\Model\Entity\ProblemType;
+use App\Model\Functionality\ProblemTypeFunctionality;
+use App\Model\Repository\ProblemTypeRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use Nette\ComponentModel\IComponent;
@@ -25,56 +25,56 @@ use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
- * Class CategoryPresenter
+ * Class ProblemTypePresenter
  * @package App\AdminModule\Presenters
  */
-class CategoryPresenter extends AdminPresenter
+class ProblemTypePresenter extends AdminPresenter
 {
     /**
-     * @var CategoryRepository
+     * @var ProblemTypeRepository
      */
-    protected $categoryRepository;
+    protected $problemTypeRepository;
 
     /**
-     * @var CategoryFunctionality
+     * @var ProblemTypeFunctionality
      */
-    protected $categoryFunctionality;
+    protected $problemTypeFunctionality;
 
     /**
-     * @var CategoryGridFactory
+     * @var ProblemTypeGridFactory
      */
-    protected $categoryGridFactory;
+    protected $problemTypeGridFactory;
 
     /**
-     * @var CategoryFormFactory
+     * @var ProblemTypeFormFactory
      */
-    protected $categoryFormFactory;
+    protected $problemTypeFormFactory;
 
     /**
-     * CategoryPresenter constructor.
+     * ProblemTypePresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
-     * @param CategoryRepository $categoryRepository
-     * @param CategoryFunctionality $categoryFunctionality
-     * @param CategoryGridFactory $categoryGridFactory
-     * @param CategoryFormFactory $categoryFormFactory
+     * @param ProblemTypeRepository $problemTypeRepository
+     * @param ProblemTypeFunctionality $problemTypeFunctionality
+     * @param ProblemTypeGridFactory $problemTypeGridFactory
+     * @param ProblemTypeFormFactory $problemTypeFormFactory
      */
     public function __construct
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        CategoryRepository $categoryRepository, CategoryFunctionality $categoryFunctionality,
-        CategoryGridFactory $categoryGridFactory, CategoryFormFactory $categoryFormFactory
+        ProblemTypeRepository $problemTypeRepository, ProblemTypeFunctionality $problemTypeFunctionality,
+        ProblemTypeGridFactory $problemTypeGridFactory, ProblemTypeFormFactory $problemTypeFormFactory
     )
     {
         parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
-        $this->categoryRepository = $categoryRepository;
-        $this->categoryFunctionality = $categoryFunctionality;
-        $this->categoryGridFactory = $categoryGridFactory;
-        $this->categoryFormFactory = $categoryFormFactory;
+        $this->problemTypeRepository = $problemTypeRepository;
+        $this->problemTypeFunctionality = $problemTypeFunctionality;
+        $this->problemTypeGridFactory = $problemTypeGridFactory;
+        $this->problemTypeFormFactory = $problemTypeFormFactory;
     }
 
     /**
@@ -82,10 +82,10 @@ class CategoryPresenter extends AdminPresenter
      */
     public function actionEdit(int $id)
     {
-        $form = $this["categoryEditForm"]["form"];
+        $form = $this["problemTypeEditForm"]["form"];
         if(!$form->isSubmitted()){
-            $record = $this->categoryRepository->find($id);
-            $this["categoryEditForm"]->template->entityLabel = $record->getLabel();
+            $record = $this->problemTypeRepository->find($id);
+            $this["problemTypeEditForm"]->template->entityLabel = $record->getLabel();
             $this->template->entityLabel = $record->getLabel();
             $this->setDefaults($form, $record);
         }
@@ -93,9 +93,9 @@ class CategoryPresenter extends AdminPresenter
 
     /**
      * @param IComponent $form
-     * @param Category $record
+     * @param ProblemType $record
      */
-    private function setDefaults(IComponent $form, Category $record)
+    private function setDefaults(IComponent $form, ProblemType $record)
     {
         $form["id"]->setDefaultValue($record->getId());
         $form["id_hidden"]->setDefaultValue($record->getId());
@@ -107,9 +107,9 @@ class CategoryPresenter extends AdminPresenter
      * @return DataGrid
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function createComponentCategoryGrid($name): DataGrid
+    public function createComponentProblemTypeGrid($name): DataGrid
     {
-        $grid = $this->categoryGridFactory->create($this, $name);
+        $grid = $this->problemTypeGridFactory->create($this, $name);
 
         $grid->addAction('delete', '', 'delete!')
             ->setIcon('trash')
@@ -128,7 +128,7 @@ class CategoryPresenter extends AdminPresenter
             ->onControlAdd[] = function($container) {
             $container->addText('label', '');
         };
-        $grid->getInlineEdit()->onSetDefaults[] = function($cont, Category $item) {
+        $grid->getInlineEdit()->onSetDefaults[] = function($cont, ProblemType $item) {
             $cont->setDefaults([ "label" => $item->getLabel() ]);
         };
         $grid->getInlineEdit()->onSubmit[] = [$this, 'handleInlineUpdate'];
@@ -142,12 +142,12 @@ class CategoryPresenter extends AdminPresenter
     public function handleDelete(int $id): void
     {
         try{
-            $this->categoryFunctionality->delete($id);
+            $this->problemTypeFunctionality->delete($id);
         } catch (\Exception $e){
             $this->informUser(new UserInformArgs('delete', true,'error', $e));
             return;
         }
-        $this['categoryGrid']->reload();
+        $this['problemTypeGrid']->reload();
         $this->informUser(new UserInformArgs('delete', true));
     }
 
@@ -167,7 +167,7 @@ class CategoryPresenter extends AdminPresenter
     public function handleInlineUpdate(int $id, ArrayHash $data): void
     {
         try{
-            $this->categoryFunctionality->update($id, $data);
+            $this->problemTypeFunctionality->update($id, $data);
         } catch (\Exception $e){
             $this->informUser(new UserInformArgs('edit', true,'error', $e));
         }
@@ -175,13 +175,13 @@ class CategoryPresenter extends AdminPresenter
     }
 
     /**
-     * @return CategoryFormControl
+     * @return ProblemTypeFormControl
      */
-    public function createComponentCategoryCreateForm(): CategoryFormControl
+    public function createComponentProblemTypeCreateForm(): ProblemTypeFormControl
     {
-        $control = $this->categoryFormFactory->create();
+        $control = $this->problemTypeFormFactory->create();
         $control->onSuccess[] = function (){
-            $this['categoryGrid']->reload();
+            $this['problemTypeGrid']->reload();
             $this->informUser(new UserInformArgs('create', true));
         };
         $control->onError[] = function ($e){
@@ -191,11 +191,11 @@ class CategoryPresenter extends AdminPresenter
     }
 
     /**
-     * @return CategoryFormControl
+     * @return ProblemTypeFormControl
      */
-    public function createComponentCategoryEditForm(): CategoryFormControl
+    public function createComponentProblemTypeEditForm(): ProblemTypeFormControl
     {
-        $control = $this->categoryFormFactory->create(true);
+        $control = $this->problemTypeFormFactory->create(true);
         $control->onSuccess[] = function (){
             $this->informUser(new UserInformArgs('edit'));
             $this->redirect('default');
@@ -206,5 +206,4 @@ class CategoryPresenter extends AdminPresenter
         };
         return $control;
     }
-
 }

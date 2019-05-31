@@ -2,44 +2,45 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 8.4.19
- * Time: 17:28
+ * Date: 31.5.19
+ * Time: 21:54
  */
 
-namespace App\Components\Forms\CategoryForm;
+namespace App\Components\Forms\ProblemTypeForm;
+
 
 use App\Components\Forms\EntityFormControl;
-use App\Model\Functionality\CategoryFunctionality;
+use App\Model\Functionality\ProblemTypeFunctionality;
 use App\Services\ValidationService;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class CategoryFormFactory
- * @package App\Components\Forms
+ * Class ProblemTypeFormControl
+ * @package App\Components\Forms\ProblemTypeForm
  */
-class CategoryFormControl extends EntityFormControl
+class ProblemTypeFormControl extends EntityFormControl
 {
     /**
-     * CategoryFormControl constructor.
+     * ProblemTypeFormControl constructor.
      * @param ValidationService $validationService
-     * @param CategoryFunctionality $categoryFunctionality
+     * @param ProblemTypeFunctionality $problemTypeFunctionality
      * @param bool $edit
      */
     public function __construct
     (
         ValidationService $validationService,
-        CategoryFunctionality $categoryFunctionality,
+        ProblemTypeFunctionality $problemTypeFunctionality,
         bool $edit = false
     )
     {
         parent::__construct($validationService, $edit);
-        $this->functionality = $categoryFunctionality;
+        $this->functionality = $problemTypeFunctionality;
     }
 
     /**
-     * @return \Nette\Application\UI\Form
+     * @return Form
      */
     public function createComponentForm(): Form
     {

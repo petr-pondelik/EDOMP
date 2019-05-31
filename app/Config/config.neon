@@ -134,6 +134,7 @@ services:
 	functionality.category: App\Model\Functionality\CategoryFunctionality
 	functionality.subcategory: App\Model\Functionality\SubCategoryFunctionality
 	functionality.problem: App\Model\Functionality\ProblemFunctionality
+	functionality.problem.type: App\Model\Functionality\ProblemTypeFunctionality
 	functionality.problem.test.association: App\Model\Functionality\ProblemTestAssociationFunctionality
 	functionality.template: App\Model\Functionality\ProblemTemplateFunctionality
 	functionality.template.equation.linear: App\Model\Functionality\LinearEqTemplFunctionality
@@ -157,6 +158,8 @@ services:
 	factory.form.subcategory: App\Components\Forms\SubCategoryForm\SubCategoryFormFactory
 	factory.grid.problem: App\Components\DataGrids\ProblemGridFactory
 	factory.form.problem.final: App\Components\Forms\ProblemFinalForm\ProblemFinalFormFactory
+	factory.grid.problem.type: App\Components\DataGrids\ProblemTypeGridFactory
+	factory.form.problem.type: App\Components\Forms\ProblemTypeForm\ProblemTypeFormFactory
 	factory.grid.template: App\Components\DataGrids\TemplateGridFactory
 	factory.form.problem.template: App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory
 	factory.grid.logo: App\Components\DataGrids\LogoGridFactory

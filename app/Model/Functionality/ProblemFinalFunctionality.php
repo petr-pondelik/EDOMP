@@ -108,8 +108,8 @@ class ProblemFinalFunctionality extends BaseFunctionality
             $problem->setIsGenerated($data->is_generated);
         if(isset($data->variable))
             $problem->setVariable($data->variable);
-        if(isset($data->firstN))
-            $problem->setFirstN($data->firstN);
+        if(isset($data->first_n))
+            $problem->setFirstN($data->first_n);
 
         $problem->setProblemType($this->problemTypeRepository->find($data->type));
         $problem->setDifficulty($this->difficultyRepository->find($data->difficulty));

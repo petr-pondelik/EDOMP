@@ -168,10 +168,13 @@ class StringsHelper
     {
         $expression = Strings::replace($expression, '~(\d)(\s)(p)~', '$1*$3');
         $expression = Strings::replace($expression, '~(\d)(\s)(\d)~', '$1*$3');
+        $expression = Strings::replace($expression, '~(\d)(\s)(\(\s*)~', '$1*$3');
+        $expression = Strings::replace($expression, '~(\s*\))(\s)(\d)~', '$1*$3');
         if($variable !== null){
             $expression = Strings::replace($expression, '~(\d)(\s)(' . $variable . ')~', '$1*$3');
             $expression = Strings::replace($expression, '~(' . $variable . ')(\s)(\d)~', '$1*$3');
         }
+        bdump($expression);
         return $expression;
     }
 

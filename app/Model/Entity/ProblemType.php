@@ -30,20 +30,6 @@ class ProblemType extends BaseEntity
     protected $toStringAttr = "label";
 
     /**
-     * @ORM\Column(type="integer", nullable=false)
-     * @Assert\NotBlank(
-     *     message="Accessor can't be blank."
-     * )
-     * @Assert\Type(
-     *     type="int",
-     *     message="Accessor must be {{ type }}."
-     * )
-     *
-     * @var int
-     */
-    protected $accessor;
-
-    /**
      * @ORM\Column(type="boolean", nullable=true)
      * @Assert\Type(
      *     type="bool",
@@ -109,22 +95,6 @@ class ProblemType extends BaseEntity
     public function setConditionTypes($conditionTypes): void
     {
         $this->conditionTypes = $conditionTypes;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccessor(): int
-    {
-        return $this->accessor;
-    }
-
-    /**
-     * @param int $accessor
-     */
-    public function setAccessor(int $accessor): void
-    {
-        $this->accessor = $accessor;
     }
 
     /**

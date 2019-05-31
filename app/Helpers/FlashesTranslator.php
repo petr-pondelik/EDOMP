@@ -131,6 +131,22 @@ class FlashesTranslator
 
         ],
 
+        'Admin:ProblemType' => [
+
+            'success' => [
+                'create' => 'Typ úlohy úspěšně vytvořen.',
+                'edit' => 'Typ úlohy úspěšně editován.',
+                'delete' => 'Typ úlohy úspěšně odstraněn.',
+            ],
+
+            'error' => [
+                'create' => 'Chyba při vytváření typu úlohy.',
+                'edit' => 'Chyba při editaci typu úlohy.',
+                'delete' => 'Chyba při odstraňování typu úlohy.',
+            ]
+
+        ],
+
         'Admin:Category' => [
 
             'success' => [

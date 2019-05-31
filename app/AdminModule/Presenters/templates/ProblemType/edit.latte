@@ -1,0 +1,17 @@
+{import 'default.latte'}
+
+{block headingFirstLink}
+    <li class="breadcrumb-item">
+        <a n:href="ProblemType:default">{include headingFirst}</a>
+    </li>
+{/block}
+
+{block headingSecondLink}
+    <li class="breadcrumb-item font-weight-bold active">
+        {$entityLabel}
+    </li>
+{/block}
+
+{block content}
+    {control problemTypeEditForm}
+{/block}
