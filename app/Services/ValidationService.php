@@ -298,7 +298,8 @@ class ValidationService
             "body" => [
                 0 => "Tělo úlohy musí být vyplněno.",
                 1 => "Vstupní LaTeX musí být uvnitř značek pro matematický mód.",
-                2 => "Šablona neobsahuje zadanou neznámou."
+                2 => "Šablona neobsahuje zadanou neznámou.",
+                3 => "Šablona není validní matematický výraz."
             ],
 
             "variable" => [
@@ -373,9 +374,11 @@ class ValidationService
     {
         if(empty($body)) return 0;
 
-        if(!$this->latexHelper::latexWrapped($body)) return 1;
-
         if($type !== $this->constHelper::BODY_FINAL){
+
+            bdump($this->latexHelper::latexWrapped($body));
+
+            if(!$this->latexHelper::latexWrapped($body)) return 1;
 
             $parsed = $this->latexHelper::parseLatex($body);
 
@@ -397,8 +400,6 @@ class ValidationService
                 return 3;
             }
 
-            /*if(Strings::contains($newtonApiRes, "Stop"))
-                return 3;*/
         }
 
         return -1;

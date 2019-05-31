@@ -13,6 +13,7 @@ use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Exceptions\EntityException;
 use App\Helpers\FlashesTranslator;
+use App\Helpers\LatexHelper;
 use App\Model\Entity\Category;
 use App\Model\Entity\Difficulty;
 use App\Model\Entity\Group;
@@ -75,6 +76,11 @@ class DoctrinePresenter extends AdminPresenter
     protected $validator;
 
     /**
+     * @var LatexHelper
+     */
+    protected $latexHelper;
+
+    /**
      * DoctrinePresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
@@ -96,7 +102,8 @@ class DoctrinePresenter extends AdminPresenter
         ConstraintEntityManager $em, ProblemFinalRepository $problemRepository, CategoryRepository $categoryRepository,
         TemplateJsonDataRepository $templateJsonDataRepository,
         ProblemTemplateRepository $problemTemplateRepository, QuadraticEqTemplRepository $quadraticEqTemplRepository,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        LatexHelper $latexHelper
     )
     {
         parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
@@ -107,6 +114,7 @@ class DoctrinePresenter extends AdminPresenter
         $this->quadraticEqTemplRepository = $quadraticEqTemplRepository;
         $this->em = $em;
         $this->validator = $validator;
+        $this->latexHelper = $latexHelper;
     }
 
     /**
@@ -114,19 +122,19 @@ class DoctrinePresenter extends AdminPresenter
      */
     public function actionDefault()
     {
-        $category = new Category();
+        /*$category = new Category();
         $category->setLabel("TESTCATEGORY1");
         $this->em->persist($category);
 
         $difficulty = new Difficulty();
         $difficulty->setLabel("TESTDIFFICULTY1");
-        $this->em->persist($difficulty);
+        $this->em->persist($difficulty);*/
 
 
         /*$group = new Group();
         $this->em->persist($group);*/
 
-        $subCategory = new SubCategory();
+        /*$subCategory = new SubCategory();
         $subCategory->setLabel("TESTSUBCATEGORY1");
         $subCategory->setCategory($category);
         $this->em->persist($subCategory);
@@ -147,10 +155,11 @@ class DoctrinePresenter extends AdminPresenter
         $test = new Test();
         $test->setTestNumber(-10);
         $test->setSchoolYear("2018-19");
-        $this->em->persist($test);
+        $this->em->persist($test);*/
 
         /*$this->em->persist($category);*/
 
+        bdump($this->latexHelper::parseLatex('$$ \bigg \langle15 x + 5\bigg \rangle $$'));
 
     }
 }

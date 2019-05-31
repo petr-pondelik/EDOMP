@@ -20,84 +20,322 @@ class LatexHelper
 
     const INLINE = "inline";
 
+    const DISPLAY = "display";
+
     const PARENTHESES = "parentheses";
 
     const PREFIXES = [
 
-        "global" => [
-            "inline" => [
-                "plain" => "\(",
-                "original" => "\\\\\(",
-                "replacement" => ""
+        'global' => [
+
+            'inline' => [
+
+                0 => [
+                    'plain' => '\(',
+                    'original' => '\\\\\(',
+                    'replacement' => ''
+                ],
+
+                1 => [
+                    'plain' => '$',
+                    'original' => '\$',
+                    'replacement' => ''
+                ],
+
+                2 => [
+                    'plain' => '\begin{math}',
+                    'original' => '\\\begin{math}',
+                    'replacement' => ''
+                ]
+
             ],
-            "center" => [
-                "plain" => "$$",
-                "original" => "\\$\\$",
-                "replacement" => ""
+
+            'display' => [
+
+                0 => [
+                    'plain' => '$$',
+                    'original' => '\\\$\\\$',
+                    'replacement' => ''
+                ],
+
+                1 => [
+                    'plain' => '\[',
+                    'original' => '\\\\\[',
+                    'replacement' => ''
+                ],
+
+                2 => [
+                    'plain' => '\begin{displaymath}',
+                    'original' => '\\\\begin{displaymath}',
+                    'replacement' => ''
+                ],
+
+                3 => [
+                    'plain' => '\begin{equation}',
+                    'original' => '\\\\begin{equation}',
+                    'replacement' => ''
+                ]
+
             ]
+
         ],
 
         "parentheses" => [
 
-            "parenthesesBigSm" => [
-                "original" => "\\\big\(",
-                "replacement" => "("
+            "classics" => [
+
+                "bigSm" => [
+                    "original" => "\\\big\(",
+                    "replacement" => "("
+                ],
+
+                "bigLg" => [
+                    "original" => "\\\Big\(",
+                    "replacement" => "("
+                ],
+
+                "biggSm" => [
+                    "original" => "\\\bigg\(",
+                    "replacement" => "("
+                ],
+
+                "biggLg" => [
+                    "original" => "\\\Bigg\(",
+                    "replacement" => "("
+                ]
+
             ],
 
-            "parenthesesBigLg" => [
-                "original" => "\\\Big\(",
-                "replacement" => "("
+            'brackets' => [
+
+                'bigSm' => [
+                    'original' => '\\\big\[',
+                    'replacement' => '('
+                ],
+
+                'bigLg' => [
+                    'original' => '\\\Big\[',
+                    'replacement' => '('
+                ],
+
+                "biggSm" => [
+                    "original" => "\\\bigg\[",
+                    "replacement" => "("
+                ],
+
+                "biggLg" => [
+                    "original" => "\\\Bigg\[",
+                    "replacement" => "("
+                ]
+
             ],
 
-            "parenthesesBiggSm" => [
-                "original" => "\\\bigg\(",
-                "replacement" => "("
+            'curly' => [
+
+                'bigSm' => [
+                    'original' => '\\\big\\\{',
+                    'replacement' => '('
+                ],
+
+                'bigLg' => [
+                    'original' => '\\\Big\\\{',
+                    'replacement' => '('
+                ],
+
+                "biggSm" => [
+                    "original" => "\\\bigg\\\{",
+                    "replacement" => "("
+                ],
+
+                "biggLg" => [
+                    "original" => "\\\Bigg\\\{",
+                    "replacement" => "("
+                ]
+
             ],
 
-            "parenthesesBiggLg" => [
-                "original" => "\\\Bigg\(",
-                "replacement" => "("
+            'angle' => [
+
+                'bigSm' => [
+                    'original' => '\\\big \\\langle',
+                    'replacement' => '('
+                ],
+
+                'bigLg' => [
+                    'original' => '\\\Big \\\langle',
+                    'replacement' => '('
+                ],
+
+                "biggSm" => [
+                    "original" => "\\\bigg \\\langle",
+                    "replacement" => "("
+                ],
+
+                "biggLg" => [
+                    "original" => "\\\Bigg \\\langle",
+                    "replacement" => "("
+                ]
+
             ]
+
         ]
 
     ];
 
     const SUFFIXES = [
 
-        "global" => [
-            "inline" => [
-                "plain" => "\)",
-                "original" => "\\\\\)",
-                "replacement" => ""
+        'global' => [
+
+            'inline' => [
+
+                0 => [
+                    'plain' => '\)',
+                    'original' => '\\\\\)',
+                    'replacement' => ''
+                ],
+
+                1 => [
+                    'plain' => '$',
+                    'original' => '\$',
+                    'replacement' => ''
+                ],
+
+                2 => [
+                    'plain' => '\end{math}',
+                    'original' => '\\\end{math}',
+                    'replacement' => ''
+                ]
+
             ],
-            "center" => [
-                "plain" => "$$",
-                "original" => "\\$\\$",
-                "replacement" => ""
+
+            'display' => [
+
+                0 => [
+                    'plain' => '$$',
+                    'original' => '\\$\\$',
+                    'replacement' => ''
+                ],
+
+                1 => [
+                    'plain' => '\]',
+                    'original' => '\\\\\]',
+                    'replacement' => ''
+                ],
+
+                2 => [
+                    'plain' => '\end{displaymath}',
+                    'original' => '\\\\end{displaymath}',
+                    'replacement' => ''
+                ],
+
+                3 => [
+                    'plain' => '\end{equation}',
+                    'original' => '\\\\end{equation}',
+                    'replacement' => ''
+                ]
+
             ]
+
         ],
 
-        "parentheses" => [
+        'parentheses' => [
 
-            "parenthesesBigSm" => [
-                "original" => "\\\big\)",
-                "replacement" => ")"
+            'classics' => [
+
+                'bigSm' => [
+                    'original' => '\\\big\)',
+                    'replacement' => ')'
+                ],
+
+                'bigLg' => [
+                    'original' => '\\\Big\)',
+                    'replacement' => ')'
+                ],
+
+                'biggSm' => [
+                    'original' => '\\\bigg\)',
+                    'replacement' => ')'
+                ],
+
+                'biggLg' => [
+                    'original' => '\\\Bigg\)',
+                    'replacement' => ')'
+                ]
+
             ],
 
-            "parenthesesBigLg" => [
-                "original" => "\\\Big\)",
-                "replacement" => ")"
+            'brackets' => [
+
+                'bigSm' => [
+                    'original' => '\\\big\]',
+                    'replacement' => ')'
+                ],
+
+                'bigLg' => [
+                    'original' => '\\\Big\]',
+                    'replacement' => ')'
+                ],
+
+                'biggSm' => [
+                    'original' => '\\\bigg\]',
+                    'replacement' => ')'
+                ],
+
+                'biggLg' => [
+                    'original' => '\\\Bigg\]',
+                    'replacement' => ')'
+                ]
+
             ],
 
-            "parenthesesBiggSm" => [
-                "original" => "\\\bigg\)",
-                "replacement" => ")"
+            'curly' => [
+
+                'bigSm' => [
+                    'original' => '\\\big\\\}',
+                    'replacement' => ')'
+                ],
+
+                'bigLg' => [
+                    'original' => '\\\Big\\\}',
+                    'replacement' => ')'
+                ],
+
+                'biggSm' => [
+                    'original' => '\\\bigg\\\}',
+                    'replacement' => ')'
+                ],
+
+                'biggLg' => [
+                    'original' => '\\\Bigg\\\}',
+                    'replacement' => ')'
+                ]
+
             ],
 
-            "parenthesesBiggLg" => [
-                "original" => "\\\Bigg\)",
-                "replacement" => ")"
+            'angle' => [
+
+                'bigSm' => [
+                    'original' => '\\\big \\\rangle',
+                    'replacement' => ')'
+                ],
+
+                'bigLg' => [
+                    'original' => '\\\Big \\\rangle',
+                    'replacement' => ')'
+                ],
+
+                'biggSm' => [
+                    'original' => '\\\bigg \\\rangle',
+                    'replacement' => ')'
+                ],
+
+                'biggLg' => [
+                    'original' => '\\\Bigg \\\rangle',
+                    'replacement' => ')'
+                ]
+
             ]
+
         ]
 
     ];
@@ -115,13 +353,17 @@ class LatexHelper
      * @param string $latex
      * @return string
      */
-    static public function parseParentheses(string $latex) :string
+    static public function parseParentheses(string $latex): string
     {
         $res = $latex;
-        foreach (self::PREFIXES[self::PARENTHESES] as $prefixKey => $prefix)
-            $res = Strings::replace($res, '~' . $prefix["original"] . '~', $prefix["replacement"]);
-        foreach (self::SUFFIXES[self::PARENTHESES] as $suffixKey => $suffix)
-            $res = Strings::replace($res, '~' . $suffix["original"] . '~', $suffix["replacement"]);
+        foreach (self::PREFIXES[self::PARENTHESES] as $prefixSet){
+            foreach ($prefixSet as $prefix)
+                $res = Strings::replace($res, '~' . $prefix["original"] . '~', $prefix["replacement"]);
+        }
+        foreach (self::SUFFIXES[self::PARENTHESES] as $suffixSet){
+            foreach ($suffixSet as $suffix)
+                $res = Strings::replace($res, '~' . $suffix["original"] . '~', $suffix["replacement"]);
+        }
         return $res;
     }
 
@@ -150,10 +392,15 @@ class LatexHelper
     static public function trim(string $latex): string
     {
         $res = $latex;
-        foreach (self::PREFIXES[self::GLOBAL] as $prefixKey => $prefix)
-            $res = Strings::replace($res, '~' . $prefix["original"] . '~', $prefix["replacement"]);
-        foreach (self::SUFFIXES[self::GLOBAL] as $suffixKey => $suffix)
-            $res = Strings::replace($res, '~' . $suffix["original"] . '~', $suffix["replacement"]);
+        foreach (self::PREFIXES[self::GLOBAL] as $key1 => $prefixSet){
+            foreach ($prefixSet as $key2 => $prefix)
+                $res = Strings::replace($res, '~' . $prefix["original"] . '~', $prefix["replacement"]);
+        }
+        foreach (self::SUFFIXES[self::GLOBAL] as $key1 => $suffixSet){
+            foreach ($suffixSet as $key2 => $suffix)
+                $res = Strings::replace($res, '~' . $suffix["original"] . '~', $suffix["replacement"]);
+        }
+        bdump(Strings::trim($res));
         return Strings::trim($res);
     }
 
@@ -177,9 +424,11 @@ class LatexHelper
      */
     static public function latexWrapped(string $latex): bool
     {
-        foreach(self::PREFIXES[self::GLOBAL] as $key => $prefix){
-            if(Strings::startsWith($latex, $prefix["plain"]) && Strings::endsWith($latex, self::SUFFIXES[self::GLOBAL][$key]["plain"]))
-                return true;
+        foreach(self::PREFIXES[self::GLOBAL] as $key1 => $prefixSet){
+            foreach ($prefixSet as $key2 => $prefix){
+                if(Strings::startsWith($latex, $prefix["plain"]) && Strings::endsWith($latex, self::SUFFIXES[self::GLOBAL][$key1][$key2]["plain"]))
+                    return true;
+            }
         }
         return false;
     }
