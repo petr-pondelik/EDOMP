@@ -151,6 +151,11 @@ class ValidationService
                 return -1;
             },
 
+            "test_term" => function($filledVal){
+                if(empty($filledVal)) return 0;
+                return -1;
+            },
+
             'success_rate' => function($filledVAl){
                 if(!empty($filledVAl)){
                     if(!is_numeric($filledVAl)) return 0;
@@ -293,6 +298,10 @@ class ValidationService
             "test_number" => [
                 0 => "Číslo testu musí být vyplněno.",
                 1 => "Číslo testu nesmí být záporné."
+            ],
+
+            "test_term" => [
+                0 => "Období testu musí být vyplněno."
             ],
 
             'success_rate' => [

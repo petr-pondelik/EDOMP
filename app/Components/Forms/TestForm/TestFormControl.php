@@ -18,7 +18,6 @@ use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
-use App\Model\Repository\TermRepository;
 use App\Model\Repository\TestRepository;
 use App\Services\FileService;
 use App\Services\TestBuilderService;
@@ -86,11 +85,6 @@ class TestFormControl extends FormControl
     protected $subCategoryRepository;
 
     /**
-     * @var TermRepository
-     */
-    protected $termRepository;
-
-    /**
      * @var TestBuilderService
      */
     protected $testBuilderService;
@@ -113,7 +107,6 @@ class TestFormControl extends FormControl
      * @param LogoRepository $logoRepository
      * @param GroupRepository $groupRepository
      * @param SubCategoryRepository $subCategoryRepository
-     * @param TermRepository $termRepository
      * @param TestBuilderService $testBuilderService
      * @param FileService $fileService
      */
@@ -124,7 +117,7 @@ class TestFormControl extends FormControl
         ProblemRepository $problemRepository, ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemFinalRepository,
         ProblemTypeRepository $problemTypeRepository,
         DifficultyRepository $difficultyRepository, LogoRepository $logoRepository, GroupRepository $groupRepository,
-        SubCategoryRepository $subCategoryRepository, TermRepository $termRepository,
+        SubCategoryRepository $subCategoryRepository,
         TestBuilderService $testBuilderService, FileService $fileService
     )
     {
@@ -139,7 +132,6 @@ class TestFormControl extends FormControl
         $this->logoRepository = $logoRepository;
         $this->groupRepository = $groupRepository;
         $this->subCategoryRepository = $subCategoryRepository;
-        $this->termRepository = $termRepository;
         $this->testBuilderService = $testBuilderService;
         $this->fileService = $fileService;
     }
@@ -155,7 +147,6 @@ class TestFormControl extends FormControl
         $problemTypes = $this->problemTypeRepository->findAssoc([], "id");
         $difficulties = $this->difficultyRepository->findAssoc([], "id");
         $groups = $this->groupRepository->findAllowed($this->presenter->user);
-        $testTerms = $this->termRepository->findAssoc([],"id");
         $subCategories = $this->subCategoryRepository->findAssoc([], "id");
 
         $form->addSelect('variants', 'Počet variant', [
@@ -186,7 +177,7 @@ class TestFormControl extends FormControl
         $form->addMultiSelect('groups', 'Skupiny', $groups)
             ->setHtmlAttribute('class', 'form-control selectpicker');
 
-        $form->addSelect("test_term", "Období", $testTerms)
+        $form->addText("test_term", "Období")
             ->setHtmlAttribute("class", "form-control");
 
         $form->addText("school_year", "Školní rok")
@@ -265,6 +256,7 @@ class TestFormControl extends FormControl
         $validateFields['groups'] = ArrayHash::from($values->groups);
         $validateFields["school_year"] = $values->school_year;
         $validateFields["test_number"] = $values->test_number;
+        $validateFields["test_term"] = $values->test_term;
         $validationErrors = $this->validationService->validate($validateFields);
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
@@ -276,6 +268,7 @@ class TestFormControl extends FormControl
         $this->redrawControl('groupsErrorSnippet');
         $this->redrawControl("schoolYearErrorSnippet");
         $this->redrawControl("testNumberErrorSnippet");
+        $this->redrawControl("testTermErrorSnippet");
     }
 
     /**

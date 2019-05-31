@@ -19,7 +19,6 @@ use App\Model\Repository\LogoRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTemplateRepository;
-use App\Model\Repository\TermRepository;
 use App\Model\Repository\TestRepository;
 use Nette\Utils\ArrayHash;
 
@@ -29,11 +28,6 @@ use Nette\Utils\ArrayHash;
  */
 class TestBuilderService
 {
-    /**
-     * @var TermRepository
-     */
-    protected $termRepository;
-
     /**
      * @var ProblemRepository
      */
@@ -96,7 +90,6 @@ class TestBuilderService
 
     /**
      * TestBuilderService constructor.
-     * @param TermRepository $termRepository
      * @param ProblemRepository $problemRepository
      * @param ProblemTemplateRepository $problemTemplateRepository
      * @param ProblemTemplateFunctionality $problemTemplateFunctionality
@@ -111,7 +104,7 @@ class TestBuilderService
      */
     public function __construct
     (
-        TermRepository $termRepository, ProblemRepository $problemRepository,
+        ProblemRepository $problemRepository,
         ProblemTemplateRepository $problemTemplateRepository, ProblemTemplateFunctionality $problemTemplateFunctionality,
         ProblemFinalFunctionality $problemFinalFunctionality, ProblemConditionRepository $problemConditionRepository,
         LogoRepository $logoRepository, LogoFunctionality $logoFunctionality,
@@ -119,7 +112,6 @@ class TestBuilderService
         GeneratorService $generatorService
     )
     {
-        $this->termRepository = $termRepository;
         $this->problemRepository = $problemRepository;
         $this->problemTemplateRepository = $problemTemplateRepository;
         $this->problemTemplateFunctionality = $problemTemplateFunctionality;
@@ -290,7 +282,7 @@ class TestBuilderService
 
         $test = $this->testFunctionality->create(ArrayHash::from([
             "logo_id" => $data->logo_file_hidden,
-            "term_id" => $data->test_term,
+            "term" => $data->test_term,
             "school_year" => $data->school_year,
             "test_number" => $data->test_number,
             "groups" => $data->groups,

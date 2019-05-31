@@ -51,7 +51,12 @@
         </div>
         {snippet flashesSnippet}
             <div class="col-12 mt-3">
-                <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} border-0">{$flash->message}</div>
+                <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} alert-dismissible fade show border-0">
+                    {$flash->message}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
             </div>
         {/snippet}
     </div>

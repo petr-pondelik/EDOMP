@@ -69,12 +69,12 @@ class Test extends BaseEntity
     protected $testNumber;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Model\Entity\Term", cascade={"persist", "merge"})
+     * @ORM\Column(type="string", nullable=false)
      * @Assert\NotBlank(
      *     message="Term can't be blank."
      * )
      *
-     * @var Term
+     * @var string
      */
     protected $term;
 
@@ -165,17 +165,17 @@ class Test extends BaseEntity
     }
 
     /**
-     * @return Term
+     * @return string
      */
-    public function getTerm(): Term
+    public function getTerm(): string
     {
         return $this->term;
     }
 
     /**
-     * @param Term $term
+     * @param string $term
      */
-    public function setTerm(Term $term): void
+    public function setTerm(string $term): void
     {
         $this->term = $term;
     }

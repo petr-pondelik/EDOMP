@@ -15,7 +15,6 @@ use App\Model\Entity\Test;
 use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\LogoRepository;
-use App\Model\Repository\TermRepository;
 use App\Model\Repository\TestRepository;
 use Nette\Utils\ArrayHash;
 
@@ -31,11 +30,6 @@ class TestFunctionality extends BaseFunctionality
     protected $logoRepository;
 
     /**
-     * @var TermRepository
-     */
-    protected $termRepository;
-
-    /**
      * @var GroupRepository
      */
     protected $groupRepository;
@@ -45,17 +39,15 @@ class TestFunctionality extends BaseFunctionality
      * @param ConstraintEntityManager $entityManager
      * @param TestRepository $repository
      * @param LogoRepository $logoRepository
-     * @param TermRepository $termRepository
      * @param GroupRepository $groupRepository
      */
     public function __construct(
         ConstraintEntityManager $entityManager, TestRepository $repository,
-        LogoRepository $logoRepository, TermRepository $termRepository, GroupRepository $groupRepository)
+        LogoRepository $logoRepository, GroupRepository $groupRepository)
     {
         parent::__construct($entityManager);
         $this->repository = $repository;
         $this->logoRepository = $logoRepository;
-        $this->termRepository = $termRepository;
         $this->groupRepository = $groupRepository;
     }
 
@@ -68,7 +60,7 @@ class TestFunctionality extends BaseFunctionality
     {
         $test = new Test();
         $test->setLogo($this->logoRepository->find($data->logo_id));
-        $test->setTerm($this->termRepository->find($data->term_id));
+        $test->setTerm($data->term);
         $test = $this->attachGroups($test, $data->groups);
         $test->setSchoolYear($data->school_year);
         $test->setTestNumber($data->test_number);

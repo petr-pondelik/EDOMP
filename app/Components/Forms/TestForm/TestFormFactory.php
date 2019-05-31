@@ -17,7 +17,6 @@ use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
-use App\Model\Repository\TermRepository;
 use App\Model\Repository\TestRepository;
 use App\Services\FileService;
 use App\Services\TestBuilderService;
@@ -81,11 +80,6 @@ class TestFormFactory extends FormFactory
     protected $subCategoryRepository;
 
     /**
-     * @var TermRepository
-     */
-    protected $termRepository;
-
-    /**
      * @var TestBuilderService
      */
     protected $testBuilderService;
@@ -108,7 +102,6 @@ class TestFormFactory extends FormFactory
      * @param LogoRepository $logoRepository
      * @param GroupRepository $groupRepository
      * @param SubCategoryRepository $subCategoryRepository
-     * @param TermRepository $termRepository
      * @param TestBuilderService $testBuilderService
      * @param FileService $fileService
      */
@@ -119,7 +112,7 @@ class TestFormFactory extends FormFactory
         ProblemRepository $problemRepository, ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemFinalRepository,
         ProblemTypeRepository $problemTypeRepository,
         DifficultyRepository $difficultyRepository, LogoRepository $logoRepository, GroupRepository $groupRepository,
-        SubCategoryRepository $subCategoryRepository, TermRepository $termRepository,
+        SubCategoryRepository $subCategoryRepository,
         TestBuilderService $testBuilderService, FileService $fileService
     )
     {
@@ -134,7 +127,6 @@ class TestFormFactory extends FormFactory
         $this->logoRepository = $logoRepository;
         $this->groupRepository = $groupRepository;
         $this->subCategoryRepository = $subCategoryRepository;
-        $this->termRepository = $termRepository;
         $this->testBuilderService = $testBuilderService;
         $this->fileService = $fileService;
     }
@@ -150,7 +142,7 @@ class TestFormFactory extends FormFactory
             $this->testRepository,
             $this->problemRepository, $this->problemTemplateRepository, $this->problemFinalRepository,
             $this->problemTypeRepository, $this->difficultyRepository,
-            $this->logoRepository, $this->groupRepository, $this->subCategoryRepository, $this->termRepository,
+            $this->logoRepository, $this->groupRepository, $this->subCategoryRepository,
             $this->testBuilderService, $this->fileService
         );
     }

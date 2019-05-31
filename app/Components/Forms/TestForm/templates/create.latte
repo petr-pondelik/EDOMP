@@ -106,6 +106,14 @@
                         <div class="form-group col-md-6">
                             {label test_term}
                             {input test_term}
+                            {snippet testTermErrorSnippet}
+                                {var $form = $control['form']}
+                                <div n:if="$form->hasErrors()" class="mt-2">
+                                    <p n:foreach="$form['test_term']->errors as $error" class="alert alert-danger border-0">
+                                        {$error}
+                                    </p>
+                                </div>
+                            {/snippet}
                         </div>
 
                     </div>
@@ -282,7 +290,12 @@
         {/for}
 
         {snippet flashesSnippet}
-            <div n:foreach="$flashes as $flash" class="col-12 flash alert alert-{$flash->type} border-0">{$flash->message}</div>
+            <div n:foreach="$flashes as $flash" class="col-12 flash alert alert-{$flash->type} alert-dismissible fade show border-0">
+                {$flash->message}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
         {/snippet}
 
         <div class="form-group">
