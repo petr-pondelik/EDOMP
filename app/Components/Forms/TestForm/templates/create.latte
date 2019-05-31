@@ -34,7 +34,7 @@
                     {snippet logoFileErrorSnippet}
                         {var $form = $control['form']}
                         <div n:if="$form->hasErrors()" class="mt-2">
-                            <p n:foreach="$form['logo_file']->errors as $error" class="alert alert-danger">
+                            <p n:foreach="$form['logo_file']->errors as $error" class="alert alert-danger border-0">
                                 {$error}
                             </p>
                         </div>
@@ -96,7 +96,7 @@
                             {snippet groupsErrorSnippet}
                                 {var $form = $control['form']}
                                 <div n:if="$form->hasErrors()" class="mt-2">
-                                    <p n:foreach="$form['groups']->errors as $error" class="alert alert-danger">
+                                    <p n:foreach="$form['groups']->errors as $error" class="alert alert-danger border-0">
                                         {$error}
                                     </p>
                                 </div>
@@ -118,7 +118,7 @@
                             {snippet schoolYearErrorSnippet}
                                 {var $form = $control['form']}
                                 <div n:if="$form->hasErrors()" class="mt-2">
-                                    <p n:foreach="$form['school_year']->errors as $error" class="alert alert-danger">
+                                    <p n:foreach="$form['school_year']->errors as $error" class="alert alert-danger border-0">
                                         {$error}
                                     </p>
                                 </div>
@@ -131,7 +131,7 @@
                             {snippet testNumberErrorSnippet}
                                 {var $form = $control['form']}
                                 <div n:if="$form->hasErrors()" class="mt-2">
-                                    <p n:foreach="$form['test_number']->errors as $error" class="alert alert-danger">
+                                    <p n:foreach="$form['test_number']->errors as $error" class="alert alert-danger border-0">
                                         {$error}
                                     </p>
                                 </div>
@@ -282,7 +282,7 @@
         {/for}
 
         {snippet flashesSnippet}
-            <div n:foreach="$flashes as $flash" class="col-12 flash alert alert-{$flash->type}">{$flash->message}</div>
+            <div n:foreach="$flashes as $flash" class="col-12 flash alert alert-{$flash->type} border-0">{$flash->message}</div>
         {/snippet}
 
         <div class="form-group">

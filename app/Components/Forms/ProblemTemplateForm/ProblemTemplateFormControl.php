@@ -11,6 +11,7 @@ namespace App\Components\Forms\ProblemTemplateForm;
 
 use App\Components\Forms\EntityFormControl;
 use App\Exceptions\InvalidParameterException;
+use App\Exceptions\NewtonApiException;
 use App\Exceptions\StringFormatException;
 use App\Helpers\ConstHelper;
 use App\Model\Functionality\BaseFunctionality;
@@ -190,9 +191,12 @@ class ProblemTemplateFormControl extends EntityFormControl
 
         try{
             $validationErrors = $this->validationService->validate($validateFields);
-        } catch (InvalidParameterException $e){
-            $this["form"]["body"]->addError($e->getMessage());
-            $this->redrawControl("bodyErrorSnippet");
+        } catch (\Exception $e){
+            if($e instanceof NewtonApiException)
+                $this["form"]["submit"]->addError($e->getMessage());
+            else
+                $this["form"]["body"]->addError($e->getMessage());
+            $this->redrawFormErrors();
             return;
         }
 
@@ -207,10 +211,11 @@ class ProblemTemplateFormControl extends EntityFormControl
 
         $standardized = "";
 
+        //If it's the equation template
         if(in_array($values->type, $this->constHelper::EQUATIONS)){
             try{
                 $standardized = $this->mathService->standardizeEquation($values->body);
-            } catch (StringFormatException $e){
+            } catch (\Exception $e){
                 $form["body"]->addError($e->getMessage());
                 $this->redrawFormErrors();
                 return;
@@ -228,12 +233,18 @@ class ProblemTemplateFormControl extends EntityFormControl
             ])
         ];
 
-        $validationErrors = $this->validationService->validate($validateFields);
+        try{
+            $validationErrors = $this->validationService->validate($validateFields);
+        } catch (\Exception $e){
+            $form["body"]->addError($e->getMessage());
+            $this->redrawFormErrors();
+            return;
+        }
 
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
                 foreach($errorGroup as $egKey => $error)
-                    $form["body"]->addError($error);
+                    $form["prototype_create_submit"]->addError($error);
             }
             $this->redrawFormErrors();
             return;

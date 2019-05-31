@@ -30,7 +30,7 @@
 
             {snippet mainFlashesSnippet}
                 <div class="mt-3">
-                    <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type}">{$flash->message}</div>
+                    <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} border-0">{$flash->message}</div>
                 </div>
             {/snippet}
 

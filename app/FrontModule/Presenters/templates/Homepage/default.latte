@@ -13,7 +13,7 @@
     <div class="card-body" id="homepage-content">
 
         <div>
-            <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type}">{$flash->message}</div>
+            <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} border-0">{$flash->message}</div>
         </div>
 
         <div class="card-deck mb-5">

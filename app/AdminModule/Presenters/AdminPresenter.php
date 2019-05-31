@@ -14,6 +14,7 @@ use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Presenters\BasePresenter;
 use App\Services\Authorizator;
+use App\Services\NewtonApiClient;
 
 /**
  * Class AdminPresenter
@@ -27,23 +28,31 @@ abstract class AdminPresenter extends BasePresenter
     protected $authorizator;
 
     /**
+     * @var NewtonApiClient
+     */
+    protected $newtonApiClient;
+
+    /**
      * AdminPresenter constructor.
      * @param Authorizator $authorizator
+     * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      */
     public function __construct
     (
-        Authorizator $authorizator,
+        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator
     )
     {
         parent::__construct($headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->authorizator = $authorizator;
+        $this->newtonApiClient = $newtonApiClient;
     }
 
     /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Nette\Application\AbortException
      */
     public function startup()
@@ -56,5 +65,6 @@ abstract class AdminPresenter extends BasePresenter
                 $this->flashMessage("Nedostatečná přístupová práva.", "danger");
             $this->redirect('Sign:in');
         }
+        $this->template->newtonApiConnection = $this->newtonApiClient->ping() ;
     }
 }

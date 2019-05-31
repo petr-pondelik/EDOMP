@@ -9,6 +9,7 @@
 namespace App\Services;
 
 use App\Exceptions\InvalidParameterException;
+use App\Exceptions\NewtonApiSyntaxException;
 use App\Exceptions\StringFormatException;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
@@ -297,8 +298,7 @@ class ValidationService
             "body" => [
                 0 => "Tělo úlohy musí být vyplněno.",
                 1 => "Vstupní LaTeX musí být uvnitř značek pro matematický mód.",
-                2 => "Šablona neobsahuje zadanou neznámou.",
-                3 => "Šablona není validní matematický výraz."
+                2 => "Šablona neobsahuje zadanou neznámou."
             ],
 
             "variable" => [
@@ -364,6 +364,9 @@ class ValidationService
      * @param string|null $variable
      * @return int
      * @throws InvalidParameterException
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function validateBody(string $body, int $type,  string $variable = null): int
@@ -376,7 +379,7 @@ class ValidationService
 
             $parsed = $this->latexHelper::parseLatex($body);
 
-            //TODO: ADD VALIDATION OVER PARAMETERS
+            //Validation over the parameters
             $this->validateParameters($parsed);
 
             $split = $this->stringsHelper::splitByParameters($parsed);
@@ -387,10 +390,15 @@ class ValidationService
             $parametrized = $this->stringsHelper::getParametrized($parsed);
 
             $parsedNewton = $this->stringsHelper::newtonFormat($parametrized->expression);
-            $newtonApiRes = $this->newtonApiClient->simplify($parsedNewton);
 
-            if(Strings::contains($newtonApiRes, "Stop"))
+            try{
+                $this->newtonApiClient->simplify($parsedNewton);
+            } catch (NewtonApiSyntaxException $e){
                 return 3;
+            }
+
+            /*if(Strings::contains($newtonApiRes, "Stop"))
+                return 3;*/
         }
 
         return -1;

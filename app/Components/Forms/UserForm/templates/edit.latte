@@ -25,7 +25,7 @@
             {snippet usernameErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['username']->errors as $error" class="alert alert-danger">
+                    <p n:foreach="$form['username']->errors as $error" class="alert alert-danger border-0">
                         {$error}
                     </p>
                 </div>
@@ -50,7 +50,7 @@
                 {snippet passwordConfirmErrorSnippet}
                     {var $form = $control['form']}
                     <div n:if="$form->hasErrors()" class="mt-2">
-                        <p n:foreach="$form['password_confirm']->errors as $error" class="alert alert-danger">
+                        <p n:foreach="$form['password_confirm']->errors as $error" class="alert alert-danger border-0">
                             {$error}
                         </p>
                     </div>
@@ -65,7 +65,7 @@
             {snippet roleErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['role']->errors as $error" class="alert alert-danger">
+                    <p n:foreach="$form['role']->errors as $error" class="alert alert-danger border-0">
                         {$error}
                     </p>
                 </div>
@@ -78,7 +78,7 @@
             {snippet groupsErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['groups']->errors as $error" class="alert alert-danger">
+                    <p n:foreach="$form['groups']->errors as $error" class="alert alert-danger border-0">
                         {$error}
                     </p>
                 </div>

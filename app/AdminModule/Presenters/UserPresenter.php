@@ -19,6 +19,7 @@ use App\Model\Entity\User;
 use App\Model\Functionality\UserFunctionality;
 use App\Model\Repository\UserRepository;
 use App\Services\Authorizator;
+use App\Services\NewtonApiClient;
 use App\Services\ValidationService;
 use Nette\ComponentModel\IComponent;
 use Ublaboo\DataGrid\DataGrid;
@@ -57,6 +58,7 @@ class UserPresenter extends AdminPresenter
     /**
      * UserPresenter constructor.
      * @param Authorizator $authorizator
+     * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
@@ -68,14 +70,14 @@ class UserPresenter extends AdminPresenter
      */
     public function __construct
     (
-        Authorizator $authorizator,
+        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         UserRepository $userRepository, UserFunctionality $userFunctionality,
         ValidationService $validationService,
         UserGridFactory $userGridFactory, UserFormFactory $userFormFactory
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->userRepository = $userRepository;
         $this->userFunctionality = $userFunctionality;
         $this->validationService = $validationService;

@@ -113,7 +113,7 @@ class FlashesTranslator
                 'create' => 'Příklad úspěšně vytvořen.',
                 'edit' => 'Příklad úspěšně editován.',
                 'delete' => 'Příklad úspěšně odstraněn.',
-                'difficulty' => 'Obtížnot úspěšně změněna.',
+                'difficulty' => 'Obtížnost úspěšně změněna.',
                 'subCategory' => 'Téma úspěšně změněno.',
                 'getRes' => 'Výsledek úspěšně získán.'
             ],

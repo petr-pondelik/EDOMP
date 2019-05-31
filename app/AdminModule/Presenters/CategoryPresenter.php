@@ -19,6 +19,7 @@ use App\Model\Entity\Category;
 use App\Model\Functionality\CategoryFunctionality;
 use App\Model\Repository\CategoryRepository;
 use App\Services\Authorizator;
+use App\Services\NewtonApiClient;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
@@ -52,6 +53,7 @@ class CategoryPresenter extends AdminPresenter
     /**
      * CategoryPresenter constructor.
      * @param Authorizator $authorizator
+     * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
@@ -62,14 +64,14 @@ class CategoryPresenter extends AdminPresenter
      */
     public function __construct
     (
-        Authorizator $authorizator,
+        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         CategoryRepository $categoryRepository,
         CategoryFunctionality $categoryFunctionality,
         CategoryGridFactory $categoryGridFactory, CategoryFormFactory $categoryFormFactory
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->categoryRepository = $categoryRepository;
         $this->categoryFunctionality = $categoryFunctionality;
         $this->categoryGridFactory = $categoryGridFactory;

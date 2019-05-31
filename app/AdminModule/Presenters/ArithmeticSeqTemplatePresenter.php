@@ -18,6 +18,7 @@ use App\Model\Entity\ProblemTemplate;
 use App\Model\Functionality\ArithmeticSeqTemplFunctionality;
 use App\Model\Repository\ArithmeticSeqTemplRepository;
 use App\Services\Authorizator;
+use App\Services\NewtonApiClient;
 use Nette\ComponentModel\IComponent;
 
 /**
@@ -34,6 +35,7 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
     /**
      * ArithmeticSeqTemplatePresenter constructor.
      * @param Authorizator $authorizator
+     * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
@@ -45,7 +47,7 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
      */
     public function __construct
     (
-        Authorizator $authorizator,
+        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ArithmeticSeqTemplRepository $repository, ArithmeticSeqTemplFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, ProblemTemplateFormFactory $problemTemplateFormFactory,
@@ -54,7 +56,7 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
     {
         parent::__construct
         (
-            $authorizator,
+            $authorizator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
             $templateGridFactory, $problemTemplateFormFactory,
             $constHelper

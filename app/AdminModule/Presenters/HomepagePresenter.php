@@ -23,6 +23,7 @@ use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TestRepository;
 use App\Model\Repository\UserRepository;
 use App\Services\Authorizator;
+use App\Services\NewtonApiClient;
 use Nette;
 
 /**
@@ -74,6 +75,7 @@ final class HomepagePresenter extends AdminPresenter
     /**
      * HomepagePresenter constructor.
      * @param Authorizator $authorizator
+     * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
@@ -87,14 +89,14 @@ final class HomepagePresenter extends AdminPresenter
      */
     public function __construct
     (
-        Authorizator $authorizator,
+        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemFinalRepository,
         CategoryRepository $categoryRepository, SubCategoryRepository $subCategoryRepository,
         TestRepository $testRepository, UserRepository $userRepository, HomepageStatisticsManager $homepageStatisticsManager
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->problemTemplateRepository = $problemTemplateRepository;
         $this->problemFinalRepository = $problemFinalRepository;
         $this->categoryRepository = $categoryRepository;
@@ -106,6 +108,7 @@ final class HomepagePresenter extends AdminPresenter
 
     /**
      * @throws Nette\Application\AbortException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function startup(): void
     {

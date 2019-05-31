@@ -26,6 +26,12 @@
 
     {if $user->isInRole("admin") || $user->isInRole("teacher")}
 
+        {if !$newtonApiConnection}
+            <div class="flash alert alert-danger border-0 alert-dismissible fade show ml-4 mr-4 mt-4 mb-4 border-0" id="newton-unreachable" role="alert"">
+                <p class="mb-0"><i class="fas fa-exclamation-triangle mr-2"></i>NewtonAPI je nedostupné.</p>
+            </div>
+        {/if}
+
         {if !$presenter->isLinkCurrent('Homepage:*')}
             <nav class="ml-4 mr-4 mt-3" id="breadcrumb-navigation" aria-label="breadcrumb">
                 <ol class="mb-0 pt-1 pb-1 breadcrumb bg-light">

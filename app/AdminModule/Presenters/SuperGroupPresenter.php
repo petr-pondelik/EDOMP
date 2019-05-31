@@ -20,6 +20,7 @@ use App\Model\Entity\SuperGroup;
 use App\Model\Functionality\SuperGroupFunctionality;
 use App\Model\Repository\SuperGroupRepository;
 use App\Services\Authorizator;
+use App\Services\NewtonApiClient;
 use App\Services\ValidationService;
 use Nette\ComponentModel\IComponent;
 
@@ -57,6 +58,7 @@ class SuperGroupPresenter extends AdminPresenter
     /**
      * SuperGroupPresenter constructor.
      * @param Authorizator $authorizator
+     * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
@@ -68,14 +70,14 @@ class SuperGroupPresenter extends AdminPresenter
      */
     public function __construct
     (
-        Authorizator $authorizator,
+        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         SuperGroupRepository $superGroupRepository, SuperGroupFunctionality $superGroupFunctionality,
         SuperGroupGridFactory $superGroupGridFactory, SuperGroupFormFactory $superGroupFormFactory,
         ValidationService $validationService
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->superGroupRepository = $superGroupRepository;
         $this->superGroupFunctionality = $superGroupFunctionality;
         $this->superGroupGridFactory = $superGroupGridFactory;

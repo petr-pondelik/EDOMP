@@ -8,7 +8,7 @@
             {snippet labelErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['label']->errors as $error" class="alert alert-danger">
+                    <p n:foreach="$form['label']->errors as $error" class="alert alert-danger border-0">
                         {$error}
                     </p>
                 </div>

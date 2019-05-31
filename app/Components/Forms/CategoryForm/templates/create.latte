@@ -4,7 +4,7 @@
 
         {snippet flashesSnippet}
             <div class="col-12 mt-3">
-                <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} alert-dismissible fade show" role="alert"">
+                <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} border-0 alert-dismissible fade show" role="alert"">
                     {$flash->message}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -19,7 +19,7 @@
             {snippet labelErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['label']->errors as $error" class="alert alert-danger">
+                    <p n:foreach="$form['label']->errors as $error" class="alert alert-danger border-0">
                         {$error}
                     </p>
                 </div>

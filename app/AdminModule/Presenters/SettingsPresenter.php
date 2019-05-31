@@ -19,6 +19,7 @@ use App\Helpers\FlashesTranslator;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\SuperGroupRepository;
 use App\Services\Authorizator;
+use App\Services\NewtonApiClient;
 use Nette\ComponentModel\IComponent;
 
 /**
@@ -55,6 +56,7 @@ class SettingsPresenter extends AdminPresenter
     /**
      * SettingsPresenter constructor.
      * @param Authorizator $authorizator
+     * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
@@ -66,13 +68,13 @@ class SettingsPresenter extends AdminPresenter
      */
     public function __construct
     (
-        Authorizator $authorizator,
+        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         GroupRepository $groupRepository, SuperGroupRepository $superGroupRepository,
         GroupGridFactory $groupGridFactory, SuperGroupGridFactory $superGroupGridFactory, PermissionFormFactory $permissionFormFactory
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->groupRepository = $groupRepository;
         $this->superGroupRepository = $superGroupRepository;
         $this->groupGridFactory = $groupGridFactory;

@@ -15,7 +15,7 @@
         <div class="card-body col-12">
 
             {snippet flashesSnippet}
-                <div n:foreach="$flashes as $flash" class="mb-4 flash alert alert-{$flash->type}">{$flash->message}</div>
+                <div n:foreach="$flashes as $flash" class="mb-4 flash alert alert-{$flash->type} border-0">{$flash->message}</div>
             {/snippet}
 
             {var $i = 0}
@@ -46,7 +46,7 @@
                         {snippet successRate{$i}ErrorSnippet}
                             <div n:if="$control['form']->hasErrors()" class="mt-2">
                                 <p n:foreach="$control['form']['success_rate_' . $i]->errors as $error"
-                                        class="alert alert-danger">
+                                        class="alert alert-danger border-0">
                                     {$error}
                                 </p>
                             </div>

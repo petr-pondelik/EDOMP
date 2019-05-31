@@ -20,6 +20,7 @@ use App\Model\Functionality\SubCategoryFunctionality;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Services\Authorizator;
+use App\Services\NewtonApiClient;
 use App\Services\ValidationService;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
@@ -64,6 +65,7 @@ class SubCategoryPresenter extends AdminPresenter
     /**
      * SubCategoryPresenter constructor.
      * @param Authorizator $authorizator
+     * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
@@ -76,7 +78,7 @@ class SubCategoryPresenter extends AdminPresenter
      */
     public function __construct
     (
-        Authorizator $authorizator,
+        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         SubCategoryRepository $subCategoryRepository, SubCategoryFunctionality $subCategoryFunctionality,
         CategoryRepository $categoryRepository,
@@ -84,7 +86,7 @@ class SubCategoryPresenter extends AdminPresenter
         SubCategoryGridFactory $subCategoryGridFactory, SubCategoryFormFactory $subCategoryFormFactory
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->subCategoryRepository = $subCategoryRepository;
         $this->subCategoryFunctionality = $subCategoryFunctionality;
         $this->categoryRepository = $categoryRepository;

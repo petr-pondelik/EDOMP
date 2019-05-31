@@ -18,6 +18,7 @@ use App\Model\Entity\ProblemTemplate;
 use App\Model\Functionality\GeometricSeqTemplFunctionality;
 use App\Model\Repository\GeometricSeqTemplRepository;
 use App\Services\Authorizator;
+use App\Services\NewtonApiClient;
 use Nette\ComponentModel\IComponent;
 
 /**
@@ -34,6 +35,7 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
     /**
      * GeometricSeqTemplatePresenter constructor.
      * @param Authorizator $authorizator
+     * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
@@ -45,7 +47,7 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
      */
     public function __construct
     (
-        Authorizator $authorizator,
+        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         GeometricSeqTemplRepository $repository, GeometricSeqTemplFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, ProblemTemplateFormFactory $problemTemplateFormFactory,
@@ -54,7 +56,7 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
     {
         parent::__construct
         (
-            $authorizator,
+            $authorizator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
             $templateGridFactory, $problemTemplateFormFactory,
             $constHelper

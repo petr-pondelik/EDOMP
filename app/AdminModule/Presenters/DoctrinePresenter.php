@@ -31,6 +31,7 @@ use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
 use App\Presenters\BasePresenter;
 use App\Services\Authorizator;
+use App\Services\NewtonApiClient;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\DateTime;
 use Nette\Utils\Json;
@@ -76,6 +77,7 @@ class DoctrinePresenter extends AdminPresenter
     /**
      * DoctrinePresenter constructor.
      * @param Authorizator $authorizator
+     * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
@@ -89,7 +91,7 @@ class DoctrinePresenter extends AdminPresenter
      */
     public function __construct
     (
-        Authorizator $authorizator,
+        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ConstraintEntityManager $em, ProblemFinalRepository $problemRepository, CategoryRepository $categoryRepository,
         TemplateJsonDataRepository $templateJsonDataRepository,
@@ -97,7 +99,7 @@ class DoctrinePresenter extends AdminPresenter
         ValidatorInterface $validator
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->problemRepository = $problemRepository;
         $this->categoryRepository = $categoryRepository;
         $this->templateJsonDataRepository = $templateJsonDataRepository;

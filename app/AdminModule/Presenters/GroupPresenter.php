@@ -21,6 +21,7 @@ use App\Model\Functionality\GroupFunctionality;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\SuperGroupRepository;
 use App\Services\Authorizator;
+use App\Services\NewtonApiClient;
 use App\Services\ValidationService;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
@@ -64,6 +65,7 @@ class GroupPresenter extends AdminPresenter
     /**
      * GroupPresenter constructor.
      * @param Authorizator $authorizator
+     * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
@@ -76,14 +78,14 @@ class GroupPresenter extends AdminPresenter
      */
     public function __construct
     (
-        Authorizator $authorizator,
+        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         GroupRepository $groupRepository, GroupFunctionality $groupFunctionality, SuperGroupRepository $superGroupRepository,
         ValidationService $validationService,
         GroupGridFactory $groupGridFactory, GroupFormFactory $groupFormFactory
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->groupRepository = $groupRepository;
         $this->groupFunctionality = $groupFunctionality;
         $this->superGroupRepository = $superGroupRepository;

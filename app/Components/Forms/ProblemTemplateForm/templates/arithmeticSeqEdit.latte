@@ -23,7 +23,7 @@
             {snippet typeErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-1">
-                    <p n:foreach="$form['type']->errors as $error" class="alert alert-danger">
+                    <p n:foreach="$form['type']->errors as $error" class="alert alert-danger border-0">
                         {$error}
                     </p>
                 </div>
@@ -46,7 +46,7 @@
             {snippet bodyErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['body']->errors as $error" class="alert alert-danger">
+                    <p n:foreach="$form['body']->errors as $error" class="alert alert-danger border-0">
                         {$error}
                     </p>
                 </div>
@@ -59,7 +59,7 @@
             {snippet variableErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['variable']->errors as $error" class="alert alert-danger">
+                    <p n:foreach="$form['variable']->errors as $error" class="alert alert-danger border-0">
                         {$error}
                     </p>
                 </div>
@@ -82,7 +82,7 @@
             {snippet first_nErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['first_n']->errors as $error" class="alert alert-danger">
+                    <p n:foreach="$form['first_n']->errors as $error" class="alert alert-danger border-0">
                         {$error}
                     </p>
                 </div>
@@ -117,7 +117,7 @@
             {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
                     {for $i = 1; $i < 3; $i++}
-                        <p n:foreach="$form['condition_' . $i]->errors as $error" class="alert alert-danger">
+                        <p n:foreach="$form['condition_' . $i]->errors as $error" class="alert alert-danger border-0">
                             {$error}
                         </p>
                     {/for}
@@ -125,7 +125,7 @@
         {/snippet}
 
         <div n:snippet="flashesSnippet">
-            <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} alert-dismissible fade show" role="alert"">
+            <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} border-0 alert-dismissible fade show" role="alert"">
             {$flash->message}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>

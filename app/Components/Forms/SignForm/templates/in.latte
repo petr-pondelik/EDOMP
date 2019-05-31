@@ -10,7 +10,7 @@
         <div n:snippet="usernameErrorSnippet" class="col-12">
             {var $form = $control['form']}
             <div n:if="$form->hasErrors()" class="mt-2">
-                <p n:foreach="$form['username']->errors as $error" class="alert alert-danger">
+                <p n:foreach="$form['username']->errors as $error" class="alert alert-danger border-0">
                     {$error}
                 </p>
             </div>
@@ -27,7 +27,7 @@
         <div n:snippet="passwordErrorSnippet" class="col-12">
             {var $form = $control['form']}
             <div n:if="$form->hasErrors()" class="mt-2">
-                <p n:foreach="$form['password']->errors as $error" class="alert alert-danger">
+                <p n:foreach="$form['password']->errors as $error" class="alert alert-danger border-0">
                     {$error}
                 </p>
             </div>
@@ -38,21 +38,20 @@
         <div class="control-label col-12">
             {label signIn}
         </div>
-        <div class="col-12">
-            {input signIn}
-        </div>
         <div n:snippet="signInErrorSnippet" class="col-12">
             {var $form = $control['form']}
             <div n:if="$form->hasErrors()" class="mt-4">
-                <p n:foreach="$form['signIn']->errors as $error" class="alert alert-danger">
+                <p n:foreach="$form['signIn']->errors as $error" class="alert alert-danger border-0">
                     {$error}
                 </p>
             </div>
         </div>
+        <div class="col-12">
+            {input signIn}
+        </div>
         {snippet flashesSnippet}
             <div class="col-12 mt-3">
-                <div n:foreach="$flashes as $flash"
-                        class="flash alert alert-{$flash->type}">{$flash->message}</div>
+                <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} border-0">{$flash->message}</div>
             </div>
         {/snippet}
     </div>

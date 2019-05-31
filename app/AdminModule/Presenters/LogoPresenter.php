@@ -20,6 +20,7 @@ use App\Model\Functionality\LogoFunctionality;
 use App\Model\Repository\LogoRepository;
 use App\Services\Authorizator;
 use App\Services\FileService;
+use App\Services\NewtonApiClient;
 use App\Services\ValidationService;
 use Nette\Application\Responses\TextResponse;
 use Nette\ComponentModel\IComponent;
@@ -63,6 +64,7 @@ class LogoPresenter extends AdminPresenter
     /**
      * SettingsPresenter constructor.
      * @param Authorizator $authorizator
+     * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
@@ -75,14 +77,14 @@ class LogoPresenter extends AdminPresenter
      */
     public function __construct
     (
-        Authorizator $authorizator,
+        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         LogoRepository $logoRepository, LogoFunctionality $logoFunctionality,
         ValidationService $validationService, FileService $fileService,
         LogoGridFactory $logoGridFactory, LogoFormFactory $logoFormFactory
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->logoRepository = $logoRepository;
         $this->logoFunctionality = $logoFunctionality;
         $this->validationService = $validationService;

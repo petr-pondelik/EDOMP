@@ -20,6 +20,7 @@ use App\Model\Entity\ProblemTemplate;
 use App\Model\Functionality\BaseFunctionality;
 use App\Model\Repository\BaseRepository;
 use App\Services\Authorizator;
+use App\Services\NewtonApiClient;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
@@ -68,6 +69,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     /**
      * ProblemTemplatePresenter constructor.
      * @param Authorizator $authorizator
+     * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
@@ -77,13 +79,13 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
      */
     public function __construct
     (
-        Authorizator $authorizator,
+        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         TemplateGridFactory $templateGridFactory, ProblemTemplateFormFactory $problemTemplateFormFactory,
         ConstHelper $constHelper
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->templateGridFactory = $templateGridFactory;
         $this->problemTemplateFormFactory = $problemTemplateFormFactory;
         $this->constHelper = $constHelper;

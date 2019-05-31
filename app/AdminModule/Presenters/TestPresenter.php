@@ -25,6 +25,7 @@ use App\Model\Repository\ProblemTestAssociationRepository;
 use App\Model\Repository\TestRepository;
 use App\Services\Authorizator;
 use App\Services\FileService;
+use App\Services\NewtonApiClient;
 use App\Services\ValidationService;
 use Nette\Application\Responses\CallbackResponse;
 use Nette\ComponentModel\IComponent;
@@ -96,6 +97,7 @@ class TestPresenter extends AdminPresenter
     /**
      * TestPresenter constructor.
      * @param Authorizator $authorizator
+     * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
@@ -113,7 +115,7 @@ class TestPresenter extends AdminPresenter
      */
     public function __construct
     (
-        Authorizator $authorizator,
+        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         TestRepository $testRepository, TestFunctionality $testFunctionality,
         ProblemTemplateRepository $problemTemplateRepository, ProblemRepository $problemRepository, LogoRepository $logoRepository,
@@ -122,7 +124,7 @@ class TestPresenter extends AdminPresenter
         FileService $fileService, ValidationService $validationService
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->testRepository = $testRepository;
         $this->testFunctionality = $testFunctionality;
         $this->problemTemplateRepository = $problemTemplateRepository;

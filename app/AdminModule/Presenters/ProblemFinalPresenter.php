@@ -20,6 +20,7 @@ use App\Model\Functionality\ProblemFinalFunctionality;
 use App\Model\Repository\ProblemFinalRepository;
 use App\Services\Authorizator;
 use App\Services\MathService;
+use App\Services\NewtonApiClient;
 use App\Services\ValidationService;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
@@ -64,6 +65,7 @@ class ProblemFinalPresenter extends AdminPresenter
     /**
      * ProblemFinalPresenter constructor.
      * @param Authorizator $authorizator
+     * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
@@ -76,14 +78,14 @@ class ProblemFinalPresenter extends AdminPresenter
      */
     public function __construct
     (
-        Authorizator $authorizator,
+        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ProblemGridFactory $problemGridFactory, ProblemFinalFormFactory $problemFinalFormFactory,
         ProblemFinalRepository $problemRepository, ProblemFinalFunctionality $problemFunctionality,
         ValidationService $validationService, MathService $mathService
     )
     {
-        parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->problemGridFactory = $problemGridFactory;
         $this->problemFinalFormFactory = $problemFinalFormFactory;
         $this->problemRepository = $problemRepository;
