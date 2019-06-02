@@ -122,13 +122,13 @@ class DoctrinePresenter extends AdminPresenter
      */
     public function actionDefault()
     {
-        /*$category = new Category();
-        $category->setLabel("TESTCATEGORY1");
+        $category = new Category();
+        //$category->setLabel("TESTCATEGORY1");
         $this->em->persist($category);
 
         $difficulty = new Difficulty();
         $difficulty->setLabel("TESTDIFFICULTY1");
-        $this->em->persist($difficulty);*/
+        $this->em->persist($difficulty);
 
 
         /*$group = new Group();
@@ -159,7 +159,7 @@ class DoctrinePresenter extends AdminPresenter
 
         /*$this->em->persist($category);*/
 
-        bdump($this->latexHelper::parseLatex('$$ \bigg \langle15 x + 5\bigg \rangle $$'));
+        //bdump($this->latexHelper::parseLatex('$$ \bigg \langle15 x + 5\bigg \rangle $$'));
 
     }
 }
