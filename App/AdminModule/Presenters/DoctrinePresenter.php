@@ -14,9 +14,12 @@ use App\Components\SideBar\SideBarFactory;
 use App\Exceptions\EntityException;
 use App\Helpers\FlashesTranslator;
 use App\Helpers\LatexHelper;
+use App\Model\Entity\ArithmeticSeqTempl;
 use App\Model\Entity\Category;
 use App\Model\Entity\Difficulty;
 use App\Model\Entity\Group;
+use App\Model\Entity\LinearEqTempl;
+use App\Model\Entity\ProblemConditionType;
 use App\Model\Entity\ProblemFinal;
 use App\Model\Entity\ProblemType;
 use App\Model\Entity\QuadraticEqTempl;
@@ -117,34 +120,38 @@ class DoctrinePresenter extends AdminPresenter
         $this->latexHelper = $latexHelper;
     }
 
-    /**
-     * @throws EntityException
-     */
+
     public function actionDefault()
     {
         $category = new Category();
-        //$category->setLabel("TESTCATEGORY1");
-        $this->em->persist($category);
+        $category->setLabel("TESTCATEGORY1");
+        //$this->em->persist($category);
 
         $difficulty = new Difficulty();
         $difficulty->setLabel("TESTDIFFICULTY1");
-        $this->em->persist($difficulty);
+        //$this->em->persist($difficulty);
 
 
         /*$group = new Group();
         $this->em->persist($group);*/
 
-        /*$subCategory = new SubCategory();
+        $subCategory = new SubCategory();
         $subCategory->setLabel("TESTSUBCATEGORY1");
         $subCategory->setCategory($category);
-        $this->em->persist($subCategory);
+        //$this->em->persist($subCategory);
+
+        /*$entity = new ProblemConditionType();
+        $errors = $this->validator->validate($entity);
+        bdump($errors);*/
 
         $problemType = new ProblemType();
-        $problemType->setAccessor(7);
         $problemType->setLabel("Funkce");
-        $this->em->persist($problemType);
 
-        $problemFinal = new ProblemFinal();
+        $entity = new ArithmeticSeqTempl();
+        $errors = $this->validator->validate($entity);
+        bdump($errors);
+
+        /*$problemFinal = new ProblemFinal();
         $problemFinal->setBody("$$ 15 x + 20 = 0 $$");
         $problemFinal->setDifficulty($difficulty);
         $problemFinal->setVariable("x");

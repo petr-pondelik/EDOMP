@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class ProblemTemplate
  * @package App\Model\Entity
  */
-class ProblemTemplate extends Problem
+abstract class ProblemTemplate extends Problem
 {
     /**
      * @ORM\Column(type="json", nullable=true)

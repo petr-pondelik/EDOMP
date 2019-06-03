@@ -9,6 +9,7 @@
 namespace App\Model\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Model\Repository\LinearEqTemplRepository")
@@ -19,7 +20,19 @@ use Doctrine\ORM\Mapping as ORM;
 class LinearEqTempl extends ProblemTemplate
 {
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", nullable=false)
+     * @Assert\NotBlank(
+     *     message="Variable can't be blank."
+     * )
+     * @Assert\Type(
+     *     type="string",
+     *     message="Variable must be {{ type }}."
+     * )
+     * @Assert\Length(
+     *     min=1,
+     *     max=1,
+     *     exactMessage="Variable must be string of length 1."
+     * )
      *
      * @var string
      */

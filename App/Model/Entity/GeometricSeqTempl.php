@@ -21,7 +21,18 @@ class GeometricSeqTempl extends ProblemTemplate
 {
     /**
      * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="Variable can't be blank."
+     * )
+     * @Assert\Type(
+     *     type="string",
+     *     message="Variable must be {{ type }}."
+     * )
+     * @Assert\Length(
+     *     min=1,
+     *     max=1,
+     *     exactMessage="Variable must be string of length 1."
+     * )
      *
      * @var string
      */
@@ -29,7 +40,13 @@ class GeometricSeqTempl extends ProblemTemplate
 
     /**
      * @ORM\Column(type="integer", nullable=false)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="FirstN can't be blank."
+     * )
+     * @Assert\Type(
+     *     type="integer",
+     *     message="FirstN must be {{ type }}."
+     * )
      *
      * @var int
      */
@@ -37,6 +54,10 @@ class GeometricSeqTempl extends ProblemTemplate
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @Assert\Type(
+     *     type="float",
+     *     message="Quotient must be {{ type }}."
+     * )
      *
      * @var float
      */
