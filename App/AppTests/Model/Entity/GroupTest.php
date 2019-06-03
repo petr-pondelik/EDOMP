@@ -2,35 +2,35 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 2.6.19
- * Time: 23:54
+ * Date: 3.6.19
+ * Time: 23:15
  */
 
 namespace AppTests\Model\Entity;
 
 
-
 use App\AppTests\Entity\EntityTestCase;
-use App\Model\Entity\Category;
-use App\Model\Entity\SubCategory;
+use App\Model\Entity\Group;
+use App\Model\Entity\SuperGroup;
 
 /**
- * Class SubCategoryEntityTest
+ * Class GroupTest
  * @package AppTests\Model\Entity
  */
-class SubCategoryEntityTest extends EntityTestCase
+class GroupTest extends EntityTestCase
 {
     /**
      * @throws \Exception
      */
     public function testCreateSuccess(): void
     {
-        $category = new Category();
-        $category->setLabel("TESTCATEGORY");
-        $entity = new SubCategory();
-        $entity->setLabel("TESTSUBCATEGORY");
-        $entity->setCategory($category);
-        $this->assertInstanceOf(SubCategory::class, $entity);
+        $superGroup = new SuperGroup();
+        $superGroup->setLabel("TESTSUPERGROUP");
+
+        $entity = new Group();
+        $entity->setLabel("TESTGROUP");
+        $entity->setSuperGroup($superGroup);
+        $this->assertInstanceOf(Group::class, $entity);
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 0);
     }
@@ -41,15 +41,15 @@ class SubCategoryEntityTest extends EntityTestCase
     public function testCreateError(): void
     {
         $errorMsgs = [
-            0 => "Category can't be blank.",
+            0 => "SuperGroup can't be blank.",
             1 => "Label can't be blank."
         ];
 
-        $entity = new SubCategory();
+        $entity = new Group();
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 2);
 
         foreach ($errors as $key => $error)
-            $this->assertEquals($error->getMessage(), $errorMsgs[$key]);
+            $this->assertEquals($errors->get($key)->getMessage(), $errorMsgs[$key]);
     }
 }

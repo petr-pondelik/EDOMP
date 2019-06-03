@@ -2,30 +2,28 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 2.6.19
- * Time: 23:41
+ * Date: 3.6.19
+ * Time: 23:10
  */
 
-namespace AppTests\Model\Entity;
+namespace App\AppTests\Entity;
 
-
-use App\AppTests\Entity\EntityTestCase;
-use App\Model\Entity\Category;
+use App\Model\Entity\Difficulty;
 
 /**
- * Class CategoryEntityTest
- * @package AppTests\Model\Entity
+ * Class DifficultyTest
+ * @package App\AppTests\Entity
  */
-class CategoryEntityTest extends EntityTestCase
+class DifficultyTest extends EntityTestCase
 {
     /**
      * @throws \Exception
      */
     public function testCreateSuccess(): void
     {
-        $entity = new Category();
-        $entity->setLabel("TESTCATEGORY");
-        $this->assertInstanceOf(Category::class, $entity);
+        $entity = new Difficulty();
+        $entity->setLabel("TESTDIFFICULTY");
+        $this->assertInstanceOf(Difficulty::class, $entity);
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 0);
     }
@@ -35,7 +33,7 @@ class CategoryEntityTest extends EntityTestCase
      */
     public function testCreateError(): void
     {
-        $entity = new Category();
+        $entity = new Difficulty();
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 1);
         $this->assertEquals($errors->get(0)->getMessage(), 'Label can\'t be blank.');
