@@ -31,7 +31,7 @@ class Role extends BaseEntity
     /**
      * @ORM\Column(type="string", nullable=false)
      * @Assert\NotBlank(
-     *     message="Key can't be blank"
+     *     message="Key can't be blank."
      * )
      *
      * @var string

@@ -8,6 +8,7 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Traits\LabelTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -19,6 +20,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Logo extends BaseEntity
 {
+    use LabelTrait;
+
     /**
      * @var string
      */
@@ -40,26 +43,20 @@ class Logo extends BaseEntity
 
     /**
      * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="ExtensionTmp can't be blank."
+     * )
      *
      * @var string
      */
     protected $extensionTmp;
 
     /**
-     * @ORM\Column(type="boolean", nullable=false)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="boolean")
      *
      * @var bool
      */
     protected $isUsed = false;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     *
-     * @var string
-     */
-    protected $label;
 
     /**
      * @return string
@@ -107,22 +104,6 @@ class Logo extends BaseEntity
     public function setExtensionTmp(string $extensionTmp): void
     {
         $this->extensionTmp = $extensionTmp;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLabel(): ?string
-    {
-        return $this->label;
-    }
-
-    /**
-     * @param string $label
-     */
-    public function setLabel(string $label): void
-    {
-        $this->label = $label;
     }
 
     /**

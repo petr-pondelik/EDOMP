@@ -19,12 +19,16 @@ use App\Model\Entity\Category;
 use App\Model\Entity\Difficulty;
 use App\Model\Entity\Group;
 use App\Model\Entity\LinearEqTempl;
+use App\Model\Entity\Logo;
 use App\Model\Entity\ProblemConditionType;
 use App\Model\Entity\ProblemFinal;
+use App\Model\Entity\ProblemTestAssociation;
 use App\Model\Entity\ProblemType;
 use App\Model\Entity\QuadraticEqTempl;
+use App\Model\Entity\Role;
 use App\Model\Entity\SubCategory;
 use App\Model\Entity\Test;
+use App\Model\Entity\User;
 use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\DifficultyRepository;
@@ -147,7 +151,11 @@ class DoctrinePresenter extends AdminPresenter
         $problemType = new ProblemType();
         $problemType->setLabel("Funkce");
 
-        $entity = new ArithmeticSeqTempl();
+        /*$entity = new ArithmeticSeqTempl();
+        $errors = $this->validator->validate($entity);
+        bdump($errors);*/
+
+        $entity = new Test();
         $errors = $this->validator->validate($entity);
         bdump($errors);
 
