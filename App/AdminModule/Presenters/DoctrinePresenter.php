@@ -20,6 +20,7 @@ use App\Model\Entity\Difficulty;
 use App\Model\Entity\Group;
 use App\Model\Entity\LinearEqTempl;
 use App\Model\Entity\Logo;
+use App\Model\Entity\ProblemCondition;
 use App\Model\Entity\ProblemConditionType;
 use App\Model\Entity\ProblemFinal;
 use App\Model\Entity\ProblemTestAssociation;
@@ -155,7 +156,7 @@ class DoctrinePresenter extends AdminPresenter
         $errors = $this->validator->validate($entity);
         bdump($errors);*/
 
-        $entity = new Test();
+        $entity = new ProblemCondition();
         $errors = $this->validator->validate($entity);
         bdump($errors);
 

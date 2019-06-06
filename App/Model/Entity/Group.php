@@ -115,8 +115,9 @@ class Group extends BaseEntity
     public function getCategoriesId(): array
     {
         $res = [];
-        foreach ($this->getCategories()->getValues() as $key => $category)
-            array_push($res, $category->getId());
+        foreach ($this->getCategories()->getValues() as $key => $category){
+            $res[] = $category->getId();
+        }
         return $res;
     }
 

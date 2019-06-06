@@ -12,6 +12,7 @@ namespace AppTests\Model\Entity;
 use App\AppTests\Entity\EntityTestCase;
 use App\Model\Entity\Group;
 use App\Model\Entity\SuperGroup;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class GroupTest
@@ -20,16 +21,45 @@ use App\Model\Entity\SuperGroup;
 class GroupTest extends EntityTestCase
 {
     /**
+     * @var SuperGroup
+     */
+    protected $superGroup;
+
+    /**
+     * @throws \Exception
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+        $superGroup = new SuperGroup();
+        $superGroup->setLabel('TEST_SUPER_GROUP');
+        $this->superGroup = $superGroup;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testValues(): void
+    {
+        $entity = new Group();
+        $entity->setLabel('TEST_GROUP');
+        $entity->setSuperGroup($this->superGroup);
+
+        $this->assertEquals($entity->getLabel(), 'TEST_GROUP');
+        $this->assertEquals($entity->getSuperGroup(), $this->superGroup);
+        $this->assertEquals($entity->getCategories(), new ArrayCollection());
+        $this->assertEquals($entity->getCategoriesId(), []);
+    }
+
+    /**
      * @throws \Exception
      */
     public function testCreateSuccess(): void
     {
-        $superGroup = new SuperGroup();
-        $superGroup->setLabel("TESTSUPERGROUP");
-
         $entity = new Group();
-        $entity->setLabel("TESTGROUP");
-        $entity->setSuperGroup($superGroup);
+        $entity->setLabel('TEST_GROUP');
+        $entity->setSuperGroup($this->superGroup);
+
         $this->assertInstanceOf(Group::class, $entity);
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 0);
@@ -49,7 +79,8 @@ class GroupTest extends EntityTestCase
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 2);
 
-        foreach ($errors as $key => $error)
+        foreach ($errors as $key => $error){
             $this->assertEquals($errors->get($key)->getMessage(), $errorMsgs[$key]);
+        }
     }
 }

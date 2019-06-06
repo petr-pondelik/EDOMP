@@ -8,6 +8,7 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -20,6 +21,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ProblemCondition extends BaseEntity
 {
+    use LabelTrait;
+
     /**
      * @var string
      */
@@ -27,22 +30,19 @@ class ProblemCondition extends BaseEntity
 
     /**
      * @ORM\Column(type="integer", nullable=false)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     message="Accessor can't be blank."
+     * )
      *
      * @var int
      */
     protected $accessor;
 
     /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    protected $label;
-
-    /**
      * @ORM\ManyToOne(targetEntity="ProblemConditionType", inversedBy="conditions", cascade={"persist", "merge"})
+     * @Assert\NotBlank(
+     *     message="ProblemConditionType can't be blank."
+     * )
      *
      * @var ProblemConditionType
      */
@@ -77,22 +77,6 @@ class ProblemCondition extends BaseEntity
     public function setAccessor(int $accessor): void
     {
         $this->accessor = $accessor;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLabel(): string
-    {
-        return $this->label;
-    }
-
-    /**
-     * @param string $label
-     */
-    public function setLabel(string $label): void
-    {
-        $this->label = $label;
     }
 
     /**

@@ -96,9 +96,9 @@ class GeometricSeqTempl extends ProblemTemplate
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getQuotient(): float
+    public function getQuotient(): ?float
     {
         return $this->quotient;
     }

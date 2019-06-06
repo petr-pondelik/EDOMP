@@ -31,4 +31,10 @@ abstract class EntityTestCase extends TestCase
             ->enableAnnotationMapping()
             ->getValidator();
     }
+
+    abstract public function testValues(): void;
+
+    abstract public function testCreateSuccess(): void;
+
+    abstract public function testCreateError(): void;
 }

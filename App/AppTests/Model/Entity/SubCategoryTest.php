@@ -9,10 +9,10 @@
 namespace AppTests\Model\Entity;
 
 
-
 use App\AppTests\Entity\EntityTestCase;
 use App\Model\Entity\Category;
 use App\Model\Entity\SubCategory;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class SubCategoryEntityTest
@@ -21,15 +21,44 @@ use App\Model\Entity\SubCategory;
 class SubCategoryTest extends EntityTestCase
 {
     /**
+     * @var Category
+     */
+    protected $category;
+
+    /**
+     * @throws \Exception
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+        $category = new Category();
+        $category->setLabel('TEST_CATEGORY');
+        $this->category = $category;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testValues(): void
+    {
+        $entity = new SubCategory();
+        $entity->setLabel('TEST_SUBCATEGORY');
+        $entity->setCategory($this->category);
+
+        $this->assertEquals($entity->getLabel(), 'TEST_SUBCATEGORY');
+        $this->assertEquals($entity->getCategory(), $this->category);
+        $this->assertEquals($entity->getProblems(), new ArrayCollection());
+    }
+
+    /**
      * @throws \Exception
      */
     public function testCreateSuccess(): void
     {
-        $category = new Category();
-        $category->setLabel("TESTCATEGORY");
         $entity = new SubCategory();
-        $entity->setLabel("TESTSUBCATEGORY");
-        $entity->setCategory($category);
+        $entity->setLabel('TEST_SUBCATEGORY');
+        $entity->setCategory($this->category);
+
         $this->assertInstanceOf(SubCategory::class, $entity);
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 0);
@@ -49,7 +78,8 @@ class SubCategoryTest extends EntityTestCase
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 2);
 
-        foreach ($errors as $key => $error)
+        foreach ($errors as $key => $error){
             $this->assertEquals($error->getMessage(), $errorMsgs[$key]);
+        }
     }
 }

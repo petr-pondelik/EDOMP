@@ -12,6 +12,7 @@ namespace AppTests\Model\Entity;
 use App\AppTests\Entity\EntityTestCase;
 use App\Model\Entity\Role;
 use App\Model\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class UserTest
@@ -20,18 +21,54 @@ use App\Model\Entity\User;
 class UserTest extends EntityTestCase
 {
     /**
+     * @var Role
+     */
+    protected $role;
+
+    /**
+     * @throws \Exception
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $role = new Role();
+        $role->setLabel('TEST_ROLE');
+        $role->setKey('test_role');
+        $this->role = $role;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testValues(): void
+    {
+        $entity = new User();
+        $entity->setUsername('TEST_USER_NAME');
+        $entity->setPassword('TEST_USER_PASSWORD');
+        $entity->setRole($this->role);
+
+        $this->assertEquals($entity->getUsername(), 'TEST_USER_NAME');
+        $this->assertEquals($entity->getPassword(), 'TEST_USER_PASSWORD');
+        $this->assertEquals($entity->getRole(), $this->role);
+        $this->assertEquals($entity->getGroups(), new ArrayCollection());
+        $this->assertEquals($entity->getGroupsCreated(), new ArrayCollection());
+        $this->assertEquals($entity->getSuperGroupsCreated(), new ArrayCollection());
+        $this->assertEquals($entity->getUsersCreated(), new ArrayCollection());
+        $this->assertEquals($entity->getCategoriesId(), []);
+        $this->assertEquals($entity->getGroupsId(), []);
+        $this->assertEquals($entity->isAdmin(), false);
+    }
+
+    /**
      * @throws \Exception
      */
     public function testCreateSuccess(): void
     {
-        $role = new Role();
-        $role->setLabel("TEST_ROLE");
-        $role->setKey("testrole");
-
         $entity = new User();
-        $entity->setUsername("TEST_USER_NAME");
-        $entity->setPassword("TEST_USER_PASSWORD");
-        $entity->setRole($role);
+        $entity->setUsername('TEST_USER_NAME');
+        $entity->setPassword('TEST_USER_PASSWORD');
+        $entity->setRole($this->role);
 
         $this->assertInstanceOf(User::class, $entity);
 
@@ -54,7 +91,8 @@ class UserTest extends EntityTestCase
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 3);
 
-        foreach ($errors as $key => $error)
+        foreach ($errors as $key => $error){
             $this->assertEquals($errors->get($key)->getMessage(), $errorMsgs[$key]);
+        }
     }
 }

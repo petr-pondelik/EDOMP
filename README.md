@@ -148,3 +148,7 @@ ALTER TABLE prototype_json_data DROP INDEX condition_problem_unique;
 -   Update schématu:
 
         sudo php ./www/index.php orm:schema-tool:update --force
+        
+### PHPUNit Tests
+
+./vendor/bin/phpunit --bootstrap App/bootstrap.php App/AppTests/Model/Entity

@@ -11,6 +11,7 @@ namespace AppTests\Model\Entity;
 
 use App\AppTests\Entity\EntityTestCase;
 use App\Model\Entity\Category;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class CategoryEntityTest
@@ -21,10 +22,24 @@ class CategoryTest extends EntityTestCase
     /**
      * @throws \Exception
      */
+    public function testValues(): void
+    {
+        $entity = new Category();
+        $entity->setLabel('TEST_CATEGORY');
+
+        $this->assertEquals($entity->getLabel(), 'TEST_CATEGORY');
+        $this->assertEquals($entity->getGroups(), new ArrayCollection());
+        $this->assertEquals($entity->getSuperGroups(), new ArrayCollection());
+        $this->assertEquals($entity->getSubCategories(), new ArrayCollection());
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function testCreateSuccess(): void
     {
         $entity = new Category();
-        $entity->setLabel("TESTCATEGORY");
+        $entity->setLabel('TEST_CATEGORY');
         $this->assertInstanceOf(Category::class, $entity);
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 0);

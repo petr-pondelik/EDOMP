@@ -29,16 +29,6 @@ class ProblemConditionType extends BaseEntity
     protected $toStringAttr = "label";
 
     /**
-     * @ORM\Column(type="integer", nullable=false)
-     * @Assert\NotBlank(
-     *     message="Accessor can't be blank."
-     * )
-     *
-     * @var int
-     */
-    protected $accessor;
-
-    /**
      * @ORM\OneToMany(targetEntity="ProblemCondition", mappedBy="conditionType", cascade={"persist", "merge"})
      */
     protected $conditions;
@@ -57,22 +47,6 @@ class ProblemConditionType extends BaseEntity
         parent::__construct();
         $this->conditions = new ArrayCollection();
         $this->problemTypes = new ArrayCollection();
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccessor(): int
-    {
-        return $this->accessor;
-    }
-
-    /**
-     * @param int $accessor
-     */
-    public function setAccessor(int $accessor): void
-    {
-        $this->accessor = $accessor;
     }
 
     /**

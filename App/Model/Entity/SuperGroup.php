@@ -94,8 +94,9 @@ class SuperGroup extends BaseEntity
     public function getCategoriesId(): array
     {
         $res = [];
-        foreach ($this->getCategories()->getValues() as $key => $category)
-            array_push($res, $category->getId());
+        foreach ($this->getCategories()->getValues() as $key => $category){
+            $res[] = $category->getId();
+        }
         return $res;
     }
 
@@ -106,9 +107,9 @@ class SuperGroup extends BaseEntity
     }
 
     /**
-     * @return User
+     * @return User|null
      */
-    public function getCreatedBy(): User
+    public function getCreatedBy(): ?User
     {
         return $this->createdBy;
     }

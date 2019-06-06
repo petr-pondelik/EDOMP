@@ -11,6 +11,7 @@ namespace AppTests\Model\Entity;
 
 use App\AppTests\Entity\EntityTestCase;
 use App\Model\Entity\SuperGroup;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class SuperGroupTest
@@ -21,10 +22,26 @@ class SuperGroupTest extends EntityTestCase
     /**
      * @throws \Exception
      */
+    public function testValues(): void
+    {
+        $entity = new SuperGroup();
+        $entity->setLabel('TEST_SUPER_GROUP');
+
+        $this->assertEquals($entity->getLabel(), 'TEST_SUPER_GROUP');
+        $this->assertEquals($entity->getGroups(), new ArrayCollection());
+        $this->assertEquals($entity->getCategories(), new ArrayCollection());
+        $this->assertEquals($entity->getCategoriesId(), []);
+        $this->assertEquals($entity->getCreatedBy(), null);
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function testCreateSuccess(): void
     {
         $entity = new SuperGroup();
-        $entity->setLabel("TESTSUPERGROUP");
+        $entity->setLabel('TEST_SUPER_GROUP');
+
         $this->assertInstanceOf(SuperGroup::class, $entity);
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 0);

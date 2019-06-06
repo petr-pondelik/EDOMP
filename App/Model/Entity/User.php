@@ -102,6 +102,9 @@ class User extends BaseEntity
     {
         parent::__construct();
         $this->groups = new ArrayCollection();
+        $this->groupsCreated = new ArrayCollection();
+        $this->superGroupsCreated = new ArrayCollection();
+        $this->usersCreated = new ArrayCollection();
     }
 
     /**
@@ -269,6 +272,22 @@ class User extends BaseEntity
     public function setSuperGroupsCreated($superGroupsCreated): void
     {
         $this->superGroupsCreated = $superGroupsCreated;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUsersCreated()
+    {
+        return $this->usersCreated;
+    }
+
+    /**
+     * @param mixed $usersCreated
+     */
+    public function setUsersCreated($usersCreated): void
+    {
+        $this->usersCreated = $usersCreated;
     }
 
 }

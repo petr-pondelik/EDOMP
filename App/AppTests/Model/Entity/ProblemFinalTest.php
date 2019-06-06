@@ -8,42 +8,54 @@
 
 namespace App\AppTests\Entity;
 
-use App\Model\Entity\Category;
-use App\Model\Entity\Difficulty;
 use App\Model\Entity\ProblemFinal;
-use App\Model\Entity\ProblemType;
-use App\Model\Entity\SubCategory;
+use AppTests\Model\Entity\ProblemEntityTestCase;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class ProblemFinalTest
  * @package App\AppTests\Entity
  */
-class ProblemFinalTest extends EntityTestCase
+class ProblemFinalTest extends ProblemEntityTestCase
 {
+    /**
+     * @throws \Exception
+     */
+    public function testValues(): void
+    {
+        $entity = new ProblemFinal();
+        $entity->setBody('TEST_BODY');
+        $entity->setResult('TEST_RESULT');
+        $entity->setSubCategory($this->subCategory);
+        $entity->setDifficulty($this->difficulty);
+        $entity->setProblemType($this->problemType);
+
+        $this->assertEquals($entity->getBody(), 'TEST_BODY');
+        $this->assertEquals($entity->getResult(), 'TEST_RESULT');
+        $this->assertEquals($entity->getSubCategory(), $this->subCategory);
+        $this->assertEquals($entity->getDifficulty(), $this->difficulty);
+        $this->assertEquals($entity->getProblemType(), $this->problemType);
+        $this->assertEquals($entity->getTextBefore(), null);
+        $this->assertEquals($entity->getTextAfter(), null);
+        $this->assertEquals($entity->getConditions(), new ArrayCollection());
+        $this->assertEquals($entity->getSuccessRate(), null);
+        $this->assertEquals($entity->getTestAssociations(), new ArrayCollection());
+        $this->assertEquals($entity->getFirstN(), null);
+        $this->assertEquals($entity->getVariable(), null);
+        $this->assertEquals($entity->getProblemTemplate(), null);
+    }
+
     /**
      * @throws \Exception
      */
     public function testCreateSuccess(): void
     {
-        $category = new Category();
-        $category->setLabel("TESTCATEGORY1");
-
-        $difficulty = new Difficulty();
-        $difficulty->setLabel("TESTDIFFICULTY1");
-
-        $subCategory = new SubCategory();
-        $subCategory->setLabel("TESTSUBCATEGORY1");
-        $subCategory->setCategory($category);
-
-        $problemType = new ProblemType();
-        $problemType->setLabel("TESTPROBLEMTYPE1");
-
         $entity = new ProblemFinal();
-        $entity->setBody("TESTBODY");
-        $entity->setResult("TESTRESULT");
-        $entity->setSubCategory($subCategory);
-        $entity->setDifficulty($difficulty);
-        $entity->setProblemType($problemType);
+        $entity->setBody('TEST_BODY');
+        $entity->setResult('TEST_RESULT');
+        $entity->setSubCategory($this->subCategory);
+        $entity->setDifficulty($this->difficulty);
+        $entity->setProblemType($this->problemType);
 
         $errors = $this->validator->validate($entity);
 
@@ -57,7 +69,7 @@ class ProblemFinalTest extends EntityTestCase
     public function testCreateError(): void
     {
         $errorMsgs = [
-            0 => "Variable must be string of length 1.",
+            0 => 'Variable must be string of length 1.',
             1 => "Body can't be blank.",
             2 => "ProblemType can't be blank.",
             3 => "Difficulty can't be blank.",
@@ -65,18 +77,19 @@ class ProblemFinalTest extends EntityTestCase
         ];
 
         $entity = new ProblemFinal();
-        $entity->setVariable("aaa");
+        $entity->setVariable('TEST');
 
         $errors = $this->validator->validate($entity);
 
         $this->assertEquals($errors->count(), 5);
 
-        foreach ($errors as $key => $error)
+        foreach ($errors as $key => $error){
             $this->assertEquals($error->getMessage(), $errorMsgs[$key]);
+        }
 
         $this->expectException(\TypeError::class);
-        $entity->setFirstN("aaa");
-        $entity->setSuccessRate("aaa");
-        $entity->setIsTemplate("aaa");
+        $entity->setFirstN('TEST');
+        $entity->setSuccessRate('TEST');
+        $entity->setIsTemplate('TEST');
     }
 }

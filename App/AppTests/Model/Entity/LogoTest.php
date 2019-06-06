@@ -21,11 +21,30 @@ class LogoTest extends EntityTestCase
     /**
      * @throws \Exception
      */
+    public function testValues(): void
+    {
+        $entity = new Logo();
+        $entity->setLabel('TEST_LOGO');
+        $entity->setExtensionTmp('TEST_EXTENSION_TMP');
+        $entity->setExtension('TEST_EXTENSION');
+        $entity->setPath('TEST_PATH');
+
+        $this->assertEquals($entity->getLabel(), 'TEST_LOGO');
+        $this->assertEquals($entity->getExtensionTmp(), 'TEST_EXTENSION_TMP');
+        $this->assertEquals($entity->getExtension(), 'TEST_EXTENSION');
+        $this->assertEquals($entity->getPath(), 'TEST_PATH');
+        $this->assertEquals($entity->isUsed(), false);
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function testCreateSuccess(): void
     {
         $entity = new Logo();
-        $entity->setLabel("TESTLOGO");
-        $entity->setExtensionTmp("EXTENSION_TMP");
+        $entity->setLabel('TEST_LOGO');
+        $entity->setExtensionTmp('EXTENSION_TMP');
+
         $this->assertInstanceOf(Logo::class, $entity);
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 0);
@@ -45,7 +64,8 @@ class LogoTest extends EntityTestCase
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 2);
 
-        foreach ($errors as $key => $error)
+        foreach ($errors as $key => $error){
             $this->assertEquals($error->getMessage(), $errorMsgs[$key]);
+        }
     }
 }

@@ -8,43 +8,52 @@
 
 namespace App\AppTests\Entity;
 
-use App\Model\Entity\Category;
-use App\Model\Entity\Difficulty;
-use App\Model\Entity\LinearEqTempl;
-use App\Model\Entity\ProblemType;
 use App\Model\Entity\QuadraticEqTempl;
-use App\Model\Entity\SubCategory;
+use AppTests\Model\Entity\ProblemEntityTestCase;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class QuadraticEqTemplTest
  * @package App\AppTests\Entity
  */
-class QuadraticEqTemplTest extends EntityTestCase
+class QuadraticEqTemplTest extends ProblemEntityTestCase
 {
+    /**
+     * @throws \Exception
+     */
+    public function testValues(): void
+    {
+        $entity = new QuadraticEqTempl();
+        $entity->setBody('TEST_BODY');
+        $entity->setVariable('T');
+        $entity->setSubCategory($this->subCategory);
+        $entity->setDifficulty($this->difficulty);
+        $entity->setProblemType($this->problemType);
+
+        $this->assertEquals($entity->getBody(), 'TEST_BODY');
+        $this->assertEquals($entity->getVariable(), 'T');
+        $this->assertEquals($entity->getSubCategory(), $this->subCategory);
+        $this->assertEquals($entity->getDifficulty(), $this->difficulty);
+        $this->assertEquals($entity->getProblemType(), $this->problemType);
+        $this->assertEquals($entity->getTextBefore(), null);
+        $this->assertEquals($entity->getTextAfter(), null);
+        $this->assertEquals($entity->getConditions(), new ArrayCollection());
+        $this->assertEquals($entity->getSuccessRate(), null);
+        $this->assertEquals($entity->getMatches(), null);
+        $this->assertEquals($entity->getTestAssociations(), new ArrayCollection());
+    }
+
     /**
      * @throws \Exception
      */
     public function testCreateSuccess(): void
     {
-        $category = new Category();
-        $category->setLabel("TESTCATEGORY1");
-
-        $difficulty = new Difficulty();
-        $difficulty->setLabel("TESTDIFFICULTY1");
-
-        $subCategory = new SubCategory();
-        $subCategory->setLabel("TESTSUBCATEGORY1");
-        $subCategory->setCategory($category);
-
-        $problemType = new ProblemType();
-        $problemType->setLabel("TESTPROBLEMTYPE1");
-
         $entity = new QuadraticEqTempl();
-        $entity->setBody("TESTBODY");
-        $entity->setVariable("x");
-        $entity->setSubCategory($subCategory);
-        $entity->setDifficulty($difficulty);
-        $entity->setProblemType($problemType);
+        $entity->setBody('TEST_BODY');
+        $entity->setVariable('T');
+        $entity->setSubCategory($this->subCategory);
+        $entity->setDifficulty($this->difficulty);
+        $entity->setProblemType($this->problemType);
 
         $errors = $this->validator->validate($entity);
 
@@ -71,17 +80,19 @@ class QuadraticEqTemplTest extends EntityTestCase
 
         $this->assertEquals($errors->count(), 5);
 
-        foreach ($errors as $key => $error)
+        foreach ($errors as $key => $error){
             $this->assertEquals($error->getMessage(), $errorMsgs[$key]);
+        }
 
-        $entity->setVariable("aaa");
+        $entity->setVariable('TEST');
 
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 5);
 
-        $errorMsgs[0] = "Variable must be string of length 1.";
+        $errorMsgs[0] = 'Variable must be string of length 1.';
 
-        foreach ($errors as $key => $error)
+        foreach ($errors as $key => $error){
             $this->assertEquals($error->getMessage(), $errorMsgs[$key]);
+        }
     }
 }

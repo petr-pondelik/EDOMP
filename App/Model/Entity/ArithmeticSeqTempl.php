@@ -97,9 +97,9 @@ class ArithmeticSeqTempl extends ProblemTemplate
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getDifference(): float
+    public function getDifference(): ?float
     {
         return $this->difference;
     }

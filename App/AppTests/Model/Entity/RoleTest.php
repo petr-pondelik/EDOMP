@@ -11,6 +11,7 @@ namespace AppTests\Model\Entity;
 
 use App\AppTests\Entity\EntityTestCase;
 use App\Model\Entity\Role;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class RoleTest
@@ -21,11 +22,26 @@ class RoleTest extends EntityTestCase
     /**
      * @throws \Exception
      */
+    public function testValues(): void
+    {
+        $entity = new Role();
+        $entity->setLabel('TEST_ROLE');
+        $entity->setKey('test_role');
+
+        $this->assertEquals($entity->getLabel(), 'TEST_ROLE');
+        $this->assertEquals($entity->getKey(), 'test_role');
+        $this->assertEquals($entity->getUsers(), new ArrayCollection());
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function testCreateSuccess(): void
     {
         $entity = new Role();
-        $entity->setLabel("TEST_ROLE");
-        $entity->setKey("testrole");
+        $entity->setLabel('TEST_ROLE');
+        $entity->setKey('test_role');
+
         $this->assertInstanceOf(Role::class, $entity);
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 0);
@@ -45,7 +61,8 @@ class RoleTest extends EntityTestCase
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 2);
 
-        foreach ($errors as $key => $error)
+        foreach ($errors as $key => $error){
             $this->assertEquals($errors->get($key)->getMessage(), $errorMsgs[$key]);
+        }
     }
 }
