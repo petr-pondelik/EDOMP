@@ -13,6 +13,8 @@ namespace App\AppTests\Model\Functionality;
 use App\Model\Functionality\CategoryFunctionality;
 use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\CategoryRepository;
+use App\Services\ValidationService;
+use Nette\Security\User;
 use Nette\Utils\ArrayHash;
 use App\Model\Entity\Category;
 
@@ -20,54 +22,53 @@ use App\Model\Entity\Category;
 /**
  * Class CategoryFunctionalityCreateTest
  */
-class CategoryFunctionalityCreateTest extends \PHPUnit\Framework\TestCase
+class CategoryFunctionalityCreateTest extends FunctionalityTestCase
 {
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @throws \ReflectionException
      */
-    protected $em;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $categoryRepository;
-
-    /**
-     * @var CategoryFunctionality
-     */
-    protected $categoryFunctionality;
-
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getMockBuilder(ConstraintEntityManager::class)
+        $this->repositoryMock = $this->getMockBuilder(CategoryRepository::class)
+            ->setMethods(['findBy', 'find'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->categoryRepository = $this->getMockBuilder(CategoryRepository::class)
+
+        $em = $this->getMockBuilder(ConstraintEntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->categoryFunctionality = new CategoryFunctionality($this->em, $this->categoryRepository);
+
+        $this->functionality = new CategoryFunctionality($em, $this->repositoryMock);
     }
 
     /**
      * @throws \Exception
      */
-    public function testInitialization()
+    public function testFunctionality(): void
     {
         $data = ArrayHash::from([
-            "label" => "TESTCATEGORY1"
+            'label' => 'TEST_CATEGORY'
         ]);
 
-        $this->assertEquals($this->categoryFunctionality->getTest(), 1);
+        $category = new Category();
+        $category->setLabel('TEST_CATEGORY');
 
-        $category1 = new Category();
-        $category1->setLabel("TESTCATEGORY1");
+        $this->repositoryMock->expects($this->once())
+            ->method('find')
+            ->with(1)
+            ->willReturn($category);
+
+        //$category = $this->repositoryMock->findBy(['id' => 1]);
+
+        $data = ArrayHash::from([
+            'label' => 'NEW_TEST_CATEGORY'
+        ]);
+
+        $category = $this->functionality->update(1, $data);
+
+        $this->assertEquals($category->getLabel(), 'NEW_TEST_CATEGORY');
 
 
-        $category2 = $this->categoryFunctionality->create($data);
-
-        $this->assertInstanceOf(Category::class, $category2);
-
-        $this->assertEquals($category1->getLabel(), $category2->getLabel());
     }
 }

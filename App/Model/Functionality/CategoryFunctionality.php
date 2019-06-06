@@ -64,9 +64,4 @@ final class CategoryFunctionality extends BaseFunctionality
         $this->em->flush();
         return $category;
     }
-
-    public function getTest(): int
-    {
-        return 1;
-    }
 }
