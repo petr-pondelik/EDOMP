@@ -8,6 +8,8 @@
 
 namespace App\AppTests\Model\Functionality;
 
+use App\Model\Functionality\BaseFunctionality;
+use App\Model\Manager\ConstraintEntityManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -15,12 +17,34 @@ use PHPUnit\Framework\TestCase;
  * Class FunctionalityTestCase
  * @package App\AppTests\Model\Functionality
  */
-class FunctionalityTestCase extends TestCase
+abstract class FunctionalityTestCase extends TestCase
 {
     /**
      * @var MockObject
      */
     protected $repositoryMock;
 
+    /**
+     * @var BaseFunctionality
+     */
     protected $functionality;
+
+    /**
+     * @var MockObject
+     */
+    protected $em;
+
+    /**
+     * @throws \ReflectionException
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->em = $this->getMockBuilder(ConstraintEntityManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    abstract public function testFunctionality(): void;
 }

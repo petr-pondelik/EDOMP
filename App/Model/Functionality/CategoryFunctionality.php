@@ -19,7 +19,7 @@ use Nette\Utils\ArrayHash;
  * Class CategoryFunctionality
  * @package App\Model\Functionality
  */
-final class CategoryFunctionality extends BaseFunctionality
+class CategoryFunctionality extends BaseFunctionality
 {
     /**
      * CategoryFunctionality constructor.

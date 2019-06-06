@@ -10,6 +10,8 @@ namespace App\Model\Functionality;
 
 use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\BaseRepository;
+use Doctrine\ORM\EntityNotFoundException;
+use Kdyby\StrictObjects\MemberAccessException;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -60,6 +62,9 @@ abstract class BaseFunctionality
     public function delete(int $id): void
     {
         $category = $this->repository->find($id);
+        if(!$category){
+            throw new EntityNotFoundException('Entity for deletion was not found.');
+        }
         $this->em->remove($category);
         $this->em->flush();
     }

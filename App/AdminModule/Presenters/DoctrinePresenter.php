@@ -156,9 +156,12 @@ class DoctrinePresenter extends AdminPresenter
         $errors = $this->validator->validate($entity);
         bdump($errors);*/
 
-        $entity = new ProblemCondition();
+        /*$entity = new ProblemCondition();
         $errors = $this->validator->validate($entity);
-        bdump($errors);
+        bdump($errors);*/
+
+        $res = $this->categoryRepository->delete(500);
+        bdump($res);
 
         /*$problemFinal = new ProblemFinal();
         $problemFinal->setBody("$$ 15 x + 20 = 0 $$");
