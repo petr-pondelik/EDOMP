@@ -76,7 +76,7 @@ class CategoryFunctionalityTest extends FunctionalityTestCase
         $this->assertEquals($category->getLabel(), 'NEW_TEST_CATEGORY');
 
         // Try to delete, success expected
-        $this->assertEquals(true, $this->functionality->delete(1));
+        $this->assertTrue( $this->functionality->delete(1));
 
         // Try to delete, exception expected
         $this->expectException(EntityNotFoundException::class);

@@ -11,6 +11,7 @@ namespace App\Model\Functionality;
 use App\Model\Entity\ProblemType;
 use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\ProblemTypeRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -53,10 +54,14 @@ class ProblemTypeFunctionality extends BaseFunctionality
      * @param ArrayHash $data
      * @return Object|null
      * @throws \App\Exceptions\EntityException
+     * @throws EntityNotFoundException
      */
     public function update(int $id, ArrayHash $data): ?Object
     {
         $problemType = $this->repository->find($id);
+        if(!$problemType){
+            throw new EntityNotFoundException('Entity for update not found.');
+        }
         $problemType->setLabel($data->label);
         $this->em->persist($problemType);
         $this->em->flush();

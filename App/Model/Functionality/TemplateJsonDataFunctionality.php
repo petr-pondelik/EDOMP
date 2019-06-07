@@ -50,8 +50,9 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
      */
     public function create(ArrayHash $data, int $templateId = null): ?Object
     {
-        if(!$templateId)
+        if(!$templateId){
             $templateId = $this->problemTemplateRepository->getSequenceVal();
+        }
         if($jsonData = $this->repository->findOneBy([ "templateId" => $templateId ])){
             $jsonData->setJsonData($data->jsonData);
             $this->em->persist($jsonData);

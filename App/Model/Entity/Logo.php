@@ -25,7 +25,7 @@ class Logo extends BaseEntity
     /**
      * @var string
      */
-    protected $toStringAttr = "path";
+    protected $toStringAttr = 'path';
 
     /**
      * @ORM\Column(type="string", nullable=true)

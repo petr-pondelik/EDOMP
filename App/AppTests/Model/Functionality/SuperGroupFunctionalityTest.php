@@ -207,7 +207,7 @@ class SuperGroupFunctionalityTest extends FunctionalityTestCase
         $this->assertEquals($data->label, $superGroup->getLabel());
 
         // Try to delete, success expected
-        $this->assertEquals(true, $this->functionality->delete(1));
+        $this->assertTrue($this->functionality->delete(1));
 
         // Try to delete, exception expected
         $this->expectException(EntityNotFoundException::class);

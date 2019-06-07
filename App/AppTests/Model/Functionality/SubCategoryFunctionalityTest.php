@@ -13,6 +13,7 @@ use App\Model\Entity\SubCategory;
 use App\Model\Functionality\SubCategoryFunctionality;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\SubCategoryRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -121,5 +122,12 @@ class SubCategoryFunctionalityTest extends FunctionalityTestCase
         $this->assertEquals($subCategory->getLabel(), 'NEW_TEST_SUB_CATEGORY');
         $this->assertInstanceOf(Category::class, $subCategory->getCategory());
         $this->assertEquals($this->categoryNew, $subCategory->getCategory());
+
+        // Try to delete, success expected
+        $this->assertTrue($this->functionality->delete(1));
+
+        // Try to delete, exception expected
+        $this->expectException(EntityNotFoundException::class);
+        $this->functionality->delete(50);
     }
 }

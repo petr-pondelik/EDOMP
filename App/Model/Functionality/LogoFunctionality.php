@@ -11,6 +11,7 @@ namespace App\Model\Functionality;
 use App\Model\Entity\Logo;
 use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\LogoRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -51,20 +52,28 @@ class LogoFunctionality extends BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
-     * @return Object
-     * @throws \Exception
+     * @return Object|null
+     * @throws EntityNotFoundException
+     * @throws \App\Exceptions\EntityException
      */
     public function update(int $id, ArrayHash $data): ?Object
     {
         $logo = $this->repository->find($id);
-        if(isset($data->extension_tmp))
+        if(!$logo){
+            throw new EntityNotFoundException('Entity for update not found.');
+        }
+        if(isset($data->extension_tmp)){
             $logo->setExtensionTmp($data->extension_tmp);
-        if(isset($data->extension))
+        }
+        if(isset($data->extension)){
             $logo->setExtension($data->extension);
-        if(isset($data->path))
+        }
+        if(isset($data->path)){
             $logo->setPath($data->path);
-        if(isset($data->label))
+        }
+        if(isset($data->label)){
             $logo->setLabel($data->label);
+        }
         $this->em->persist($logo);
         $this->em->flush();
         return $logo;
@@ -72,9 +81,9 @@ class LogoFunctionality extends BaseFunctionality
 
     public function deleteEmpty(): void
     {
-        $this->repository->createQueryBuilder("er")
+        $this->repository->createQueryBuilder('er')
             ->delete()
-            ->where("er.path IS NULL")
+            ->where('er.path IS NULL')
             ->getQuery()->execute();
     }
 }

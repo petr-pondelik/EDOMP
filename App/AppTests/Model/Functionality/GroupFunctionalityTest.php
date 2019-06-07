@@ -197,7 +197,7 @@ class GroupFunctionalityTest extends FunctionalityTestCase
         $this->assertEquals($this->superGroupRepositoryMock->find($data->super_group_id), $group->getSuperGroup());
 
         // Try to delete, success expected
-        $this->assertEquals(true, $this->functionality->delete(1));
+        $this->assertTrue($this->functionality->delete(1));
 
         // Try to delete, exception expected
         $this->expectException(EntityNotFoundException::class);
@@ -211,10 +211,8 @@ class GroupFunctionalityTest extends FunctionalityTestCase
         $firstCategory = $this->firstCategory;
         $secondCategory = $this->secondCategory;
 
-        // Update Group permissions
+        // Update Group permissions and test expected values
         $this->functionality->updatePermissions(1, [1, 2]);
-
-        // Test Group expected values
         $group = $this->repositoryMock->find(1);
         $this->assertInstanceOf(Group::class, $group);
         $this->assertEquals(2, $group->getCategories()->count());
