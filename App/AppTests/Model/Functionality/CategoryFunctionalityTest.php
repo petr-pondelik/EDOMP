@@ -20,7 +20,7 @@ use App\Model\Entity\Category;
 /**
  * Class CategoryFunctionalityCreateTest
  */
-class CategoryFunctionalityCreateTest extends FunctionalityTestCase
+class CategoryFunctionalityTest extends FunctionalityTestCase
 {
     /**
      * @throws \ReflectionException
@@ -28,10 +28,14 @@ class CategoryFunctionalityCreateTest extends FunctionalityTestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        // Mock the CategoryRepository
         $this->repositoryMock = $this->getMockBuilder(CategoryRepository::class)
-            ->setMethods(['findBy', 'find'])
+            ->setMethods(['find'])
             ->disableOriginalConstructor()
             ->getMock();
+
+        // Instantiate tested class
         $this->functionality = new CategoryFunctionality($this->em, $this->repositoryMock);
     }
 
@@ -40,14 +44,17 @@ class CategoryFunctionalityCreateTest extends FunctionalityTestCase
      */
     public function testFunctionality(): void
     {
+        // Data for Category create
         $data = ArrayHash::from([
             'label' => 'TEST_CATEGORY'
         ]);
 
+        // Create category and test expected data
         $category = $this->functionality->create($data);
         $this->assertInstanceOf(Category::class, $category);
         $this->assertEquals('TEST_CATEGORY', $category->getLabel());
 
+        // Set repository expected return values for find
         $this->repositoryMock->expects($this->atLeastOnce())
             ->method('find')
             ->willReturnCallback(static function ($arg) use ($category) {
@@ -58,18 +65,20 @@ class CategoryFunctionalityCreateTest extends FunctionalityTestCase
                 return $map[$arg];
             });
 
+        // Data for Category update
         $data = ArrayHash::from([
             'label' => 'NEW_TEST_CATEGORY'
         ]);
 
-        $this->assertEquals($this->repositoryMock->find(1), $category);
-
+        // Update Category and test expected data
         $category = $this->functionality->update(1, $data);
-
         $this->assertInstanceOf(Category::class, $category);
         $this->assertEquals($category->getLabel(), 'NEW_TEST_CATEGORY');
 
-        $this->functionality->delete(1);
+        // Try to delete, success expected
+        $this->assertEquals(true, $this->functionality->delete(1));
+
+        // Try to delete, exception expected
         $this->expectException(EntityNotFoundException::class);
         $this->functionality->delete(50);
     }

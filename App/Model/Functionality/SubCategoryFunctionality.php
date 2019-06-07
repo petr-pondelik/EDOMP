@@ -68,8 +68,9 @@ class SubCategoryFunctionality extends BaseFunctionality
     public function update(int $id, ArrayHash $data): ?Object
     {
         $subcategory = $this->repository->find($id);
-        if(!empty($data->label))
+        if(!empty($data->label)){
             $subcategory->setLabel($data->label);
+        }
         if(!empty($data->category)) {
             $category = $this->categoryRepository->find($data->category);
             $subcategory->setCategory($category);

@@ -75,10 +75,12 @@ class GroupFunctionality extends BaseFunctionality
     public function update(int $id, ArrayHash $data): ?Object
     {
         $group = $this->repository->find($id);
-        if(isset($data->label))
+        if(isset($data->label)){
             $group->setLabel($data->label);
-        if(isset($data->super_group_id))
+        }
+        if(isset($data->super_group_id)){
             $group->setSuperGroup($this->superGroupRepository->find($data->super_group_id));
+        }
         $this->em->persist($group);
         $this->em->flush();
         return $group;
@@ -103,10 +105,11 @@ class GroupFunctionality extends BaseFunctionality
      * @param array $categories
      * @return Group
      */
-    public function attachCategories(Group $group, array $categories): Group
+    protected function attachCategories(Group $group, array $categories): Group
     {
-        foreach ($categories as $category)
+        foreach ($categories as $category){
             $group->addCategory($this->categoryRepository->find($category));
+        }
         return $group;
     }
 }

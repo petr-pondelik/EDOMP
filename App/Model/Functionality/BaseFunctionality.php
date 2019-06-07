@@ -57,9 +57,10 @@ abstract class BaseFunctionality
 
     /**
      * @param int $id
+     * @return bool
      * @throws \Exception
      */
-    public function delete(int $id): void
+    public function delete(int $id): bool
     {
         $category = $this->repository->find($id);
         if(!$category){
@@ -67,5 +68,6 @@ abstract class BaseFunctionality
         }
         $this->em->remove($category);
         $this->em->flush();
+        return true;
     }
 }

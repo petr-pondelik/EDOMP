@@ -91,8 +91,9 @@ class SuperGroupFunctionality extends BaseFunctionality
         $superGroup = $this->repository->find($id);
         $superGroup->setCategories(new ArrayCollection());
         $superGroup = $this->attachCategories($superGroup, $categories);
-        foreach ($superGroup->getGroups()->getValues() as $group)
+        foreach ($superGroup->getGroups()->getValues() as $group){
             $this->groupFunctionality->updatePermissions($group->getId(), $categories);
+        }
         $this->em->persist($superGroup);
         $this->em->flush();
     }
@@ -102,10 +103,11 @@ class SuperGroupFunctionality extends BaseFunctionality
      * @param array $categories
      * @return SuperGroup
      */
-    public function attachCategories(SuperGroup $superGroup, array $categories): SuperGroup
+    protected function attachCategories(SuperGroup $superGroup, array $categories): SuperGroup
     {
-        foreach ($categories as $category)
+        foreach ($categories as $category){
             $superGroup->addCategory($this->categoryRepository->find($category));
+        }
         return $superGroup;
     }
 }
