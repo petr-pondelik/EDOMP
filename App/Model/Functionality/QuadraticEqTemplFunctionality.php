@@ -80,8 +80,9 @@ class QuadraticEqTemplFunctionality extends BaseFunctionality
     public function update(int $id, ArrayHash $data, bool $fromDataGrid = false): ?Object
     {
         $templ = $this->baseUpdate($id, $data, $fromDataGrid);
-        if(!empty($data->variable))
+        if(!empty($data->variable)){
             $templ->setVariable($data->variable);
+        }
         $this->em->persist($templ);
         $this->em->flush();
         return $templ;
