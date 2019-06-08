@@ -63,13 +63,12 @@ class LinearEqTemplFunctionality extends BaseFunctionality
      */
     public function create(ArrayHash $data): ?Object
     {
-        bdump($data);
-        $templ = new LinearEqTempl();
-        $templ = $this->setBaseValues($templ, $data);
-        $templ->setVariable($data->variable);
-        $this->em->persist($templ);
+        $entity = new LinearEqTempl();
+        $entity = $this->setBaseValues($entity, $data);
+        $entity->setVariable($data->variable);
+        $this->em->persist($entity);
         $this->em->flush();
-        return $templ;
+        return $entity;
     }
 
     /**
@@ -81,11 +80,12 @@ class LinearEqTemplFunctionality extends BaseFunctionality
      */
     public function update(int $id, ArrayHash $data, bool $fromDataGrid = false): Object
     {
-        $templ = $this->baseUpdate($id, $data, $fromDataGrid);
-        if(!empty($data->variable))
-            $templ->setVariable($data->variable);
-        $this->em->persist($templ);
+        $entity = $this->baseUpdate($id, $data, $fromDataGrid);
+        if(!empty($data->variable)){
+            $entity->setVariable($data->variable);
+        }
+        $this->em->persist($entity);
         $this->em->flush();
-        return $templ;
+        return $entity;
     }
 }

@@ -11,6 +11,7 @@ namespace App\Model\Functionality;
 use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTestAssociationRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -59,6 +60,9 @@ class ProblemFunctionality extends BaseFunctionality
     public function update(int $id, ArrayHash $data): ?Object
     {
         $problem = $this->repository->find($id);
+        if(!$problem){
+            throw new EntityNotFoundException('Entity for update not found.');
+        }
         $problem->setSuccessRate($data->success_rate);
         $this->em->persist($problem);
         $this->em->flush();
@@ -70,27 +74,27 @@ class ProblemFunctionality extends BaseFunctionality
      * @param bool $isTemplate
      * @throws \Exception
      */
-    public function calculateSuccessRate(int $id, bool $isTemplate = false)
+    public function calculateSuccessRate(int $id, bool $isTemplate = false): void
     {
         !$isTemplate ?
-            $problems = $this->problemTestAssociationRepository->findBy(["problem.id" => $id]) :
-            $problems = $this->problemTestAssociationRepository->findBy(["problemTemplate.id" => $id]);
+            $associations = $this->problemTestAssociationRepository->findBy(['problem.id' => $id]) :
+            $associations = $this->problemTestAssociationRepository->findBy(['problemTemplate.id' => $id]);
         $cnt = 0;
         $ratingSum = 0;
-        foreach ($problems as $problem){
-            if(!empty($problem->getSuccessRate())){
+        foreach ($associations as $association){
+            if(!empty($association->getSuccessRate())){
                 $cnt++;
-                $ratingSum += $problem->getSuccessRate();
+                $ratingSum += $association->getSuccessRate();
             }
         }
         if($cnt > 0){
             $this->update($id, ArrayHash::from([
-                "success_rate" => ($ratingSum/$cnt)
+                'success_rate' => $ratingSum / $cnt
             ]));
             return;
         }
         $this->update($id, ArrayHash::from([
-            "success_rate" => null
+            'success_rate' => null
         ]));
     }
 }

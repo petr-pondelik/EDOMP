@@ -9,7 +9,6 @@
 namespace App\Model\Traits;
 
 use App\Model\Entity\ProblemTemplate;
-use App\Model\Repository\BaseRepository;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemTypeRepository;
@@ -24,11 +23,6 @@ use Nette\Utils\ArrayHash;
  */
 trait ProblemTemplateFunctionalityTrait
 {
-    /**
-     * @var BaseRepository
-     */
-    protected $repository;
-
     /**
      * @var ProblemTypeRepository
      */
@@ -63,44 +57,68 @@ trait ProblemTemplateFunctionalityTrait
      */
     public function setBaseValues($templ, ArrayHash $data, int $templateId = null, bool $fromDataGrid = false): ProblemTemplate
     {
-        if(isset($data->text_before))
+        if(isset($data->text_before)){
             $templ->setTextBefore($data->text_before);
-        if(isset($data->body))
+        }
+        if(isset($data->body)){
             $templ->setBody($data->body);
-        if(isset($data->text_after))
+        }
+        if(isset($data->text_after)){
             $templ->setTextAfter($data->text_after);
-        if(isset($data->type))
+        }
+        if(isset($data->type)){
             $templ->setProblemType($this->problemTypeRepository->find($data->type));
-        if(isset($data->difficulty))
+        }
+        if(isset($data->difficulty)){
             $templ->setDifficulty($this->difficultyRepository->find($data->difficulty));
-        if(isset($data->subcategory))
+        }
+        if(isset($data->subcategory)){
             $templ->setSubCategory($this->subCategoryRepository->find($data->subcategory));
+        }
+        if(isset($data->matches)){
+            $templ->setMatches($data->matches);
+        }
+        if(isset($data->created)){
+            $templ->setCreated($data->created);
+        }
 
         if(!$fromDataGrid){
             $attached = $this->attachConditions($templ, $data);
             $templ = $attached->template;
 
-            if(!$templateId)
+            if(!$templateId){
                 $templateId = $this->repository->getSequenceVal();
+            }
 
             $templJsonData = null;
-            if($jsonDataObj = $this->templateJsonDataRepository->findOneBy([ "templateId" => $templateId ]))
-                $templJsonData = $jsonDataObj->getJsonData();
 
-            if($attached->hasCondition)
+            if($jsonDataObj = $this->templateJsonDataRepository->findOneBy(['templateId' => $templateId])){
+                $templJsonData = $jsonDataObj->getJsonData();
+            }
+
+            if($attached->hasCondition){
                 $templ->setMatches($templJsonData);
-            else
+            }
+            else{
                 $templ->setMatches(null);
+            }
         }
 
         return $templ;
     }
 
+    /**
+     * @param int $id
+     * @param ArrayHash $data
+     * @param bool $fromDataGrid
+     * @return Object|null
+     */
     public function baseUpdate(int $id, ArrayHash $data, bool $fromDataGrid = false): ?Object
     {
         $templ = $this->repository->find($id);
-        if(!$fromDataGrid)
+        if(!$fromDataGrid){
             $templ->setConditions(new ArrayCollection());
+        }
         return $this->setBaseValues($templ, $data, $id, $fromDataGrid);
     }
 
@@ -109,7 +127,7 @@ trait ProblemTemplateFunctionalityTrait
      * @param ArrayHash $data
      * @return ArrayHash
      */
-    public function attachConditions($templ, ArrayHash $data): ArrayHash
+    protected function attachConditions($templ, ArrayHash $data): ArrayHash
     {
         $hasCondition = false;
 
@@ -122,15 +140,16 @@ trait ProblemTemplateFunctionalityTrait
             $condTypeId = $problemCondType->getId();
 
             //Get ConditionType value from created problem
-            $condTypeVal = $data->{"condition_" . $condTypeId};
+            $condTypeVal = $data->{'condition_' . $condTypeId};
 
             //Template has condition
-            if($condTypeVal)
+            if($condTypeVal){
                 $hasCondition = true;
+            }
 
             $condition = $this->problemConditionRepository->findOneBy([
-                "problemConditionType.id" => $condTypeId,
-                "accessor" => $condTypeVal
+                'problemConditionType.id' => $condTypeId,
+                'accessor' => $condTypeVal
             ]);
 
             $templ->addCondition($condition);
@@ -138,8 +157,8 @@ trait ProblemTemplateFunctionalityTrait
         }
 
         return ArrayHash::from([
-            "template" => $templ,
-            "hasCondition" => $hasCondition
+            'template' => $templ,
+            'hasCondition' => $hasCondition
         ]);
     }
 }

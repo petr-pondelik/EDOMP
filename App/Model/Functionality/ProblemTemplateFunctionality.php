@@ -69,8 +69,9 @@ class ProblemTemplateFunctionality extends BaseFunctionality
     public function update(int $id, ArrayHash $data, bool $fromDataGrid = false): ?Object
     {
         $templ = $this->repository->find($id);
-        if(!$fromDataGrid)
+        if(!$fromDataGrid){
             $templ->setConditions(new ArrayCollection());
+        }
         return $this->setBaseValues($templ, $data, $id, $fromDataGrid);
     }
 }

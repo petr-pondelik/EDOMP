@@ -67,19 +67,19 @@ class TestStatisticsFormControl extends FormControl
     public function createComponentForm(): Form
     {
         $form = parent::createComponentForm();
-        $form->addHidden("problems_cnt");
-        $form->addHidden("test_id");
+        $form->addHidden('problems_cnt');
+        $form->addHidden('test_id');
         for ($i = 0; $i < 160; $i++) {
-            $form->addInteger("problem_final_id_disabled_" . $i, "ID příkladu")
-                ->setHtmlAttribute("class", "form-control")
+            $form->addInteger('problem_final_id_disabled_' . $i, 'ID příkladu')
+                ->setHtmlAttribute('class', 'form-control')
                 ->setDisabled();
-            $form->addHidden("problem_final_id_" . $i);
-            $form->addInteger("problem_prototype_id_disabled_" . $i, "ID šablony")
-                ->setHtmlAttribute("class", "form-control")
+            $form->addHidden('problem_final_id_' . $i);
+            $form->addInteger('problem_prototype_id_disabled_' . $i, 'ID šablony')
+                ->setHtmlAttribute('class', 'form-control')
                 ->setDisabled();
-            $form->addHidden("problem_prototype_id_" . $i);
-            $form->addText("success_rate_" . $i, "Úspěšnost v testu")
-                ->setHtmlAttribute("class", "form-control");
+            $form->addHidden('problem_prototype_id_' . $i);
+            $form->addText('success_rate_' . $i, 'Úspěšnost v testu')
+                ->setHtmlAttribute('class', 'form-control');
         }
         $form->onSuccess[] = [$this, 'handleFormSuccess'];
         return $form;
@@ -96,8 +96,9 @@ class TestStatisticsFormControl extends FormControl
             $validationErrors = $this->validationService->validate($validateFields);
             if($validationErrors){
                 foreach($validationErrors as $veKey => $errorGroup){
-                    foreach($errorGroup as $egKey => $error)
+                    foreach($errorGroup as $egKey => $error){
                         $form['success_rate_' . $i]->addError($error);
+                    }
                 }
             }
             $this->redrawControl('successRateSnippetArea');
@@ -113,10 +114,10 @@ class TestStatisticsFormControl extends FormControl
         for ($i = 0; $i < $values->problems_cnt; $i++) {
             try{
                 $this->problemTestAssociationFunctionality->update(
-                    $values->{"problem_final_id_" . $i},
+                    $values->{'problem_final_id_' . $i},
                     ArrayHash::from([
-                        "test_id" => $values->test_id,
-                        "success_rate" => $values->{"success_rate_" . $i}
+                        'test_id' => $values->test_id,
+                        'success_rate' => $values->{'success_rate_' . $i}
                     ])
                 );
             } catch (\Exception $e){
@@ -126,13 +127,13 @@ class TestStatisticsFormControl extends FormControl
 
         for ($i = 0; $i < $values->problems_cnt; $i++) {
             try{
-                $this->functionality->calculateSuccessRate($values->{"problem_final_id_" . $i});
+                $this->functionality->calculateSuccessRate($values->{'problem_final_id_' . $i});
             } catch (\Exception $e){
                 $this->onError();
             }
-            if (!empty($values->{"problem_prototype_id_" . $i})){
+            if (!empty($values->{'problem_prototype_id_' . $i})){
                 try{
-                    $this->functionality->calculateSuccessRate($values->{"problem_prototype_id_" . $i}, true);
+                    $this->functionality->calculateSuccessRate($values->{'problem_prototype_id_' . $i}, true);
                 } catch (\Exception $e){
                     $this->onError($e);
                 }
@@ -144,7 +145,7 @@ class TestStatisticsFormControl extends FormControl
 
     public function render(): void
     {
-        $problemAssociations = $this->problemTestAssociationRepository->findBy(["test" => $this->testId]);
+        $problemAssociations = $this->problemTestAssociationRepository->findBy(['test' => $this->testId]);
         $this->template->id = $this->testId;
         $this->template->problemsCnt = count($problemAssociations);
         $this->template->problemAssociations = $problemAssociations;
