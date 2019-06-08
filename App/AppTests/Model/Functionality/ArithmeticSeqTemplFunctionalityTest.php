@@ -19,7 +19,7 @@ use Nette\Utils\DateTime;
  * Class ArithmeticSeqTemplFunctionalityTest
  * @package App\AppTests\Model\Functionality
  */
-class ArithmeticSeqTemplFunctionalityTest extends ProblemTemplateFunctionalityTestCase
+class ArithmeticSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
 {
     /**
      * @throws \ReflectionException

@@ -20,7 +20,7 @@ use Nette\Utils\DateTime;
  * Class LinearEqTemplFunctionalityTest
  * @package App\AppTests\Model\Functionality
  */
-class LinearEqTemplFunctionalityTest extends ProblemTemplateFunctionalityTestCase
+class LinearEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
 {
     /**
      * @throws \ReflectionException

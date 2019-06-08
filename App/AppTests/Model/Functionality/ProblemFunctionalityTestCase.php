@@ -27,7 +27,7 @@ use PHPUnit\Framework\MockObject\MockObject;
  * Class ProblemTemplateFunctionalityTest
  * @package App\AppTests\Model\Functionality
  */
-abstract class ProblemTemplateFunctionalityTestCase extends FunctionalityTestCase
+abstract class ProblemFunctionalityTestCase extends FunctionalityTestCase
 {
     /**
      * @var MockObject

@@ -19,7 +19,7 @@ use Nette\Utils\DateTime;
  * Class QuadraticEqFunctionalityTest
  * @package App\AppTests\Model\Functionality
  */
-class QuadraticEqTemplFunctionalityTest extends ProblemTemplateFunctionalityTestCase
+class QuadraticEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
 {
     /**
      * @throws \ReflectionException

@@ -39,12 +39,12 @@ class FormatterHelper
      */
     public function formatResult(ArrayHash $resultArray) :string
     {
-        $result = "";
+        $result = '';
         foreach ($resultArray as $key => $resItem) {
-            if($key !== "type")
-                $result .= "$$" . $key . " = " . $resItem . "$$";
+            if($key !== 'type'){
+                $result .= '$$' . $key . ' = ' . $resItem . '$$';
+            }
         }
         return $result;
-        //return $this->stringsHelper::wrap($result, $this->stringsHelper::LATEX_INLINE);
     }
 }

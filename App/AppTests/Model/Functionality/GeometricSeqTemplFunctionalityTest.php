@@ -20,7 +20,7 @@ use Nette\Utils\DateTime;
  * Class GeometricSeqTemplFunctionalityTest
  * @package App\AppTests\Model\Functionality
  */
-class GeometricSeqTemplFunctionalityTest extends ProblemTemplateFunctionalityTestCase
+class GeometricSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
 {
     /**
      * @throws \ReflectionException

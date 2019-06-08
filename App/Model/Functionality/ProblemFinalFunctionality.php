@@ -18,6 +18,7 @@ use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -26,7 +27,6 @@ use Nette\Utils\ArrayHash;
  */
 class ProblemFinalFunctionality extends BaseFunctionality
 {
-
     /**
      * @var ProblemRepository
      */
@@ -102,28 +102,40 @@ class ProblemFinalFunctionality extends BaseFunctionality
         $problem->setBody($data->body);
         $problem->setTextAfter($data->text_after);
 
-        if(isset($data->result))
+        if(isset($data->result)){
             $problem->setResult($data->result);
-        if(isset($data->is_generated))
+        }
+        if(isset($data->is_generated)){
             $problem->setIsGenerated($data->is_generated);
-        if(isset($data->variable))
+        }
+        if(isset($data->variable)){
             $problem->setVariable($data->variable);
-        if(isset($data->first_n))
+        }
+        if(isset($data->first_n)){
             $problem->setFirstN($data->first_n);
+        }
+        if(isset($data->created)){
+            $problem->setCreated($data->created);
+        }
+
 
         $problem->setProblemType($this->problemTypeRepository->find($data->type));
         $problem->setDifficulty($this->difficultyRepository->find($data->difficulty));
         $problem->setSubCategory($this->subCategoryRepository->find($data->subcategory));
-        if(isset($data->problem_template_id))
+        if(isset($data->problem_template_id)){
             $problem->setProblemTemplate($this->problemRepository->find($data->problem_template_id));
-        if($conditions === null)
+        }
+        if($conditions === null){
             $problem = $this->attachConditions($problem, $data);
-        else
+        }
+        else{
             $problem->setConditions($conditions);
+        }
 
         $this->em->persist($problem);
-        if($flush)
+        if($flush){
             $this->em->flush();
+        }
 
         return $problem;
     }
@@ -139,21 +151,35 @@ class ProblemFinalFunctionality extends BaseFunctionality
     {
         $problem = $this->repository->find($id);
 
-        if(!empty($data->text_before))
-            $problem->setTextBefore($data->text_before);
-        if(!empty($data->body))
-            $problem->setBody($data->body);
-        if(!empty($data->text_after))
-            $problem->setTextAfter($data->text_after);
-        if(!empty($data->result))
-            $problem->setResult($data->result);
+        if(!$problem){
+            throw new EntityNotFoundException('Entity for update not found.');
+        }
 
-        if(!empty($data->type))
+        if(!empty($data->text_before)){
+            $problem->setTextBefore($data->text_before);
+        }
+        if(!empty($data->body)){
+            $problem->setBody($data->body);
+        }
+        if(!empty($data->text_after)){
+            $problem->setTextAfter($data->text_after);
+        }
+        if(!empty($data->result)){
+            $problem->setResult($data->result);
+        }
+        if(isset($data->created)){
+            $problem->setCreated($data->created);
+        }
+
+        if(!empty($data->type)){
             $problem->setProblemType($this->problemTypeRepository->find($data->type));
-        if(!empty($data->subcategory))
+        }
+        if(!empty($data->subcategory)){
             $problem->setSubCategory($this->subCategoryRepository->find($data->subcategory));
-        if(!empty($data->difficulty))
+        }
+        if(!empty($data->difficulty)){
             $problem->setDifficulty($this->difficultyRepository->find($data->difficulty));
+        }
 
         if($updateConditions){
             $problem->setConditions(new ArrayCollection());
@@ -173,7 +199,6 @@ class ProblemFinalFunctionality extends BaseFunctionality
      */
     public function attachConditions(ProblemFinal $problem, ArrayHash $data): ProblemFinal
     {
-        bdump($data);
         $type = $this->problemTypeRepository->find($data->type);
         $problemCondTypes = $type->getConditionTypes()->getValues();
 
@@ -183,11 +208,11 @@ class ProblemFinalFunctionality extends BaseFunctionality
             $condTypeId = $problemCondType->getId();
 
             //Get ConditionType value from created problem
-            $condTypeVal = $data->{"condition_" . $condTypeId};
+            $condTypeVal = $data->{'condition_' . $condTypeId};
 
             $condition = $this->problemConditionRepository->findOneBy([
-                "problemConditionType.id" => $condTypeId,
-                "accessor" => $condTypeVal
+                'problemConditionType.id' => $condTypeId,
+                'accessor' => $condTypeVal
             ]);
 
             $problem->addCondition($condition);
@@ -202,9 +227,12 @@ class ProblemFinalFunctionality extends BaseFunctionality
      * @param ArrayHash $result
      * @throws \Exception
      */
-    public function storeResult(int $id, ArrayHash $result)
+    public function storeResult(int $id, ArrayHash $result): void
     {
         $problem = $this->repository->find($id);
+        if(!$problem){
+            throw new EntityNotFoundException('Entity for update not found.');
+        }
         $result = $this->formatterHelper->formatResult($result);
         $problem->setResult($result);
         $this->em->persist($problem);

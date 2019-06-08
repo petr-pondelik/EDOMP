@@ -15,7 +15,7 @@ use Doctrine\ORM\QueryBuilder;
  * Class ProblemFinalRepository
  * @package App\Model\Repository
  */
-final class ProblemFinalRepository extends BaseRepository
+class ProblemFinalRepository extends BaseRepository
 {
     use FilterTrait;
 
