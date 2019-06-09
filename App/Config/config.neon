@@ -131,7 +131,6 @@ services:
 	functionality.problem: App\Model\Functionality\ProblemFunctionality
 	functionality.problem.type: App\Model\Functionality\ProblemTypeFunctionality
 	functionality.problem.test.association: App\Model\Functionality\ProblemTestAssociationFunctionality
-	functionality.template: App\Model\Functionality\ProblemTemplateFunctionality
 	functionality.template.equation.linear: App\Model\Functionality\LinearEqTemplFunctionality
 	functionality.template.equation.quadratic: App\Model\Functionality\QuadraticEqTemplFunctionality
 	functionality.template.sequence.arithmetic: App\Model\Functionality\ArithmeticSeqTemplFunctionality

@@ -12,7 +12,6 @@ use App\Exceptions\ProblemFinalCollisionException;
 use App\Model\Entity\Test;
 use App\Model\Functionality\LogoFunctionality;
 use App\Model\Functionality\ProblemFinalFunctionality;
-use App\Model\Functionality\ProblemTemplateFunctionality;
 use App\Model\Functionality\TestFunctionality;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\LogoRepository;
@@ -37,11 +36,6 @@ class TestBuilderService
      * @var ProblemTemplateRepository
      */
     protected $problemTemplateRepository;
-
-    /**
-     * @var ProblemTemplateFunctionality
-     */
-    protected $problemTemplateFunctionality;
 
     /**
      * @var ProblemFinalFunctionality
@@ -92,7 +86,6 @@ class TestBuilderService
      * TestBuilderService constructor.
      * @param ProblemRepository $problemRepository
      * @param ProblemTemplateRepository $problemTemplateRepository
-     * @param ProblemTemplateFunctionality $problemTemplateFunctionality
      * @param ProblemFinalFunctionality $problemFinalFunctionality
      * @param ProblemConditionRepository $problemConditionRepository
      * @param LogoRepository $logoRepository
@@ -105,7 +98,7 @@ class TestBuilderService
     public function __construct
     (
         ProblemRepository $problemRepository,
-        ProblemTemplateRepository $problemTemplateRepository, ProblemTemplateFunctionality $problemTemplateFunctionality,
+        ProblemTemplateRepository $problemTemplateRepository,
         ProblemFinalFunctionality $problemFinalFunctionality, ProblemConditionRepository $problemConditionRepository,
         LogoRepository $logoRepository, LogoFunctionality $logoFunctionality,
         GroupRepository $groupRepository, TestRepository $testRepository, TestFunctionality $testFunctionality,
@@ -114,7 +107,6 @@ class TestBuilderService
     {
         $this->problemRepository = $problemRepository;
         $this->problemTemplateRepository = $problemTemplateRepository;
-        $this->problemTemplateFunctionality = $problemTemplateFunctionality;
         $this->problemFinalFunctionality = $problemFinalFunctionality;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->logoRepository = $logoRepository;

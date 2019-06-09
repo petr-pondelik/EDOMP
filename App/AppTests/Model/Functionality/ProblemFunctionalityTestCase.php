@@ -171,7 +171,7 @@ abstract class ProblemFunctionalityTestCase extends FunctionalityTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        // Set expected return values for ProblemConditionRepository find method
+        // Set expected return values for ProblemConditionRepository findOneBy method
         $this->problemConditionRepositoryMock->expects($this->any())
             ->method('findOneBy')
             ->willReturnCallback(static function ($arg) use (

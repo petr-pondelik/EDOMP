@@ -53,15 +53,18 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
         if(!$templateId){
             $templateId = $this->problemTemplateRepository->getSequenceVal();
         }
-        if($jsonData = $this->repository->findOneBy([ "templateId" => $templateId ])){
+        if($jsonData = $this->repository->findOneBy([ 'templateId' => $templateId ])){
             $jsonData->setJsonData($data->jsonData);
             $this->em->persist($jsonData);
             $this->em->flush();
-            return null;
+            return $jsonData;
         }
         $jsonData = new TemplateJsonData();
         $jsonData->setJsonData($data->jsonData);
         $jsonData->setTemplateId($templateId);
+        if(isset($data->created)){
+            $jsonData->setCreated($data->created);
+        }
         $this->em->persist($jsonData);
         $this->em->flush();
         return $jsonData;

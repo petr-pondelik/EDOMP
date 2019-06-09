@@ -14,6 +14,7 @@ use App\Model\Repository\GroupRepository;
 use App\Model\Repository\RoleRepository;
 use App\Model\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityNotFoundException;
 use Nette\Security\Passwords;
 use Nette\Utils\ArrayHash;
 
@@ -64,6 +65,9 @@ class UserFunctionality extends BaseFunctionality
         $user->setPassword(Passwords::hash($data->password));
         $user->setRole($this->roleRepository->find($data->role));
         $user = $this->attachGroups($user, $data->groups);
+        if(isset($data->created)){
+            $user->setCreated($data->created);
+        }
         $this->em->persist($user);
         $this->em->flush();
         return $user;
@@ -78,15 +82,19 @@ class UserFunctionality extends BaseFunctionality
     public function update(int $id, ArrayHash $data): ?Object
     {
         $user = $this->repository->find($id);
+        if(!$user){
+            throw new EntityNotFoundException('Entity for update not found.');
+        }
         $user->setUsername($data->username);
-        if($data->change_password)
+        if($data->change_password){
             $user->setPassword(Passwords::hash($data->password));
+        }
         $user->setRole($this->roleRepository->find($data->role));
         $user->setGroups(new ArrayCollection());
         $user = $this->attachGroups($user, $data->groups);
         $this->em->persist($user);
         $this->em->flush();
-        return null;
+        return $user;
     }
 
     /**
@@ -94,10 +102,11 @@ class UserFunctionality extends BaseFunctionality
      * @param array $groups
      * @return User
      */
-    public function attachGroups(User $user, array $groups): User
+    protected function attachGroups(User $user, array $groups): User
     {
-        foreach ($groups as $group)
+        foreach ($groups as $group){
             $user->addGroup($this->groupRepository->find($group));
+        }
         return $user;
     }
 }

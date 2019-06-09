@@ -65,6 +65,9 @@ class TestFunctionality extends BaseFunctionality
         $test->setSchoolYear($data->school_year);
         $test->setTestNumber($data->test_number);
         $test->setIntroductionText($data->introduction_text);
+        if(isset($data->created)){
+            $test->setCreated($data->created);
+        }
         $this->em->persist($test);
         return $test;
     }
@@ -87,8 +90,7 @@ class TestFunctionality extends BaseFunctionality
     public function attachGroups(Test $test, ArrayHash $groups): Test
     {
         foreach ($groups as $groupId){
-            $group = $this->groupRepository->findOneBy(['id' => $groupId]);
-            $test->addGroup($group);
+            $test->addGroup($this->groupRepository->find($groupId));
         }
         return $test;
     }
@@ -107,8 +109,9 @@ class TestFunctionality extends BaseFunctionality
         $association->setTest($test);
         $association->setProblem($problem);
         $association->setVariant($variant);
-        if($template !== null)
+        if($template !== null){
             $association->setProblemTemplate($template);
+        }
         $association->setNextPage($newPage);
         $this->em->persist($association);
         $test->addProblemAssociation($association);
