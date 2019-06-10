@@ -8,8 +8,13 @@
 
 namespace App\AppTests\Model\Functionality;
 
+use App\Model\Entity\Category;
+use App\Model\Entity\Difficulty;
 use App\Model\Entity\Group;
 use App\Model\Entity\Logo;
+use App\Model\Entity\ProblemFinal;
+use App\Model\Entity\ProblemTestAssociation;
+use App\Model\Entity\SubCategory;
 use App\Model\Entity\SuperGroup;
 use App\Model\Entity\Test;
 use App\Model\Functionality\TestFunctionality;
@@ -38,11 +43,64 @@ class TestFunctionalityTest extends FunctionalityTestCase
     protected $groupRepositoryMock;
 
     /**
+     * @var Group
+     */
+    protected $firstGroup;
+
+    /**
+     * @var Group
+     */
+    protected $secondGroup;
+
+    /**
+     * @var ProblemFinal
+     */
+    protected $firstProblem;
+
+    /**
+     * @var ProblemFinal
+     */
+    protected $secondProblem;
+
+    /**
      * @throws \ReflectionException
+     * @throws \Exception
      */
     public function setUp(): void
     {
         parent::setUp();
+
+        // Create Difficulty
+        $difficulty = new Difficulty();
+        $difficulty->setLabel('TEST_DIFFICULTY');
+        $difficulty->setId(1);
+
+        // Create Category
+        $category = new Category();
+        $category->setLabel('TEST_CATEGORY');
+        $category->setId(1);
+
+        // Create SubCategory
+        $subCategory = new SubCategory();
+        $subCategory->setLabel('TEST_SUB_CATEGORY');
+        $subCategory->setCategory($category);
+        $subCategory->setId(1);
+
+        // Create first Problem
+        $firstProblem = new ProblemFinal();
+        $firstProblem->setId(1);
+        $firstProblem->setBody('TEST_BODY_FIRST');
+        $firstProblem->setDifficulty($difficulty);
+        $firstProblem->setSubCategory($subCategory);
+        $this->firstProblem = $firstProblem;
+
+        // Create second Problem
+        $secondProblem = new ProblemFinal();
+        $secondProblem->setId(2);
+        $secondProblem->setBody('TEST_BODY_SECOND');
+        $secondProblem->setDifficulty($difficulty);
+        $secondProblem->setSubCategory($subCategory);
+        $this->secondProblem = $secondProblem;
 
         // Create Logo
         $logo = new Logo();
@@ -149,5 +207,47 @@ class TestFunctionalityTest extends FunctionalityTestCase
 
         // Test created Test against expected object
         $this->assertEquals($testExpected, $test);
+
+        // Prepare Test expected object
+        $testExpected->addGroup($this->groupRepositoryMock->find(1));
+        $testExpected->addGroup($this->groupRepositoryMock->find(2));
+
+        // Attach groups to the Test
+        $test = $this->functionality->attachGroups($test, ArrayHash::from( [1, 2] ));
+
+        // Test updated Test against expected object
+        $this->assertEquals($testExpected, $test);
+
+        // Create first ProblemTestAssociation
+        $firstProblemTestAssociation = new ProblemTestAssociation();
+        $firstProblemTestAssociation->setProblem($this->firstProblem);
+        $firstProblemTestAssociation->setTest($test);
+        $firstProblemTestAssociation->setVariant('A');
+
+        // Create second ProblemTestAssociation
+        $secondProblemTestAssociation = new ProblemTestAssociation();
+        $secondProblemTestAssociation->setProblem($this->secondProblem);
+        $secondProblemTestAssociation->setTest($test);
+        $secondProblemTestAssociation->setVariant('B');
+
+        // Prepare Test expected object
+        $testExpected->setProblemAssociations(new ArrayCollection([
+            $firstProblemTestAssociation, $secondProblemTestAssociation
+        ]));
+
+        // Attach problems to the Test
+        $test = $this->functionality->attachProblem($test, $this->firstProblem, 'A');
+        $test = $this->functionality->attachProblem($test, $this->secondProblem, 'B');
+
+        // Test updated Test against expected object
+        $this->assertCount(2, $test->getProblemAssociations()->getValues());
+        $this->assertInstanceOf(ProblemTestAssociation::class,$test->getProblemAssociations()->get(0));
+        $this->assertEquals($firstProblemTestAssociation->getProblem(),$test->getProblemAssociations()->get(0)->getProblem());
+        $this->assertEquals($firstProblemTestAssociation->getTest(),$test->getProblemAssociations()->get(0)->getTest());
+        $this->assertEquals($firstProblemTestAssociation->getVariant(),$test->getProblemAssociations()->get(0)->getVariant());
+        $this->assertInstanceOf(ProblemTestAssociation::class,$test->getProblemAssociations()->get(1));
+        $this->assertEquals($secondProblemTestAssociation->getProblem(),$test->getProblemAssociations()->get(1)->getProblem());
+        $this->assertEquals($secondProblemTestAssociation->getTest(),$test->getProblemAssociations()->get(1)->getTest());
+        $this->assertEquals($secondProblemTestAssociation->getVariant(),$test->getProblemAssociations()->get(1)->getVariant());
     }
 }

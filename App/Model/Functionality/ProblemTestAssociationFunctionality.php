@@ -18,7 +18,6 @@ use Nette\Utils\ArrayHash;
  */
 class ProblemTestAssociationFunctionality extends BaseFunctionality
 {
-
     /**
      * ProblemTestAssociationFunctionality constructor.
      * @param ConstraintEntityManager $entityManager
@@ -48,12 +47,14 @@ class ProblemTestAssociationFunctionality extends BaseFunctionality
     public function update(int $id, ArrayHash $data): ?Object
     {
         $association = $this->repository->findOneBy([
-            "problem.id" => $id,
-            "test.id" => $data->test_id
+            'problem.id' => $id,
+            'test.id' => $data->test_id
         ]);
-        if(empty($data->success_rate))
+        if(empty($data->success_rate)){
             $data->success_rate = null;
+        }
         $association->setSuccessRate($data->success_rate);
+        var_dump($association->getSuccessRate());
         $this->em->persist($association);
         $this->em->flush();
         return $association;

@@ -10,7 +10,9 @@ namespace App\AppTests\Model\Functionality;
 
 
 use App\Helpers\FormatterHelper;
+use App\Model\Entity\Category;
 use App\Model\Entity\ProblemFinal;
+use App\Model\Entity\SubCategory;
 use App\Model\Functionality\ProblemFinalFunctionality;
 use App\Model\Repository\ProblemFinalRepository;
 use App\Model\Repository\ProblemRepository;

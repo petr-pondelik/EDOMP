@@ -101,9 +101,10 @@ class TestFunctionality extends BaseFunctionality
      * @param string $variant
      * @param ProblemTemplate $template
      * @param bool $newPage
+     * @return Test
      * @throws \Exception
      */
-    public function attachProblem(Test $test, ProblemFinal $problem, string $variant, ProblemTemplate $template = null, bool $newPage = false): void
+    public function attachProblem(Test $test, ProblemFinal $problem, string $variant, ProblemTemplate $template = null, bool $newPage = false): Test
     {
         $association = new ProblemTestAssociation();
         $association->setTest($test);
@@ -116,5 +117,6 @@ class TestFunctionality extends BaseFunctionality
         $this->em->persist($association);
         $test->addProblemAssociation($association);
         $this->em->persist($test);
+        return $test;
     }
 }

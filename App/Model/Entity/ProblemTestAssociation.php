@@ -46,7 +46,7 @@ class ProblemTestAssociation extends BaseEntity
      * )
      * @var bool
      */
-    protected $nextPage;
+    protected $nextPage = false;
 
     /**
      * @ORM\Column(type="float", nullable=true)
