@@ -108,23 +108,23 @@ class ProblemTemplateFormControl extends EntityFormControl
     {
         $form = parent::createComponentForm();
 
-        $difficulties = $this->difficultyRepository->findAssoc([], "id");
-        $subcategories = $this->subCategoryRepository->findAssoc([], "id");
+        $difficulties = $this->difficultyRepository->findAssoc([], 'id');
+        $subcategories = $this->subCategoryRepository->findAssoc([], 'id');
 
         $resultConditions = $this->problemConditionRepository->findAssoc([
-            "problemConditionType.id" => $this->constHelper::RESULT
-        ], "accessor");
+            'problemConditionType.id' => $this->constHelper::RESULT
+        ], 'accessor');
 
         $discriminantConditions = $this->problemConditionRepository->findAssoc([
-            "problemConditionType.id" => $this->constHelper::DISCRIMINANT
-        ], "accessor");
+            'problemConditionType.id' => $this->constHelper::DISCRIMINANT
+        ], 'accessor');
 
-        $form->addHidden("type")
+        $form->addHidden('type')
             ->setDefaultValue($this->templateType);
 
-        $form->addSelect("subcategory", "Podkategorie", $subcategories)
+        $form->addSelect('subcategory', 'Podkategorie', $subcategories)
             ->setDefaultValue(1)
-            ->setHtmlAttribute("class", "form-control");
+            ->setHtmlAttribute('class', 'form-control');
 
         $form->addTextArea('text_before', 'Zadání před')
             ->setHtmlAttribute('class', 'form-control')
@@ -134,9 +134,9 @@ class ProblemTemplateFormControl extends EntityFormControl
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('body');
 
-        $form->addText("variable", "Neznámá")
-            ->setHtmlAttribute("class", "form-control")
-            ->setHtmlId("variable");
+        $form->addText('variable', 'Neznámá')
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlId('variable');
 
         $form->addTextArea('text_after', 'Zadání po')
             ->setHtmlAttribute('class', 'form-control')
@@ -178,45 +178,49 @@ class ProblemTemplateFormControl extends EntityFormControl
         $values = $form->getValues();
 
         //First validate problem body
-        $validateFields["variable"] = $values->variable;
+        $validateFields['variable'] = $values->variable;
 
-        if(in_array($this->templateType, $this->constHelper::SEQUENCES))
-            $validateFields["first_n"] = $values->first_n;
+        if(in_array($this->templateType, $this->constHelper::SEQUENCES)){
+            $validateFields['first_n'] = $values->first_n;
+        }
 
-        $validateFields["body"] = ArrayHash::from([
-            "body" => $values->body,
-            "variable" => $values->variable,
-            "bodyType" => $this->constHelper::LINEAR_EQ
+        $validateFields['body'] = ArrayHash::from([
+            'body' => $values->body,
+            'variable' => $values->variable,
+            'bodyType' => $this->constHelper::LINEAR_EQ
         ]);
 
         try{
             $validationErrors = $this->validationService->validate($validateFields);
         } catch (\Exception $e){
-            if($e instanceof NewtonApiException)
-                $this["form"]["submit"]->addError($e->getMessage());
-            else
-                $this["form"]["body"]->addError($e->getMessage());
+            if($e instanceof NewtonApiException){
+                $this['form']['submit']->addError($e->getMessage());
+            }
+            else{
+                $this['form']['body']->addError($e->getMessage());
+            }
             $this->redrawFormErrors();
             return;
         }
 
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
+                foreach($errorGroup as $egKey => $error){
                     $form[$veKey]->addError($error);
+                }
             }
             $this->redrawFormErrors();
             return;
         }
 
-        $standardized = "";
+        $standardized = '';
 
         //If it's the equation template
         if(in_array($values->type, $this->constHelper::EQUATIONS)){
             try{
                 $standardized = $this->mathService->standardizeEquation($values->body);
             } catch (\Exception $e){
-                $form["body"]->addError($e->getMessage());
+                $form['body']->addError($e->getMessage());
                 $this->redrawFormErrors();
                 return;
             }
@@ -225,35 +229,36 @@ class ProblemTemplateFormControl extends EntityFormControl
         $validateFields = [];
 
         //Then validate if the entered problem corresponds to the selected type
-        $validateFields["type"] = [
-            "type_" . $values->type => ArrayHash::from([
-                "body" => $values->body,
-                "standardized" => $standardized,
-                "variable" => $values->variable
+        $validateFields['type'] = [
+            'type_' . $values->type => ArrayHash::from([
+                'body' => $values->body,
+                'standardized' => $standardized,
+                'variable' => $values->variable
             ])
         ];
 
         try{
             $validationErrors = $this->validationService->validate($validateFields);
         } catch (\Exception $e){
-            $form["body"]->addError($e->getMessage());
+            $form['body']->addError($e->getMessage());
             $this->redrawFormErrors();
             return;
         }
 
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
-                    $form["body"]->addError($error);
+                foreach($errorGroup as $egKey => $error){
+                    $form['body']->addError($error);
+                }
             }
             $this->redrawFormErrors();
             return;
-        };
+        }
 
         $validateFields = [];
 
         //Then validate if all the conditions has been satisfied
-        $validateFields["conditions_valid"] = $values->conditions_valid;
+        $validateFields['conditions_valid'] = $values->conditions_valid;
         $validationErrors = $this->validationService->validate($validateFields);
 
         if(isset($validationErrors['conditions_valid'])){
@@ -277,22 +282,29 @@ class ProblemTemplateFormControl extends EntityFormControl
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function handleCondValidation(string $body, int $conditionType, int $accessor, int $problemType, string $variable, int $problemId = null)
+    public function handleCondValidation(string $body, int $conditionType, int $accessor, int $problemType, string $variable, int $problemId = null): void
     {
-        $validationFields["variable"] = $variable;
+        $validationFields['variable'] = $variable;
         $validationFields['body'] = ArrayHash::from([
-            "body" => $body,
-            "bodyType" => $problemType,
-            "variable" => $variable,
+            'body' => $body,
+            'bodyType' => $problemType,
+            'variable' => $variable,
         ]);
 
-        $validationErrors = $this->validationService->validate($validationFields);
+        try {
+            $validationErrors = $this->validationService->validate($validationFields);
+        } catch (InvalidParameterException $e){
+            $this['form']['body']->addError($e->getMessage());
+            $this->redrawFormErrors();
+            return;
+        }
 
         //First validate variable and structure of prototype
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
+                foreach($errorGroup as $egKey => $error){
                     $this['form'][$veKey]->addError($error);
+                }
             }
             $this->redrawFormErrors();
             return;
@@ -301,7 +313,7 @@ class ProblemTemplateFormControl extends EntityFormControl
         try{
             $standardized = $this->mathService->standardizeEquation($body);
         } catch (StringFormatException $e){
-            $this['form']["body"]->addError($e->getMessage());
+            $this['form']['body']->addError($e->getMessage());
             $this->redrawFormErrors();
             return;
         }
@@ -309,11 +321,11 @@ class ProblemTemplateFormControl extends EntityFormControl
         $validationFields = [];
 
         //Then validate it's type
-        $validationFields["type"] = [
-            "type_" . $problemType => ArrayHash::from([
-                "body" => $body,
-                "standardized" => $standardized,
-                "variable" => $variable
+        $validationFields['type'] = [
+            'type_' . $problemType => ArrayHash::from([
+                'body' => $body,
+                'standardized' => $standardized,
+                'variable' => $variable
             ])
         ];
 
@@ -321,8 +333,9 @@ class ProblemTemplateFormControl extends EntityFormControl
 
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
-                    $this['form']["body"]->addError($error);
+                foreach($errorGroup as $egKey => $error){
+                    $this['form']['body']->addError($error);
+                }
             }
             $this->redrawFormErrors();
             return;
@@ -333,10 +346,10 @@ class ProblemTemplateFormControl extends EntityFormControl
         //Then validate specified condition
         $validationFields['condition'] = [
             'condition_' . $conditionType => ArrayHash::from([
-                "body" => $body,
-                "standardized" => $standardized,
-                "accessor" => $accessor,
-                "variable" => $variable
+                'body' => $body,
+                'standardized' => $standardized,
+                'accessor' => $accessor,
+                'variable' => $variable
             ])
         ];
 
@@ -351,8 +364,9 @@ class ProblemTemplateFormControl extends EntityFormControl
 
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
+                foreach($errorGroup as $egKey => $error){
                     $this['form']['condition_' . $conditionType]->addError($error);
+                }
             }
         }
 
@@ -360,7 +374,7 @@ class ProblemTemplateFormControl extends EntityFormControl
 
         //If validation succeeded, return true in payload
         if(!$validationErrors){
-            $this->flashMessage("Podmínka je splnitelná.", "success");
+            $this->flashMessage('Podmínka je splnitelná.', 'success');
             $this->presenter->payload->result = true;
         }
     }
@@ -375,8 +389,9 @@ class ProblemTemplateFormControl extends EntityFormControl
             $this->functionality->create($values);
             $this->onSuccess();
         } catch (\Exception $e){
-            if ($e instanceof AbortException)
+            if ($e instanceof AbortException){
                 return;
+            }
             $this->onError($e);
         }
     }
@@ -391,8 +406,9 @@ class ProblemTemplateFormControl extends EntityFormControl
             $this->functionality->update($values->id_hidden, $values);
             $this->onSuccess();
         } catch (\Exception $e){
-            if ($e instanceof AbortException)
+            if ($e instanceof AbortException){
                 return;
+            }
             $this->onError($e);
         }
     }
@@ -405,42 +421,51 @@ class ProblemTemplateFormControl extends EntityFormControl
         $types = $this->problemTypeRepository->findAssoc([], 'id');
         $this->template->problemTypes = $types;
         $this->template->condByProblemTypes = [];
-        foreach ($types as $key => $type)
+        foreach ($types as $key => $type){
             $this->template->condByProblemTypes[$key] = $type->getConditionTypes()->getValues();
+        }
         if ($this->edit){
             switch ($this->templateType){
-                case $this->constHelper::LINEAR_EQ: $this->template->render(__DIR__ . '/templates/linearEqEdit.latte');
-                                                    break;
-                case $this->constHelper::QUADRATIC_EQ: $this->template->render(__DIR__ . '/templates/quadraticEqEdit.latte');
-                                                        break;
-                case $this->constHelper::ARITHMETIC_SEQ: $this->template->render(__DIR__ . '/templates/arithmeticSeqEdit.latte');
-                                                            break;
-                case $this->constHelper::GEOMETRIC_SEQ: $this->template->render(__DIR__ . '/templates/geometricSeqEdit.latte');
-                                                        break;
+                case $this->constHelper::LINEAR_EQ:
+                    $this->template->render(__DIR__ . '/templates/linearEqEdit.latte');
+                    break;
+                case $this->constHelper::QUADRATIC_EQ:
+                    $this->template->render(__DIR__ . '/templates/quadraticEqEdit.latte');
+                    break;
+                case $this->constHelper::ARITHMETIC_SEQ:
+                    $this->template->render(__DIR__ . '/templates/arithmeticSeqEdit.latte');
+                    break;
+                case $this->constHelper::GEOMETRIC_SEQ:
+                    $this->template->render(__DIR__ . '/templates/geometricSeqEdit.latte');
+                    break;
             }
         }
         else{
             switch ($this->templateType){
-                case $this->constHelper::LINEAR_EQ: $this->template->render(__DIR__ . '/templates/linearEqCreate.latte');
-                                                    break;
-                case $this->constHelper::QUADRATIC_EQ: $this->template->render(__DIR__ . '/templates/quadraticEqCreate.latte');
-                                                        break;
-                case $this->constHelper::ARITHMETIC_SEQ: $this->template->render(__DIR__ . '/templates/arithmeticSeqCreate.latte');
-                                                            break;
-                case $this->constHelper::GEOMETRIC_SEQ: $this->template->render(__DIR__ . '/templates/geometricSeqCreate.latte');
-                                                        break;
+                case $this->constHelper::LINEAR_EQ:
+                    $this->template->render(__DIR__ . '/templates/linearEqCreate.latte');
+                    break;
+                case $this->constHelper::QUADRATIC_EQ:
+                    $this->template->render(__DIR__ . '/templates/quadraticEqCreate.latte');
+                    break;
+                case $this->constHelper::ARITHMETIC_SEQ:
+                    $this->template->render(__DIR__ . '/templates/arithmeticSeqCreate.latte');
+                    break;
+                case $this->constHelper::GEOMETRIC_SEQ:
+                    $this->template->render(__DIR__ . '/templates/geometricSeqCreate.latte');
+                    break;
             }
         }
     }
 
-    public function redrawFormErrors()
+    public function redrawFormErrors(): void
     {
-        $this->redrawControl("variableErrorSnippet");
+        $this->redrawControl('variableErrorSnippet');
         $this->redrawControl('bodyErrorSnippet');
-        $this->redrawControl("typeErrorSnippet");
+        $this->redrawControl('typeErrorSnippet');
         $this->redrawControl('conditionsErrorSnippet');
-        $this->redrawControl("first_nErrorSnippet");
-        $this->redrawControl("flashesSnippet");
+        $this->redrawControl('first_nErrorSnippet');
+        $this->redrawControl('flashesSnippet');
         $this->redrawControl('submitErrorSnippet');
     }
 }

@@ -13,6 +13,7 @@ use App\AppTests\Entity\EntityTestCase;
 use App\Model\Entity\Role;
 use App\Model\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
+use Nette\Security\Passwords;
 
 /**
  * Class UserTest
@@ -49,7 +50,7 @@ class UserTest extends EntityTestCase
         $entity->setRole($this->role);
 
         $this->assertEquals($entity->getUsername(), 'TEST_USER_NAME');
-        $this->assertEquals($entity->getPassword(), 'TEST_USER_PASSWORD');
+        $this->assertTrue(Passwords::verify('TEST_USER_PASSWORD', $entity->getPassword()));
         $this->assertEquals($entity->getRole(), $this->role);
         $this->assertEquals($entity->getGroups(), new ArrayCollection());
         $this->assertEquals($entity->getGroupsCreated(), new ArrayCollection());

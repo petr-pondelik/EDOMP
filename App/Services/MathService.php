@@ -114,7 +114,7 @@ class MathService
             },
 
             $this->constHelper::ARITHMETIC_SEQ => function(ProblemFinal $problem){
-                return $this->evaluateSequence($problem, self::ARITHMETIC);
+                return $this->evaluateSequence($problem);
             },
 
             $this->constHelper::GEOMETRIC_SEQ => function(ProblemFinal $problem){
@@ -131,9 +131,10 @@ class MathService
      */
     public function getDiscriminantA(string $expression, string $variable)
     {
-        $aExp = Strings::before($expression, $variable . "^2", 1);
-        if($aExp == "")
-            return "1";
+        $aExp = Strings::before($expression, $variable . '^2');
+        if($aExp === ''){
+            return '1';
+        }
         return $this->stringsHelper::trim($aExp, $this->stringsHelper::BRACKETS_SIMPLE);
     }
 
@@ -145,10 +146,11 @@ class MathService
     public function getDiscriminantB(string $expression, string $variable)
     {
         $bExp = Strings::before($expression, $variable, 2);
-        $bExp = Strings::after($bExp, $variable . "^2", 1);
+        $bExp = Strings::after($bExp, $variable . '^2');
         $bExp = $this->stringsHelper::trimOperators($bExp);
-        if($bExp == "")
-            return "0";
+        if($bExp === ''){
+            return '0';
+        }
         return $bExp;
     }
 
@@ -164,10 +166,11 @@ class MathService
     public function getDiscriminantC(string $expression, string $variable)
     {
         $cExp = Strings::after($expression, $variable, 2);
-        if($cExp == ''){
-            $cExp = Strings::after($expression, $variable . '^2', 1);
-            if($cExp === '')
-                return "0";
+        if($cExp === ''){
+            $cExp = Strings::after($expression, $variable . '^2');
+            if($cExp === ''){
+                return '0';
+            }
         }
         $cExp = $this->newtonApiClient->simplify($cExp);
         return $this->stringsHelper::wrap($cExp);
@@ -185,8 +188,9 @@ class MathService
      */
     public function getDiscriminantExpression(string $expression, string $variable, bool $standardized = self::NON_STANDARDIZED): string
     {
-        if(!$standardized)
+        if(!$standardized){
             $expression = $this->standardizeEquation($expression);
+        }
         return $this->getDiscriminantB($expression, $variable) . '^2' . ' - 4 * ' . $this->getDiscriminantA($expression, $variable) . ' * ' . $this->getDiscriminantC($expression, $variable);
     }
 
@@ -197,6 +201,7 @@ class MathService
     public function evaluateExpression(string $expression)
     {
         $executor = new MathExecutor();
+        bdump($executor->execute($this->stringsHelper::nxpFormat($expression)));
         return $executor->execute($this->stringsHelper::nxpFormat($expression));
     }
 
@@ -234,7 +239,7 @@ class MathService
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function evaluateLinearEquation(ProblemFinal $problem)
+    public function evaluateLinearEquation(ProblemFinal $problem): ArrayHash
     {
         $standardized = $this->standardizeEquation($problem->getBody());
         $variable = $problem->getVariable();
@@ -263,28 +268,26 @@ class MathService
         $discriminant = $this->getDiscriminantExpression($standardized, $problem->getVariable(), self::STANDARDIZED);
         $discriminant = $this->evaluateExpression($discriminant);
 
-        $res = [];
-
         if($discriminant > 0){
             $res1 = ((-$b) + sqrt($discriminant)) / (2*$a);
             $res2 = ((-$b) - sqrt($discriminant)) / (2*$a);
             $res = [
-                "type" => "double",
-                $problem->getVariable() . "_1" => $res1,
-                $problem->getVariable() . "_2" => $res2
+                'type' => 'double',
+                $problem->getVariable() . '_1' => $res1,
+                $problem->getVariable() . '_2' => $res2
             ];
         }
         else if($discriminant === 0){
             $res1 = ((-$b) + sqrt($discriminant)) / (2*$a);
             $res = [
-                "type" => "single",
+                'type' => 'single',
                 $problem->getVariable() => $res1
             ];
         }
         else{
             $res = [
-                "type" => "complex",
-                $problem->getVariable() => "complex"
+                'type' => 'complex',
+                $problem->getVariable() => 'complex'
             ];
         }
 
@@ -313,7 +316,7 @@ class MathService
         $res = [];
 
         for($i = 1; $i <= $firstN; $i++){
-            $res[$seqName . "_{" . $i . "}"] = $this->evaluateExpression(
+            $res[$seqName . '_{' . $i . '}'] = $this->evaluateExpression(
                 $this->stringsHelper::passValues($sides->right, [
                     $variable => $i
                 ])
@@ -323,11 +326,11 @@ class MathService
         if($sequenceType === self::ARITHMETIC)
         {
             $difference = (string) round($res[$seqName . '_{' . '2}'] - $res[$seqName . '_{' . '1}'], 1);
-            $res["Diference"] = $difference;
+            $res['Diference'] = $difference;
         }
         else{
             $quotient = (string) round($res[$seqName . '_{' . '2}'] / $res[$seqName . '_{' . '1}'], 1);
-            $res["Kvocient"] = $quotient;
+            $res['Kvocient'] = $quotient;
         }
 
         return ArrayHash::from($res);

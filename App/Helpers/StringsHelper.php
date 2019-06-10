@@ -18,26 +18,26 @@ use Nette\Utils\Strings;
  */
 class StringsHelper
 {
-    const LATEX_INLINE = "latexInline";
-    const BRACKETS_SIMPLE = "bracketsSimple";
-    const ADDITION = "addition";
-    const SUBTRACTION = "subtraction";
+    public const LATEX_INLINE = 'latexInline';
+    public const BRACKETS_SIMPLE = 'bracketsSimple';
+    public const ADDITION = 'addition';
+    public const SUBTRACTION = 'subtraction';
 
-    const IS_ADDITION = 1;
-    CONST IS_SUBTRACTION = 2;
+    public const IS_ADDITION = 1;
+    public CONST IS_SUBTRACTION = 2;
 
-    const PREFIXES = [
-        "latexInline" => "\\(",
-        "bracketsSimple" => "(",
-        "addition" => "+",
-        "subtraction" => "-"
+    protected const PREFIXES = [
+        'latexInline' => '\\(',
+        'bracketsSimple' => '(',
+        'addition' => '+',
+        'subtraction' => '-'
     ];
 
-    const SUFFIXES = [
-        "latexInline" => "\\)",
-        "bracketsSimple" => ")",
-        "addition" => "+",
-        "subtraction" => "-"
+    protected const SUFFIXES = [
+        'latexInline' => '\\)',
+        'bracketsSimple' => ')',
+        'addition' => '+',
+        'subtraction' => '-'
     ];
 
     /**
@@ -45,7 +45,7 @@ class StringsHelper
      * @param bool $validation
      * @return array
      */
-    static public function splitByParameters(string $expression, bool $validation = false)
+    public static function splitByParameters(string $expression, bool $validation = false): array
     {
         //Explode string by parameter marks and preserve the marks
 
@@ -60,33 +60,37 @@ class StringsHelper
             ( <par\s*min="[0-9]*"\s*max="[0-9]*"\s*\/> )
         */
 
-        if(!$validation)
+        if(!$validation){
             return Strings::split($expression,'~(<par\s*min="[0-9]+"\s*max="[0-9]+"\s*\/>)~');
-        else
-            return Strings::split($expression,'~(<par\s*\/>)|(<par\s*type="[a-z]*"\s*\/>)|(<par\s*type="[a-z]*"\s*min="[0-9]*"\s*\/>)|(<par\s*type="[a-z]*"\s*max="[0-9]*"\/>)|(<par\s*type="[a-z]*"\s*min="[0-9]*"\s*max="[0-9]*"\/>)|(<par\s*min="[0-9]*"\s*\/>)|(<par\s*max="[0-9]*"\s*\/>)|(<par\s*min="[0-9]*"\s*max="[0-9]*"\s*\/>)~');
+        }
+
+        return Strings::split($expression,'~(<par\s*\/>)|(<par\s*type="[a-z]*"\s*\/>)|(<par\s*type="[a-z]*"\s*min="[0-9]*"\s*\/>)|(<par\s*type="[a-z]*"\s*max="[0-9]*"\/>)|(<par\s*type="[a-z]*"\s*min="[0-9]*"\s*max="[0-9]*"\/>)|(<par\s*min="[0-9]*"\s*\/>)|(<par\s*max="[0-9]*"\s*\/>)|(<par\s*min="[0-9]*"\s*max="[0-9]*"\s*\/>)~');
     }
 
     /**
      * @param string $expression
      * @return string
      */
-    static public function removeWhiteSpaces(string $expression)
+    public static function removeWhiteSpaces(string $expression): string
     {
-        return Strings::replace($expression, "~\s~", "");
+        return Strings::replace($expression, '~\s~', '');
     }
 
     /**
      * @param string $expression
      * @return string
      */
-    static public function negateOperators(string $expression)
+    public static function negateOperators(string $expression): string
     {
-        for($i = 0; $i < strlen($expression); $i++){
-            if($expression[$i] == "+"){
-                $expression[$i] = "-";
+        $expessionLen = strlen($expression);
+        for($i = 0; $i < $expessionLen; $i++){
+            if($expression[$i] === '+'){
+                $expression[$i] = '-';
                 continue;
             }
-            if($expression[$i] == "-") $expression[$i] = "+";
+            if($expression[$i] === '-'){
+                $expression[$i] = '+';
+            }
         }
         return $expression;
     }
@@ -95,12 +99,16 @@ class StringsHelper
      * @param string $expression
      * @return int
      */
-    static public function firstOperator(string $expression)
+    public static function firstOperator(string $expression): int
     {
-        $addInx = Strings::indexOf($expression, '+', 1);
-        $subInx = Strings::indexOf($expression, '-', 1);
-        if(!$addInx) return self::IS_SUBTRACTION;
-        if(!$subInx) return self::IS_ADDITION;
+        $addInx = Strings::indexOf($expression, '+');
+        $subInx = Strings::indexOf($expression, '-');
+        if(!$addInx){
+            return self::IS_SUBTRACTION;
+        }
+        if(!$subInx){
+            return self::IS_ADDITION;
+        }
         return $addInx < $subInx ? self::IS_ADDITION : self::IS_SUBTRACTION;
     }
 
@@ -108,7 +116,7 @@ class StringsHelper
      * @param string $expression
      * @return false|string
      */
-    static public function trimOperators(string $expression)
+    public static function trimOperators(string $expression)
     {
         $expression = self::trim($expression, self::ADDITION);
         $expression = self::trim($expression, self::SUBTRACTION);
@@ -120,13 +128,15 @@ class StringsHelper
      * @param string $type
      * @return false|string
      */
-    static public function trim(string $expression, $type = self::BRACKETS_SIMPLE)
+    public static function trim(string $expression, $type = self::BRACKETS_SIMPLE)
     {
         $res = Strings::trim($expression);
-        if(Strings::startsWith($res, self::PREFIXES[$type]))
-            $res = Strings::after($res, self::PREFIXES[$type], 1);
-        if(Strings::endsWith($res, self::SUFFIXES[$type]))
+        if(Strings::startsWith($res, self::PREFIXES[$type])){
+            $res = Strings::after($res, self::PREFIXES[$type]);
+        }
+        if(Strings::endsWith($res, self::SUFFIXES[$type])){
             $res = Strings::before($res, self::SUFFIXES[$type], -1);
+        }
         return Strings::trim($res);
     }
 
@@ -135,7 +145,7 @@ class StringsHelper
      * @param string $wrapper
      * @return string
      */
-    static public function wrap(string $expression, $wrapper = self::BRACKETS_SIMPLE)
+    public static function wrap(string $expression, $wrapper = self::BRACKETS_SIMPLE): string
     {
         return self::PREFIXES[$wrapper] . $expression . self::SUFFIXES[$wrapper];
     }
@@ -144,7 +154,7 @@ class StringsHelper
      * @param string $expression
      * @return string
      */
-    static public function newtonFormat(string $expression): string
+    public static function newtonFormat(string $expression): string
     {
         $expression = self::newtonFractions($expression);
         return $expression;
@@ -154,9 +164,9 @@ class StringsHelper
      * @param string $expression
      * @return string
      */
-    static public function newtonFractions(string $expression): string
+    public static function newtonFractions(string $expression): string
     {
-        return Strings::replace($expression, "~(\/)~", '(over)');
+        return Strings::replace($expression, '~(\/)~', '(over)');
     }
 
     /**
@@ -164,7 +174,7 @@ class StringsHelper
      * @param string|null $variable
      * @return string
      */
-    static public function nxpFormat(string $expression, string $variable = null): string
+    public static function nxpFormat(string $expression, string $variable = null): string
     {
         $expression = Strings::replace($expression, '~(\d)(\s)(p)~', '$1*$3');
         $expression = Strings::replace($expression, '~(\d)(\s)(\d)~', '$1*$3');
@@ -174,7 +184,6 @@ class StringsHelper
             $expression = Strings::replace($expression, '~(\d)(\s)(' . $variable . ')~', '$1*$3');
             $expression = Strings::replace($expression, '~(' . $variable . ')(\s)(\d)~', '$1*$3');
         }
-        bdump($expression);
         return $expression;
     }
 
@@ -182,9 +191,9 @@ class StringsHelper
      * @param string $expression
      * @return string
      */
-    static public function extractSequenceName(string $expression): string
+    public static function extractSequenceName(string $expression): string
     {
-        return (Strings::match($expression, "~^\s*(\w*)\w$~"))[1];
+        return (Strings::match($expression, '~^\s*(\w*)\w$~'))[1];
     }
 
     /**
@@ -192,11 +201,12 @@ class StringsHelper
      * @param String $attr
      * @return int
      */
-    static public function extractParAttr(String $xmpPar, String $attr)
+    public static function extractParAttr(String $xmpPar, String $attr): int
     {
         $start = Strings::indexOf($xmpPar, $attr);
-        if(!$start)
+        if(!$start){
             return null;
+        }
         $xmpPar = Strings::substring($xmpPar, $start);
         $end = Strings::indexOf($xmpPar, '"', 2);
         return (int) Strings::substring($xmpPar, Strings::indexOf($xmpPar, '"') + 1, $end - Strings::indexOf($xmpPar, '"') - 1);
@@ -206,16 +216,16 @@ class StringsHelper
      * @param string $expression
      * @return int
      */
-    static public function extractParamsCnt(string $expression)
+    public static function extractParamsCnt(string $expression): int
     {
-        return substr_count($expression, "<par");
+        return substr_count($expression, '<par');
     }
 
     /**
      * @param string $expression
      * @return ArrayHash
      */
-    static public function extractParametersInfo(string $expression)
+    public static function extractParametersInfo(string $expression): ArrayHash
     {
         $expressionSplit = self::splitByParameters($expression);
         $parametersMinMax = [];
@@ -223,19 +233,19 @@ class StringsHelper
         $parametersCnt = 0;
         foreach ($expressionSplit as $item){
             if(Strings::contains($item, '<par')){
-                $min = self::extractParAttr($item, "min");
-                $max = self::extractParAttr($item, "max");
+                $min = self::extractParAttr($item, 'min');
+                $max = self::extractParAttr($item, 'max');
                 $parametersMinMax[$parametersCnt++] = [
-                    "min" => $min,
-                    "max" => $max
+                    'min' => $min,
+                    'max' => $max
                 ];
                 $parametersComplexity *= (($max - $min) + 1);
             }
         }
         return ArrayHash::from([
-            "count" => $parametersCnt,
-            "complexity" => $parametersComplexity,
-            "minMax" => $parametersMinMax
+            'count' => $parametersCnt,
+            'complexity' => $parametersComplexity,
+            'minMax' => $parametersMinMax
         ]);
     }
 
@@ -244,16 +254,17 @@ class StringsHelper
      * @param bool $validate
      * @return ArrayHash
      */
-    static public function getEquationSides(string $expression, bool $validate = true)
+    public static function getEquationSides(string $expression, bool $validate = true): ArrayHash
     {
         if($validate){
-            if(!self::isEquation($expression))
+            if(!self::isEquation($expression)){
                 throw new StringFormatException('Zadaný výraz není rovnicí.');
+            }
         }
         $sides = Strings::split($expression, '~=~');
         return ArrayHash::from([
-            "left" => Strings::trim($sides[0]),
-            "right" => Strings::trim($sides[1])
+            'left' => Strings::trim($sides[0]),
+            'right' => Strings::trim($sides[1])
         ]);
     }
 
@@ -261,11 +272,12 @@ class StringsHelper
      * @param ArrayHash $sides
      * @return string
      */
-    static public function mergeEqSides(ArrayHash $sides)
+    public static function mergeEqSides(ArrayHash $sides): string
     {
-        if($sides->left === "0")
+        if($sides->left === '0'){
             return $sides->left;
-        return $sides->left . " - (" . $sides->right . ")";
+        }
+        return $sides->left . ' - (' . $sides->right . ')';
     }
 
     /**
@@ -273,10 +285,11 @@ class StringsHelper
      * @param iterable $values
      * @return string
      */
-    static public function passValues(string $expression, iterable $values): string
+    public static function passValues(string $expression, iterable $values): string
     {
-        foreach($values as $parameter => $value)
+        foreach($values as $parameter => $value){
             $expression = Strings::replace($expression, '~' . $parameter . '~', $value);
+        }
         return $expression;
     }
 
@@ -284,20 +297,24 @@ class StringsHelper
      * @param string $expression
      * @return ArrayHash
      */
-    static public function getParametrized(string $expression): ArrayHash
+    public static function getParametrized(string $expression): ArrayHash
     {
         $expressionSplit = self::splitByParameters($expression);
         $parametrized = [];
         $parametersCnt = 0;
         foreach ($expressionSplit as $splitKey => $splitItem){
-            if($splitItem !== ""){
-                if(!Strings::match($splitItem, '~(<par.*\/>)~')) $parametrized[$splitKey] = $splitItem;
-                else $parametrized[$splitKey] = 'p'.$parametersCnt++;
+            if($splitItem !== ''){
+                if(!Strings::match($splitItem, '~(<par.*\/>)~')){
+                    $parametrized[$splitKey] = $splitItem;
+                }
+                else{
+                    $parametrized[$splitKey] = 'p'.$parametersCnt++;
+                }
             }
         }
         return ArrayHash::from([
-            "expression" => join($parametrized),
-            "parametersCnt" => $parametersCnt
+            'expression' => join($parametrized),
+            'parametersCnt' => $parametersCnt
         ]);
     }
 
@@ -306,18 +323,26 @@ class StringsHelper
      * @param string $variable
      * @return string
      */
-    static public function getLinearVariableExpresion(string $expression, string $variable): string
+    public static function getLinearVariableExpresion(string $expression, string $variable): string
     {
         $split = Strings::split($expression, '~(' . $variable . ')~');
-        if(!$split[2]) return "0";
-        $rightOp = "";
-        if(self::firstOperator($split[2]) === self::IS_ADDITION) $rightOp = "-";
+        if(!$split[2]){
+            return '0';
+        }
+        $rightOp = '';
+        if(self::firstOperator($split[2]) === self::IS_ADDITION){
+            $rightOp = '-';
+        }
         $split[2] = self::trimOperators($split[2]);
         $split[2] = self::negateOperators($split[2]);
 
         //Check if variable multiplier exists
-        if($split[0]) $rightSide = '(' . $rightOp . $split[2] .')' . ' / ' . $split[0];
-        else $rightSide = '(' . $rightOp . $split[2] .')';
+        if($split[0]){
+            $rightSide = '(' . $rightOp . $split[2] .')' . ' / ' . $split[0];
+        }
+        else{
+            $rightSide = '(' . $rightOp . $split[2] .')';
+        }
 
         $rightSide = self::nxpFormat($rightSide);
         return $rightSide;
@@ -328,12 +353,13 @@ class StringsHelper
      * @param string $variable
      * @return bool
      */
-    static public function containsVariable(array $split, string $variable): bool
+    public static function containsVariable(array $split, string $variable): bool
     {
         foreach($split as $part){
-            if($part !== "" && !Strings::startsWith($part, "<par")){
-                if(Strings::contains($part, $variable))
+            if($part !== '' && !Strings::startsWith($part, '<par')){
+                if(Strings::contains($part, $variable)){
                     return true;
+                }
             }
         }
         return false;
@@ -343,14 +369,15 @@ class StringsHelper
      * @param string $expression
      * @return bool
      */
-    static public function isEquation(string $expression): bool
+    public static function isEquation(string $expression): bool
     {
-        $split = Strings::split($expression, "~ = ~");
-        if(count($split) !== 2 || Strings::match($split[0], "~^\s*$~") || Strings::match($split[1], "~^\s*$~"))
+        $split = Strings::split($expression, '~ = ~');
+        if(count($split) !== 2 || Strings::match($split[0], '~^\s*$~') || Strings::match($split[1], '~^\s*$~')){
             return false;
-        bdump($expression);
-        if(Strings::match($expression, "~^\s+=\s+~"))
+        }
+        if(Strings::match($expression, '~^\s+=\s+~')){
             return false;
+        }
         return true;
     }
 
@@ -359,14 +386,15 @@ class StringsHelper
      * @param string $variable
      * @return bool
      */
-    static public function isSequence(string $expression, string $variable): bool
+    public static function isSequence(string $expression, string $variable): bool
     {
-        $split = Strings::split($expression, "~ = ~");
-        bdump($split);
-        if(count($split) !== 2)
+        $split = Strings::split($expression, '~ = ~');
+        if(count($split) !== 2){
             return false;
-        if(!Strings::match($expression, '~^\s*\w' . $variable . '\s*=~'))
+        }
+        if(!Strings::match($expression, '~^\s*\w' . $variable . '\s*=~')){
             return false;
+        }
         return true;
     }
 }

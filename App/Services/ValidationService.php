@@ -99,20 +99,20 @@ class ValidationService
 
         $this->validationMapping = [
 
-            "username" => function($filledVal){
+            'username' => static function($filledVal){
                 if(empty($filledVal))
                     return 0;
                 return -1;
             },
 
-            "password" => function($filledVal){
+            'password' => static function($filledVal){
                 if(empty($filledVal))
                     return 0;
                 return -1;
             },
 
             //Validate password in administration User section
-            "password_confirm" => function(ArrayHash $filledVal){
+            'password_confirm' => static function(ArrayHash $filledVal){
                 if(empty($filledVal->password) || empty($filledVal->password_confirm))
                     return 0;
                 if(strcmp($filledVal->password, $filledVal->password_confirm))
@@ -122,41 +122,41 @@ class ValidationService
                 return -1;
             },
 
-            "groups" => function(ArrayHash $filledVal){
+            'groups' => static function(ArrayHash $filledVal){
                 if(count($filledVal) < 1)
                     return 0;
                 return -1;
             },
 
-            "label" => function($filledVal){
+            'label' => static function($filledVal){
                 if(empty($filledVal)) return 0;
                 return -1;
             },
 
-            "logo_file" => function($filledVal){
+            'logo_file' => static function($filledVal){
                 if(empty($filledVal)) return 0;
                 return -1;
             },
 
-            "school_year" => function($filledVal){
+            'school_year' => static function($filledVal){
                 if(empty($filledVal)) return 0;
                 if(!Strings::match($filledVal, '~[0-9]{4}(\/|\-)([0-9]{4}|[0-9]{2})~'))
                     return 1;
                 return -1;
             },
 
-            "test_number" => function($filledVal){
+            'test_number' => static function($filledVal){
                 if(empty($filledVal)) return 0;
                 if($filledVal < 0) return 1;
                 return -1;
             },
 
-            "test_term" => function($filledVal){
+            'test_term' => static function($filledVal){
                 if(empty($filledVal)) return 0;
                 return -1;
             },
 
-            'success_rate' => function($filledVAl){
+            'success_rate' => static function($filledVAl){
                 if(!empty($filledVAl)){
                     if(!is_numeric($filledVAl)) return 0;
                     if($filledVAl < 0 || $filledVAl > 1)
@@ -165,22 +165,22 @@ class ValidationService
                 return -1;
             },
 
-            "body" => function($filledVal){
+            'body' => function($filledVal){
                 if(isset($filledVal->variable))
                     return $this->validateBody($filledVal->body, $filledVal->bodyType, $filledVal->variable);
                 return $this->validateBody($filledVal->body, $filledVal->bodyType);
             },
 
-            "variable" => function($filledVal){
+            'variable' => static function($filledVal){
                 if(empty($filledVal))
                     return 0;
-                $matches = Strings::match($filledVal, "~^[a-z]$~");
+                $matches = Strings::match($filledVal, '~^[a-z]$~');
                 if(strlen($filledVal) !== 1 || !$matches || count($matches) !== 1)
                     return 1;
                 return -1;
             },
 
-            "first_n" => function($filledVal){
+            'first_n' => static function($filledVal){
                 if(empty($filledVal))
                     return 0;
                 if($filledVal <= 0)
@@ -188,35 +188,35 @@ class ValidationService
                 return -1;
             },
 
-            "type" => [
+            'type' => [
 
-                "type_" . $this->constHelper::LINEAR_EQ => function($filledVal){
+                'type_' . $this->constHelper::LINEAR_EQ => function($filledVal){
                     if(!$this->validateEquation($this->latexHelper::parseLatex($filledVal->body), $filledVal->standardized, $filledVal->variable, $this->constHelper::LINEAR_EQ))
                         return 0;
                     return -1;
                 },
 
-                "type_" . $this->constHelper::QUADRATIC_EQ => function($filledVal){
+                'type_' . $this->constHelper::QUADRATIC_EQ => function($filledVal){
                     if(!$this->validateEquation($this->latexHelper::parseLatex($filledVal->body), $filledVal->standardized, $filledVal->variable, $this->constHelper::QUADRATIC_EQ))
                         return 0;
                     return -1;
                 },
 
-                "type_" . $this->constHelper::ARITHMETIC_SEQ => function($filledVal){
+                'type_' . $this->constHelper::ARITHMETIC_SEQ => function($filledVal){
                     if(!$this->validateSequence($this->latexHelper::parseLatex($filledVal->body), $filledVal->variable, $this->constHelper::ARITHMETIC_SEQ)) return 0;
                     return -1;
                 },
 
-                "type_" . $this->constHelper::GEOMETRIC_SEQ => function($filledVal){
+                'type_' . $this->constHelper::GEOMETRIC_SEQ => function($filledVal){
                     if(!$this->validateSequence($this->latexHelper::parseLatex($filledVal->body), $filledVal->variable, $this->constHelper::GEOMETRIC_SEQ)) return 0;
                     return -1;
                 }
 
             ],
 
-            "condition" => [
+            'condition' => [
 
-                "condition_" . $this->constHelper::RESULT => function(ArrayHash $filledVal, $problemId = null){
+                'condition_' . $this->constHelper::RESULT => function(ArrayHash $filledVal, $problemId = null){
                     $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal->body);
 
                     //Maximal number of parameters exceeded
@@ -233,8 +233,8 @@ class ValidationService
                     return -1;
                 },
 
-                "condition_" . $this->constHelper::DISCRIMINANT => function(ArrayHash $filledVal, $problemId = null){
-                    $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal["body"]);
+                'condition_' . $this->constHelper::DISCRIMINANT => function(ArrayHash $filledVal, $problemId = null){
+                    $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal['body']);
 
                     //Maximal number of parameters exceeded
                     if($parametersInfo->count > $this->constHelper::PARAMETERS_MAX)
@@ -254,7 +254,7 @@ class ValidationService
 
             ],
 
-            "conditions_valid" => function(int $filledVal){
+            'conditions_valid' => static function(int $filledVal){
                 if(!$filledVal)
                     return 0;
                 return -1;
@@ -264,44 +264,44 @@ class ValidationService
 
         $this->validationMessages = [
 
-            "username" => [
-                0 => "Zadejte uživatelské jméno."
+            'username' => [
+                0 => 'Zadejte uživatelské jméno.'
             ],
 
-            "password" => [
-                0 => "Zadejte heslo."
+            'password' => [
+                0 => 'Zadejte heslo.'
             ],
 
-            "password_confirm" => [
-                0 => "Obě hesla musí být vyplněna a shodovat se.",
-                1 => "Heslo musí mít délku alespoň 8 znaků."
+            'password_confirm' => [
+                0 => 'Obě hesla musí být vyplněna a shodovat se.',
+                1 => 'Heslo musí mít délku alespoň 8 znaků.'
             ],
 
 
-            "groups" => [
-                0 => "Zvolte alespoň jednu skupinu."
+            'groups' => [
+                0 => 'Zvolte alespoň jednu skupinu.'
             ],
 
-            "label" => [
-                0 => "Název musí být vyplněn."
+            'label' => [
+                0 => 'Název musí být vyplněn.'
             ],
 
-            "logo_file" => [
-                0 => "Soubor musí být zvolen."
+            'logo_file' => [
+                0 => 'Soubor musí být zvolen.'
             ],
 
-            "school_year" => [
-                0 => "Školní rok musí bý vyplněn.",
+            'school_year' => [
+                0 => 'Školní rok musí bý vyplněn.',
                 1 => 'Školní roku musí být ve formátu rrrr/rr(rr) nebo rrrr-rr(rr).'
             ],
 
-            "test_number" => [
-                0 => "Číslo testu musí být vyplněno.",
-                1 => "Číslo testu nesmí být záporné."
+            'test_number' => [
+                0 => 'Číslo testu musí být vyplněno.',
+                1 => 'Číslo testu nesmí být záporné.'
             ],
 
-            "test_term" => [
-                0 => "Období testu musí být vyplněno."
+            'test_term' => [
+                0 => 'Období testu musí být vyplněno.'
             ],
 
             'success_rate' => [
@@ -309,65 +309,65 @@ class ValidationService
                 1 => 'Úspěšnost úlohy musí být v intervalu <0; 1>'
             ],
 
-            "body" => [
-                0 => "Tělo úlohy musí být vyplněno.",
-                1 => "Vstupní LaTeX musí být uvnitř značek pro matematický mód.",
-                2 => "Šablona neobsahuje zadanou neznámou.",
-                3 => "Šablona není validní matematický výraz."
+            'body' => [
+                0 => 'Tělo úlohy musí být vyplněno.',
+                1 => 'Vstupní LaTeX musí být uvnitř značek pro matematický mód.',
+                2 => 'Šablona neobsahuje zadanou neznámou.',
+                3 => 'Šablona není validní matematický výraz.'
             ],
 
-            "variable" => [
-                0 => "Zadejte prosím neznámou.",
-                1 => "Zadejte prosím právě jedno malé písmo abecedy."
+            'variable' => [
+                0 => 'Zadejte prosím neznámou.',
+                1 => 'Zadejte prosím právě jedno malé písmo abecedy.'
             ],
 
-            "first_n" => [
-                0 => "Zvolte počet prvních členů.",
-                1 => "Počet prvních členů musí být kladný."
+            'first_n' => [
+                0 => 'Zvolte počet prvních členů.',
+                1 => 'Počet prvních členů musí být kladný.'
             ],
 
-            "type" => [
+            'type' => [
 
-                "type_" . $this->constHelper::LINEAR_EQ => [
-                    0 => "Zadaná úloha není lineární rovnicí."
+                'type_' . $this->constHelper::LINEAR_EQ => [
+                    0 => 'Zadaná úloha není lineární rovnicí.'
                 ],
 
-                "type_" . $this->constHelper::QUADRATIC_EQ => [
-                    0 => "Zadaná úloha není kvadratickou rovnicí."
+                'type_' . $this->constHelper::QUADRATIC_EQ => [
+                    0 => 'Zadaná úloha není kvadratickou rovnicí.'
                 ],
 
-                "type_" . $this->constHelper::ARITHMETIC_SEQ => [
-                    0 => "Zadaná úloha není aritmetickou posloupností."
+                'type_' . $this->constHelper::ARITHMETIC_SEQ => [
+                    0 => 'Zadaná úloha není aritmetickou posloupností.'
                 ],
 
-                "type_" . $this->constHelper::GEOMETRIC_SEQ => [
-                    0 => "Zadaná úloha není geometrickou posloupností."
+                'type_' . $this->constHelper::GEOMETRIC_SEQ => [
+                    0 => 'Zadaná úloha není geometrickou posloupností.'
                 ]
 
             ],
 
-            "condition" => [
+            'condition' => [
 
-                "condition_" . $this->constHelper::RESULT => [
-                    0 => "Struktura musí být vyplněna",
-                    1 => "Chybný formát vstupního LaTeXu",
-                    2 => "Překročen povolený počet parametrů. (maximálně " . $this->constHelper::PARAMETERS_MAX . ")",
-                    3 => "Překročena povolená složitost parametrů. (maximálně " . $this->constHelper::COMPLEXITY_MAX . ")",
-                    4 => "Podmínka není splnitelná."
+                'condition_' . $this->constHelper::RESULT => [
+                    0 => 'Struktura musí být vyplněna',
+                    1 => 'Chybný formát vstupního LaTeXu',
+                    2 => 'Překročen povolený počet parametrů. (maximálně ' . $this->constHelper::PARAMETERS_MAX . ')',
+                    3 => 'Překročena povolená složitost parametrů. (maximálně ' . $this->constHelper::COMPLEXITY_MAX . ')',
+                    4 => 'Podmínka není splnitelná.'
                 ],
 
-                "condition_" . $this->constHelper::DISCRIMINANT => [
-                    0 => "Struktura úlohy musí být vyplněna.",
-                    1 => "Chybný formát vstupního LaTeXu.",
-                    2 => "Překročen povolený počet parametrů. (maximálně " . $this->constHelper::PARAMETERS_MAX . ")",
-                    3 => "Překročena povolená složitost parametrů. (maximálně " . $this->constHelper::COMPLEXITY_MAX . ")",
-                    4 => "Podmínka není splnitelná."
+                'condition_' . $this->constHelper::DISCRIMINANT => [
+                    0 => 'Struktura úlohy musí být vyplněna.',
+                    1 => 'Chybný formát vstupního LaTeXu.',
+                    2 => 'Překročen povolený počet parametrů. (maximálně ' . $this->constHelper::PARAMETERS_MAX . ')',
+                    3 => 'Překročena povolená složitost parametrů. (maximálně ' . $this->constHelper::COMPLEXITY_MAX . ')',
+                    4 => 'Podmínka není splnitelná.'
                 ],
 
             ],
 
-            "conditions_valid" => [
-                0 => "Některou ze zadaných podmínek nelze splnit."
+            'conditions_valid' => [
+                0 => 'Některou ze zadaných podmínek nelze splnit.'
             ]
 
         ];
@@ -421,33 +421,42 @@ class ValidationService
      * @param string $expression
      * @throws InvalidParameterException
      */
-    private function validateParameters(string $expression)
+    private function validateParameters(string $expression): void
     {
         $split = $this->stringsHelper::splitByParameters($expression, true);
 
-        if(count($split) <= 1)
-            throw new InvalidParameterException("Zadaná šablona neobsahuje parametr.");
+        if(count($split) <= 1){
+            throw new InvalidParameterException('Zadaná šablona neobsahuje parametr.');
+        }
 
         foreach($split as $part){
-            if($part !== "" && Strings::startsWith($part, "<par")){
-                bdump($part);
+            if($part !== '' && Strings::startsWith($part, '<par')){
                 if(!Strings::match($part, '~<par min="[0-9]+" max="[0-9]+"/>~')){
-                    throw new InvalidParameterException("Zadaná šablona obsahuje nevalidní parametr.");
+                    throw new InvalidParameterException('Zadaná šablona obsahuje nevalidní parametr.');
                 }
                 else{
-                    $min = $this->stringsHelper::extractParAttr($part, "min");
-                    $max = $this->stringsHelper::extractParAttr($part, "max");
-                    if($min > $max)
-                        throw new InvalidParameterException("Neplatný interval parametru.");
+                    $min = $this->stringsHelper::extractParAttr($part, 'min');
+                    $max = $this->stringsHelper::extractParAttr($part, 'max');
+                    if($min > $max){
+                        throw new InvalidParameterException('Neplatný interval parametru.');
+                    }
                 }
             }
         }
 
     }
 
+    /**
+     * @param string $expression
+     * @param string $standardized
+     * @param string $variable
+     * @param int $eqType
+     * @return bool
+     */
     public function validateEquation(string $expression, string $standardized, string $variable, int $eqType): bool
     {
-        if(!$this->stringsHelper::isEquation($expression)) return false;
+        if(!$this->stringsHelper::isEquation($expression))
+            return false;
         switch($eqType){
             case $this->constHelper::LINEAR_EQ: return $this->validateLinearEquation($standardized, $variable);
             case $this->constHelper::QUADRATIC_EQ: return $this->validateQuadraticEquation($standardized, $variable);
@@ -462,7 +471,8 @@ class ValidationService
      */
     public function validateLinearEquation(string $standardized, string $variable): bool
     {
-        if(Strings::contains($standardized, $variable . "^")) return false;
+        if(Strings::contains($standardized, $variable . '^'))
+            return false;
         return true;
     }
 
@@ -473,8 +483,10 @@ class ValidationService
      */
     public function validateQuadraticEquation(string $standardized, string $variable): bool
     {
-        if(!Strings::contains($standardized, $variable . "^2")) return false;
-        if(Strings::match($standardized, "~" . $variable . "\^[3-9]~")) return false;
+        if(!Strings::contains($standardized, $variable . '^2'))
+            return false;
+        if(Strings::match($standardized, '~' . $variable . '\^[3-9]~'))
+            return false;
         return true;
     }
 
@@ -534,8 +546,8 @@ class ValidationService
         $a2 = $this->stringsHelper::passValues($expression, [ $variable => 2 ]);
         $a3 = $this->stringsHelper::passValues($expression, [ $variable => 3 ]);
 
-        $diff1 = $this->mathService->evaluateExpression("(" . $a2 . ")" . ' - ' . "(" . $a1 . ")");
-        $diff2 = $this->mathService->evaluateExpression("(" . $a3 . ")" . ' - ' . "(" . $a2 . ")");
+        $diff1 = $this->mathService->evaluateExpression('(' . $a2 . ')' . ' - ' . '(' . $a1 . ')');
+        $diff2 = $this->mathService->evaluateExpression('(' . $a3 . ')' . ' - ' . '(' . $a2 . ')');
 
         return $diff1 == $diff2;
     }
@@ -581,19 +593,19 @@ class ValidationService
         $matches = $this->conditionMatchingService->findConditionsMatches([
             $this->constHelper::RESULT => [
                 $accessor => [
-                    "parametersInfo" => $parametersInfo,
-                    "variableExp" => $variableExp
+                    'parametersInfo' => $parametersInfo,
+                    'variableExp' => $variableExp
                 ]
             ]
         ]);
 
         if(!$matches) return false;
 
-        $arrayToJson["matches"] = $matches;
+        $arrayToJson['matches'] = $matches;
 
         $jsonData = Json::encode($arrayToJson);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
-            "jsonData" => $jsonData
+            'jsonData' => $jsonData
         ]), $problemId);
 
         return true;
@@ -606,6 +618,9 @@ class ValidationService
      * @param ArrayHash $parametersInfo
      * @param null $problemId
      * @return bool
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Nette\Utils\JsonException
      */
@@ -617,19 +632,21 @@ class ValidationService
         $matches = $this->conditionMatchingService->findConditionsMatches([
             $this->constHelper::DISCRIMINANT => [
                 $accessor => [
-                    "parametersInfo" => $parametersInfo,
-                    "discriminantExp" => $discriminantExp
+                    'parametersInfo' => $parametersInfo,
+                    'discriminantExp' => $discriminantExp
                 ]
             ]
         ]);
 
-        if(!$matches) return false;
+        if(!$matches){
+            return false;
+        }
 
-        $arrayToJson["matches"] = $matches;
+        $arrayToJson['matches'] = $matches;
 
         $jsonData = Json::encode($arrayToJson);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
-            "jsonData" => $jsonData
+            'jsonData' => $jsonData
         ]), $problemId);
 
         return true;
@@ -645,20 +662,22 @@ class ValidationService
 
         foreach((array)$fields as $key1 => $value1){
 
-            if(!array_key_exists($key1, $this->validationMapping))
-                throw new NotSupportedException("Požadavek obsahuje neočekávanou hodnotu.");
+            if(!array_key_exists($key1, $this->validationMapping)){
+                throw new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
+            }
 
             if(is_array($value1)){
                 foreach ($value1 as $key2 => $value2){
-                    if(!array_key_exists($key2, $this->validationMapping[$key1]))
-                        throw  new NotSupportedException("Požadavek obsahuje neočekávanou hodnotu.");
-                    if( ($validationRes = $this->validationMapping[$key1][$key2]($value2)) !== -1 )
+                    if(!array_key_exists($key2, $this->validationMapping[$key1])){
+                        throw  new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
+                    }
+                    if( ($validationRes = $this->validationMapping[$key1][$key2]($value2)) !== -1 ){
                         $validationErrors[$key1][] = $this->validationMessages[$key1][$key2][$validationRes];
+                    }
                 }
             }
-            else{
-                if( ($validationRes = $this->validationMapping[$key1]($value1)) !== -1 )
-                    $validationErrors[$key1][] = $this->validationMessages[$key1][$validationRes];
+            else if( ($validationRes = $this->validationMapping[$key1]($value1)) !== -1 ){
+                $validationErrors[$key1][] = $this->validationMessages[$key1][$validationRes];
             }
         }
 
@@ -677,12 +696,12 @@ class ValidationService
         foreach((array)$fields as $key1 => $value1){
 
             if(!array_key_exists($key1, $this->validationMapping))
-                throw new NotSupportedException("Požadavek obsahuje neočekávanou hodnotu.");
+                throw new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
 
             if(is_array($value1)){
                 foreach ($value1 as $key2 => $value2){
                     if(!array_key_exists($key2, $this->validationMapping[$key1]))
-                        throw  new NotSupportedException("Požadavek obsahuje neočekávanou hodnotu.");
+                        throw  new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
                     if( ($validationRes = $this->validationMapping[$key1][$key2]($value2, $problemId)) !== -1 )
                         $validationErrors[$key1][] = $this->validationMessages[$key1][$key2][$validationRes];
                 }

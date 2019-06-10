@@ -20,7 +20,6 @@ use Nette\Utils\ArrayHash;
  */
 class ConditionMatchingService
 {
-
     /**
      * @var MathService
      */
@@ -200,16 +199,21 @@ class ConditionMatchingService
      */
     public function findConditionsMatches($fields): array
     {
+        //var_dump($fields);
+        //var_dump($fields[1][1]['parametersInfo']);
         $result = [];
         foreach((array)$fields as $keyType => $value){
-            if(!array_key_exists($keyType, $this->conditionsMatches))
+            if(!array_key_exists($keyType, $this->conditionsMatches)){
                 throw new NotSupportedException('Nepodporovaný typ podmínky.');
+            }
             foreach((array)$value as $keyAccessor => $item){
-                if(!array_key_exists($keyAccessor, $this->conditionsMatches[$keyType]))
+                if(!array_key_exists($keyAccessor, $this->conditionsMatches[$keyType])){
                     throw new NotSupportedException('Nepodporovaná podmínka.');
+                }
                 $result = $this->conditionsMatches[$keyType][$keyAccessor]($item);
             }
         }
+        //var_dump($result);
         return $result;
     }
 
@@ -226,19 +230,21 @@ class ConditionMatchingService
         $matchesCnt = 0;
         $res = false;
 
-        bdump($expression);
+        var_dump($parametersInfo->count);
 
         if($parametersInfo->count === 1){
             for($i = $parametersInfo['minMax'][0]['min']; $i <= $parametersInfo['minMax'][0]['max']; $i++){
                 $final = $this->stringsHelper::passValues($expression, [
                     'p0' =>  $i
                 ]);
+                var_dump($final);
                 if( $this->validationFunctions[$typeAccessor][$accessor]($this->mathService->evaluateExpression($final)) ){
                     $matches[$matchesCnt++] = [
                         'p0' => $i
                     ];
                     $res = true;
                 }
+                var_dump($matches);
             }
         }
         else if($parametersInfo->count === 2){
@@ -366,6 +372,8 @@ class ConditionMatchingService
                 }
             }
         }
+
+        var_dump($res);
 
         if(!$res){
             return false;
