@@ -64,30 +64,30 @@ class ConditionMatchingService
 
         $this->conditionsMatches = [
 
-            ($this->constHelper::RESULT) => [
+            $this->constHelper::RESULT => [
 
-                ($this->constHelper::RESULT_POSITIVE) => function($values){
+                $this->constHelper::RESULT_POSITIVE => function($values){
                     return $this->findMatches(
-                        $values["parametersInfo"],
-                        $values["variableExp"],
+                        $values['parametersInfo'],
+                        $values['variableExp'],
                         $this->constHelper::RESULT,
                         $this->constHelper::RESULT_POSITIVE
                     );
                 },
 
-                ($this->constHelper::RESULT_ZERO) => function($values){
+                $this->constHelper::RESULT_ZERO => function($values){
                     return $this->findMatches(
-                        $values["parametersInfo"],
-                        $values["variableExp"],
+                        $values['parametersInfo'],
+                        $values['variableExp'],
                         $this->constHelper::RESULT,
                         $this->constHelper::RESULT_ZERO
                     );
                 },
 
-                ($this->constHelper::RESULT_NEGATIVE) => function($values){
+                $this->constHelper::RESULT_NEGATIVE => function($values){
                     return $this->findMatches(
-                        $values["parametersInfo"],
-                        $values["variableExp"],
+                        $values['parametersInfo'],
+                        $values['variableExp'],
                         $this->constHelper::RESULT,
                         $this->constHelper::RESULT_NEGATIVE
                     );
@@ -95,48 +95,48 @@ class ConditionMatchingService
 
             ],
 
-            ($this->constHelper::DISCRIMINANT) => [
+            $this->constHelper::DISCRIMINANT => [
 
-                ($this->constHelper::DISCRIMINANT_POSITIVE) => function($values){
+                $this->constHelper::DISCRIMINANT_POSITIVE => function($values){
                     return $this->findMatches(
-                            $values["parametersInfo"],
-                            $values["discriminantExp"],
+                            $values['parametersInfo'],
+                            $values['discriminantExp'],
                             $this->constHelper::DISCRIMINANT,
                             $this->constHelper::DISCRIMINANT_POSITIVE
                         );
                 },
 
-                ($this->constHelper::DISCRIMINANT_ZERO) => function($values){
+                $this->constHelper::DISCRIMINANT_ZERO => function($values){
                     return $this->findMatches(
-                        $values["parametersInfo"],
-                        $values["discriminantExp"],
+                        $values['parametersInfo'],
+                        $values['discriminantExp'],
                         $this->constHelper::DISCRIMINANT,
                         $this->constHelper::DISCRIMINANT_ZERO
                     );
                 },
 
-                ($this->constHelper::DISCRIMINANT_NEGATIVE) => function($values){
+               $this->constHelper::DISCRIMINANT_NEGATIVE => function($values){
                     return $this->findMatches(
-                        $values["parametersInfo"],
-                        $values["discriminantExp"],
+                        $values['parametersInfo'],
+                        $values['discriminantExp'],
                         $this->constHelper::DISCRIMINANT,
                         $this->constHelper::DISCRIMINANT_NEGATIVE
                     );
                 },
 
-                ($this->constHelper::DISCRIMINANT_INTEGER) => function($values){
+                $this->constHelper::DISCRIMINANT_INTEGER => function($values){
                     return $this->findMatches(
-                        $values["parametersInfo"],
-                        $values["discriminantExp"],
+                        $values['parametersInfo'],
+                        $values['discriminantExp'],
                         $this->constHelper::DISCRIMINANT,
                         $this->constHelper::DISCRIMINANT_INTEGER
                     );
                 },
 
-                ($this->constHelper::DISCRIMINANT_POSITIVE_SQUARE) => function($values){
+                $this->constHelper::DISCRIMINANT_POSITIVE_SQUARE => function($values){
                     return $this->findMatches(
-                        $values["parametersInfo"],
-                        $values["discriminantExp"],
+                        $values['parametersInfo'],
+                        $values['discriminantExp'],
                         $this->constHelper::DISCRIMINANT,
                         $this->constHelper::DISCRIMINANT_POSITIVE_SQUARE
                     );
@@ -148,45 +148,45 @@ class ConditionMatchingService
 
         $this->validationFunctions = [
 
-            ($this->constHelper::RESULT) => [
+            $this->constHelper::RESULT => [
 
-                ($this->constHelper::RESULT_POSITIVE) => function($value){
+                $this->constHelper::RESULT_POSITIVE => static function($value){
                     return $value > 0;
                 },
 
-                ($this->constHelper::RESULT_ZERO) => function($value){
+                $this->constHelper::RESULT_ZERO => static function($value){
                     return $value == 0;
                 },
 
-                ($this->constHelper::RESULT_NEGATIVE) => function($value){
+                $this->constHelper::RESULT_NEGATIVE => static function($value){
                     return $value < 0;
                 }
 
             ],
 
-            ($this->constHelper::DISCRIMINANT) => [
+            $this->constHelper::DISCRIMINANT => [
 
-                ($this->constHelper::DISCRIMINANT_POSITIVE) => function($value){
+                $this->constHelper::DISCRIMINANT_POSITIVE => static function($value){
                     return $value > 0;
                 },
 
-                ($this->constHelper::DISCRIMINANT_ZERO) => function($value){
+                $this->constHelper::DISCRIMINANT_ZERO => static function($value){
                     return $value == 0;
                 },
 
-                ($this->constHelper::DISCRIMINANT_NEGATIVE) => function($value){
+                $this->constHelper::DISCRIMINANT_NEGATIVE => static function($value){
                     return $value < 0;
                 },
 
-                ($this->constHelper::DISCRIMINANT_INTEGER) => function($value){
+                $this->constHelper::DISCRIMINANT_INTEGER => static function($value){
                     return is_int($value);
                 },
 
-                ($this->constHelper::DISCRIMINANT_POSITIVE_SQUARE) => function($value){
+                $this->constHelper::DISCRIMINANT_POSITIVE_SQUARE => static function($value){
                     if($value <= 0) return false;
                     $squareRoot = sqrt($value);
                     $squareRootInt = (int) $squareRoot;
-                    return ($squareRootInt == $squareRoot);
+                    return $squareRootInt == $squareRoot;
                 }
 
             ]
@@ -198,7 +198,7 @@ class ConditionMatchingService
      * @param $fields
      * @return array
      */
-    public function findConditionsMatches($fields)
+    public function findConditionsMatches($fields): array
     {
         $result = [];
         foreach((array)$fields as $keyType => $value){
@@ -229,9 +229,9 @@ class ConditionMatchingService
         bdump($expression);
 
         if($parametersInfo->count === 1){
-            for($i = $parametersInfo["minMax"][0]["min"]; $i <= $parametersInfo["minMax"][0]["max"]; $i++){
+            for($i = $parametersInfo['minMax'][0]['min']; $i <= $parametersInfo['minMax'][0]['max']; $i++){
                 $final = $this->stringsHelper::passValues($expression, [
-                    "p0" =>  $i
+                    'p0' =>  $i
                 ]);
                 if( $this->validationFunctions[$typeAccessor][$accessor]($this->mathService->evaluateExpression($final)) ){
                     $matches[$matchesCnt++] = [
@@ -242,16 +242,16 @@ class ConditionMatchingService
             }
         }
         else if($parametersInfo->count === 2){
-            for($i = $parametersInfo["minMax"][0]["min"]; $i <= $parametersInfo["minMax"][0]["max"]; $i++){
-                for($j = $parametersInfo["minMax"][1]["min"]; $j <= $parametersInfo["minMax"][1]["max"]; $j++){
+            for($i = $parametersInfo['minMax'][0]['min']; $i <= $parametersInfo['minMax'][0]['max']; $i++){
+                for($j = $parametersInfo['minMax'][1]['min']; $j <= $parametersInfo['minMax'][1]['max']; $j++){
                     $final = $this->stringsHelper::passValues($expression, [
-                        "p0" => $i,
-                        "p1" => $j
+                        'p0' => $i,
+                        'p1' => $j
                     ]);
                     if( $this->validationFunctions[$typeAccessor][$accessor]($this->mathService->evaluateExpression($final)) ){
                         $matches[$matchesCnt++] = [
-                            "p0" => $i,
-                            "p1" => $j
+                            'p0' => $i,
+                            'p1' => $j
                         ];
                         $res = true;
                     }
@@ -259,19 +259,19 @@ class ConditionMatchingService
             }
         }
         else if($parametersInfo->count === 3){
-            for($i = $parametersInfo["minMax"][0]["min"]; $i <= $parametersInfo["minMax"][0]["max"]; $i++){
-                for($j = $parametersInfo["minMax"][1]["min"]; $j <= $parametersInfo["minMax"][1]["max"]; $j++){
-                    for($k = $parametersInfo["minMax"][2]["min"]; $k <= $parametersInfo["minMax"][2]["max"]; $k++){
+            for($i = $parametersInfo['minMax'][0]['min']; $i <= $parametersInfo['minMax'][0]['max']; $i++){
+                for($j = $parametersInfo['minMax'][1]['min']; $j <= $parametersInfo['minMax'][1]['max']; $j++){
+                    for($k = $parametersInfo['minMax'][2]['min']; $k <= $parametersInfo['minMax'][2]['max']; $k++){
                         $final = $this->stringsHelper::passValues($expression, [
-                            "p0" => $i,
-                            "p1" => $j,
-                            "p2" => $k
+                            'p0' => $i,
+                            'p1' => $j,
+                            'p2' => $k
                         ]);
                         if( $this->validationFunctions[$typeAccessor][$accessor]($this->mathService->evaluateExpression($final)) ){
                             $matches[$matchesCnt++] = [
-                                "p0" => $i,
-                                "p1" => $j,
-                                "p2" => $k
+                                'p0' => $i,
+                                'p1' => $j,
+                                'p2' => $k
                             ];
                             $res = true;
                         }
@@ -280,22 +280,22 @@ class ConditionMatchingService
             }
         }
         else if($parametersInfo->count === 4){
-            for($i = $parametersInfo["minMax"][0]["min"]; $i <= $parametersInfo["minMax"][0]["max"]; $i++){
-                for($j = $parametersInfo["minMax"][1]["min"]; $j <= $parametersInfo["minMax"][1]["max"]; $j++){
-                    for($k = $parametersInfo["minMax"][2]["min"]; $k <= $parametersInfo["minMax"][2]["max"]; $k++){
-                        for($l = $parametersInfo["minMax"][3]["min"]; $l <= $parametersInfo["minMax"][3]["max"]; $l++){
+            for($i = $parametersInfo['minMax'][0]['min']; $i <= $parametersInfo['minMax'][0]['max']; $i++){
+                for($j = $parametersInfo['minMax'][1]['min']; $j <= $parametersInfo['minMax'][1]['max']; $j++){
+                    for($k = $parametersInfo['minMax'][2]['min']; $k <= $parametersInfo['minMax'][2]['max']; $k++){
+                        for($l = $parametersInfo['minMax'][3]['min']; $l <= $parametersInfo['minMax'][3]['max']; $l++){
                             $final = $this->stringsHelper::passValues($expression, [
-                                "p0" => $i,
-                                "p1" => $j,
-                                "p2" => $k,
-                                "p3" => $l
+                                'p0' => $i,
+                                'p1' => $j,
+                                'p2' => $k,
+                                'p3' => $l
                             ]);
                             if( $this->validationFunctions[$typeAccessor][$accessor]($this->mathService->evaluateExpression($final)) ){
                                 $matches[$matchesCnt++] = [
-                                    "p0" => $i,
-                                    "p1" => $j,
-                                    "p2" => $k,
-                                    "p3" => $l
+                                    'p0' => $i,
+                                    'p1' => $j,
+                                    'p2' => $k,
+                                    'p3' => $l
                                 ];
                                 $res = true;
                             }
@@ -305,25 +305,25 @@ class ConditionMatchingService
             }
         }
         else if($parametersInfo->count === 5){
-            for($i = $parametersInfo["minMax"][0]["min"]; $i <= $parametersInfo["minMax"][0]["max"]; $i++){
-                for($j = $parametersInfo["minMax"][1]["min"]; $j <= $parametersInfo["minMax"][1]["max"]; $j++){
-                    for($k = $parametersInfo["minMax"][2]["min"]; $k <= $parametersInfo["minMax"][2]["max"]; $k++){
-                        for($l = $parametersInfo["minMax"][3]["min"]; $l <= $parametersInfo["minMax"][3]["max"]; $l++){
-                            for($m = $parametersInfo["minMax"][4]["min"]; $m <= $parametersInfo["minMax"][4]["max"]; $m++){
+            for($i = $parametersInfo['minMax'][0]['min']; $i <= $parametersInfo['minMax'][0]['max']; $i++){
+                for($j = $parametersInfo['minMax'][1]['min']; $j <= $parametersInfo['minMax'][1]['max']; $j++){
+                    for($k = $parametersInfo['minMax'][2]['min']; $k <= $parametersInfo['minMax'][2]['max']; $k++){
+                        for($l = $parametersInfo['minMax'][3]['min']; $l <= $parametersInfo['minMax'][3]['max']; $l++){
+                            for($m = $parametersInfo['minMax'][4]['min']; $m <= $parametersInfo['minMax'][4]['max']; $m++){
                                 $final = $this->stringsHelper::passValues($expression, [
-                                    "p0" => $i,
-                                    "p1" => $j,
-                                    "p2" => $k,
-                                    "p3" => $l,
-                                    "p4" => $m,
+                                    'p0' => $i,
+                                    'p1' => $j,
+                                    'p2' => $k,
+                                    'p3' => $l,
+                                    'p4' => $m,
                                 ]);
                                 if( $this->validationFunctions[$typeAccessor][$accessor]($this->mathService->evaluateExpression($final)) ){
                                     $matches[$matchesCnt++] = [
-                                        "p0" => $i,
-                                        "p1" => $j,
-                                        "p2" => $k,
-                                        "p3" => $l,
-                                        "p4" => $m
+                                        'p0' => $i,
+                                        'p1' => $j,
+                                        'p2' => $k,
+                                        'p3' => $l,
+                                        'p4' => $m
                                     ];
                                     $res = true;
                                 }
@@ -334,28 +334,28 @@ class ConditionMatchingService
             }
         }
         else if($parametersInfo->count === 6){
-            for($i = $parametersInfo["minMax"][0]["min"]; $i <= $parametersInfo["minMax"][0]["max"]; $i++){
-                for($j = $parametersInfo["minMax"][1]["min"]; $j <= $parametersInfo["minMax"][1]["max"]; $j++){
-                    for($k = $parametersInfo["minMax"][2]["min"]; $k <= $parametersInfo["minMax"][2]["max"]; $k++){
-                        for($l = $parametersInfo["minMax"][3]["min"]; $l <= $parametersInfo["minMax"][3]["max"]; $l++){
-                            for($m = $parametersInfo["minMax"][4]["min"]; $m <= $parametersInfo["minMax"][4]["max"]; $m++){
-                                for($n = $parametersInfo["minMax"][5]["min"]; $n <= $parametersInfo["minMax"][5]["max"]; $n++){
+            for($i = $parametersInfo['minMax'][0]['min']; $i <= $parametersInfo['minMax'][0]['max']; $i++){
+                for($j = $parametersInfo['minMax'][1]['min']; $j <= $parametersInfo['minMax'][1]['max']; $j++){
+                    for($k = $parametersInfo['minMax'][2]['min']; $k <= $parametersInfo['minMax'][2]['max']; $k++){
+                        for($l = $parametersInfo['minMax'][3]['min']; $l <= $parametersInfo['minMax'][3]['max']; $l++){
+                            for($m = $parametersInfo['minMax'][4]['min']; $m <= $parametersInfo['minMax'][4]['max']; $m++){
+                                for($n = $parametersInfo['minMax'][5]['min']; $n <= $parametersInfo['minMax'][5]['max']; $n++){
                                     $final = $this->stringsHelper::passValues($expression, [
-                                        "p0" => $i,
-                                        "p1" => $j,
-                                        "p2" => $k,
-                                        "p3" => $l,
-                                        "p4" => $m,
-                                        "p5" => $n
+                                        'p0' => $i,
+                                        'p1' => $j,
+                                        'p2' => $k,
+                                        'p3' => $l,
+                                        'p4' => $m,
+                                        'p5' => $n
                                     ]);
                                     if( $this->validationFunctions[$typeAccessor][$accessor]($this->mathService->evaluateExpression($final)) ){
                                         $matches[$matchesCnt++] = [
-                                            "p0" => $i,
-                                            "p1" => $j,
-                                            "p2" => $k,
-                                            "p3" => $l,
-                                            "p4" => $m,
-                                            "p5" => $n
+                                            'p0' => $i,
+                                            'p1' => $j,
+                                            'p2' => $k,
+                                            'p3' => $l,
+                                            'p4' => $m,
+                                            'p5' => $n
                                         ];
                                         $res = true;
                                     }
@@ -367,7 +367,9 @@ class ConditionMatchingService
             }
         }
 
-        if(!$res) return false;
+        if(!$res){
+            return false;
+        }
 
         return $matches;
     }

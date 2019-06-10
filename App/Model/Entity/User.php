@@ -228,7 +228,7 @@ class User extends BaseEntity
     /**
      * @return User
      */
-    public function getCreatedBy(): User
+    public function getCreatedBy(): ?User
     {
         return $this->createdBy;
     }

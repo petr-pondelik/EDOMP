@@ -55,7 +55,10 @@ class Authorizator implements IAuthorizator
      */
     public function isUserAllowed(IIdentity $userIdentity, User $user): bool
     {
-        return $userIdentity->getId() === $user->getCreatedBy()->getId();
+        if($createdBy = $user->getCreatedBy()){
+            return $userIdentity->getId() === $createdBy->getId();
+        }
+        return false;
     }
 
     /**
@@ -65,7 +68,10 @@ class Authorizator implements IAuthorizator
      */
     public function isGroupAllowed(IIdentity $userIdentity, Group $group): bool
     {
-        return $userIdentity->getId() === $group->getCreatedBy()->getId();
+        if($createdBy = $group->getCreatedBy()){
+            return $userIdentity->getId() === $createdBy->getId();
+        }
+        return false;
     }
 
     /**
@@ -75,6 +81,9 @@ class Authorizator implements IAuthorizator
      */
     public function isSuperGroupAllowed(IIdentity $userIdentity, SuperGroup $superGroup): bool
     {
-        return $userIdentity->getId() === $superGroup->getCreatedBy()->getId();
+        if($createdBy = $superGroup->getCreatedBy()){
+            return $userIdentity->getId() === $createdBy->getId();
+        }
+        return false;
     }
 }
