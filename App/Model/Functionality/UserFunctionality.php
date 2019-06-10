@@ -62,7 +62,7 @@ class UserFunctionality extends BaseFunctionality
     {
         $user = new User();
         $user->setUsername($data->username);
-        $user->setPassword(Passwords::hash($data->password));
+        $user->setPassword($data->password);
         $user->setRole($this->roleRepository->find($data->role));
         $user = $this->attachGroups($user, $data->groups);
         if(isset($data->created)){
@@ -87,7 +87,7 @@ class UserFunctionality extends BaseFunctionality
         }
         $user->setUsername($data->username);
         if($data->change_password){
-            $user->setPassword(Passwords::hash($data->password));
+            $user->setPassword($data->password);
         }
         $user->setRole($this->roleRepository->find($data->role));
         $user->setGroups(new ArrayCollection());

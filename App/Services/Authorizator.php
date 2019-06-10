@@ -15,6 +15,10 @@ use App\Model\Entity\User;
 use Nette\Security\IAuthorizator;
 use Nette\Security\IIdentity;
 
+/**
+ * Class Authorizator
+ * @package App\Services
+ */
 class Authorizator implements IAuthorizator
 {
     /**
@@ -24,9 +28,8 @@ class Authorizator implements IAuthorizator
      * @param  string|null
      * @return bool
      */
-    function isAllowed($role, $resource, $privilege)
+    public function isAllowed($role, $resource, $privilege): bool
     {
-        // TODO: Implement isAllowed() method.
         return true;
     }
 
@@ -38,8 +41,9 @@ class Authorizator implements IAuthorizator
     public function isCategoryAllowed(IIdentity $userIdentity, int $categoryId): bool
     {
         foreach ($userIdentity->categories as $key => $category){
-            if($key === $categoryId)
+            if($key === $categoryId){
                 return true;
+            }
         }
         return false;
     }
@@ -51,7 +55,7 @@ class Authorizator implements IAuthorizator
      */
     public function isUserAllowed(IIdentity $userIdentity, User $user): bool
     {
-        return $userIdentity->getId() == $user->getCreatedBy()->getId();
+        return $userIdentity->getId() === $user->getCreatedBy()->getId();
     }
 
     /**
@@ -61,7 +65,7 @@ class Authorizator implements IAuthorizator
      */
     public function isGroupAllowed(IIdentity $userIdentity, Group $group): bool
     {
-        return $userIdentity->getId() == $group->getCreatedBy()->getId();
+        return $userIdentity->getId() === $group->getCreatedBy()->getId();
     }
 
     /**
@@ -71,6 +75,6 @@ class Authorizator implements IAuthorizator
      */
     public function isSuperGroupAllowed(IIdentity $userIdentity, SuperGroup $superGroup): bool
     {
-        return $userIdentity->getId() == $superGroup->getCreatedBy()->getId();
+        return $userIdentity->getId() === $superGroup->getCreatedBy()->getId();
     }
 }

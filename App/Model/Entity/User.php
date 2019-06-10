@@ -10,6 +10,7 @@ namespace App\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Nette\Security\Passwords;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -136,7 +137,7 @@ class User extends BaseEntity
      */
     public function setPassword(string $password): void
     {
-        $this->password = $password;
+        $this->password = Passwords::hash($password);
     }
 
     /**
@@ -202,16 +203,13 @@ class User extends BaseEntity
     public function getCategoriesId(): array
     {
         $res = [];
-
-        foreach($this->groups as $grkey => $group)
-        {
-            foreach ($group->getCategories() as $catKey => $category)
-            {
-                if(!in_array($catKey, $res))
-                    array_push($res, $catKey);
+        foreach($this->groups as $groupKey => $group) {
+            foreach ($group->getCategories() as $catKey => $category) {
+                if(!in_array($category->getId(), $res)){
+                    $res[] = $category->getId();
+                }
             }
         }
-
         return $res;
     }
 
@@ -221,8 +219,9 @@ class User extends BaseEntity
     public function getGroupsId(): array
     {
         $res = [];
-        foreach ($this->getGroups()->getValues() as $key => $group)
-            array_push($res, $group->getId());
+        foreach ($this->getGroups()->getValues() as $key => $group){
+            $res[] = $group->getId();
+        }
         return $res;
     }
 

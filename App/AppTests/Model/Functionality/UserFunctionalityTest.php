@@ -139,7 +139,7 @@ class UserFunctionalityTest extends FunctionalityTestCase
         // Prepare User expected object
         $userExpected = new User();
         $userExpected->setUsername($data->username);
-        $userExpected->setPassword(Passwords::hash($data->password));
+        $userExpected->setPassword($data->password);
         $userExpected->setRole($this->roleRepositoryMock->find($data->role));
         $userExpected->addGroup($this->groupRepositoryMock->find($data->groups[0]));
 

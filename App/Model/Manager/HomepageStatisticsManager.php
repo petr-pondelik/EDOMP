@@ -32,7 +32,7 @@ class HomepageStatisticsManager
 
     /**
      * HomepageStatisticsManager constructor.
-     * @param ConstraintEntityManager $entityManager
+     * @param EntityManager $entityManager
      * @param ConstHelper $constHelper
      */
     public function __construct(EntityManager $entityManager, ConstHelper $constHelper)
@@ -49,16 +49,16 @@ class HomepageStatisticsManager
     public function getCnt(string $entityClass): int
     {
         $qb = $this->em->createQueryBuilder()
-            ->select("e")
-            ->from($entityClass, "e")
-            ->indexBy("e", "e.id");
+            ->select('e')
+            ->from($entityClass, 'e')
+            ->indexBy('e', 'e.id');
 
         if($entityClass === User::class)
-            $qb = $qb->where("e.isAdmin = false");
+            $qb = $qb->where('e.isAdmin = false');
 
         if($entityClass === Group::class || $entityClass === SuperGroup::class)
-            $qb = $qb->where("e.id != :id")
-                ->setParameter("id", $this->constHelper::ADMIN_GROUP);
+            $qb = $qb->where('e.id != :id')
+                ->setParameter('id', $this->constHelper::ADMIN_GROUP);
 
         return count($qb->getQuery()->getResult());
     }

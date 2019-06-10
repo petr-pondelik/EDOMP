@@ -8,6 +8,7 @@
 
 namespace App\Model\Repository;
 
+use App\Model\Entity\ProblemFinal;
 use App\Model\Traits\FilterTrait;
 use Doctrine\ORM\QueryBuilder;
 
@@ -27,12 +28,12 @@ class ProblemFinalRepository extends BaseRepository
     public function getFilteredCnt(int $categoryId, array $filters): int
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
-            ->select("pf")
-            ->addSelect("sc")
-            ->from("App\Model\Entity\ProblemFinal", "pf")
-            ->innerJoin("pf.subCategory", "sc")
-            ->where("sc.category = :categoryId")
-            ->setParameter("categoryId", $categoryId);
+            ->select('pf')
+            ->addSelect('sc')
+            ->from(ProblemFinal::class, 'pf')
+            ->innerJoin('pf.subCategory', 'sc')
+            ->where('sc.category = :categoryId')
+            ->setParameter('categoryId', $categoryId);
 
         $qb = $this->applyFilters($qb, $filters);
 
@@ -50,12 +51,12 @@ class ProblemFinalRepository extends BaseRepository
     public function getFiltered(int $categoryId, int $limit, int $offset, array $filters): array
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
-            ->select("pf")
-            ->addSelect("sc")
-            ->from("App\Model\Entity\ProblemFinal", "pf")
-            ->innerJoin("pf.subCategory", "sc")
-            ->where("sc.category = :categoryId")
-            ->setParameter("categoryId", $categoryId);
+            ->select('pf')
+            ->addSelect('sc')
+            ->from(ProblemFinal::class, 'pf')
+            ->innerJoin('pf.subCategory', 'sc')
+            ->where('sc.category = :categoryId')
+            ->setParameter('categoryId', $categoryId);
 
         $qb = $this->applyFilters($qb, $filters);
 
@@ -73,36 +74,36 @@ class ProblemFinalRepository extends BaseRepository
     public function applyFilters(QueryBuilder $qb, array $filters): QueryBuilder
     {
         //Filter difficulty condition
-        if(isset($filters["difficulty"])){
-            $qb->andWhere("pf.difficulty IN (:difficultyIds)")
-                ->setParameter("difficultyIds", $filters["difficulty"]);
+        if(isset($filters['difficulty'])){
+            $qb->andWhere('pf.difficulty IN (:difficultyIds)')
+                ->setParameter('difficultyIds', $filters['difficulty']);
         }
 
         //Filter subcategory (theme) condition
-        if(isset($filters["theme"])){
-            $qb->andWhere("pf.subCategory IN (:subCategoryIds)")
-                ->setParameter("subCategoryIds", $filters["theme"]);
+        if(isset($filters['theme'])){
+            $qb->andWhere('pf.subCategory IN (:subCategoryIds)')
+                ->setParameter('subCategoryIds', $filters['theme']);
         }
 
         //Filter result condition
-        if(isset($filters["result"])){
-            if( in_array("0", $filters["result"]) && !in_array("1", $filters["result"]) ){
-                $qb->andWhere("pf.result IS NOT NULL")
+        if(isset($filters['result'])){
+            if( in_array('0', $filters['result']) && !in_array('1', $filters['result']) ){
+                $qb->andWhere('pf.result IS NOT NULL')
                     ->andWhere("pf.result <> ''");
             }
-            else if( !in_array("0", $filters["result"]) && in_array("1", $filters["result"])){
-                $qb->andWhere("pf.result IS NULL")
+            else if( !in_array('0', $filters['result']) && in_array('1', $filters['result'])){
+                $qb->andWhere('pf.result IS NULL')
                     ->orWhere("pf.result = ''");
             }
         }
 
-        if(isset($filters["sort_by_difficulty"])){
-            switch($filters["sort_by_difficulty"]){
-                case 0: $qb = $qb->orderBy("pf.id", "ASC");
+        if(isset($filters['sort_by_difficulty'])){
+            switch($filters['sort_by_difficulty']){
+                case 0: $qb = $qb->orderBy('pf.id', 'ASC');
                     break;
-                case 1: $qb = $qb->orderBy("pf.difficulty", "ASC");
+                case 1: $qb = $qb->orderBy('pf.difficulty', 'ASC');
                     break;
-                case 2: $qb = $qb->orderBy("pf.difficulty", "DESC");
+                case 2: $qb = $qb->orderBy('pf.difficulty', 'DESC');
                     break;
             }
         }

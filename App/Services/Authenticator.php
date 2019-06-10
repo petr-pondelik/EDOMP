@@ -48,27 +48,35 @@ class Authenticator implements IAuthenticator
      * @return Identity|IIdentity
      * @throws AuthenticationException
      */
-    function authenticate(array $credentials)
+    public function authenticate(array $credentials)
     {
-        list($username, $password) = $credentials;
+        [$username, $password] = $credentials;
         $user = $this->userRepository->findOneBy([
-            "username" => $username
+            'username' => $username
         ]);
 
-        if(!$user || !Passwords::verify($password, $user->getPassword()))
+        if(!$user || !Passwords::verify($password, $user->getPassword())){
             throw new AuthenticationException('Zadáno neplatné uživatelské jméno nebo heslo.');
+        }
 
         $role = $user->getRole();
 
-        if(!strcmp("student", $role->getKey()))
-            $categories = $user->getCategoriesId();
-        else
-            $categories = $this->categoryRepository->findPairs([], "label");
+        $categories = [];
+
+        if(!strcmp('student', $role->getKey())){
+            $categoryIds = $user->getCategoriesId();
+            foreach ($categoryIds as $categoryId){
+                $categories[$categoryId] = $this->categoryRepository->find($categoryId)->getLabel();
+            }
+        }
+        else{
+            $categories = $this->categoryRepository->findPairs([], 'label');
+        }
 
         return new Identity($user->getId(), $role->getKey(), [
-            "username" => $user->getUsername(),
-            "categories" => $categories,
-            "roleLabel" => $role->getLabel()
+            'username' => $user->getUsername(),
+            'categories' => $categories,
+            'roleLabel' => $role->getLabel()
         ]);
     }
 

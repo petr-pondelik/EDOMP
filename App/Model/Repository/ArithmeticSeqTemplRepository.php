@@ -21,5 +21,5 @@ class ArithmeticSeqTemplRepository extends BaseRepository
     /**
      * @var string
      */
-    protected $tableName = "problem";
+    protected $tableName = 'problem';
 }

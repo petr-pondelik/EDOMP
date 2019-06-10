@@ -73,12 +73,7 @@ class ConstraintEntityManager
     public function validateEntity($entity): void
     {
         $violations = $this->validator->validate($entity);
-        bdump($violations);
         if($violations->count()){
-            //bdump($violations->get(0)->getMessage());
-            foreach ($violations as $key => $error){
-                bdump($error->getMessage());
-            }
             throw new EntityException($violations->get(0)->getMessage());
         }
     }

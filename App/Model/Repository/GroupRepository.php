@@ -23,11 +23,11 @@ class GroupRepository extends BaseRepository
      */
     public function findAllowed(User $user)
     {
-        $qb = $this->createQueryBuilder("g")
-            ->select("g")
-            ->where("g.id != :id")
-            ->indexBy("g", "g.id")
-            ->setParameter("id", $this->constHelper::ADMIN_GROUP);
+        $qb = $this->createQueryBuilder('g')
+            ->select('g')
+            ->where('g.id != :id')
+            ->indexBy('g', 'g.id')
+            ->setParameter('id', $this->constHelper::ADMIN_GROUP);
 
         if(!$user->isInRole('admin')){
             $qb->andWhere('g.createdBy = :userId')
