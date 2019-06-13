@@ -54,7 +54,6 @@ class ProblemTestAssociationFunctionality extends BaseFunctionality
             $data->success_rate = null;
         }
         $association->setSuccessRate($data->success_rate);
-        var_dump($association->getSuccessRate());
         $this->em->persist($association);
         $this->em->flush();
         return $association;

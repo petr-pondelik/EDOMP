@@ -195,12 +195,10 @@ class ConditionMatchingService
 
     /**
      * @param $fields
-     * @return array
+     * @return array|null
      */
-    public function findConditionsMatches($fields): array
+    public function findConditionsMatches($fields): ?array
     {
-        //var_dump($fields);
-        //var_dump($fields[1][1]['parametersInfo']);
         $result = [];
         foreach((array)$fields as $keyType => $value){
             if(!array_key_exists($keyType, $this->conditionsMatches)){
@@ -213,7 +211,6 @@ class ConditionMatchingService
                 $result = $this->conditionsMatches[$keyType][$keyAccessor]($item);
             }
         }
-        //var_dump($result);
         return $result;
     }
 
@@ -222,29 +219,27 @@ class ConditionMatchingService
      * @param string $expression
      * @param int $typeAccessor
      * @param int $accessor
-     * @return array|bool
+     * @return array|null
      */
-    private function findMatches(ArrayHash $parametersInfo, string $expression, int $typeAccessor, int $accessor)
+    private function findMatches(ArrayHash $parametersInfo, string $expression, int $typeAccessor, int $accessor): ?array
     {
         $matches = [];
         $matchesCnt = 0;
         $res = false;
 
-        var_dump($parametersInfo->count);
+        bdump($expression);
 
         if($parametersInfo->count === 1){
             for($i = $parametersInfo['minMax'][0]['min']; $i <= $parametersInfo['minMax'][0]['max']; $i++){
                 $final = $this->stringsHelper::passValues($expression, [
                     'p0' =>  $i
                 ]);
-                var_dump($final);
                 if( $this->validationFunctions[$typeAccessor][$accessor]($this->mathService->evaluateExpression($final)) ){
                     $matches[$matchesCnt++] = [
                         'p0' => $i
                     ];
                     $res = true;
                 }
-                var_dump($matches);
             }
         }
         else if($parametersInfo->count === 2){
@@ -373,10 +368,8 @@ class ConditionMatchingService
             }
         }
 
-        var_dump($res);
-
         if(!$res){
-            return false;
+            return null;
         }
 
         return $matches;

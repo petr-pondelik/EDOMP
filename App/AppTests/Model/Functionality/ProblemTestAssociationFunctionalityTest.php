@@ -127,17 +127,16 @@ class ProblemTestAssociationFunctionalityTest extends FunctionalityTestCase
         // Set expected return values for ProblemTestAssociationRepository findOneBy method
         $this->repositoryMock->expects($this->any())
             ->method('findOneBy')
-            ->willReturnCallback(static function ($arg) use (
-                $problemTestAssociation
-            ) {
+            ->willReturnCallback(static function ($arg) use ($problemTestAssociation) {
                 switch ($arg){
                     case [
                         'problem.id' => 1,
                         'test.id' => 1
                     ]:
                         return $problemTestAssociation;
+                    default:
+                        return null;
                 }
-                return false;
             });
 
         // Instantiate tested class

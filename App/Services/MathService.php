@@ -50,14 +50,9 @@ class MathService
     protected $newtonApiClient;
 
     /**
-     * @var GeneratorService
-     */
-    protected $generatorService;
-
-    /**
      * @var ProblemFinalRepository
      */
-    protected $problemRepository;
+    protected $problemFinalRepository;
 
     /**
      * @var ConstHelper
@@ -82,8 +77,7 @@ class MathService
     /**
      * MathService constructor.
      * @param NewtonApiClient $newtonApiClient
-     * @param GeneratorService $generatorService
-     * @param ProblemFinalRepository $problemRepository
+     * @param ProblemFinalRepository $problemFinalRepository
      * @param ConstHelper $constHelper
      * @param StringsHelper $stringsHelper
      * @param LatexHelper $latexHelper
@@ -91,14 +85,12 @@ class MathService
     public function __construct
     (
         NewtonApiClient $newtonApiClient,
-        GeneratorService $generatorService,
-        ProblemFinalRepository $problemRepository,
+        ProblemFinalRepository $problemFinalRepository,
         ConstHelper $constHelper, StringsHelper $stringsHelper, LatexHelper $latexHelper
     )
     {
         $this->newtonApiClient = $newtonApiClient;
-        $this->generatorService = $generatorService;
-        $this->problemRepository = $problemRepository;
+        $this->problemFinalRepository = $problemFinalRepository;
         $this->constHelper = $constHelper;
         $this->stringsHelper = $stringsHelper;
         $this->latexHelper = $latexHelper;
@@ -129,7 +121,7 @@ class MathService
      * @param string $variable
      * @return false|string
      */
-    public function getDiscriminantA(string $expression, string $variable)
+    protected function getDiscriminantA(string $expression, string $variable)
     {
         $aExp = Strings::before($expression, $variable . '^2');
         if($aExp === ''){
@@ -143,7 +135,7 @@ class MathService
      * @param string $variable
      * @return false|string
      */
-    public function getDiscriminantB(string $expression, string $variable)
+    protected function getDiscriminantB(string $expression, string $variable)
     {
         $bExp = Strings::before($expression, $variable, 2);
         $bExp = Strings::after($bExp, $variable . '^2');
@@ -163,7 +155,7 @@ class MathService
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getDiscriminantC(string $expression, string $variable)
+    protected function getDiscriminantC(string $expression, string $variable)
     {
         $cExp = Strings::after($expression, $variable, 2);
         if($cExp === ''){
@@ -201,7 +193,6 @@ class MathService
     public function evaluateExpression(string $expression)
     {
         $executor = new MathExecutor();
-        bdump($executor->execute($this->stringsHelper::nxpFormat($expression)));
         return $executor->execute($this->stringsHelper::nxpFormat($expression));
     }
 
@@ -218,14 +209,12 @@ class MathService
         $expression = $this->latexHelper::parseLatex($expression);
 
         $parameterized = $this->stringsHelper::getParametrized($expression);
-        $parameterized = $this->stringsHelper::newtonFormat($parameterized->expression);
 
-        $sides = $this->stringsHelper::getEquationSides($parameterized);
+        $sides = $this->stringsHelper::getEquationSides($parameterized->expression);
         $sides->left = $this->newtonApiClient->simplify($sides->left);
         $sides->right = $this->newtonApiClient->simplify($sides->right);
 
         $expression = $this->stringsHelper::mergeEqSides($sides);
-        $expression = $this->stringsHelper::newtonFormat($expression);
         $expression = $this->newtonApiClient->simplify($expression);
 
         return $expression;
@@ -239,7 +228,7 @@ class MathService
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function evaluateLinearEquation(ProblemFinal $problem): ArrayHash
+    protected function evaluateLinearEquation(ProblemFinal $problem): ArrayHash
     {
         $standardized = $this->standardizeEquation($problem->getBody());
         $variable = $problem->getVariable();
@@ -260,7 +249,7 @@ class MathService
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function evaluateQuadraticEquation(ProblemFinal $problem): ArrayHash
+    protected function evaluateQuadraticEquation(ProblemFinal $problem): ArrayHash
     {
         $standardized = $this->standardizeEquation($problem->getBody());
         $a = $this->getDiscriminantA($standardized, $problem->getVariable());
@@ -299,7 +288,7 @@ class MathService
      * @param bool $sequenceType
      * @return bool|ArrayHash
      */
-    public function evaluateSequence(ProblemFinal $problem, bool $sequenceType = self::ARITHMETIC)
+    protected function evaluateSequence(ProblemFinal $problem, bool $sequenceType = self::ARITHMETIC)
     {
         $parsed = $this->latexHelper::parseLatex($problem->getBody());
         $variable = $problem->getVariable();
@@ -311,9 +300,14 @@ class MathService
             return false;
         }
 
-        $problem = $this->problemRepository->find($problem->getId());
+        //$problem = $this->problemFinalRepository->find($problem->getId());
         $firstN = $problem->getFirstN();
         $res = [];
+
+        $sides->right = $this->stringsHelper::nxpFormat($sides->right, $problem->getVariable());
+        $sides->right = Strings::replace($sides->right, '~(\d)(' . $variable . ')~', '$1*$2');
+        $sides->right = Strings::replace($sides->right, '~(\d)(' . $variable . ')~', '$1*$2');
+        $sides->right = Strings::replace($sides->right, '~(\s*\))(' . $variable . ')~', '$1*$2');
 
         for($i = 1; $i <= $firstN; $i++){
             $res[$seqName . '_{' . $i . '}'] = $this->evaluateExpression(

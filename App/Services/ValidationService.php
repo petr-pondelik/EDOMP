@@ -386,11 +386,15 @@ class ValidationService
      */
     private function validateBody(string $body, int $type,  string $variable = null): int
     {
-        if(empty($body)) return 0;
+        if(empty($body)){
+            return 0;
+        }
 
         if($type !== $this->constHelper::BODY_FINAL){
 
-            if(!$this->latexHelper::latexWrapped($body)) return 1;
+            if(!$this->latexHelper::latexWrapped($body)){
+                return 1;
+            }
 
             $parsed = $this->latexHelper::parseLatex($body);
 
@@ -399,15 +403,14 @@ class ValidationService
 
             $split = $this->stringsHelper::splitByParameters($parsed);
 
-            if(empty($variable) || !$this->stringsHelper::containsVariable($split, $variable))
+            if(empty($variable) || !$this->stringsHelper::containsVariable($split, $variable)){
                 return 2;
+            }
 
             $parametrized = $this->stringsHelper::getParametrized($parsed);
 
-            $parsedNewton = $this->stringsHelper::newtonFormat($parametrized->expression);
-
             try{
-                $this->newtonApiClient->simplify($parsedNewton);
+                $this->newtonApiClient->simplify($parametrized->expression);
             } catch (NewtonApiSyntaxException $e){
                 return 3;
             }
@@ -539,7 +542,7 @@ class ValidationService
      */
     public function validateArithmeticSequence(string $expression, string $variable): bool
     {
-        $expression = $this->newtonApiClient->simplify($this->stringsHelper::newtonFormat($expression));
+        $expression = $this->newtonApiClient->simplify($expression);
         $expression = $this->stringsHelper::nxpFormat($expression, $variable);
 
         $a1 = $this->stringsHelper::passValues($expression, [ $variable => 1 ]);
@@ -549,7 +552,7 @@ class ValidationService
         $diff1 = $this->mathService->evaluateExpression('(' . $a2 . ')' . ' - ' . '(' . $a1 . ')');
         $diff2 = $this->mathService->evaluateExpression('(' . $a3 . ')' . ' - ' . '(' . $a2 . ')');
 
-        return $diff1 == $diff2;
+        return $diff1 === $diff2;
     }
 
     /**
@@ -563,7 +566,7 @@ class ValidationService
      */
     public function validateGeometricSequence(string $expression, string $variable): bool
     {
-        $expression = $this->newtonApiClient->simplify($this->stringsHelper::newtonFormat($expression));
+        $expression = $this->newtonApiClient->simplify($expression);
         $expression = $this->stringsHelper::nxpFormat($expression, $variable);
 
         $a1 = $this->stringsHelper::passValues($expression, [ $variable => 1 ]);
@@ -573,7 +576,7 @@ class ValidationService
         $quot1 = $this->mathService->evaluateExpression('(' . $a2 . ')' . '/' . '(' . $a1 . ')');
         $quot2 = $this->mathService->evaluateExpression('(' . $a3 . ')' . '/' . '(' . $a2 . ')');
 
-        return $quot1 == $quot2;
+        return $quot1 === $quot2;
     }
 
     /**
@@ -599,11 +602,13 @@ class ValidationService
             ]
         ]);
 
-        if(!$matches) return false;
+        if(!$matches){
+            return false;
+        }
 
-        $arrayToJson['matches'] = $matches;
+        //$arrayToJson['matches'] = $matches;
 
-        $jsonData = Json::encode($arrayToJson);
+        $jsonData = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $jsonData
         ]), $problemId);
@@ -642,9 +647,9 @@ class ValidationService
             return false;
         }
 
-        $arrayToJson['matches'] = $matches;
+        //$arrayToJson['matches'] = $matches;
 
-        $jsonData = Json::encode($arrayToJson);
+        $jsonData = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $jsonData
         ]), $problemId);

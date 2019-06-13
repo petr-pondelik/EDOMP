@@ -227,9 +227,7 @@ class TestBuilderService
             //If the problem is prototype, it needs to be generated to it's final form
             if($problem->isTemplate()){
 
-                bdump("TEST");
-
-                $generatedFinal = $this->generatorService->generateWithConditions($problem);
+                $generatedFinal = $this->generatorService->generateProblemFinal($problem);
 
                 //Build final problem object
                 $finalData = new ArrayHash();

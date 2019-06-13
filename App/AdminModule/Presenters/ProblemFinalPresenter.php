@@ -254,7 +254,7 @@ class ProblemFinalPresenter extends AdminPresenter
      * @param int $id
      * @throws \Exception
      */
-    public function handleGetResult(int $id)
+    public function handleGetResult(int $id): void
     {
         $problem = $this->problemRepository->find($id);
         $result = null;
@@ -264,7 +264,7 @@ class ProblemFinalPresenter extends AdminPresenter
             $this->informUser(new UserInformArgs('getRes', true, 'error', $e));
         }
         $this->problemFunctionality->storeResult($id, $result);
-        $this["problemGrid"]->reload();
+        $this['problemGrid']->reload();
         $this->informUser(new UserInformArgs('getRes', true));
     }
 

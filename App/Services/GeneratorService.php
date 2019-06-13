@@ -85,15 +85,11 @@ class GeneratorService
      * @param int|null $max
      * @return bool|float|int
      */
-    public function generatePar(String $type = null, int $min = null, int $max = null)
+    protected function generatePar(String $type = null, int $min = null, int $max = null)
     {
-        if($type === null)
-            return $this->generateInteger($min, $max);
-        if($this->generatorMarksMapping['integer'] === $type)
-            return $this->generateInteger($min, $max);
-        if($this->generatorMarksMapping['float'] === $type)
-            return $this->generateFloat($min, $max);
-
+        if($type === null) { return $this->generateInteger($min, $max); }
+        if($this->generatorMarksMapping['integer'] === $type) { return $this->generateInteger($min, $max); }
+        if($this->generatorMarksMapping['float'] === $type) { return $this->generateFloat($min, $max); }
         return false;
     }
 
@@ -102,16 +98,12 @@ class GeneratorService
      * @param $max
      * @return int
      */
-    public function generateInteger($min, $max)
+    public function generateInteger($min, $max): int
     {
-        if($min !== null && $max !== null)
-            return mt_rand($min, $max);
-        else if($min !== null)
-            return mt_rand($min, PHP_INT_MAX);
-        else if($max !== null)
-            return mt_rand(0, $max);
-        else
-            return mt_rand();
+        if(isset($min, $max)) { return mt_rand($min, $max); }
+        if($min !== null) { return mt_rand($min, PHP_INT_MAX); }
+        if($max !== null) { return mt_rand(0, $max); }
+        return mt_rand();
     }
 
     /**
@@ -119,16 +111,12 @@ class GeneratorService
      * @param $max
      * @return float|int
      */
-    public function generateFloat($min, $max)
+    public function generateFloat($min, $max): int
     {
-        if(isset($min) && isset($max))
-            return mt_rand($min*10, $max*10)/10;
-        else if(isset($min))
-            return mt_rand($min*10, PHP_INT_MAX)/10;
-        else if(isset($max))
-            return mt_rand(0, $max*10)/10;
-        else
-            return mt_rand()/10;
+        if(isset($min, $max)){ return mt_rand($min*10, $max*10)/10; }
+        if(isset($min)){ return mt_rand($min*10, PHP_INT_MAX)/10; }
+        if(isset($max)){ return mt_rand(0, $max*10)/10; }
+        return mt_rand()/10;
     }
 
     /**
@@ -136,11 +124,12 @@ class GeneratorService
      * @param String $attr
      * @return string|null
      */
-    public function getParAttr(String $xmpPar, String $attr)
+    protected function getParAttr(String $xmpPar, String $attr): ?string
     {
         $start = Strings::indexOf($xmpPar, $attr);
-        if(!$start)
+        if(!$start){
             return null;
+        }
         $xmpPar = Strings::substring($xmpPar, $start);
         $end = Strings::indexOf($xmpPar, '"', 2);
         return Strings::substring($xmpPar, Strings::indexOf($xmpPar, '"') + 1, $end - Strings::indexOf($xmpPar, '"') - 1);
@@ -150,13 +139,11 @@ class GeneratorService
      * @param String $xmlPar
      * @return string
      */
-    public function processPar(String $xmlPar)
+    protected function processPar(String $xmlPar): string
     {
-
         $type = $this->getParAttr($xmlPar, 'type');
         $min = $this->getParAttr($xmlPar, 'min');
         $max = $this->getParAttr($xmlPar, 'max');
-
         return ' '.$this->generatePar($type, $min ?? null, $max ?? null);
     }
 
@@ -164,7 +151,7 @@ class GeneratorService
      * @param String $inputBlock
      * @return string
      */
-    public function processBlock(String $inputBlock)
+    protected function processBlock(String $inputBlock): string
     {
         $processedBlock = Strings::trim($inputBlock);
         if(Strings::match($processedBlock, '~(<par.*\/>)~')){
@@ -178,7 +165,7 @@ class GeneratorService
      * @param string $expression
      * @return array
      */
-    public function generateParams(string $expression)
+    protected function generateParams(string $expression): array
     {
         $expressionSplit = $this->stringsHelper::splitByParameters($expression);
 
@@ -188,10 +175,9 @@ class GeneratorService
         //Check if split item is parameter. If true, trim this item and generate corresponding value.
         foreach($expressionSplit as $splitKey => $splitItem){
             $expressionSplit[$splitKey] = $this->processBlock($splitItem);
-            if($splitItem !== ""){
+            if($splitItem !== ''){
                 if(Strings::match($splitItem, '~(<par min="[0-9]+" max="[0-9]+"\/>)~')){
                     $parameters['p'.$paramsCnt++] = Strings::trim($expressionSplit[$splitKey]);
-                    bdump("TEST");
                 }
             }
         }
@@ -204,22 +190,22 @@ class GeneratorService
      * @return string
      * @throws \Nette\Utils\JsonException
      */
-    public function generateWithConditions(ProblemTemplate $problemTemplate): string
+    public function generateProblemFinal(ProblemTemplate $problemTemplate): string
     {
-        bdump("TEST");
         $parametrized = $this->stringsHelper::getParametrized($problemTemplate->getBody());
-        bdump($parametrized);
 
-        //Use JSON matches array of problemPrototype
-        $prototypeJsonData = $this->problemTemplateRepository->find($problemTemplate->getId())->getMatches();
+        // Use JSON matches array of problemPrototype
+        $matchesJson = $this->problemTemplateRepository->find($problemTemplate->getId())->getMatches();
         $matchesArr = null;
 
-        if($prototypeJsonData){
-            $matchesArr = Json::decode($prototypeJsonData, Json::FORCE_ARRAY);
-            $matchesCnt = count($matchesArr["matches"]);
-            $params = $matchesArr["matches"][$this->generateInteger(0, $matchesCnt - 1)];
+        if($matchesJson){
+            // Generate params matching the conditions
+            $matchesArr = Json::decode($matchesJson, Json::FORCE_ARRAY);
+            $matchesCnt = count($matchesArr);
+            $params = $matchesArr[$this->generateInteger(0, $matchesCnt - 1)];
         }
         else{
+            // Generate params without conditions
             $params = $this->generateParams($problemTemplate->getBody());
         }
 

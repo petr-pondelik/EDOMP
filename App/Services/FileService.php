@@ -71,7 +71,7 @@ class FileService
         $this->logoFunctionality = $logoFunctionality;
     }
 
-    public function clearLogosTmpDir()
+    public function clearLogosTmpDir(): void
     {
         FileSystem::delete($this->logosTmpDir);
     }
@@ -79,7 +79,7 @@ class FileService
     /**
      * @param int $logoId
      */
-    public function deleteLogoFile(int $logoId)
+    public function deleteLogoFile(int $logoId): void
     {
         FileSystem::delete($this->logosDir . DIRECTORY_SEPARATOR . $logoId);
     }
@@ -106,16 +106,15 @@ class FileService
         $id = $this->logoRepository->getSequenceVal();
 
         //Get uploaded file extension
-        $extension = $this->getFileExtension($httpRequest->getFile("logo_file")->name);
+        $extension = $this->getFileExtension($httpRequest->getFile('logo_file')->name);
 
         FileSystem::createDir($this->logosTmpDir . DIRECTORY_SEPARATOR . $id);
 
-        if(
-            !file_put_contents(
-            $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension,
-                file_get_contents($httpRequest->getFile('logo_file'))
-            )
-        ){
+        /*!file_put_contents(
+$this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension,
+    file_get_contents($httpRequest->getFile('logo_file'))*/
+
+        if(!copy($httpRequest->getFile('logo_file'), $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension)) {
             throw new IOException('Chyba při ukládání souboru.');
         }
 
@@ -142,7 +141,7 @@ class FileService
         //Delete logo from DB based on it's ID
         $this->logoFunctionality->delete($id);
 
-        return "";
+        return '';
     }
 
     /**
@@ -153,26 +152,24 @@ class FileService
     public function updateFile(IRequest $httpRequest): string
     {
         //Get updated logo id
-        $id = $httpRequest->getUrl()->getQueryParameter("logo_id");
+        $id = $httpRequest->getUrl()->getQueryParameter('logo_id');
 
-        bdump($id);
-
-        $extension = $this->getFileExtension($httpRequest->getFile("logo_file")->name);
+        $extension = $this->getFileExtension($httpRequest->getFile('logo_file')->name);
 
         FileSystem::createDir($this->logosTmpDir . DIRECTORY_SEPARATOR . $id);
 
-        if(
-        !file_put_contents(
-            $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension,
-            file_get_contents($httpRequest->getFile('logo_file'))
-        )
-        ){
+        /*!file_put_contents(
+    $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension,
+    file_get_contents($httpRequest->getFile('logo_file')
+    )*/
+
+        if(!copy($httpRequest->getFile('logo_file'), $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension)){
             throw new IOException('Chyba při ukládání souboru.');
         }
 
         //Update logo DB record's temporary extension column
         $this->logoFunctionality->update($id, ArrayHash::from([
-           "extension_tmp" => $extension
+           'extension_tmp' => $extension
         ]));
 
         return $id;
@@ -187,7 +184,7 @@ class FileService
     {
         $id = $httpRequest->getRawBody();
         FileSystem::delete($this->logosTmpDir . DIRECTORY_SEPARATOR . $id);
-        return "";
+        return '';
     }
 
     /**
@@ -205,8 +202,8 @@ class FileService
         $this->logoFunctionality->update(
             $id,
             ArrayHash::from([
-                "extension" => $fileRecord->getExtensionTmp(),
-                "path" => DIRECTORY_SEPARATOR . "data_public" . DIRECTORY_SEPARATOR . "logos" . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . "file" . $fileRecord->getExtensionTmp(),
+                'extension' => $fileRecord->getExtensionTmp(),
+                'path' => DIRECTORY_SEPARATOR . 'data_public' . DIRECTORY_SEPARATOR . 'logos' . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $fileRecord->getExtensionTmp(),
             ])
         );
     }
@@ -214,7 +211,7 @@ class FileService
     /**
      * @param int $testId
      */
-    public function createTestZip(int $testId)
+    public function createTestZip(int $testId): void
     {
         $zip = new \ZipArchive();
 
@@ -222,25 +219,29 @@ class FileService
 
         //Check files existence
         foreach ($variants as $variant){
-            if(!file_exists(DATA_DIR  . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($variant["variant"]) . '.tex' ))
+            if(!file_exists(DATA_DIR  . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($variant['variant']) . '.tex' )){
                 throw new FileNotFoundException('Soubor s testem nenalezen.');
+            }
         }
 
         $logoId = $this->testRepository->find($testId)->getLogo()->getId();
         $logoExt = $this->logoRepository->find($logoId)->getExtension();
 
         //Check logo file existence
-        if(!file_exists(LOGOS_DIR . DIRECTORY_SEPARATOR . $logoId . DIRECTORY_SEPARATOR . 'file' . $logoExt))
+        if(!file_exists(LOGOS_DIR . DIRECTORY_SEPARATOR . $logoId . DIRECTORY_SEPARATOR . 'file' . $logoExt)){
             throw new FileNotFoundException('Soubor s logem nenalezen');
+        }
 
-        if(!$zip->open(DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'test_' . $testId . '.zip', \ZipArchive::CREATE))
+        if(!$zip->open(DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'test_' . $testId . '.zip', \ZipArchive::CREATE)){
             throw new IOException('Zip archiv nemohl být vytvořen.');
+        }
 
-        foreach ($variants as $variant)
+        foreach ($variants as $variant){
             $zip->addFile(
-                DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($variant["variant"]) . '.tex',
-                'variant_' . Strings::lower($variant["variant"]) . '.tex'
+                DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($variant['variant']) . '.tex',
+                'variant_' . Strings::lower($variant['variant']) . '.tex'
             );
+        }
 
         $zip->addFile(LOGOS_DIR . DIRECTORY_SEPARATOR . $logoId . DIRECTORY_SEPARATOR . 'file' . $logoExt, 'file' . $logoExt);
 
@@ -250,7 +251,7 @@ class FileService
     /**
      * @param int $testId
      */
-    public function moveTestDirToPublic(int $testId)
+    public function moveTestDirToPublic(int $testId): void
     {
         FileSystem::copy(
             DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'test_' . $testId . '.zip',

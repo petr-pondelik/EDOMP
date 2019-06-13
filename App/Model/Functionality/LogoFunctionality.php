@@ -44,6 +44,7 @@ class LogoFunctionality extends BaseFunctionality
     {
         $logo = new Logo();
         $logo->setExtensionTmp($data->extension_tmp);
+        $logo->setLabel('label');
         $this->em->persist($logo);
         $this->em->flush();
         return $logo;
