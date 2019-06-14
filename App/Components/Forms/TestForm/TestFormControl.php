@@ -252,6 +252,7 @@ class TestFormControl extends FormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->getValues();
+        bdump($values);
         $validateFields["logo_file"] = $values->logo_file_hidden;
         $validateFields['groups'] = ArrayHash::from($values->groups);
         $validateFields["school_year"] = $values->school_year;
@@ -260,8 +261,9 @@ class TestFormControl extends FormControl
         $validationErrors = $this->validationService->validate($validateFields);
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
+                foreach($errorGroup as $egKey => $error){
                     $form[$veKey]->addError($error);
+                }
             }
         }
         $this->redrawControl("logoFileErrorSnippet");
@@ -326,13 +328,15 @@ class TestFormControl extends FormControl
             }
 
             $problems[0] = "Zvolit náhodně";
-            foreach ($filterRes as $key => $item)
+            foreach ($filterRes as $key => $item){
                 $problems[$key] = $item;
+            }
 
             $this['form']['problem_' . $problemKey]->setItems($problems);
 
-            if(array_key_exists($problemFilters['selected'], $filterRes))
+            if(array_key_exists($problemFilters['selected'], $filterRes)){
                 $this['form']['problem_' . $problemKey]->setValue($problemFilters['selected']);
+            }
 
         }
 

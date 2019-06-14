@@ -10,14 +10,9 @@ namespace App\Services;
 
 use App\Exceptions\ProblemFinalCollisionException;
 use App\Model\Entity\Test;
-use App\Model\Functionality\LogoFunctionality;
 use App\Model\Functionality\ProblemFinalFunctionality;
 use App\Model\Functionality\TestFunctionality;
-use App\Model\Repository\GroupRepository;
-use App\Model\Repository\LogoRepository;
-use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemRepository;
-use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\TestRepository;
 use Nette\Utils\ArrayHash;
 
@@ -33,39 +28,14 @@ class TestBuilderService
     protected $problemRepository;
 
     /**
-     * @var ProblemTemplateRepository
+     * @var TestRepository
      */
-    protected $problemTemplateRepository;
+    protected $testRepository;
 
     /**
      * @var ProblemFinalFunctionality
      */
     protected $problemFinalFunctionality;
-
-    /**
-     * @var ProblemConditionRepository
-     */
-    protected $problemConditionRepository;
-
-    /**
-     * @var LogoRepository
-     */
-    protected $logoRepository;
-
-    /**
-     * @var LogoFunctionality
-     */
-    protected $logoFunctionality;
-
-    /**
-     * @var GroupRepository
-     */
-    protected $groupRepository;
-
-    /**
-     * @var TestRepository
-     */
-    protected $testRepository;
 
     /**
      * @var TestFunctionality
@@ -85,33 +55,20 @@ class TestBuilderService
     /**
      * TestBuilderService constructor.
      * @param ProblemRepository $problemRepository
-     * @param ProblemTemplateRepository $problemTemplateRepository
-     * @param ProblemFinalFunctionality $problemFinalFunctionality
-     * @param ProblemConditionRepository $problemConditionRepository
-     * @param LogoRepository $logoRepository
-     * @param LogoFunctionality $logoFunctionality
-     * @param GroupRepository $groupRepository
      * @param TestRepository $testRepository
+     * @param ProblemFinalFunctionality $problemFinalFunctionality
      * @param TestFunctionality $testFunctionality
      * @param GeneratorService $generatorService
      */
     public function __construct
     (
-        ProblemRepository $problemRepository,
-        ProblemTemplateRepository $problemTemplateRepository,
-        ProblemFinalFunctionality $problemFinalFunctionality, ProblemConditionRepository $problemConditionRepository,
-        LogoRepository $logoRepository, LogoFunctionality $logoFunctionality,
-        GroupRepository $groupRepository, TestRepository $testRepository, TestFunctionality $testFunctionality,
+        ProblemRepository $problemRepository, TestRepository $testRepository,
+        ProblemFinalFunctionality $problemFinalFunctionality, TestFunctionality $testFunctionality,
         GeneratorService $generatorService
     )
     {
         $this->problemRepository = $problemRepository;
-        $this->problemTemplateRepository = $problemTemplateRepository;
         $this->problemFinalFunctionality = $problemFinalFunctionality;
-        $this->problemConditionRepository = $problemConditionRepository;
-        $this->logoRepository = $logoRepository;
-        $this->logoFunctionality = $logoFunctionality;
-        $this->groupRepository = $groupRepository;
         $this->testRepository = $testRepository;
         $this->testFunctionality = $testFunctionality;
         $this->generatorService = $generatorService;
@@ -133,13 +90,12 @@ class TestBuilderService
      * @param ArrayHash $data
      * @return array
      */
-    public function testVariantsToArray(ArrayHash $data)
+    protected function testVariantsToArray(ArrayHash $data): array
     {
         $variants = [];
-
-        for($i = 0; $i < $data->variants; $i++)
-            array_push($variants, $this->testVariantsLabels[$i]);
-
+        for($i = 0; $i < $data->variants; $i++){
+            $variants[] = $this->testVariantsLabels[$i];
+        }
         return $variants;
     }
 
@@ -148,10 +104,11 @@ class TestBuilderService
      * @param ArrayHash $data
      * @return array
      */
-    public function getProblemFilters(int $id, ArrayHash $data): array
+    protected function getProblemFilters(int $id, ArrayHash $data): array
     {
-        if($data['is_template_' . $id] !== -1)
+        if($data['is_template_' . $id] !== -1){
             $filters['is_template'] = $data['is_template_' . $id];
+        }
         $filters['problem_type_id'] = $data['problem_type_id_' . $id];
         $filters['difficulty_id'] = $data['difficulty_id_' . $id];
         $filters['sub_category_id'] = $data['sub_category_id_' . $id];
@@ -162,10 +119,12 @@ class TestBuilderService
      * @param array $arr
      * @return bool
      */
-    public function hasFree(array $arr): bool
+    protected function hasFree(array $arr): bool
     {
         foreach ($arr as $item){
-            if($item) return true;
+            if($item){
+                return true;
+            }
         }
         return false;
     }
@@ -174,11 +133,11 @@ class TestBuilderService
      * @param Test $test
      * @param string $variant
      * @param ArrayHash $data
-     * @return void
+     * @return Test
      * @throws ProblemFinalCollisionException
      * @throws \Nette\Utils\JsonException
-)     */
-    public function buildTestVariant(Test $test, string $variant, ArrayHash $data)
+     */
+    protected function buildTestVariant(Test $test, string $variant, ArrayHash $data): Test
     {
         //Array of chosen final problems IDs
         $usedFinals = [];
@@ -189,27 +148,43 @@ class TestBuilderService
 
             //In the case of random choice
             if($problemId === 0){
+
+                // Get all problems that match filters
                 $filters = $this->getProblemFilters($i, $data);
                 $problems = $this->problemRepository->findFiltered($filters);
 
-                $filters = array_merge(['is_template' => 0], $filters);
+                // Get problem's templates that match filters
+                $filters['is_template'] = 0;
                 $finals = $this->problemRepository->findFiltered($filters);
 
                 $finalsFree = [];
 
-                foreach($finals as $final)
+                foreach($finals as $final){
                     $finalsFree[$final->getId()] = true;
+                }
 
                 while(true){
                     $index = $this->generatorService->generateInteger(0, count($problems) - 1);
+                    //var_dump($index);
+                    // Pick up the problem from problems array at generated index
+                    $indexCounter = 0;
+                    $problem = null;
+                    foreach ($problems as $item){
+                        if($indexCounter === $index){
+                            $problem = $item;
+                            break;
+                        }
+                        $indexCounter++;
+                    }
 
-                    $problem = $problems[$index];
+                    //var_dump($problem);
 
-                    if(!$this->hasFree($finalsFree) && (count($problems) === count($finals)))
+                    if(!$this->hasFree($finalsFree) && (count($problems) === count($finals))){
                         throw new ProblemFinalCollisionException('Test nelze vygenerovat bez opakujících se úloh.');
+                    }
 
                     if(!$problem->isTemplate()){
-                        if(!in_array($problem->getId(), $usedFinals)){
+                        if(!in_array($problem->getId(), $usedFinals, true)){
                             $usedFinals[] = $problem->getId();
                             break;
                         }
@@ -232,19 +207,21 @@ class TestBuilderService
                 //Build final problem object
                 $finalData = new ArrayHash();
 
-                $finalData["text_before"] = $problem->getTextBefore();
-                $finalData["body"] = $generatedFinal;
-                $finalData["text_after"] = $problem->getTextAfter();
-                $finalData["difficulty"] = $problem->getDifficulty()->getId();
-                $finalData["type"] = $problem->getProblemType()->getId();
-                $finalData["subcategory"] = $problem->getSubCategory()->getId();
-                $finalData["problem_template_id"] = $problem->getId();
-                $finalData["is_generated"] = true;
+                $finalData['text_before'] = $problem->getTextBefore();
+                $finalData['body'] = $generatedFinal;
+                $finalData['text_after'] = $problem->getTextAfter();
+                $finalData['difficulty'] = $problem->getDifficulty()->getId();
+                $finalData['type'] = $problem->getProblemType()->getId();
+                $finalData['subcategory'] = $problem->getSubCategory()->getId();
+                $finalData['problem_template_id'] = $problem->getId();
+                $finalData['is_generated'] = true;
 
-                if(method_exists($problem, "getFirstN"))
-                    $finalData["first_n"] = $problem->getFirstN();
-                if(method_exists($problem, "getVariable"))
-                    $finalData["variable"] = $problem->getVariable();
+                if(method_exists($problem, 'getFirstN')){
+                    $finalData['first_n'] = $problem->getFirstN();
+                }
+                if(method_exists($problem, 'getVariable')){
+                    $finalData['variable'] = $problem->getVariable();
+                }
 
                 //Get prototype conditions
                 $templateConditions = $problem->getConditions();
@@ -254,10 +231,15 @@ class TestBuilderService
 
                 $problem = $this->problemFinalFunctionality->create($finalData, $templateConditions->getValues(), false);
             }
+            else{
+                $usedFinals[] = $problem->getId();
+            }
 
             //Attach current problem to the created test
-            $this->testFunctionality->attachProblem($test, $problem, $variant, $problemTemplate ?? null, $data->{"newpage_" . $i});
+            $test = $this->testFunctionality->attachProblem($test, $problem, $variant, $problemTemplate ?? null, $data->{'newpage_' . $i});
         }
+
+        return $test;
     }
 
     /**
@@ -265,29 +247,29 @@ class TestBuilderService
      * @return bool|ArrayHash
      * @throws ProblemFinalCollisionException
      * @throws \Nette\Utils\JsonException
+     * @throws \Exception
      */
     public function buildTest(ArrayHash $data)
     {
         $variants = $this->testVariantsToArray($data);
 
         $test = $this->testFunctionality->create(ArrayHash::from([
-            "logo_id" => $data->logo_file_hidden,
-            "term" => $data->test_term,
-            "school_year" => $data->school_year,
-            "test_number" => $data->test_number,
-            "groups" => $data->groups,
-            "introduction_text" => $data->introduction_text
+            'logo_id' => $data->logo_file_hidden,
+            'term' => $data->test_term,
+            'school_year' => $data->school_year,
+            'test_number' => $data->test_number,
+            'groups' => $data->groups,
+            'introduction_text' => $data->introduction_text
         ]));
 
-        //$test = $this->testRepository->find($testId);
-
-        foreach($variants as $variant)
-            $this->buildTestVariant($test, $variant, $data);
+        foreach($variants as $variant){
+            $test = $this->buildTestVariant($test, $variant, $data);
+        }
 
         $resArr = [
-            "testId" => $this->testRepository->getSequenceVal(),
-            "variants" => $variants,
-            "test" => $test
+            'testId' => $this->testRepository->getSequenceVal(),
+            'variants' => $variants,
+            'test' => $test
         ];
 
         return ArrayHash::from($resArr);

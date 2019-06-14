@@ -169,9 +169,9 @@ abstract class Problem extends BaseEntity
     }
 
     /**
-     * @param string $textBefore
+     * @param string|null $textBefore
      */
-    public function setTextBefore(string $textBefore): void
+    public function setTextBefore(string $textBefore = null): void
     {
         $this->textBefore = $textBefore;
     }
@@ -185,9 +185,9 @@ abstract class Problem extends BaseEntity
     }
 
     /**
-     * @param string $textAfter
+     * @param string|null $textAfter
      */
-    public function setTextAfter(string $textAfter): void
+    public function setTextAfter(string $textAfter = null): void
     {
         $this->textAfter = $textAfter;
     }
@@ -203,9 +203,9 @@ abstract class Problem extends BaseEntity
     }
 
     /**
-     * @param float $successRate
+     * @param float|null $successRate
      */
-    public function setSuccessRate(float $successRate): void
+    public function setSuccessRate(float $successRate = null): void
     {
         $this->successRate = $successRate;
     }
