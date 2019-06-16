@@ -44,8 +44,9 @@ class CategoryFormControl extends EntityFormControl
     public function createComponentForm(): Form
     {
         $form = parent::createComponentForm();
-        $form->addText('label', 'Název')
-            ->setHtmlAttribute('class', 'form-control');
+        $form->addText('label', 'Název *')
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Zadejte název kategorie.');
         return $form;
     }
 

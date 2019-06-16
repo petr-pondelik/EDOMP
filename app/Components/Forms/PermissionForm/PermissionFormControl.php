@@ -70,19 +70,22 @@ class PermissionFormControl extends FormControl
     {
         $form = parent::createComponentForm();
 
-        $categoryOptions = $this->categoryRepository->findAssoc([], "id");
+        $categoryOptions = $this->categoryRepository->findAssoc([], 'id');
 
-        $form->addHidden("id");
+        $form->addHidden('id');
 
-        $form->addMultiSelect("categories", "Kategorie", $categoryOptions)
-            ->setHtmlAttribute("class", "form-control selectpicker");
+        $form->addMultiSelect('categories', 'Kategorie', $categoryOptions)
+            ->setHtmlAttribute('class', 'form-control selectpicker')
+            ->setHtmlAttribute('title', 'Zvolte kategorie');
 
         $form['submit']->caption = 'Uložit';
 
-        if ($this->super)
+        if ($this->super){
             $form->onSuccess[] = [$this, 'handleSuperFormSuccess'];
-        else
+        }
+        else{
             $form->onSuccess[] = [$this, 'handleFormSuccess'];
+        }
 
         return $form;
     }
@@ -103,8 +106,9 @@ class PermissionFormControl extends FormControl
             $this->onSuccess();
         } catch (\Exception $e){
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException)
+            if ($e instanceof AbortException){
                 return;
+            }
             $this->onError($e);
         }
     }
@@ -120,17 +124,20 @@ class PermissionFormControl extends FormControl
             $this->onSuccess();
         } catch (\Exception $e){
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException)
+            if ($e instanceof AbortException){
                 return;
+            }
             $this->onError($e);
         }
     }
 
     public function render(): void
     {
-        if($this->super)
+        if($this->super){
             $this->template->render(__DIR__ . '/templates/superGroup.latte');
-        else
+        }
+        else{
             $this->template->render(__DIR__ . '/templates/group.latte');
+        }
     }
 }

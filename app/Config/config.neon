@@ -156,6 +156,7 @@ services:
 	factory.form.problem.type: App\Components\Forms\ProblemTypeForm\ProblemTypeFormFactory
 	factory.grid.template: App\Components\DataGrids\TemplateGridFactory
 	factory.form.problem.template: App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory
+	factory.problem.template.help: App\Components\ProblemTemplateHelp\ProblemTemplateHelpFactory
 	factory.grid.logo: App\Components\DataGrids\LogoGridFactory
 	factory.form.logo: App\Components\Forms\LogoForm\LogoFormFactory
 	factory.grid.supergroup: App\Components\DataGrids\SuperGroupGridFactory

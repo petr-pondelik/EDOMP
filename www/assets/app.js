@@ -263,9 +263,9 @@ $(document).ready(() => {
 
     $(document).on('click', '.btn-add', (e) => {
 
-        $('#problem-' + (parseInt(e.target.dataset.problem) + 1)).slideToggle();
-        $('#btn-add-' + e.target.dataset.problem).hide();
-        $('#btn-remove-' + e.target.dataset.problem).hide();
+        $('#problem-' + (parseInt(e.target.dataset.problemId) + 1)).slideToggle();
+        $('#btn-add-' + e.target.dataset.problemId).hide();
+        $('#btn-remove-' + e.target.dataset.problemId).hide();
 
         problemsCnt++;
 
@@ -275,9 +275,9 @@ $(document).ready(() => {
 
     $(document).on('click', '.btn-remove', (e) => {
 
-        $('#problem-' + (e.target.dataset.problem)).slideToggle();
-        $('#btn-add-' + (parseInt(e.target.dataset.problem) - 1)).show();
-        $('#btn-remove-' + (parseInt(e.target.dataset.problem) - 1)).show();
+        $('#problem-' + (e.target.dataset.problemId)).slideToggle();
+        $('#btn-add-' + (parseInt(e.target.dataset.problemId) - 1)).show();
+        $('#btn-remove-' + (parseInt(e.target.dataset.problemId) - 1)).show();
 
         problemsCnt--;
 
@@ -298,6 +298,8 @@ $(document).ready(() => {
 
         filters[problemId]['filters'][filterType] = filterVal;
         filters[problemId]['selected'] = $('#problem_' + problemId).val();
+
+        console.log(filters);
 
         $.nette.ajax({
             type: 'GET',

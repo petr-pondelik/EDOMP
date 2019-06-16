@@ -15,6 +15,7 @@ use App\Model\Functionality\GroupFunctionality;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\SuperGroupRepository;
+use App\Model\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
@@ -36,6 +37,11 @@ class GroupFunctionalityTest extends FunctionalityTestCase
      * @var MockObject
      */
     protected $categoryRepositoryMock;
+
+    /**
+     * @var MockObject
+     */
+    protected $userRepositoryMock;
 
     /**
      * @var Category
@@ -156,8 +162,17 @@ class GroupFunctionalityTest extends FunctionalityTestCase
                 return $map[$arg];
             });
 
+        // Mock the UserRepository
+        $this->userRepositoryMock = $this->getMockBuilder(UserRepository::class)
+            ->setMethods(['find'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
         // Instantiate tested class
-        $this->functionality = new GroupFunctionality($this->em, $this->repositoryMock, $this->superGroupRepositoryMock, $this->categoryRepositoryMock);
+        $this->functionality = new GroupFunctionality(
+            $this->em, $this->repositoryMock, $this->superGroupRepositoryMock, $this->categoryRepositoryMock,
+            $this->userRepositoryMock
+        );
     }
 
     /**

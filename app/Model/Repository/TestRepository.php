@@ -8,8 +8,8 @@
 
 namespace App\Model\Repository;
 
+use App\Model\Entity\ProblemTestAssociation;
 use App\Model\Traits\SequenceValTrait;
-use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * Class TestRepository
@@ -22,7 +22,7 @@ class TestRepository extends BaseRepository
     /**
      * @var string
      */
-    protected $tableName = "test";
+    protected $tableName = 'test';
 
     /**
      * @param int $id
@@ -30,12 +30,13 @@ class TestRepository extends BaseRepository
      */
     public function findVariants(int $id): array
     {
-        $qb = $this->createQueryBuilder("t");
+        $qb = $this->createQueryBuilder('t');
 
-        $qb->select("pta.variant")
-            ->join("App\Model\Entity\ProblemTestAssociation", "pta", Join::WITH, "t.id = :testId")
-            ->groupBy("pta.variant")
-            ->setParameter("testId", $id);
+        $qb->select('pta.variant')
+            ->from(ProblemTestAssociation::class, 'pta')
+            ->where('pta.test = :testId')
+            ->groupBy('pta.variant')
+            ->setParameter('testId', $id);
 
         return $qb->getQuery()->getResult();
     }

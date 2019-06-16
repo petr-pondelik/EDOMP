@@ -66,8 +66,8 @@ class UserGridFactory extends BaseGrid
         $grid->setPrimaryKey('id');
 
         $qb = $this->userRepository->createQueryBuilder('er')
-            ->where('er.isAdmin = false')
-            ->orderBy('er.id', 'DESC');
+            ->where('er.isAdmin = false');
+            //->orderBy('er.id', 'DESC');
 
         if($container->user->isInRole('teacher')){
             $qb = $qb->andWhere('er.role != :roleId')
@@ -89,6 +89,12 @@ class UserGridFactory extends BaseGrid
             ->setSortable();
 
         $grid->addColumnText('username', 'Uživatelské jméno')
+            ->setFilterText();
+
+        $grid->addColumnText('firstName', 'Jméno')
+            ->setFilterText();
+
+        $grid->addColumnText('lastName', 'Příjmení')
             ->setFilterText();
 
         $grid->addColumnNumber('role', 'Role')

@@ -92,8 +92,8 @@ class ProblemFinalRepository extends BaseRepository
                     ->andWhere("pf.result <> ''");
             }
             else if( !in_array('0', $filters['result']) && in_array('1', $filters['result'])){
-                $qb->andWhere('pf.result IS NULL')
-                    ->orWhere("pf.result = ''");
+                $qb->andWhere("pf.result = ''");
+                /*andWhere('pf.result IS NULL');*/
             }
         }
 

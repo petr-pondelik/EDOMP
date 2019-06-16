@@ -68,7 +68,8 @@ class GroupGridFactory extends BaseGrid
 
         $qb = $this->groupRepository->createQueryBuilder('er')
             ->where('er.id != :id')
-            ->setParameter('id', $this->constHelper::ADMIN_GROUP);
+            ->setParameter('id', $this->constHelper::ADMIN_GROUP)
+            ->orderBy('er.id', 'DESC');
 
         if($container->user->isInRole('teacher')){
             $qb->andWhere('er.createdBy = :createdById')

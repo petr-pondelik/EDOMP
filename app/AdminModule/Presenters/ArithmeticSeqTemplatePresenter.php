@@ -11,6 +11,8 @@ namespace App\AdminModule\Presenters;
 use App\Components\DataGrids\TemplateGridFactory;
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\ProblemTemplateHelp\ProblemTemplateHelpControl;
+use App\Components\ProblemTemplateHelp\ProblemTemplateHelpFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\FlashesTranslator;
@@ -44,6 +46,7 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
      * @param TemplateGridFactory $templateGridFactory
      * @param ProblemTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
+     * @param ProblemTemplateHelpFactory $problemTemplateHelpFactory
      */
     public function __construct
     (
@@ -51,7 +54,7 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ArithmeticSeqTemplRepository $repository, ArithmeticSeqTemplFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, ProblemTemplateFormFactory $problemTemplateFormFactory,
-        ConstHelper $constHelper
+        ConstHelper $constHelper, ProblemTemplateHelpFactory $problemTemplateHelpFactory
     )
     {
         parent::__construct
@@ -59,7 +62,7 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
             $authorizator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
             $templateGridFactory, $problemTemplateFormFactory,
-            $constHelper
+            $constHelper, $problemTemplateHelpFactory
         );
         $this->repository = $repository;
         $this->functionality = $functionality;

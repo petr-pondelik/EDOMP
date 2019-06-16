@@ -288,11 +288,14 @@ class FlashesTranslator
      */
     public static function translate(string $operation, string $presenterName, string $type = null, \Exception $e = null): string
     {
-        if($e instanceof ForeignKeyConstraintViolationException)
-            return self::$presenterMessages[$presenterName]['constraintViolation'];
-
-        if($e instanceof ProblemFinalCollisionException || $e instanceof InvalidParameterException)
+        if($e instanceof ForeignKeyConstraintViolationException){
             return $e->getMessage();
+            return self::$presenterMessages[$presenterName]['constraintViolation'];
+        }
+
+        if($e instanceof ProblemFinalCollisionException || $e instanceof InvalidParameterException){
+            return $e->getMessage();
+        }
 
         return self::$presenterMessages[$presenterName][$type][$operation];
     }

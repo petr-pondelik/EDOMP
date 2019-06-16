@@ -7,6 +7,16 @@
             <div class="btn-group">
                 {if $user->isInRole('teacher') || $user->isInRole('admin')}
                     {if $adminModule}
+                        {if
+                            $presenter->isLinkCurrent('LinearEqTemplate:*') ||
+                            $presenter->isLinkCurrent('QuadraticEqTemplate:*') ||
+                            $presenter->isLinkCurrent('ArithmeticSeqTemplate:*') ||
+                            $presenter->isLinkCurrent('GeometricSeqTemplate:*')
+                        }
+                            <a href="#" class="admin mr-3" data-toggle="modal" data-target="#problemTemplateHelpModal">
+                                <i class="far fa-question-circle"></i>
+                            </a>
+                        {/if}
                         <a href={plink :Front:Homepage:default} class="admin mr-3" title="Cvičebnice">
                             <i class="fas fa-square-root-alt"></i>
                         </a>

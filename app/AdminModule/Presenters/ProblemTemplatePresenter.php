@@ -13,6 +13,8 @@ use App\Components\DataGrids\TemplateGridFactory;
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormControl;
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\ProblemTemplateHelp\ProblemTemplateHelpControl;
+use App\Components\ProblemTemplateHelp\ProblemTemplateHelpFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\FlashesTranslator;
@@ -52,6 +54,11 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     protected $problemTemplateFormFactory;
 
     /**
+     * @var ProblemTemplateHelpFactory
+     */
+    protected $problemTemplateHelpFactory;
+
+    /**
      * @var ConstHelper
      */
     protected $constHelper;
@@ -76,19 +83,21 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
      * @param TemplateGridFactory $templateGridFactory
      * @param ProblemTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
+     * @param ProblemTemplateHelpFactory $problemTemplateHelpFactory
      */
     public function __construct
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         TemplateGridFactory $templateGridFactory, ProblemTemplateFormFactory $problemTemplateFormFactory,
-        ConstHelper $constHelper
+        ConstHelper $constHelper, ProblemTemplateHelpFactory $problemTemplateHelpFactory
     )
     {
         parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->templateGridFactory = $templateGridFactory;
         $this->problemTemplateFormFactory = $problemTemplateFormFactory;
         $this->constHelper = $constHelper;
+        $this->problemTemplateHelpFactory = $problemTemplateHelpFactory;
     }
 
     /**
@@ -285,5 +294,13 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     {
         $form = $problemId ? 'problemTemplateEditForm' : 'problemTemplateCreateForm';
         $this[$form]->handleCondValidation($body, $conditionType, $accessor, $problemType, $variable, $problemId);
+    }
+
+    /**
+     * @return ProblemTemplateHelpControl
+     */
+    public function createComponentHelp(): ProblemTemplateHelpControl
+    {
+        return $this->problemTemplateHelpFactory->create();
     }
 }

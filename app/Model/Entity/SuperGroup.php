@@ -25,7 +25,7 @@ class SuperGroup extends BaseEntity
     /**
      * @var string
      */
-    protected $toStringAttr = "label";
+    protected $toStringAttr = 'label';
 
     /**
      * @ORM\OneToMany(targetEntity="App\Model\Entity\Group", mappedBy="superGroup", cascade={"all"})
@@ -39,7 +39,7 @@ class SuperGroup extends BaseEntity
     protected $categories;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Model\Entity\User", inversedBy="superGroupsCreated", cascade={"persist", "merge"})
+     * @ORM\ManyToOne(targetEntity="App\Model\Entity\User", inversedBy="superGroupsCreated", cascade={"all"})
      *
      * @var User
      */

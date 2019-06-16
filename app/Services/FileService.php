@@ -217,6 +217,8 @@ $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . 
 
         $variants = $this->testRepository->findVariants($testId);
 
+        bdump($variants);
+
         //Check files existence
         foreach ($variants as $variant){
             if(!file_exists(DATA_DIR  . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($variant['variant']) . '.tex' )){

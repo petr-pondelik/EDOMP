@@ -13,6 +13,7 @@ use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\SuperGroupRepository;
+use App\Model\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Nette\Utils\ArrayHash;
 
@@ -33,22 +34,30 @@ class GroupFunctionality extends BaseFunctionality
     protected $categoryRepository;
 
     /**
+     * @var UserRepository
+     */
+    protected $userRepository;
+
+    /**
      * GroupFunctionality constructor.
      * @param ConstraintEntityManager $entityManager
      * @param GroupRepository $repository
      * @param SuperGroupRepository $superGroupRepository
      * @param CategoryRepository $categoryRepository
+     * @param UserRepository $userRepository
      */
     public function __construct
     (
         ConstraintEntityManager $entityManager, GroupRepository $repository,
-        SuperGroupRepository $superGroupRepository, CategoryRepository $categoryRepository
+        SuperGroupRepository $superGroupRepository, CategoryRepository $categoryRepository,
+        UserRepository $userRepository
     )
     {
         parent::__construct($entityManager);
         $this->repository = $repository;
         $this->superGroupRepository = $superGroupRepository;
         $this->categoryRepository = $categoryRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -61,6 +70,9 @@ class GroupFunctionality extends BaseFunctionality
         $group = new Group();
         $group->setLabel($data->label);
         $group->setSuperGroup($this->superGroupRepository->find($data->super_group_id));
+        if(isset($data->user_id)){
+            $group->setCreatedBy($this->userRepository->find($data->user_id));
+        }
         if(isset($data->created)){
             $group->setCreated($data->created);
         }

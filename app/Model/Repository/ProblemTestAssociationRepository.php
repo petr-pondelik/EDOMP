@@ -8,13 +8,23 @@
 
 namespace App\Model\Repository;
 
-use Doctrine\ORM\Query\Expr\Join;
-
 /**
  * Class ProblemTestAssociationRepository
  * @package App\Model\Repository
  */
 class ProblemTestAssociationRepository extends BaseRepository
 {
-
+    /**
+     * @param int $testId
+     * @return array
+     */
+    public function findByTestInVariants(int $testId): array
+    {
+        $associations = $this->findBy(['test' => $testId]);
+        $res = [];
+        foreach ($associations as $association){
+            $res[$association->getVariant()][] = $association;
+        }
+        return $res;
+    }
 }

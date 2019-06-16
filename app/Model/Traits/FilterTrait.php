@@ -23,7 +23,7 @@ trait FilterTrait
     {
         $filterArr = [];
 
-        if(isset($filters['is_template'])){
+        if(isset($filters['is_template']) && $filters['is_template'] != -1){
             $filterArr['isTemplate'] = $filters['is_template'];
         }
 

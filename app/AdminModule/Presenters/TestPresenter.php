@@ -281,7 +281,6 @@ class TestPresenter extends AdminPresenter
             //$this->redirect('default');
         };
         $control->onError[] = function ($e){
-            bdump($e);
             $this->informUser(new UserInformArgs('create', true, 'error', $e, false, 'testCreateForm'));
             //$this->redirect('default');
         };

@@ -91,6 +91,7 @@ class TemplateGridFactory extends BaseGrid
         $grid->setDataSource($repository->createQueryBuilder('er')->orderBy('er.id', 'DESC'));
 
         $grid->addColumnNumber('id', 'ID')
+            ->setFitContent()
             ->setSortable()
             ->setFilterText();
 
@@ -99,12 +100,12 @@ class TemplateGridFactory extends BaseGrid
             ->setFormat('d.m.Y H:i:s')
             ->setSortable();
 
-        $grid->addColumnText('text_before', 'Zadání před')
+        $grid->addColumnText('text_before', 'Úvod zadání')
             ->setFilterText();
 
-        $grid->addColumnText('body', 'Tělo');
+        $grid->addColumnText('body', 'Úloha');
 
-        $grid->addColumnText('text_after', 'Zadání po')
+        $grid->addColumnText('text_after', 'Dodatek k zadání')
             ->setFilterText();
 
         $grid->addColumnText('success_rate', 'Prům. úspěšnost');

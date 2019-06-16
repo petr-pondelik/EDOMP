@@ -53,18 +53,19 @@ class LogoFormControl extends EntityFormControl
     {
         $form = parent::createComponentForm();
 
-        $form->addText("label", "Název")
-            ->setHtmlAttribute("class", "form-control");
+        $form->addText('label', 'Název *')
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Zadejte název loga.');
 
-        $form->addText("logo_file", "Soubor")
-            ->setHtmlAttribute("class", "file-pond-input");
+        $form->addText('logo_file', 'Soubor *')
+            ->setHtmlAttribute('class', 'file-pond-input');
 
         if($this->edit){
-            $form->addSelect("edit_logo", "Editovat soubor", [
-                0 => "Ne",
-                1 => "Ano"
+            $form->addSelect('edit_logo', 'Editovat soubor', [
+                0 => 'Ne',
+                1 => 'Ano'
             ])
-                ->setHtmlAttribute("class", "form-control mb-3");
+                ->setHtmlAttribute('class', 'form-control mb-3');
         }
 
         return $form;
@@ -77,27 +78,29 @@ class LogoFormControl extends EntityFormControl
     {
         $values = $form->values;
 
-        $validateFields["label"] = $values->label;
+        $validateFields['label'] = $values->label;
 
         if($this->edit){
-            if($values->edit_logo)
-                $validateFields["logo_file"] = $values->logo_file;
+            if($values->edit_logo){
+                $validateFields['logo_file'] = $values->logo_file;
+            }
         }
         else{
-            $validateFields["logo_file"] = $values->logo_file;
+            $validateFields['logo_file'] = $values->logo_file;
         }
 
         $validationErrors = $this->validationService->validate($validateFields);
 
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
+                foreach($errorGroup as $egKey => $error){
                     $form[$veKey]->addError($error);
+                }
             }
         }
 
-        $this->redrawControl("labelErrorSnippet");
-        $this->redrawControl("logoFileErrorSnippet");
+        $this->redrawControl('labelErrorSnippet');
+        $this->redrawControl('logoFileErrorSnippet');
     }
 
     /**
@@ -110,13 +113,14 @@ class LogoFormControl extends EntityFormControl
             try{
                 $this->fileService->finalStore($values->logo_file);
                 $this->functionality->update($values->logo_file, ArrayHash::from([
-                    "label" => $values->label
+                    'label' => $values->label
                 ]));
                 $this->onSuccess();
             } catch (\Exception $e){
                 //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-                if ($e instanceof AbortException)
+                if ($e instanceof AbortException){
                     return;
+                }
                 $this->onError($e);
             }
         }
@@ -133,13 +137,14 @@ class LogoFormControl extends EntityFormControl
                 $this->fileService->finalStore($values->logo_file);
             }
             $this->functionality->update($values->id_hidden, ArrayHash::from([
-                "label" => $values->label
+                'label' => $values->label
             ]));
             $this->onSuccess();
         } catch (\Exception $e){
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException)
+            if ($e instanceof AbortException){
                 return;
+            }
             $this->onError($e);
         }
     }

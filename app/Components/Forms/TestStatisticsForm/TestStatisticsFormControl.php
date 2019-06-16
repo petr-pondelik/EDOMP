@@ -145,10 +145,11 @@ class TestStatisticsFormControl extends FormControl
 
     public function render(): void
     {
-        $problemAssociations = $this->problemTestAssociationRepository->findBy(['test' => $this->testId]);
+        //$problemAssociations = $this->problemTestAssociationRepository->findAssoc(['test' => $this->testId], 'variant');
+        $associationsByVariant = $this->problemTestAssociationRepository->findByTestInVariants($this->testId);
         $this->template->id = $this->testId;
-        $this->template->problemsCnt = count($problemAssociations);
-        $this->template->problemAssociations = $problemAssociations;
+        $this->template->problemsCnt = count($associationsByVariant);
+        $this->template->associationsByVariant = $associationsByVariant;
         $this->template->render(__DIR__ . '/templates/default.latte');
     }
 }

@@ -24,7 +24,7 @@ class User extends BaseEntity
     /**
      * @var string
      */
-    protected $toStringAttr = "username";
+    protected $toStringAttr = 'username';
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -58,6 +58,20 @@ class User extends BaseEntity
     protected $isAdmin = false;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     *
+     * @var string
+     */
+    protected $firstName;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     *
+     * @var string
+     */
+    protected $lastName;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\User", inversedBy="usersCreated", cascade={"persist", "merge"})
      *
      * @var User
@@ -71,14 +85,14 @@ class User extends BaseEntity
     protected $groups;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\SuperGroup", mappedBy="createdBy", cascade={"all"})
+     */
+    protected $superGroupsCreated;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Model\Entity\Group", mappedBy="createdBy", cascade={"persist", "merge"})
      */
     protected $groupsCreated;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\SuperGroup", mappedBy="createdBy", cascade={"persist", "merge"})
-     */
-    protected $superGroupsCreated;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Model\Entity\User", mappedBy="createdBy", cascade={"persist", "merge"})
@@ -287,6 +301,38 @@ class User extends BaseEntity
     public function setUsersCreated($usersCreated): void
     {
         $this->usersCreated = $usersCreated;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @param string|null $firstName
+     */
+    public function setFirstName(string $firstName = null): void
+    {
+        $this->firstName = $firstName;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * @param string|null $lastName
+     */
+    public function setLastName(string $lastName = null): void
+    {
+        $this->lastName = $lastName;
     }
 
 }

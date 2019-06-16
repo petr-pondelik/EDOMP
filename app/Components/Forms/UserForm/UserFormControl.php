@@ -67,27 +67,39 @@ class UserFormControl extends EntityFormControl
         $groupOptions = $this->groupRepository->findAllowed($this->presenter->user);
         $roleOptions = $this->roleRepository->findAllowed($this->presenter->user);
 
-        $form->addText("username", "Uživatelské jméno")
+        $form->addText('username', 'Uživatelské jméno *')
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Zadejte login uživatele.');
+
+        $form->addPassword('password', 'Heslo *')
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Zadejte heslo uživatele.');
+
+        $form->addPassword('password_confirm', 'Potvrzení hesla *')
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Zopakujte heslo uživatele.');
+
+        $form->addText('first_name', 'Jméno')
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Zadejte jméno uživatele.');
+
+        $form->addText('last_name', 'Příjmení')
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Zadejte příjmení uživatele.');
+
+        $form->addSelect('role', 'Role *', $roleOptions)
             ->setHtmlAttribute('class', 'form-control');
 
-        $form->addPassword("password", "Heslo")
-            ->setHtmlAttribute("class", "form-control");
-
-        $form->addPassword("password_confirm", "Potvrzení hesla")
-            ->setHtmlAttribute("class", "form-control");
-
-        $form->addSelect("role", "Role", $roleOptions)
-            ->setHtmlAttribute("class", "form-control");
-
-        $form->addMultiSelect("groups", "Skupiny", $groupOptions)
-            ->setHtmlAttribute("class", "form-control selectpicker");
+        $form->addMultiSelect('groups', 'Skupiny *', $groupOptions)
+            ->setHtmlAttribute('class', 'form-control selectpicker')
+            ->setHtmlAttribute('title', 'Zvolte skupiny');
 
         if($this->edit){
-            $form->addSelect("change_password", "Změnit heslo", [
-                0 => "Ne",
-                1 => "Ano"
+            $form->addSelect('change_password', 'Změnit heslo', [
+                0 => 'Ne',
+                1 => 'Ano'
             ])
-                ->setHtmlAttribute("class", "form-control");
+                ->setHtmlAttribute('class', 'form-control');
         }
 
         return $form;
@@ -100,28 +112,29 @@ class UserFormControl extends EntityFormControl
     {
         $values = $form->values;
 
-        $validateFields["username"] = $values->username;
+        $validateFields['username'] = $values->username;
         if(!isset($values->change_password) || $values->change_password){
-            $validateFields["password_confirm"] = ArrayHash::from([
-                "password" => $values->password,
-                "password_confirm" => $values->password_confirm
+            $validateFields['password_confirm'] = ArrayHash::from([
+                'password' => $values->password,
+                'password_confirm' => $values->password_confirm
             ]);
         }
-        $validateFields["groups"] = ArrayHash::from($values->groups);
+        $validateFields['groups'] = ArrayHash::from($values->groups);
 
         $validationErrors = $this->validationService->validate($validateFields);
 
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
+                foreach($errorGroup as $egKey => $error){
                     $form[$veKey]->addError($error);
+                }
             }
         }
 
-        $this->redrawControl("usernameErrorSnippet");
-        $this->redrawControl("passwordConfirmErrorSnippet");
-        $this->redrawControl("roleErrorSnippet");
-        $this->redrawControl("groupsErrorSnippet");
+        $this->redrawControl('usernameErrorSnippet');
+        $this->redrawControl('passwordConfirmErrorSnippet');
+        $this->redrawControl('roleErrorSnippet');
+        $this->redrawControl('groupsErrorSnippet');
     }
 
     /**
@@ -131,12 +144,14 @@ class UserFormControl extends EntityFormControl
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
+            $values->user_id = $this->presenter->user->id;
             $this->functionality->create($values);
             $this->onSuccess();
         } catch (\Exception $e){
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException)
+            if ($e instanceof AbortException){
                 return;
+            }
             $this->onError($e);
         }
     }
@@ -152,17 +167,20 @@ class UserFormControl extends EntityFormControl
             $this->onSuccess();
         } catch (\Exception $e){
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException)
+            if ($e instanceof AbortException){
                 return;
+            }
             $this->onError($e);
         }
     }
 
     public function render(): void
     {
-        if ($this->edit)
+        if ($this->edit){
             $this->template->render(__DIR__ . '/templates/edit.latte');
-        else
+        }
+        else{
             $this->template->render(__DIR__ . '/templates/create.latte');
+        }
     }
 }

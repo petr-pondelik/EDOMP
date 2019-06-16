@@ -108,13 +108,15 @@ class UserPresenter extends AdminPresenter
      * @param IComponent $form
      * @param User $user
      */
-    public function setDefaults(IComponent $form, User $user)
+    public function setDefaults(IComponent $form, User $user): void
     {
-        $form["id"]->setDefaultValue($user->getId());
-        $form["id_hidden"]->setDefaultValue($user->getId());
-        $form["username"]->setDefaultValue($user->getUsername());
-        $form["role"]->setDefaultValue($user->getRole()->getId());
-        $form["groups"]->setDefaultValue($user->getGroupsId());
+        $form['id']->setDefaultValue($user->getId());
+        $form['id_hidden']->setDefaultValue($user->getId());
+        $form['username']->setDefaultValue($user->getUsername());
+        $form['first_name']->setDefaultValue($user->getFirstName());
+        $form['last_name']->setDefaultValue($user->getLastName());
+        $form['role']->setDefaultValue($user->getRole()->getId());
+        $form['groups']->setDefaultValue($user->getGroupsId());
     }
 
     /**
@@ -126,14 +128,14 @@ class UserPresenter extends AdminPresenter
     public function createComponentUserGrid($name): DataGrid
     {
         $grid = $this->userGridFactory->create($this, $name);
-        $grid->addAction("delete", "", "delete!")
-            ->setIcon("trash")
-            ->setTitle("Odstranit uživatele")
-            ->setClass("btn btn-danger btn-sm ajax");
-        $grid->addAction("edit", "", "edit!")
-            ->setIcon("edit")
-            ->setTitle("Editovat uživatele")
-            ->setClass("btn btn-primary btn-sm");
+        $grid->addAction('delete', '', 'delete!')
+            ->setIcon('trash')
+            ->setTitle('Odstranit uživatele')
+            ->setClass('btn btn-danger btn-sm ajax');
+        $grid->addAction('edit', '', 'edit!')
+            ->setIcon('edit')
+            ->setTitle('Editovat uživatele')
+            ->setClass('btn btn-primary btn-sm');
         return $grid;
     }
 
@@ -141,14 +143,14 @@ class UserPresenter extends AdminPresenter
      * @param int $id
      * @throws \Exception
      */
-    public function handleDelete(int $id)
+    public function handleDelete(int $id): void
     {
         try{
             $this->userFunctionality->delete($id);
         } catch (\Exception $e){
             $this->informUser(new UserInformArgs('delete', true, 'error', $e));
         }
-        $this["userGrid"]->reload();
+        $this['userGrid']->reload();
         $this->informUser(new UserInformArgs('delete', true));
     }
 
@@ -156,9 +158,9 @@ class UserPresenter extends AdminPresenter
      * @param int $id
      * @throws \Nette\Application\AbortException
      */
-    public function handleEdit(int $id)
+    public function handleEdit(int $id): void
     {
-        $this->redirect("edit", $id);
+        $this->redirect('edit', $id);
     }
 
     /**
@@ -168,7 +170,7 @@ class UserPresenter extends AdminPresenter
     {
         $control = $this->userFormFactory->create();
         $control->onSuccess[] = function (){
-            $this["userGrid"]->reload();
+            $this['userGrid']->reload();
             $this->informUser(new UserInformArgs('create', true));
         };
         $control->onError[] = function ($e){
@@ -184,7 +186,7 @@ class UserPresenter extends AdminPresenter
     {
         $control = $this->userFormFactory->create(true);
         $control->onSuccess[] = function (){
-            $this["userGrid"]->reload();
+            $this['userGrid']->reload();
             $this->informUser(new UserInformArgs('edit'));
             $this->redirect('default');
         };

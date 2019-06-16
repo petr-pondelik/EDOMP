@@ -25,43 +25,59 @@
 
             {var $i = 0}
 
-            {foreach $problemAssociations as $association}
+            {foreach $associationsByVariant as $variant => $variantAssociations}
 
                 <div class="card card-shadow border-light mb-5">
 
+                    <div class="card-header">
+                        <h2>Varianta {$variant}</h2>
+                    </div>
+
                     <div class="card-body">
 
-                        <div class="form-group">
-                            {label problem_final_id_disabled_$i}
-                            {input problem_final_id_disabled_$i}
-                        </div>
+                        {foreach $variantAssociations as $association}
 
-                        <div class="form-group">
-                            {label problem_prototype_id_disabled_$i}
-                            {input problem_prototype_id_disabled_$i}
-                        </div>
+                            <div class="card card-shadow border-light mb-5">
 
-                        <p class="text-center mt-5 mb-5">{$association->getProblem()->getBody()}</p>
+                                <div class="card-body">
 
-                        <div class="form-group">
-                            {label success_rate_$i}
-                            {input success_rate_$i}
-                        </div>
+                                    <div class="form-group">
+                                        {label problem_final_id_disabled_$i}
+                                        {input problem_final_id_disabled_$i}
+                                    </div>
 
-                        {snippet successRate{$i}ErrorSnippet}
-                            <div n:if="$control['form']->hasErrors()" class="mt-2">
-                                <p n:foreach="$control['form']['success_rate_' . $i]->errors as $error"
-                                        class="alert alert-danger border-0">
-                                    {$error}
-                                </p>
+                                    <div class="form-group">
+                                        {label problem_prototype_id_disabled_$i}
+                                        {input problem_prototype_id_disabled_$i}
+                                    </div>
+
+                                    <p class="text-center mt-5 mb-5">{$association->getProblem()->getBody()}</p>
+
+                                    <div class="form-group">
+                                        {label success_rate_$i}
+                                        {input success_rate_$i}
+                                    </div>
+
+                                    {snippet successRate{$i}ErrorSnippet}
+                                        <div n:if="$control['form']->hasErrors()" class="mt-2">
+                                            <p n:foreach="$control['form']['success_rate_' . $i]->errors as $error"
+                                                    class="alert alert-danger border-0">
+                                                {$error}
+                                            </p>
+                                        </div>
+                                    {/snippet}
+
+                                </div>
+
                             </div>
-                        {/snippet}
+
+                            {var $i += 1}
+
+                        {/foreach}
 
                     </div>
 
                 </div>
-
-                {var $i += 1}
 
             {/foreach}
 

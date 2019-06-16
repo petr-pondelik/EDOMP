@@ -21,6 +21,7 @@ use App\Model\Repository\SuperGroupRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use Nette\ComponentModel\IComponent;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class SettingsPresenter
@@ -86,7 +87,7 @@ class SettingsPresenter extends AdminPresenter
      * @param int $id
      * @throws \Nette\Application\AbortException
      */
-    public function actionGroupPermissionEdit(int $id)
+    public function actionGroupPermissionEdit(int $id): void
     {
         $group = $this->groupRepository->find($id);
         if($this->user->isInRole("teacher") && !$this->authorizator->isGroupAllowed($this->user->identity, $group)){
@@ -106,7 +107,7 @@ class SettingsPresenter extends AdminPresenter
      * @param int $id
      * @throws \Nette\Application\AbortException
      */
-    public function actionSuperGroupPermissionEdit(int $id)
+    public function actionSuperGroupPermissionEdit(int $id): void
     {
         $superGroup = $this->superGroupRepository->find($id);
         if($this->user->isInRole("teacher") && !$this->authorizator->isSuperGroupAllowed($this->user->identity, $superGroup)){
@@ -135,10 +136,11 @@ class SettingsPresenter extends AdminPresenter
 
     /**
      * @param $name
-     * @return \Ublaboo\DataGrid\DataGrid
+     * @return DataGrid
+     * @throws \Doctrine\ORM\Query\QueryException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function createComponentGroupGrid($name)
+    public function createComponentGroupGrid($name): DataGrid
     {
         $grid = $this->groupGridFactory->create($this, $name, true);
         $grid->addAction("editPermissions", "", "groupPermissionEdit")

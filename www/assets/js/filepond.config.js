@@ -25,7 +25,8 @@ if(href.includes('/logo/edit')) {
         acceptedFileTypes: [
             'image/*',
             'application/pdf'
-        ]
+        ],
+        labelIdle: 'Umístěte či <span class="filepond--label-action"> zvolte </span> soubor.'
     });
 
 }
@@ -42,7 +43,8 @@ else{
         acceptedFileTypes: [
             'image/*',
             'application/pdf'
-        ]
+        ],
+        labelIdle: 'Umístěte či <span class="filepond--label-action"> zvolte </span> soubor.'
     });
 
 }

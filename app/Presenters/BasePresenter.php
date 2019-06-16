@@ -85,30 +85,38 @@ class BasePresenter extends Presenter
         $message = $this->flashesTranslator::translate($args->operation, $this->getName(), $args->type, $args->exception);
 
         if($args->type === 'success'){
-            if(!$args->component)
+            if(!$args->component) {
                 $this->flashMessage($message, 'success');
-            else
+            }
+            else{
                 $this[$args->component]->flashMessage($message, 'success');
+            }
         }
         else{
-            if(!$args->component)
+            if(!$args->component) {
                 $this->flashMessage($message, 'danger');
-            else
+            }
+            else{
                 $this[$args->component]->flashMessage($message, 'danger');
+            }
         }
 
         if($args->ajax){
             if($args->main){
-                if(!$args->component)
+                if(!$args->component){
                     $this->redrawControl('mainFlashesSnippet');
-                else
+                }
+                else{
                     $this[$args->component]->redrawControl('mainFlashesSnippet');
+                }
             }
             else{
-                if(!$args->component)
+                if(!$args->component){
                     $this->redrawControl('flashesSnippet');
-                else
+                }
+                else{
                     $this[$args->component]->redrawControl('flashesSnippet');
+                }
             }
         }
     }

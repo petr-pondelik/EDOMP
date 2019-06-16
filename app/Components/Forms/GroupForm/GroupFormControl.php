@@ -12,6 +12,7 @@ namespace App\Components\Forms\GroupForm;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\GroupFunctionality;
 use App\Model\Repository\SuperGroupRepository;
+use App\Model\Repository\UserRepository;
 use App\Services\ValidationService;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
@@ -57,11 +58,12 @@ class GroupFormControl extends EntityFormControl
 
         $superGroupOptions = $this->superGroupRepository->findAllowed($this->presenter->user);
 
-        $form->addText("label", "Název")
-            ->setHtmlAttribute("class", "form-control");
+        $form->addText('label', 'Název *')
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Zadejte název skupiny.');
 
-        $form->addSelect("super_group_id", "Superskupina", $superGroupOptions)
-            ->setHtmlAttribute("class", "form-control");
+        $form->addSelect('super_group_id', 'Superskupina *', $superGroupOptions)
+            ->setHtmlAttribute('class', 'form-control');
 
         return $form;
     }
@@ -73,18 +75,19 @@ class GroupFormControl extends EntityFormControl
     {
         $values = $form->values;
 
-        $validateFields["label"] = $values->label;
+        $validateFields['label'] = $values->label;
 
         $validationErrors = $this->validationService->validate($validateFields);
 
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
+                foreach($errorGroup as $egKey => $error){
                     $form[$veKey]->addError($error);
+                }
             }
         }
 
-        $this->redrawControl("labelErrorSnippet");
+        $this->redrawControl('labelErrorSnippet');
     }
 
     /**
@@ -94,12 +97,14 @@ class GroupFormControl extends EntityFormControl
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
+            $values->user_id = $this->presenter->user->id;
             $this->functionality->create($values);
             $this->onSuccess();
         } catch (\Exception $e){
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException)
+            if ($e instanceof AbortException){
                 return;
+            }
             $this->onError($e);
         }
     }
@@ -112,23 +117,26 @@ class GroupFormControl extends EntityFormControl
     {
         try{
             $this->functionality->update($values->id_hidden, ArrayHash::from([
-                "label" => $values->label,
-                "super_group_id" => $values->super_group_id
+                'label' => $values->label,
+                'super_group_id' => $values->super_group_id
             ]));
             $this->onSuccess();
         } catch (\Exception $e){
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException)
+            if ($e instanceof AbortException){
                 return;
+            }
             $this->onError($e);
         }
     }
 
     public function render(): void
     {
-        if ($this->edit)
+        if ($this->edit){
             $this->template->render(__DIR__ . '/templates/edit.latte');
-        else
+        }
+        else{
             $this->template->render(__DIR__ . '/templates/create.latte');
+        }
     }
 }

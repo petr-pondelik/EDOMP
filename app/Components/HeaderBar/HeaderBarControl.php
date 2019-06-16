@@ -10,7 +10,6 @@ namespace App\Components\HeaderBar;
 
 use App\Components\Traits\ModuleDetectTrait;
 use Nette\Application\UI\Control;
-use Nette\Utils\Strings;
 
 /**
  * Class HeaderBarControl

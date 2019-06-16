@@ -87,10 +87,12 @@ class CategoryPresenter extends FrontPresenter
             $this->flashMessage("Nedostatečná přístupová práva.", "danger");
             $this->redirect("Homepage:default");
         }
-        if($filters)
+        if($filters){
             $this->filters = $filters;
-        if($clear_filters)
+        }
+        if($clear_filters){
             $this->clearFilters();
+        }
         $this->setFilters();
     }
 
@@ -105,10 +107,12 @@ class CategoryPresenter extends FrontPresenter
 
         $problemsCnt = $this->problemFinalRepository->getFilteredCnt($id, $this->filters);
 
-        $visualPaginator = $this["visualPaginator"];
+        $visualPaginator = $this['visualPaginator'];
         $paginator = $visualPaginator->getPaginator();
         $paginator->itemsPerPage = 1;
         $paginator->itemCount = $problemsCnt;
+
+        bdump($id);
 
         $problems = $this->problemFinalRepository->getFiltered($id, $paginator->itemsPerPage, $paginator->offset, $this->filters);
 
@@ -117,51 +121,52 @@ class CategoryPresenter extends FrontPresenter
 
         $this->id = $id;
 
-        $this->redrawControl("paginatorSnippet");
-        $this->redrawControl("problemsSnippet");
-        $this->redrawControl("filtersSnippet");
+        $this->redrawControl('paginatorSnippet');
+        $this->redrawControl('problemsSnippet');
+        $this->redrawControl('filtersSnippet');
     }
 
-    public function clearFilters()
+    public function clearFilters(): void
     {
         $this->filters = [];
-        $this["problemFilterForm"]['form']["difficulty"]->setDefaultValue([]);
+        $this['problemFilterForm']['form']['difficulty']->setDefaultValue([]);
     }
 
     /**
      * @param ArrayHash|null $filters
-     * @throws \Nette\Application\AbortException
      */
-    public function setFilters(ArrayHash $filters = null)
+    public function setFilters(ArrayHash $filters = null): void
     {
         //Set filters values to the filter form
         if($filters === null){
-            foreach($this->filters as $filterKey => $filter)
-                $this["problemFilterForm"]['form'][$filterKey]->setDefaultValue($filter);
+            foreach($this->filters as $filterKey => $filter){
+                $this['problemFilterForm']['form'][$filterKey]->setDefaultValue($filter);
+            }
             return;
         }
 
-        //Reset filters
-        $this->actionClearFilters();
+        $this->clearFilters();
 
         //Set new filters
-        foreach($filters as $filterKey => $filter)
-            if( (is_array($filter) && count($filter) > 0) || !is_array($filter) )
+        foreach($filters as $filterKey => $filter){
+            if( (is_array($filter) && count($filter) > 0) || !is_array($filter) ){
                 $this->filters[$filterKey] = $filter;
+            }
+        }
     }
 
     /**
      * @return VisualPaginator\Control
      */
-    public function createComponentVisualPaginator()
+    public function createComponentVisualPaginator(): VisualPaginator\Control
     {
         $paginator = new VisualPaginator\Control;
         $paginator->enableAjax();
-        $paginator->setTemplateFile(__DIR__ . "/../../Presenters/Templates/VisualPaginator/bootstrap.latte");
+        $paginator->setTemplateFile(__DIR__ . '/../../Presenters/Templates/VisualPaginator/bootstrap.latte');
         $paginator->onShowPage[] = function() {
-            $this->redrawControl("paginatorSnippet");
-            $this->redrawControl("problemsSnippet");
-            $this->redrawControl("mathJaxRender");
+            $this->redrawControl('paginatorSnippet');
+            $this->redrawControl('problemsSnippet');
+            $this->redrawControl('mathJaxRender');
         };
         return $paginator;
     }
@@ -173,7 +178,7 @@ class CategoryPresenter extends FrontPresenter
     {
         $control = $this->problemFilterFormFactory->create($this->getParameter('id'));
         $control->onSuccess[] = function (){
-            $this->redirect("Category:default", $this->id, false, 1,  $this->filters);
+            $this->redirect('Category:default', $this->id, false, 1,  $this->filters);
         };
         return $control;
     }
@@ -181,9 +186,9 @@ class CategoryPresenter extends FrontPresenter
     /**
      * @throws \Nette\Application\AbortException
      */
-    public function actionClearFilters()
+    public function actionClearFilters(): void
     {
         $this->clearFilters();
-        $this->redirect("Category:default", $this->id, false, 1,  $this->filters);
+        $this->redirect('Category:default', $this->id, false, 1,  $this->filters);
     }
 }

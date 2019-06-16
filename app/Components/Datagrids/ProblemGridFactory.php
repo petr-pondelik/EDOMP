@@ -98,12 +98,12 @@ class ProblemGridFactory extends BaseGrid
             ->setFormat('d.m.Y H:i:s')
             ->setSortable();
 
-        $grid->addColumnText('text_before', 'Zadání před')
+        $grid->addColumnText('text_before', 'Úvod zadání')
             ->setFilterText();
 
-        $grid->addColumnText('body', 'Tělo');
+        $grid->addColumnText('body', 'Úloha');
 
-        $grid->addColumnText('text_after', 'Zadání po')
+        $grid->addColumnText('text_after', 'Dodatek k zadání')
             ->setFilterText();
 
         $grid->addColumnText('result', 'Výsledek');

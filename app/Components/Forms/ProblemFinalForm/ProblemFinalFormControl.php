@@ -62,7 +62,6 @@ class ProblemFinalFormControl extends EntityFormControl
      * @param ProblemConditionRepository $problemConditionRepository
      * @param ConstHelper $constHelper
      * @param bool $edit
-     * @param bool $super
      */
     public function __construct
     (
@@ -91,48 +90,55 @@ class ProblemFinalFormControl extends EntityFormControl
     {
         $form = parent::createComponentForm();
 
-        $difficulties = $this->difficultyRepository->findAssoc([], "id");
-        $types = $this->problemTypeRepository->findAssoc([], "id");
-        $subcategories = $this->subCategoryRepository->findAssoc([], "id");
+        $difficulties = $this->difficultyRepository->findAssoc([], 'id');
+        $types = $this->problemTypeRepository->findAssoc([], 'id');
+        $subcategories = $this->subCategoryRepository->findAssoc([], 'id');
 
         $resultConditions = $this->problemConditionRepository->findAssoc([
-            "problemConditionType.id" => $this->constHelper::RESULT
-        ], "accessor");
+            'problemConditionType.id' => $this->constHelper::RESULT
+        ], 'accessor');
 
         $discriminantConditions = $this->problemConditionRepository->findAssoc([
-            "problemConditionType.id" => $this->constHelper::DISCRIMINANT
-        ], "accessor");
+            'problemConditionType.id' => $this->constHelper::DISCRIMINANT
+        ], 'accessor');
 
-        $form->addSelect('type', 'Typ', $types)
+        $form->addSelect('type', 'Typ *', $types)
             ->setDefaultValue(1)
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('type');
 
-        $form->addSelect("subcategory", "Podkategorie", $subcategories)
-            ->setDefaultValue(1)
-            ->setHtmlAttribute("class", "form-control");
+        $form->addSelect('subcategory', 'Podkategorie *', $subcategories)
+            ->setHtmlAttribute('class', 'form-control');
 
-        $form->addTextArea('text_before', 'Zadání před')
+        if($subcategories){
+            $form['subcategory']->setDefaultValue(1);
+        }
+
+        $form->addTextArea('text_before', 'Úvod zadání')
             ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Úvodní text zadání.')
             ->setHtmlId('before');
 
-        $form->addTextArea('body', 'Tělo')
+        $form->addTextArea('body', 'Úloha *')
             ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder','Úloha určená k řešení.')
             ->setHtmlId('structure');
 
-        $form->addText("variable", "Neznámá")
-            ->setHtmlAttribute("class", "form-control")
-            ->setHtmlId("variable");
-
-        $form->addTextArea('text_after', 'Zadání po')
+        $form->addText('variable', 'Neznámá')
             ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlId('variable');
+
+        $form->addTextArea('text_after', 'Dodatek k zadání')
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Dodatečný text k zadání.')
             ->setHtmlId('after');
 
-        $form->addSelect('difficulty', 'Obtížnost', $difficulties)
+        $form->addSelect('difficulty', 'Obtížnost *', $difficulties)
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('difficulty');
 
         $form->addTextArea('result', 'Výsledek')
+            ->setHtmlAttribute('placeholder', 'Výsledek úlohy.')
             ->setHtmlAttribute('class', 'form-control');
 
         //Conditions
@@ -155,21 +161,22 @@ class ProblemFinalFormControl extends EntityFormControl
         $values = $form->getValues();
 
         //First validate problem structure
-        $validateFields["body"] = ArrayHash::from([
-            "body" => $values->body,
-            "bodyType" => $this->constHelper::BODY_FINAL
+        $validateFields['body'] = ArrayHash::from([
+            'body' => $values->body,
+            'bodyType' => $this->constHelper::BODY_FINAL
         ]);
         $validationErrors = $this->validationService->validate($validateFields);
 
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
+                foreach($errorGroup as $egKey => $error){
                     $form[$veKey]->addError($error);
+                }
                 $this->redrawControl($veKey.'ErrorSnippet');
             }
         }
 
-        $this->redrawControl("flashesSnippet");
+        $this->redrawControl('flashesSnippet');
         $this->redrawControl('bodyErrorSnippet');
     }
 
@@ -184,8 +191,9 @@ class ProblemFinalFormControl extends EntityFormControl
             $this->onSuccess();
         } catch (\Exception $e){
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException)
+            if ($e instanceof AbortException){
                 return;
+            }
             $this->onError($e);
         }
     }
@@ -200,8 +208,9 @@ class ProblemFinalFormControl extends EntityFormControl
             $this->functionality->update($values->id_hidden, $values);
             $this->onSuccess();
         } catch (\Exception $e){
-            if ($e instanceof AbortException)
+            if ($e instanceof AbortException){
                 return;
+            }
             $this->onError($e);
         }
     }
@@ -214,11 +223,14 @@ class ProblemFinalFormControl extends EntityFormControl
         $types = $this->problemTypeRepository->findAssoc([], 'id');
         $this->template->problemTypes = $types;
         $this->template->condByProblemTypes = [];
-        foreach ($types as $key => $type)
+        foreach ($types as $key => $type){
             $this->template->condByProblemTypes[$key] = $type->getConditionTypes()->getValues();
-        if ($this->edit)
+        }
+        if ($this->edit){
             $this->template->render(__DIR__ . '/templates/edit.latte');
-        else
+        }
+        else{
             $this->template->render(__DIR__ . '/templates/create.latte');
+        }
     }
 }

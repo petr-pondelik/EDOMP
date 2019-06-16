@@ -1,0 +1,34 @@
+<div class="modal fade" tabindex="-1" id="problemTemplateHelpModal" role="dialog" aria-labelledby="problemTemplateHelpModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h2 class="modal-title" id="problemTemplateHelpModalLabel">Nápověda šablon</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <h3>Formát šablon</h3>
+                <p>Šablony jsou zadávány ve formě jazyka LaTeX, jenž je rozšířený o možnost zadání generovatelných parametrů ve formě nepárového XML elementu.</p>
+                <p>Jazyk LaTeX slouží pro strukturování a vizualizaci úloh, parametry tvoří z úlohy šablonu.</p>
+                <p class="mt-5"><strong>Formát parametru:</strong></p>
+                <p class="text-center">&lt;par min=&quot;<strong>D</strong>&quot; max=&quot;<strong>D</strong>&quot;/></p>
+                <dl class="d-flex">
+                    <dt class="mr-3">D:</dt>
+                    <dd>kladné číslo</dd>
+                </dl>
+                <p class="mt-5"><strong>Příklad šablony:</strong></p>
+                <p class="text-center">x^2 + 2x + &lt;par min=&quot;0&quot; max=&quot;10&quot;&#47;&gt; = 0</p>
+            </div>
+
+            <div class="modal-footer">
+                <div class="col-12 text-right">
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Zavřít</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

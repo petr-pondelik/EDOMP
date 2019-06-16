@@ -48,7 +48,8 @@ class FrontPresenter extends BasePresenter
     public function startup(): void
     {
         parent::startup();
-        if(!($this->user->isLoggedIn()))
+        if(!($this->user->isLoggedIn())){
             $this->redirect('Sign:in');
+        }
     }
 }

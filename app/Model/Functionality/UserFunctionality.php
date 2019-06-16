@@ -60,11 +60,17 @@ class UserFunctionality extends BaseFunctionality
      */
     public function create(ArrayHash $data): ?Object
     {
+        bdump($data);
         $user = new User();
         $user->setUsername($data->username);
         $user->setPassword($data->password);
+        $user->setFirstName($data->first_name);
+        $user->setLastName($data->last_name);
         $user->setRole($this->roleRepository->find($data->role));
         $user = $this->attachGroups($user, $data->groups);
+        if(isset($data->user_id)){
+            $user->setCreatedBy($this->repository->find($data->user_id));
+        }
         if(isset($data->created)){
             $user->setCreated($data->created);
         }
@@ -86,6 +92,8 @@ class UserFunctionality extends BaseFunctionality
             throw new EntityNotFoundException('Entity for update not found.');
         }
         $user->setUsername($data->username);
+        $user->setFirstName($data->first_name);
+        $user->setLastName($data->last_name);
         if($data->change_password){
             $user->setPassword($data->password);
         }

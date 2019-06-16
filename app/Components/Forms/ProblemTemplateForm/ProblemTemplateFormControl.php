@@ -122,33 +122,38 @@ class ProblemTemplateFormControl extends EntityFormControl
         $form->addHidden('type')
             ->setDefaultValue($this->templateType);
 
-        $form->addSelect('subcategory', 'Podkategorie', $subcategories)
+        $form->addSelect('subcategory', 'Podkategorie *', $subcategories)
             ->setDefaultValue(1)
             ->setHtmlAttribute('class', 'form-control');
 
-        $form->addTextArea('text_before', 'Zadání před')
+        $form->addTextArea('text_before', 'Úvod zadání')
             ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Úvodní text zadání.')
             ->setHtmlId('before');
 
-        $form->addTextArea('body', 'Tělo')
+        $form->addTextArea('body', 'Úloha *')
             ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder','Úloha určená k řešení.')
             ->setHtmlId('body');
 
-        $form->addText('variable', 'Neznámá')
+        $form->addText('variable', 'Neznámá *')
             ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Neznámá šablony.')
             ->setHtmlId('variable');
 
-        $form->addTextArea('text_after', 'Zadání po')
+        $form->addTextArea('text_after', 'Dodatek zadání')
             ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Dodatečný text k zadání.')
             ->setHtmlId('after');
 
-        $form->addSelect('difficulty', 'Obtížnost', $difficulties)
+        $form->addSelect('difficulty', 'Obtížnost *', $difficulties)
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('difficulty');
 
         if($this->templateType === $this->constHelper::ARITHMETIC_SEQ || $this->templateType === $this->constHelper::GEOMETRIC_SEQ){
-            $form->addInteger('first_n', 'Prvních členů:')
+            $form->addInteger('first_n', 'Počet prvních členů *')
                 ->setHtmlAttribute('class', 'form-control')
+                ->setHtmlAttribute('placeholder', 'Zadejte počet zkoumaných prvních členů.')
                 ->setHtmlId('first-n');
         }
 
