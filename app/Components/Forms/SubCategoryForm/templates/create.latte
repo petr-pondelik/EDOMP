@@ -16,8 +16,16 @@
         </div>
 
         <div class="form-group col-12">
-            {label category_id}
-            {input category_id}
+            {label category}
+            {input category}
+            {snippet categoryErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['category']->errors as $error" class="alert alert-danger border-0">
+                        {$error}
+                    </p>
+                </div>
+            {/snippet}
         </div>
 
     </div>

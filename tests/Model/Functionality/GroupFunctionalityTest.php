@@ -183,7 +183,7 @@ class GroupFunctionalityTest extends FunctionalityTestCase
         // Data for Group create
         $data = ArrayHash::from([
             'label' => 'TEST_GROUP',
-            'super_group_id' => 1,
+            'superGroup' => 1,
             'created' => new DateTime('2000-01-01')
         ]);
 
@@ -211,14 +211,14 @@ class GroupFunctionalityTest extends FunctionalityTestCase
         // Data for Group update
         $data = ArrayHash::from([
             'label' => 'TEST_GROUP_NEW',
-            'super_group_id' => 2
+            'superGroup' => 2
         ]);
 
         // Update group and test expected data
         $group = $this->functionality->update(1, $data);
         $this->assertInstanceOf(Group::class, $group);
         $this->assertEquals($data->label, $group->getLabel());
-        $this->assertEquals($this->superGroupRepositoryMock->find($data->super_group_id), $group->getSuperGroup());
+        $this->assertEquals($this->superGroupRepositoryMock->find($data->superGroup), $group->getSuperGroup());
 
         // Try to delete, success expected
         $this->assertTrue($this->functionality->delete(1));

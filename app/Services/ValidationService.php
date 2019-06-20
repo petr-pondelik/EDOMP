@@ -190,49 +190,103 @@ class ValidationService
             },
 
             'body' => function($filledVal){
-                if(isset($filledVal->variable))
+                if(isset($filledVal->variable)) {
                     return $this->validateBody($filledVal->body, $filledVal->bodyType, $filledVal->variable);
+                }
                 return $this->validateBody($filledVal->body, $filledVal->bodyType);
             },
 
             'variable' => static function($filledVal){
-                if(empty($filledVal))
+                if(empty($filledVal)){
                     return 0;
+                }
                 $matches = Strings::match($filledVal, '~^[a-z]$~');
-                if(strlen($filledVal) !== 1 || !$matches || count($matches) !== 1)
+                if(strlen($filledVal) !== 1 || !$matches || count($matches) !== 1) {
                     return 1;
+                }
                 return -1;
             },
 
             'first_n' => static function($filledVal){
-                if(empty($filledVal))
+                if(empty($filledVal)) {
                     return 0;
-                if($filledVal <= 0)
+                }
+                if($filledVal <= 0) {
                     return 1;
+                }
                 return -1;
+            },
+
+            'category' => static function($filledVal){
+                if(empty($filledVal)){
+                    return 0;
+                }
+                return -1;
+            },
+
+            'subCategory' => static function($filledVal){
+                if(empty($filledVal)){
+                    return 0;
+                }
+                return -1;
+            },
+
+            'difficulty' => static function($filledVal){
+                if(empty($filledVal)){
+                    return 0;
+                }
+                return -1;
+            },
+
+            'problemFinalType' => static function($filledVal){
+
+                if(empty($filledVal)){
+                    return 0;
+                }
+
+                return -1;
+
             },
 
             'type' => [
 
                 'type_' . $this->constHelper::LINEAR_EQ => function($filledVal){
-                    if(!$this->validateEquation($this->latexHelper::parseLatex($filledVal->body), $filledVal->standardized, $filledVal->variable, $this->constHelper::LINEAR_EQ))
+                    if(empty($filledVal)){
                         return 0;
+                    }
+                    if(!$this->validateEquation($this->latexHelper::parseLatex($filledVal->body), $filledVal->standardized, $filledVal->variable, $this->constHelper::LINEAR_EQ)){
+                        return 1;
+                    }
                     return -1;
                 },
 
                 'type_' . $this->constHelper::QUADRATIC_EQ => function($filledVal){
-                    if(!$this->validateEquation($this->latexHelper::parseLatex($filledVal->body), $filledVal->standardized, $filledVal->variable, $this->constHelper::QUADRATIC_EQ))
+                    if(empty($filledVal)){
                         return 0;
+                    }
+                    if(!$this->validateEquation($this->latexHelper::parseLatex($filledVal->body), $filledVal->standardized, $filledVal->variable, $this->constHelper::QUADRATIC_EQ)){
+                        return 0;
+                    }
                     return -1;
                 },
 
                 'type_' . $this->constHelper::ARITHMETIC_SEQ => function($filledVal){
-                    if(!$this->validateSequence($this->latexHelper::parseLatex($filledVal->body), $filledVal->variable, $this->constHelper::ARITHMETIC_SEQ)) return 0;
+                    if(empty($filledVal)){
+                        return 0;
+                    }
+                    if(!$this->validateSequence($this->latexHelper::parseLatex($filledVal->body), $filledVal->variable, $this->constHelper::ARITHMETIC_SEQ)){
+                        return 0;
+                    }
                     return -1;
                 },
 
                 'type_' . $this->constHelper::GEOMETRIC_SEQ => function($filledVal){
-                    if(!$this->validateSequence($this->latexHelper::parseLatex($filledVal->body), $filledVal->variable, $this->constHelper::GEOMETRIC_SEQ)) return 0;
+                    if(empty($filledVal)){
+                        return 0;
+                    }
+                    if(!$this->validateSequence($this->latexHelper::parseLatex($filledVal->body), $filledVal->variable, $this->constHelper::GEOMETRIC_SEQ)){
+                        return 0;
+                    }
                     return -1;
                 }
 
@@ -244,15 +298,18 @@ class ValidationService
                     $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal->body);
 
                     //Maximal number of parameters exceeded
-                    if($parametersInfo->count > $this->constHelper::PARAMETERS_MAX)
+                    if($parametersInfo->count > $this->constHelper::PARAMETERS_MAX) {
                         return 2;
+                    }
 
                     //Maximal parameters complexity exceeded
-                    if($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX)
+                    if($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX) {
                         return 3;
+                    }
 
-                    if(!$this->validateResultCond($filledVal->accessor, $filledVal->body, $filledVal->standardized, $filledVal->variable, $parametersInfo, $problemId))
+                    if(!$this->validateResultCond($filledVal->accessor, $filledVal->body, $filledVal->standardized, $filledVal->variable, $parametersInfo, $problemId)) {
                         return 4;
+                    }
 
                     return -1;
                 },
@@ -279,8 +336,23 @@ class ValidationService
             ],
 
             'conditions_valid' => static function(int $filledVal){
-                if(!$filledVal)
+                if(!$filledVal) {
                     return 0;
+                }
+                return -1;
+            },
+
+            'role' => static function($filledVal){
+                if(!$filledVal){
+                    return 0;
+                }
+                return -1;
+            },
+
+            'superGroup' => static function($filledVal){
+                if(!$filledVal){
+                    return 0;
+                }
                 return -1;
             }
 
@@ -351,22 +423,50 @@ class ValidationService
                 1 => 'Počet prvních členů musí být kladný.'
             ],
 
+            'category' => [
+
+                0 => 'Zvolte prosím kategorii.'
+
+            ],
+
+            'subCategory' => [
+
+                0 => 'Zvolte prosím podkategorii.'
+
+            ],
+
+            'difficulty' => [
+
+                0 => 'Zvolte prosím obtížnost.'
+
+            ],
+
+            'problemFinalType' => [
+
+                0 => 'Zvolte prosím typ úlohy.'
+
+            ],
+
             'type' => [
 
                 'type_' . $this->constHelper::LINEAR_EQ => [
-                    0 => 'Zadaná úloha není lineární rovnicí.'
+                    0 => 'Zvolte prosím typ úlohy.',
+                    1 => 'Zadaná úloha není lineární rovnicí.'
                 ],
 
                 'type_' . $this->constHelper::QUADRATIC_EQ => [
-                    0 => 'Zadaná úloha není kvadratickou rovnicí.'
+                    0 => 'Zvolte prosím typ úlohy.',
+                    1 => 'Zadaná úloha není kvadratickou rovnicí.'
                 ],
 
                 'type_' . $this->constHelper::ARITHMETIC_SEQ => [
-                    0 => 'Zadaná úloha není aritmetickou posloupností.'
+                    0 => 'Zvolte prosím typ úlohy.',
+                    1 => 'Zadaná úloha není aritmetickou posloupností.'
                 ],
 
                 'type_' . $this->constHelper::GEOMETRIC_SEQ => [
-                    0 => 'Zadaná úloha není geometrickou posloupností.'
+                    0 => 'Zvolte prosím typ úlohy.',
+                    1 => 'Zadaná úloha není geometrickou posloupností.'
                 ]
 
             ],
@@ -393,6 +493,14 @@ class ValidationService
 
             'conditions_valid' => [
                 0 => 'Některou ze zadaných podmínek nelze splnit.'
+            ],
+
+            'role' => [
+                0 => 'Zvolte prosím roli.'
+            ],
+
+            'superGroup' => [
+                0 => 'Zvolte prosím superskupinu.'
             ]
 
         ];

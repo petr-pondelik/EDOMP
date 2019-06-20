@@ -117,14 +117,22 @@ class ProblemFinalPresenter extends AdminPresenter
     {
         $form['id']->setDefaultValue($record->getId());
         $form['id_hidden']->setDefaultValue($record->getId());
+        $form['is_generatable_hidden']->setDefaultValue($record->isGenerated());
         $form['text_before']->setDefaultValue($record->getTextBefore());
-        $form['body']->setDefaultValue($record->getBody());
         $form['text_after']->setDefaultValue($record->getTextAfter());
         $form['result']->setDefaultValue($record->getResult());
-        $form['type']->setDefaultValue($record->getProblemType()->getId());
         $form['difficulty']->setDefaultValue($record->getDifficulty()->getId());
-        $form['subcategory']->setDefaultValue($record->getSubCategory()->getId());
+        $form['subCategory']->setDefaultValue($record->getSubCategory()->getId());
         $conditions = $record->getConditions()->getValues();
+
+        if($record->isGenerated()){
+            $form['body']->setDisabled();
+            $form['problemFinalType']->setDisabled();
+        }
+
+        $form['body']->setDefaultValue($record->getBody());
+        $form['problemFinalType']->setDefaultValue($record->getProblemType()->getId());
+
         foreach($conditions as $condition){
             $form['condition_' . $condition->getProblemConditionType()->getId()]->setValue($condition->getAccessor());
         }
@@ -156,16 +164,14 @@ class ProblemFinalPresenter extends AdminPresenter
             ->setTitle('Upravit inline')
             ->setClass('btn btn-primary btn-sm ajax')
             ->onControlAdd[] = static function($container) {
-            $container->addText('text_before', '');
-            $container->addText('body', '');
-            $container->addText('text_after', '');
-            $container->addText('result', '');
-        };
+                $container->addText('text_before', '');
+                $container->addText('text_after', '');
+                $container->addText('result', '');
+            };
 
         $grid->getInlineEdit()->onSetDefaults[] = static function($cont, $item) {
             $cont->setDefaults([
                 'text_before' => $item->getTextBefore(),
-                'body' => $item->getBody(),
                 'text_after' => $item->getTextAfter(),
                 'result' => $item->getResult()
             ]);
@@ -223,7 +229,7 @@ class ProblemFinalPresenter extends AdminPresenter
     {
         try{
             $this->problemFunctionality->update($problemId,
-                ArrayHash::from(['subcategory' => $subCategoryId]),false
+                ArrayHash::from(['subCategory' => $subCategoryId]),false
             );
         } catch (\Exception $e){
             $this->informUser(new UserInformArgs('subCategory', true, 'error', $e));

@@ -88,6 +88,7 @@ class UserFormControl extends EntityFormControl
             ->setHtmlAttribute('placeholder', 'Zadejte příjmení uživatele.');
 
         $form->addSelect('role', 'Role *', $roleOptions)
+            ->setPrompt('Zvolte roli')
             ->setHtmlAttribute('class', 'form-control');
 
         $form->addMultiSelect('groups', 'Skupiny *', $groupOptions)
@@ -119,6 +120,7 @@ class UserFormControl extends EntityFormControl
                 'password_confirm' => $values->password_confirm
             ]);
         }
+        $validateFields['role'] = $values->role;
         $validateFields['groups'] = ArrayHash::from($values->groups);
 
         $validationErrors = $this->validationService->validate($validateFields);

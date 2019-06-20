@@ -115,7 +115,7 @@ class SubCategoryPresenter extends AdminPresenter
         $form["id"]->setDefaultValue($record->getId());
         $form["id_hidden"]->setDefaultValue($record->getId());
         $form["label"]->setDefaultValue($record->getLabel());
-        $form["category_id"]->setDefaultValue($record->getCategory()->getId());
+        $form["category"]->setDefaultValue($record->getCategory()->getId());
     }
 
     /**

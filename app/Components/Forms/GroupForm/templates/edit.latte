@@ -32,8 +32,16 @@
 
 
         <div class="form-group">
-            {label super_group_id}
-            {input super_group_id}
+            {label superGroup}
+            {input superGroup}
+            {snippet superGroupErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['superGroup']->errors as $error" class="alert alert-danger border-0">
+                        {$error}
+                    </p>
+                </div>
+            {/snippet}
         </div>
 
     </div>

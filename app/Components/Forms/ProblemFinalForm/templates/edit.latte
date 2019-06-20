@@ -18,13 +18,29 @@
         </div>
 
         <div class="form-group">
-            {label type}
-            {input type "data-final" => "true"}
+            {label problemFinalType}
+            {input problemFinalType "data-final" => "true"}
+            {snippet problemFinalTypeErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['problemFinalType']->errors as $error" class="alert alert-danger border-0">
+                        {$error}
+                    </p>
+                </div>
+            {/snippet}
         </div>
 
         <div class="form-group">
-            {label subcategory}
-            {input subcategory}
+            {label subCategory}
+            {input subCategory}
+            {snippet subCategoryErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['subCategory']->errors as $error" class="alert alert-danger border-0">
+                        {$error}
+                    </p>
+                </div>
+            {/snippet}
         </div>
 
         <div class="form-group">
@@ -38,7 +54,7 @@
             {snippet bodyErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['structure']->errors as $error" class="alert alert-danger border-0">
+                    <p n:foreach="$form['body']->errors as $error" class="alert alert-danger border-0">
                         {$error}
                     </p>
                 </div>
@@ -58,6 +74,14 @@
         <div class="form-group">
             {label difficulty}
             {input difficulty}
+            {snippet difficultyErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['difficulty']->errors as $error" class="alert alert-danger border-0">
+                        {$error}
+                    </p>
+                </div>
+            {/snippet}
         </div>
 
         {foreach $problemTypes as $typeKey => $type}

@@ -89,7 +89,7 @@ class SubCategoryFunctionalityTest extends FunctionalityTestCase
         // Data for SubCategory create
         $data = ArrayHash::from([
             'label' => 'TEST_SUB_CATEGORY',
-            'category_id' => 1
+            'category' => 1
         ]);
 
         // Create SubCategory and test expected data

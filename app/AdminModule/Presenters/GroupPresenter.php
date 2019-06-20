@@ -122,7 +122,7 @@ class GroupPresenter extends AdminPresenter
         $form["id"]->setDefaultValue($record->getId());
         $form["id_hidden"]->setDefaultValue($record->getId());
         $form["label"]->setDefaultValue($record->getLabel());
-        $form["super_group_id"]->setDefaultValue($record->getSuperGroup()->getId());
+        $form["superGroup"]->setDefaultValue($record->getSuperGroup()->getId());
     }
 
     /**
@@ -201,7 +201,7 @@ class GroupPresenter extends AdminPresenter
     {
         try{
             $this->groupFunctionality->update($groupId, ArrayHash::from([
-                "super_group_id" => $superGroupId
+                "superGroup" => $superGroupId
             ]));
         }
         catch (\Exception $e){

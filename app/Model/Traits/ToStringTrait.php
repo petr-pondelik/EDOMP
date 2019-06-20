@@ -23,8 +23,9 @@ trait ToStringTrait
      */
     public function __toString(): string
     {
-        if($this instanceof Logo)
+        if($this instanceof Logo){
             return "<img src='" . $this->{$this->toStringAttr} . "'/>";
+        }
         return $this->{$this->toStringAttr};
     }
 }

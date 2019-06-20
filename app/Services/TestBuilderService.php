@@ -211,8 +211,8 @@ class TestBuilderService
                 $finalData['body'] = $generatedFinal;
                 $finalData['text_after'] = $problem->getTextAfter();
                 $finalData['difficulty'] = $problem->getDifficulty()->getId();
-                $finalData['type'] = $problem->getProblemType()->getId();
-                $finalData['subcategory'] = $problem->getSubCategory()->getId();
+                $finalData['problemFinalType'] = $problem->getProblemType()->getId();
+                $finalData['subCategory'] = $problem->getSubCategory()->getId();
                 $finalData['problem_template_id'] = $problem->getId();
                 $finalData['is_generated'] = true;
 

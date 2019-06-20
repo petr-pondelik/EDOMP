@@ -102,17 +102,16 @@ class ProblemFinalFormControl extends EntityFormControl
             'problemConditionType.id' => $this->constHelper::DISCRIMINANT
         ], 'accessor');
 
-        $form->addSelect('type', 'Typ *', $types)
-            ->setDefaultValue(1)
+        $form->addHidden('is_generatable_hidden');
+
+        $form->addSelect('problemFinalType', 'Typ *', $types)
+            ->setPrompt('Zvolte typ úlohy')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('type');
 
-        $form->addSelect('subcategory', 'Podkategorie *', $subcategories)
+        $form->addSelect('subCategory', 'Podkategorie *', $subcategories)
+            ->setPrompt('Zvolte podkategorii')
             ->setHtmlAttribute('class', 'form-control');
-
-        if($subcategories){
-            $form['subcategory']->setDefaultValue(1);
-        }
 
         $form->addTextArea('text_before', 'Úvod zadání')
             ->setHtmlAttribute('class', 'form-control')
@@ -134,6 +133,7 @@ class ProblemFinalFormControl extends EntityFormControl
             ->setHtmlId('after');
 
         $form->addSelect('difficulty', 'Obtížnost *', $difficulties)
+            ->setPrompt('Zvolte obtížnost')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('difficulty');
 
@@ -160,11 +160,18 @@ class ProblemFinalFormControl extends EntityFormControl
     {
         $values = $form->getValues();
 
-        //First validate problem structure
-        $validateFields['body'] = ArrayHash::from([
-            'body' => $values->body,
-            'bodyType' => $this->constHelper::BODY_FINAL
-        ]);
+        // First validate problem body, if it's not generated problem
+        if(!$values->is_generatable_hidden){
+            $validateFields['problemFinalType'] = $values->problemFinalType;
+            $validateFields['body'] = ArrayHash::from([
+                'body' => $values->body,
+                'bodyType' => $this->constHelper::BODY_FINAL
+            ]);
+        }
+
+        $validateFields['difficulty'] = $values->difficulty;
+        $validateFields['subCategory'] = $values->subCategory;
+
         $validationErrors = $this->validationService->validate($validateFields);
 
         if($validationErrors){
@@ -172,12 +179,12 @@ class ProblemFinalFormControl extends EntityFormControl
                 foreach($errorGroup as $egKey => $error){
                     $form[$veKey]->addError($error);
                 }
-                $this->redrawControl($veKey.'ErrorSnippet');
             }
         }
 
-        $this->redrawControl('flashesSnippet');
-        $this->redrawControl('bodyErrorSnippet');
+        bdump($validationErrors);
+
+        $this->redrawSnippets();
     }
 
     /**
@@ -232,5 +239,14 @@ class ProblemFinalFormControl extends EntityFormControl
         else{
             $this->template->render(__DIR__ . '/templates/create.latte');
         }
+    }
+
+    public function redrawSnippets(): void
+    {
+        $this->redrawControl('flashesSnippet');
+        $this->redrawControl('problemFinalTypeErrorSnippet');
+        $this->redrawControl('subCategoryErrorSnippet');
+        $this->redrawControl('bodyErrorSnippet');
+        $this->redrawControl('difficultyErrorSnippet');
     }
 }

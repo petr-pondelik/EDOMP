@@ -79,9 +79,9 @@ class ProblemFinalFunctionalityTest extends ProblemFunctionalityTestCase
             'body' => 'TEST_BODY',
             'text_before' => 'TEST_TEXT_BEFORE',
             'text_after' => 'TEST_TEXT_AFTER',
-            'type' => 1,
+            'problemFinalType' => 1,
             'difficulty' => 1,
-            'subcategory' => 1,
+            'subCategory' => 1,
             'condition_1' => 0,
             'condition_2' => 0,
             'created' => new DateTime('2000-01-01')
@@ -93,9 +93,9 @@ class ProblemFinalFunctionalityTest extends ProblemFunctionalityTestCase
         $problemFinalExpected->setBody($data->body);
         $problemFinalExpected->setTextBefore($data->text_before);
         $problemFinalExpected->setTextAfter($data->text_after);
-        $problemFinalExpected->setProblemType($this->problemTypeRepositoryMock->find($data->type));
+        $problemFinalExpected->setProblemType($this->problemTypeRepositoryMock->find($data->problemFinalType));
         $problemFinalExpected->setDifficulty($this->difficultyRepositoryMock->find($data->difficulty));
-        $problemFinalExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subcategory));
+        $problemFinalExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subCategory));
         $problemFinalExpected->setConditions(new ArrayCollection([
                 $this->problemConditionRepositoryMock->findOneBy([
                     'problemConditionType.id' => 1,
@@ -120,9 +120,9 @@ class ProblemFinalFunctionalityTest extends ProblemFunctionalityTestCase
             'body' => '15x + 10x - 5 = 0',
             'text_before' => 'TEST_TEXT_BEFORE_NEW',
             'text_after' => 'TEST_TEXT_AFTER_NEW',
-            'type' => 2,
+            'problemFinalType' => 2,
             'difficulty' => 2,
-            'subcategory' => 2,
+            'subCategory' => 2,
             'condition_1' => 1,
             'condition_2' => 1,
             'created' => new DateTime('2000-01-01')
@@ -132,9 +132,9 @@ class ProblemFinalFunctionalityTest extends ProblemFunctionalityTestCase
         $problemFinalExpected->setBody($data->body);
         $problemFinalExpected->setTextBefore($data->text_before);
         $problemFinalExpected->setTextAfter($data->text_after);
-        $problemFinalExpected->setProblemType($this->problemTypeRepositoryMock->find($data->type));
+        $problemFinalExpected->setProblemType($this->problemTypeRepositoryMock->find($data->problemFinalType));
         $problemFinalExpected->setDifficulty($this->difficultyRepositoryMock->find($data->difficulty));
-        $problemFinalExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subcategory));
+        $problemFinalExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subCategory));
         $problemFinalExpected->setConditions(new ArrayCollection([
                 $this->problemConditionRepositoryMock->findOneBy([
                     'problemConditionType.id' => 1,

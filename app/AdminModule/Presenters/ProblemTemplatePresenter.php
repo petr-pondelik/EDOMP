@@ -123,7 +123,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     {
         $form['id']->setDefaultValue($record->getId());
         $form['id_hidden']->setDefaultValue($record->getId());
-        $form['subcategory']->setDefaultValue($record->getSubCategory()->getId());
+        $form['subCategory']->setDefaultValue($record->getSubCategory()->getId());
         $form['text_before']->setDefaultValue($record->getTextBefore());
         $form['body']->setDefaultValue($record->getBody());
         $form['text_after']->setDefaultValue($record->getTextAfter());

@@ -131,6 +131,8 @@ class UserFunctionalityTest extends FunctionalityTestCase
         $data = ArrayHash::from([
             'username' => 'TEST_USERNAME',
             'password' => 'TEST_PASSWORD',
+            'first_name' => 'TEST_FIRSTNAME',
+            'last_name' => 'TEST_LASTNAME',
             'role' => 1,
         ]);
         $data->groups = [1];
@@ -139,6 +141,8 @@ class UserFunctionalityTest extends FunctionalityTestCase
         $userExpected = new User();
         $userExpected->setUsername($data->username);
         $userExpected->setPassword($data->password);
+        $userExpected->setFirstName($data->first_name);
+        $userExpected->setLastName($data->last_name);
         $userExpected->setRole($this->roleRepositoryMock->find($data->role));
         $userExpected->addGroup($this->groupRepositoryMock->find($data->groups[0]));
 
@@ -148,6 +152,8 @@ class UserFunctionalityTest extends FunctionalityTestCase
         // Test created User against expected object
         $this->assertEquals($userExpected->getUsername(), $user->getUsername());
         $this->assertTrue(Passwords::verify($data->password, $user->getPassword()));
+        $this->assertEquals($userExpected->getFirstName(), $user->getFirstName());
+        $this->assertEquals($userExpected->getLastName(), $user->getLastName());
         $this->assertEquals($userExpected->getRole(), $user->getRole());
         $this->assertEquals($userExpected->getGroups(), $user->getGroups());
         $this->assertEquals($userExpected->getGroupsId(), $user->getGroupsId());
@@ -168,6 +174,8 @@ class UserFunctionalityTest extends FunctionalityTestCase
         $data = ArrayHash::from([
             'username' => 'TEST_USERNAME_NEW',
             'password' => 'TEST_PASSWORD_NEW',
+            'first_name' => 'TEST_FIRSTNAME_NEW',
+            'last_name' => 'TEST_LASTNAME_NEW',
             'change_password' => true,
             'role' => 2,
         ]);
@@ -176,6 +184,8 @@ class UserFunctionalityTest extends FunctionalityTestCase
         // Prepare User expected object
         $userExpected->setUsername($data->username);
         $userExpected->setPassword($data->password);
+        $userExpected->setFirstName($data->first_name);
+        $userExpected->setLastName($data->last_name);
         $userExpected->setRole($this->roleRepositoryMock->find($data->role));
         $userExpected->setGroups(new ArrayCollection());
         $userExpected->addGroup($this->groupRepositoryMock->find($data->groups[0]));
@@ -187,6 +197,8 @@ class UserFunctionalityTest extends FunctionalityTestCase
         // Test updated User against expected object
         $this->assertEquals($userExpected->getUsername(), $user->getUsername());
         $this->assertTrue(Passwords::verify($data->password, $user->getPassword()));
+        $this->assertEquals($userExpected->getFirstName(), $user->getFirstName());
+        $this->assertEquals($userExpected->getLastName(), $user->getLastName());
         $this->assertEquals($userExpected->getRole(), $user->getRole());
         $this->assertEquals($userExpected->getGroups(), $user->getGroups());
         $this->assertEquals($userExpected->getGroupsId(), $user->getGroupsId());

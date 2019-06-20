@@ -40,8 +40,16 @@
         </div>
 
         <div class="form-group">
-            {label subcategory}
-            {input subcategory}
+            {label subCategory}
+            {input subCategory}
+            {snippet subCategoryErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['subCategory']->errors as $error" class="alert alert-danger border-0">
+                        {$error}
+                    </p>
+                </div>
+            {/snippet}
         </div>
 
         <div class="form-group">
@@ -83,6 +91,14 @@
         <div class="form-group">
             {label difficulty}
             {input difficulty}
+            {snippet difficultyErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['difficulty']->errors as $error" class="alert alert-danger border-0">
+                        {$error}
+                    </p>
+                </div>
+            {/snippet}
         </div>
 
         {foreach $problemTypes as $typeKey => $type}

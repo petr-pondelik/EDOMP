@@ -122,8 +122,8 @@ class ProblemTemplateFormControl extends EntityFormControl
         $form->addHidden('type')
             ->setDefaultValue($this->templateType);
 
-        $form->addSelect('subcategory', 'Podkategorie *', $subcategories)
-            ->setDefaultValue(1)
+        $form->addSelect('subCategory', 'Podkategorie *', $subcategories)
+            ->setPrompt('Zvolte podkategorii')
             ->setHtmlAttribute('class', 'form-control');
 
         $form->addTextArea('text_before', 'Úvod zadání')
@@ -147,6 +147,7 @@ class ProblemTemplateFormControl extends EntityFormControl
             ->setHtmlId('after');
 
         $form->addSelect('difficulty', 'Obtížnost *', $difficulties)
+            ->setPrompt('Zvolte obtížnost')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('difficulty');
 
@@ -182,8 +183,9 @@ class ProblemTemplateFormControl extends EntityFormControl
     {
         $values = $form->getValues();
 
-        //First validate problem body
         $validateFields['variable'] = $values->variable;
+        $validateFields['subCategory'] = $values->subCategory;
+        $validateFields['difficulty'] = $values->difficulty;
 
         if(in_array($this->templateType, $this->constHelper::SEQUENCES)){
             $validateFields['first_n'] = $values->first_n;
@@ -471,8 +473,10 @@ class ProblemTemplateFormControl extends EntityFormControl
     public function redrawFormErrors(): void
     {
         $this->redrawControl('variableErrorSnippet');
+        $this->redrawControl('subCategoryErrorSnippet');
         $this->redrawControl('bodyErrorSnippet');
         $this->redrawControl('typeErrorSnippet');
+        $this->redrawControl('difficultyErrorSnippet');
         $this->redrawControl('conditionsErrorSnippet');
         $this->redrawControl('first_nErrorSnippet');
         $this->redrawControl('flashesSnippet');

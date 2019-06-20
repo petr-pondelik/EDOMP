@@ -12,7 +12,6 @@ namespace App\Components\Forms\GroupForm;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\GroupFunctionality;
 use App\Model\Repository\SuperGroupRepository;
-use App\Model\Repository\UserRepository;
 use App\Services\ValidationService;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
@@ -62,7 +61,8 @@ class GroupFormControl extends EntityFormControl
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte název skupiny.');
 
-        $form->addSelect('super_group_id', 'Superskupina *', $superGroupOptions)
+        $form->addSelect('superGroup', 'Superskupina *', $superGroupOptions)
+            ->setPrompt('Zvolte superskupinu')
             ->setHtmlAttribute('class', 'form-control');
 
         return $form;
@@ -76,6 +76,7 @@ class GroupFormControl extends EntityFormControl
         $values = $form->values;
 
         $validateFields['label'] = $values->label;
+        $validateFields['superGroup'] = $values->superGroup;
 
         $validationErrors = $this->validationService->validate($validateFields);
 
@@ -88,6 +89,7 @@ class GroupFormControl extends EntityFormControl
         }
 
         $this->redrawControl('labelErrorSnippet');
+        $this->redrawControl('superGroupErrorSnippet');
     }
 
     /**
@@ -118,7 +120,7 @@ class GroupFormControl extends EntityFormControl
         try{
             $this->functionality->update($values->id_hidden, ArrayHash::from([
                 'label' => $values->label,
-                'super_group_id' => $values->super_group_id
+                'superGroup' => $values->superGroup
             ]));
             $this->onSuccess();
         } catch (\Exception $e){

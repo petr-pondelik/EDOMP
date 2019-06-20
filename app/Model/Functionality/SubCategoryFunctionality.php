@@ -51,7 +51,7 @@ class SubCategoryFunctionality extends BaseFunctionality
     public function create(ArrayHash $data): ?Object
     {
         $subcategory = new SubCategory();
-        $category = $this->categoryRepository->find($data->category_id);
+        $category = $this->categoryRepository->find($data->category);
         $subcategory->setLabel($data->label);
         $subcategory->setCategory($category);
         $this->em->persist($subcategory);

@@ -54,7 +54,6 @@ class LogoFormControl extends EntityFormControl
         $form = parent::createComponentForm();
 
         $form->addText('label', 'Název *')
-            ->setRequired()
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte název loga.');
 

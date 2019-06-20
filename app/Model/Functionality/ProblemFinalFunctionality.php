@@ -118,9 +118,9 @@ class ProblemFinalFunctionality extends BaseFunctionality
             $problem->setCreated($data->created);
         }
 
-        $problem->setProblemType($this->problemTypeRepository->find($data->type));
+        $problem->setProblemType($this->problemTypeRepository->find($data->problemFinalType));
         $problem->setDifficulty($this->difficultyRepository->find($data->difficulty));
-        $problem->setSubCategory($this->subCategoryRepository->find($data->subcategory));
+        $problem->setSubCategory($this->subCategoryRepository->find($data->subCategory));
 
         if(isset($data->problem_template_id)){
             $problem->setProblemTemplate($this->problemRepository->find($data->problem_template_id));
@@ -172,17 +172,17 @@ class ProblemFinalFunctionality extends BaseFunctionality
             $problem->setCreated($data->created);
         }
 
-        if(!empty($data->type)){
-            $problem->setProblemType($this->problemTypeRepository->find($data->type));
+        if(!empty($data->problemFinalType)){
+            $problem->setProblemType($this->problemTypeRepository->find($data->problemFinalType));
         }
-        if(!empty($data->subcategory)){
-            $problem->setSubCategory($this->subCategoryRepository->find($data->subcategory));
+        if(!empty($data->subCategory)){
+            $problem->setSubCategory($this->subCategoryRepository->find($data->subCategory));
         }
         if(!empty($data->difficulty)){
             $problem->setDifficulty($this->difficultyRepository->find($data->difficulty));
         }
 
-        if($updateConditions){
+        if($updateConditions && $data->problemFinalType){
             $problem->setConditions(new ArrayCollection());
             $this->attachConditions($problem, $data);
         }
@@ -200,7 +200,7 @@ class ProblemFinalFunctionality extends BaseFunctionality
      */
     public function attachConditions(ProblemFinal $problem, ArrayHash $data): ProblemFinal
     {
-        $type = $this->problemTypeRepository->find($data->type);
+        $type = $this->problemTypeRepository->find($data->problemFinalType);
         $problemCondTypes = $type->getConditionTypes()->getValues();
 
         foreach ($problemCondTypes as $problemCondType){

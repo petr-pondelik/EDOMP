@@ -60,7 +60,8 @@ class SubCategoryFormControl extends EntityFormControl
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte název podkategorie.');
 
-        $form->addSelect('category_id', 'Kategorie *', $categoryOptions)
+        $form->addSelect('category', 'Kategorie *', $categoryOptions)
+            ->setPrompt('Zvolte kategorii')
             ->setHtmlAttribute('class', 'form-control');
 
         return $form;
@@ -72,7 +73,10 @@ class SubCategoryFormControl extends EntityFormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->values;
+
         $validateFields['label'] = $values->label;
+        $validateFields['category'] = $values->category;
+
         $validationErrors = $this->validationService->validate($validateFields);
 
         if ($validationErrors) {
@@ -84,6 +88,7 @@ class SubCategoryFormControl extends EntityFormControl
         }
 
         $this->redrawControl('labelErrorSnippet');
+        $this->redrawControl('categoryErrorSnippet');
     }
 
     /**

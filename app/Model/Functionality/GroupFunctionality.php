@@ -69,7 +69,7 @@ class GroupFunctionality extends BaseFunctionality
     {
         $group = new Group();
         $group->setLabel($data->label);
-        $group->setSuperGroup($this->superGroupRepository->find($data->super_group_id));
+        $group->setSuperGroup($this->superGroupRepository->find($data->superGroup));
         if(isset($data->user_id)){
             $group->setCreatedBy($this->userRepository->find($data->user_id));
         }
@@ -93,8 +93,8 @@ class GroupFunctionality extends BaseFunctionality
         if(isset($data->label)){
             $group->setLabel($data->label);
         }
-        if(isset($data->super_group_id)){
-            $group->setSuperGroup($this->superGroupRepository->find($data->super_group_id));
+        if(isset($data->superGroup)){
+            $group->setSuperGroup($this->superGroupRepository->find($data->superGroup));
         }
         $this->em->persist($group);
         $this->em->flush();

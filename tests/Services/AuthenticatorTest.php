@@ -102,6 +102,8 @@ class AuthenticatorTest extends TestCase
         $firstUser = new User();
         $firstUser->setUsername('TEST_USERNAME_FIRST');
         $firstUser->setPassword('TEST_PASSWORD_FIRST');
+        $firstUser->setFirstName('TEST_FIRST_NAME_FIRST');
+        $firstUser->setLastName('TEST_LAST_NAME_FIRST');
         $firstUser->setGroups(new ArrayCollection([$group]));
         $firstUser->setRole($adminRole);
         $firstUser->setId(1);
@@ -110,6 +112,8 @@ class AuthenticatorTest extends TestCase
         $secondUser = new User();
         $secondUser->setUsername('TEST_USERNAME_SECOND');
         $secondUser->setPassword('TEST_PASSWORD_SECOND');
+        $secondUser->setFirstName('TEST_FIRST_NAME_SECOND');
+        $secondUser->setLastName('TEST_LAST_NAME_SECOND');
         $secondUser->setGroups(new ArrayCollection([$group]));
         $secondUser->setRole($studentRole);
         $secondUser->setId(2);
@@ -178,7 +182,9 @@ class AuthenticatorTest extends TestCase
             'categories' => [
                 $this->firstCategory, $this->secondCategory
             ],
-            'roleLabel' => 'Administrátor'
+            'roleLabel' => 'Administrátor',
+            'firstName' => 'TEST_FIRST_NAME_FIRST',
+            'lastName' => 'TEST_LAST_NAME_FIRST'
         ]);
 
         // Authenticate admin User and get it's identity
@@ -196,7 +202,9 @@ class AuthenticatorTest extends TestCase
             'categories' => [
                 1 => $this->firstCategory
             ],
-            'roleLabel' => 'Student'
+            'roleLabel' => 'Student',
+            'firstName' => 'TEST_FIRST_NAME_SECOND',
+            'lastName' => 'TEST_LAST_NAME_SECOND'
         ]);
 
         // Authenticate student User and get it's Identity
