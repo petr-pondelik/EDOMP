@@ -67,7 +67,12 @@ class BaseSignPresenter extends BasePresenter
     {
         $control = $this->signFormFactory->create();
         $control->onSuccess[] = function (){
-            $this->flashMessage('Vítejte, ' . $this->user->identity->username . '.');
+            if($this->user->identity->firstName || $this->user->identity->lastName){
+                $this->flashMessage('Vítejte, ' . $this->user->identity->firstName . ' ' . $this->user->identity->lastName . '.');
+            }
+            else{
+                $this->flashMessage('Vítejte, ' . $this->user->identity->username . '.');
+            }
             $this->redirect('Homepage:default');
         };
         $control->onError[] = function ($e){};

@@ -76,7 +76,9 @@ class Authenticator implements IAuthenticator
         return new Identity($user->getId(), $role->getKey(), [
             'username' => $user->getUsername(),
             'categories' => $categories,
-            'roleLabel' => $role->getLabel()
+            'roleLabel' => $role->getLabel(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName()
         ]);
     }
 

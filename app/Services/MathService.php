@@ -160,11 +160,12 @@ class MathService
         $cExp = Strings::after($expression, $variable, 2);
         if($cExp === ''){
             $cExp = Strings::after($expression, $variable . '^2');
-            if($cExp === ''){
+            if($cExp === '' || Strings::contains($cExp, $variable)){
                 return '0';
             }
         }
         $cExp = $this->newtonApiClient->simplify($cExp);
+        bdump($cExp);
         return $this->stringsHelper::wrap($cExp);
     }
 
@@ -252,10 +253,15 @@ class MathService
     protected function evaluateQuadraticEquation(ProblemFinal $problem): ArrayHash
     {
         $standardized = $this->standardizeEquation($problem->getBody());
+        bdump($standardized);
         $a = $this->getDiscriminantA($standardized, $problem->getVariable());
         $b = $this->getDiscriminantB($standardized, $problem->getVariable());
+        bdump($a);
+        bdump($b);
         $discriminant = $this->getDiscriminantExpression($standardized, $problem->getVariable(), self::STANDARDIZED);
+        bdump($discriminant);
         $discriminant = $this->evaluateExpression($discriminant);
+        bdump($discriminant);
 
         if($discriminant > 0){
             $res1 = ((-$b) + sqrt($discriminant)) / (2*$a);

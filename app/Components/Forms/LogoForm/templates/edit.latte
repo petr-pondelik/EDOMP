@@ -1,6 +1,6 @@
 {form form}
 
-    <div class="card-header d-flex justify-content-between">
+    <div class="card-header edit-card-header d-lg-flex justify-content-between">
         <h1 class="mb-0 font-weight-bold card-heading">
             <i class="fas fa-images panel-icon mr-3"></i>{$entityLabel}
         </h1>
@@ -35,24 +35,6 @@
 
         </div>
 
-        <div class="form-group mt-5 mb-5">
-
-            {if $extension === ".pdf"}
-
-                <div class="text-center embed-responsive embed-responsive-16by9">
-                    <embed class="embed-responsive-item" alt="{$path}" src="{$path}"/>
-                </div>
-
-            {else}
-
-                <div class="text-center">
-                    <img class="img-fluid" style="height: auto; width: 60%" alt="{$path}" src="{$path}"/>
-                </div>
-
-            {/if}
-
-        </div>
-
         {label edit_logo}
         {input edit_logo, "id" => "edit-logo"}
 
@@ -69,6 +51,24 @@
                     </p>
                 </div>
             {/snippet}
+
+        </div>
+
+        <div class="form-group mt-5 mb-5">
+
+            {if $extension === ".pdf"}
+
+                <div class="text-center embed-responsive embed-responsive-16by9">
+                    <embed class="embed-responsive-item" alt="{$path}" src="{$path}"/>
+                </div>
+
+            {else}
+
+                <div class="text-center">
+                    <img class="img-fluid" style="height: auto; width: 60%" alt="{$path}" src="{$path}"/>
+                </div>
+
+            {/if}
 
         </div>
 

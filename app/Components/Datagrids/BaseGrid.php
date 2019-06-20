@@ -58,6 +58,8 @@ abstract class BaseGrid extends Control
 
         $grid->setTemplateFile(APP_DIR . '/Presenters/Templates/UblabooDatagrid/datagridCustom.latte');
 
+        $grid->setDefaultSort(['id' => 'DESC']);
+
         return $grid;
     }
 

@@ -79,7 +79,8 @@ class TestStatisticsFormControl extends FormControl
                 ->setDisabled();
             $form->addHidden('problem_prototype_id_' . $i);
             $form->addText('success_rate_' . $i, 'Úspěšnost v testu')
-                ->setHtmlAttribute('class', 'form-control');
+                ->setHtmlAttribute('class', 'form-control')
+                ->setHtmlAttribute('placeholder', 'Zadejte desetinné číslo v intervalu <0; 1>');
         }
         $form->onSuccess[] = [$this, 'handleFormSuccess'];
         return $form;
@@ -145,7 +146,6 @@ class TestStatisticsFormControl extends FormControl
 
     public function render(): void
     {
-        //$problemAssociations = $this->problemTestAssociationRepository->findAssoc(['test' => $this->testId], 'variant');
         $associationsByVariant = $this->problemTestAssociationRepository->findByTestInVariants($this->testId);
         $this->template->id = $this->testId;
         $this->template->problemsCnt = count($associationsByVariant);

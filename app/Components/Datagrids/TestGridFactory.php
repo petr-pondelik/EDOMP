@@ -55,7 +55,7 @@ class TestGridFactory extends BaseGrid
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->testRepository->createQueryBuilder('er')->orderBy('er.id', 'DESC'));
+        $grid->setDataSource($this->testRepository->createQueryBuilder('er'));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()

@@ -1,0 +1,5 @@
+{if !$item->isGeneratable()}
+    <a href={plink ProblemType:default do => delete, id => $item->getId()} class="btn btn-danger btn-sm ajax" title="Odstranit typ.">
+    <i class="fa fa-trash"></i>
+    </a>
+{/if}

@@ -9,6 +9,7 @@
 namespace App\Components\DataGrids;
 
 use App\Model\Repository\LogoRepository;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class LogoGridFactory
@@ -40,13 +41,13 @@ class LogoGridFactory extends BaseGrid
      * @return \Ublaboo\DataGrid\DataGrid
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function create($container, $name)
+    public function create($container, $name): DataGrid
     {
         $grid = parent::create($container, $name);
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->logoRepository->createQueryBuilder('er')->orderBy('er.id', 'DESC'));
+        $grid->setDataSource($this->logoRepository->createQueryBuilder('er'));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()

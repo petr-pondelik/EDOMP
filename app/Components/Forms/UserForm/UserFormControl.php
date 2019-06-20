@@ -73,11 +73,11 @@ class UserFormControl extends EntityFormControl
 
         $form->addPassword('password', 'Heslo *')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Zadejte heslo uživatele.');
+            ->setHtmlAttribute('placeholder', 'Zadejte heslo uživatele. (min. 8 znaků)');
 
         $form->addPassword('password_confirm', 'Potvrzení hesla *')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Zopakujte heslo uživatele.');
+            ->setHtmlAttribute('placeholder', 'Zopakujte heslo uživatele. (min. 8 znaků)');
 
         $form->addText('first_name', 'Jméno')
             ->setHtmlAttribute('class', 'form-control')

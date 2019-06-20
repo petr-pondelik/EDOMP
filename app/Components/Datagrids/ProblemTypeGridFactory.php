@@ -44,7 +44,7 @@ class ProblemTypeGridFactory extends BaseGrid
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->problemTypeRepository->createQueryBuilder('er')->orderBy('er.id', 'DESC'));
+        $grid->setDataSource($this->problemTypeRepository->createQueryBuilder('er'));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()

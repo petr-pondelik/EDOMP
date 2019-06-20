@@ -257,7 +257,7 @@ class TestBuilderService
             'logo_id' => $data->logo_file_hidden,
             'term' => $data->test_term,
             'school_year' => $data->school_year,
-            'test_number' => $data->test_number,
+            'test_number' => (int) $data->test_number,
             'groups' => $data->groups,
             'introduction_text' => $data->introduction_text
         ]));

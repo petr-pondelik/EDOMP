@@ -90,12 +90,12 @@ class User extends BaseEntity
     protected $superGroupsCreated;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\Group", mappedBy="createdBy", cascade={"persist", "merge"})
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\Group", mappedBy="createdBy", cascade={"all"})
      */
     protected $groupsCreated;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\User", mappedBy="createdBy", cascade={"persist", "merge"})
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\User", mappedBy="createdBy", cascade={"all"})
      */
     protected $usersCreated;
 

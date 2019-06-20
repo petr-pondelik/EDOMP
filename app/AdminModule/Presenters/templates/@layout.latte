@@ -33,7 +33,8 @@
         {/if}
 
         {if !$presenter->isLinkCurrent('Homepage:*')}
-            <nav class="ml-4 mr-4 mt-3" id="breadcrumb-navigation" aria-label="breadcrumb">
+            <nav class="ml-4 mr-4 mt-3 {ifset isEdit}breadcrumb-edit{/ifset}"
+                 id="breadcrumb-navigation" aria-label="breadcrumb">
                 <ol class="mb-0 pt-1 pb-1 breadcrumb bg-light">
                     <li class="breadcrumb-item"><a n:href="Homepage:default"><i class="fas fa-home"></i></a></li>
                     {ifset headingFirstLink}

@@ -57,8 +57,7 @@ class SuperGroupGridFactory extends BaseGrid
 
         $qb = $this->superGroupRepository->createQueryBuilder('er')
             ->where('er.id != :id')
-            ->setParameter('id', $this->constHelper::ADMIN_GROUP)
-            ->orderBy('er.id', 'DESC');
+            ->setParameter('id', $this->constHelper::ADMIN_GROUP);
 
         if($container->user->isInRole('teacher')){
             $qb->andWhere('er.createdBy = :createdById')

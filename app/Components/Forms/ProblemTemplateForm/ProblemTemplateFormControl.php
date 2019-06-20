@@ -298,8 +298,13 @@ class ProblemTemplateFormControl extends EntityFormControl
 
         try {
             $validationErrors = $this->validationService->validate($validationFields);
-        } catch (InvalidParameterException $e){
-            $this['form']['body']->addError($e->getMessage());
+        } catch (\Exception $e){
+            if($e instanceof NewtonApiException){
+                $this['form']['submit']->addError($e->getMessage());
+            }
+            else{
+                $this['form']['body']->addError($e->getMessage());
+            }
             $this->redrawFormErrors();
             return;
         }

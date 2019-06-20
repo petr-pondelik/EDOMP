@@ -16,15 +16,15 @@ use Nette\Utils\Strings;
  */
 class LatexHelper
 {
-    const GLOBAL = "global";
+    protected const GLOBAL = 'global';
 
-    const INLINE = "inline";
+    protected const INLINE = 'inline';
 
-    const DISPLAY = "display";
+    protected const DISPLAY = 'display';
 
-    const PARENTHESES = "parentheses";
+    protected const PARENTHESES = 'parentheses';
 
-    const PREFIXES = [
+    protected const PREFIXES = [
 
         'global' => [
 
@@ -80,28 +80,28 @@ class LatexHelper
 
         ],
 
-        "parentheses" => [
+        'parentheses' => [
 
-            "classics" => [
+            'classics' => [
 
-                "bigSm" => [
-                    "original" => "\\\big\(",
-                    "replacement" => "("
+                'bigSm' => [
+                    'original' => '\\\big\(',
+                    'replacement' => '('
                 ],
 
-                "bigLg" => [
-                    "original" => "\\\Big\(",
-                    "replacement" => "("
+                'bigLg' => [
+                    'original' => '\\\Big\(',
+                    'replacement' => '('
                 ],
 
-                "biggSm" => [
-                    "original" => "\\\bigg\(",
-                    "replacement" => "("
+                'biggSm' => [
+                    'original' => '\\\bigg\(',
+                    'replacement' => '('
                 ],
 
-                "biggLg" => [
-                    "original" => "\\\Bigg\(",
-                    "replacement" => "("
+                'biggLg' => [
+                    'original' => '\\\Bigg\(',
+                    'replacement' => '('
                 ]
 
             ],
@@ -118,14 +118,14 @@ class LatexHelper
                     'replacement' => '('
                 ],
 
-                "biggSm" => [
-                    "original" => "\\\bigg\[",
-                    "replacement" => "("
+                'biggSm' => [
+                    'original' => '\\\bigg\[',
+                    'replacement' => '('
                 ],
 
-                "biggLg" => [
-                    "original" => "\\\Bigg\[",
-                    "replacement" => "("
+                'biggLg' => [
+                    'original' => '\\\Bigg\[',
+                    'replacement' => '('
                 ]
 
             ],
@@ -142,14 +142,14 @@ class LatexHelper
                     'replacement' => '('
                 ],
 
-                "biggSm" => [
-                    "original" => "\\\bigg\\\{",
-                    "replacement" => "("
+                'biggSm' => [
+                    'original' => '\\\bigg\\\{',
+                    'replacement' => '('
                 ],
 
-                "biggLg" => [
-                    "original" => "\\\Bigg\\\{",
-                    "replacement" => "("
+                'biggLg' => [
+                    'original' => '\\\Bigg\\\{',
+                    'replacement' => '('
                 ]
 
             ],
@@ -166,14 +166,14 @@ class LatexHelper
                     'replacement' => '('
                 ],
 
-                "biggSm" => [
-                    "original" => "\\\bigg \\\langle",
-                    "replacement" => "("
+                'biggSm' => [
+                    'original' => '\\\bigg \\\langle',
+                    'replacement' => '('
                 ],
 
-                "biggLg" => [
-                    "original" => "\\\Bigg \\\langle",
-                    "replacement" => "("
+                'biggLg' => [
+                    'original' => '\\\Bigg \\\langle',
+                    'replacement' => '('
                 ]
 
             ]
@@ -182,7 +182,7 @@ class LatexHelper
 
     ];
 
-    const SUFFIXES = [
+    protected const SUFFIXES = [
 
         'global' => [
 
@@ -344,7 +344,7 @@ class LatexHelper
      * @param string $latex
      * @return string
      */
-    static public function parseFractions(string $latex): string
+    public static function parseFractions(string $latex): string
     {
         return Strings::replace($latex, '~(\\\frac\{([^\\\]*)\}\{([^\\\]*)\})~', '($2)/($3)');
     }
@@ -353,16 +353,18 @@ class LatexHelper
      * @param string $latex
      * @return string
      */
-    static public function parseParentheses(string $latex): string
+    public static function parseParentheses(string $latex): string
     {
         $res = $latex;
         foreach (self::PREFIXES[self::PARENTHESES] as $prefixSet){
-            foreach ($prefixSet as $prefix)
-                $res = Strings::replace($res, '~' . $prefix["original"] . '~', $prefix["replacement"]);
+            foreach ($prefixSet as $prefix){
+                $res = Strings::replace($res, '~' . $prefix['original'] . '~', $prefix['replacement']);
+            }
         }
         foreach (self::SUFFIXES[self::PARENTHESES] as $suffixSet){
-            foreach ($suffixSet as $suffix)
-                $res = Strings::replace($res, '~' . $suffix["original"] . '~', $suffix["replacement"]);
+            foreach ($suffixSet as $suffix){
+                $res = Strings::replace($res, '~' . $suffix['original'] . '~', $suffix['replacement']);
+            }
         }
         return $res;
     }
@@ -371,7 +373,7 @@ class LatexHelper
      * @param string $latex
      * @return string
      */
-    static public function parseExponent(string $latex): string
+    public static function parseExponent(string $latex): string
     {
         return Strings::replace($latex, '~\^{(.*)}~', '^($1)');
     }
@@ -380,27 +382,27 @@ class LatexHelper
      * @param string $latex
      * @return string
      */
-    static public function parseSubscription(string $latex): string
+    public static function parseSubscription(string $latex): string
     {
-        return Strings::replace($latex, "~(_)~", "");
+        return Strings::replace($latex, '~(_)~', '');
     }
 
     /**
      * @param string $latex
      * @return string
      */
-    static public function trim(string $latex): string
+    public static function trim(string $latex): string
     {
         $res = $latex;
         foreach (self::PREFIXES[self::GLOBAL] as $key1 => $prefixSet){
-            foreach ($prefixSet as $key2 => $prefix)
-                $res = Strings::replace($res, '~' . $prefix["original"] . '~', $prefix["replacement"]);
+            foreach ($prefixSet as $key2 => $prefix){
+                $res = Strings::replace($res, '~' . $prefix['original'] . '~', $prefix['replacement']);}
         }
         foreach (self::SUFFIXES[self::GLOBAL] as $key1 => $suffixSet){
-            foreach ($suffixSet as $key2 => $suffix)
-                $res = Strings::replace($res, '~' . $suffix["original"] . '~', $suffix["replacement"]);
+            foreach ($suffixSet as $key2 => $suffix) {
+                $res = Strings::replace($res, '~' . $suffix['original'] . '~', $suffix['replacement']);
+            }
         }
-        bdump(Strings::trim($res));
         return Strings::trim($res);
     }
 
@@ -408,13 +410,14 @@ class LatexHelper
      * @param string $latex
      * @return string
      */
-    static public function parseLatex(string $latex): string
+    public static function parseLatex(string $latex): string
     {
         $res = self::trim($latex);
         $res = self::parseParentheses($res);
         $res = self::parseFractions($res);
         $res = self::parseExponent($res);
         $res = self::parseSubscription($res);
+        bdump($res);
         return $res;
     }
 
@@ -422,12 +425,13 @@ class LatexHelper
      * @param string $latex
      * @return bool
      */
-    static public function latexWrapped(string $latex): bool
+    public static function latexWrapped(string $latex): bool
     {
         foreach(self::PREFIXES[self::GLOBAL] as $key1 => $prefixSet){
             foreach ($prefixSet as $key2 => $prefix){
-                if(Strings::startsWith($latex, $prefix["plain"]) && Strings::endsWith($latex, self::SUFFIXES[self::GLOBAL][$key1][$key2]["plain"]))
+                if(Strings::startsWith($latex, $prefix['plain']) && Strings::endsWith($latex, self::SUFFIXES[self::GLOBAL][$key1][$key2]['plain'])) {
                     return true;
+                }
             }
         }
         return false;

@@ -1,0 +1,1 @@
+INSERT INTO edomp_final.linear_eq_templ (id, variable) VALUES (237, 'x');

@@ -1,0 +1,1 @@
+INSERT INTO edomp_final.quadratic_eq_templ (id, variable) VALUES (220, 'x');

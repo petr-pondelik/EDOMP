@@ -263,6 +263,7 @@ class ProblemFinalPresenter extends AdminPresenter
             $result = $this->mathService->evaluate[(int) $problem->getProblemType()->getId()]($problem);
         } catch (\Exception $e){
             $this->informUser(new UserInformArgs('getRes', true, 'error', $e));
+            return;
         }
         $this->problemFunctionality->storeResult($id, $result);
         $this['problemGrid']->reload();

@@ -43,46 +43,57 @@
 
                 <div class="accordion mt-2 mb-5" id="logo-accordion">
 
-                    <div class="col-12" n:foreach="$logos as $logo">
+                    {if $logos}
 
-                        <div class="card mb-2">
+                        <div class="col-12" n:foreach="$logos as $logo">
 
-                            <div class="card-header heading-test-logo pt-0 pr-0 pb-0 pl-0"
-                                 id="heading-logo-{$logo->getId()}"
-                                 data-toggle="collapse" data-target="#logo-{$logo->getId()}"
-                                 aria-expanded="false" aria-controls="logo-{$logo->getId()}">
-                                <h5 class="mb-0">
-                                    <button type="button"
-                                            class="d-flex justify-content-between pt-3 pb-3 col-12 btn"
-                                            data-logo-id="{$logo->getId()}"
-                                    >
-                                        {$logo->getLabel()}
-                                        <i class="fas fa-chevron-down"
-                                           id="logo-{$logo->getId()}-chevron-down"></i>
-                                        <i class="fas fa-chevron-up d-none"
-                                           id="logo-{$logo->getId()}-chevron-up"></i>
-                                    </button>
-                                </h5>
-                            </div>
+                            <div class="card mb-2">
 
-                            <div id="logo-{$logo->getId()}"
-                                 class="collapse"
-                                 aria-labelledby="heading-logo-{$logo->getId()}"
-                                 data-parent="#logo-accordion"
-                            >
-                                <div class="card-body d-flex justify-content-center">
-                                    <div class="col-10">
-                                        <img class="img-fluid rounded logo-img" alt="{$basePath}{$logo}"
-                                             src="{$basePath}{$logo->getPath()}" data-logo-id="{$logo->getId()}" data-logo-label="{$logo->getLabel()}"
-                                             data-toggle="collapse" data-target="#logo-{$logo->getId()}"
-                                             aria-expanded="false" aria-controls="logo-{$logo->getId()}">
+                                <div class="card-header heading-test-logo pt-0 pr-0 pb-0 pl-0"
+                                     id="heading-logo-{$logo->getId()}"
+                                     data-toggle="collapse" data-target="#logo-{$logo->getId()}"
+                                     aria-expanded="false" aria-controls="logo-{$logo->getId()}">
+                                    <h5 class="mb-0">
+                                        <button type="button"
+                                                class="d-lg-flex justify-content-between pt-3 pb-3 col-12 btn"
+                                                data-logo-id="{$logo->getId()}"
+                                        >
+                                            {$logo->getLabel()}
+                                            <i class="fas fa-chevron-down"
+                                               id="logo-{$logo->getId()}-chevron-down"></i>
+                                            <i class="fas fa-chevron-up d-none"
+                                               id="logo-{$logo->getId()}-chevron-up"></i>
+                                        </button>
+                                    </h5>
+                                </div>
+
+                                <div id="logo-{$logo->getId()}"
+                                     class="collapse"
+                                     aria-labelledby="heading-logo-{$logo->getId()}"
+                                     data-parent="#logo-accordion"
+                                >
+                                    <div class="card-body d-flex justify-content-center">
+                                        <div class="col-10">
+                                            <img class="img-fluid rounded logo-img" alt="{$basePath}{$logo}"
+                                                 src="{$basePath}{$logo->getPath()}" data-logo-id="{$logo->getId()}" data-logo-label="{$logo->getLabel()}"
+                                                 data-toggle="collapse" data-target="#logo-{$logo->getId()}"
+                                                 aria-expanded="false" aria-controls="logo-{$logo->getId()}">
+                                        </div>
                                     </div>
                                 </div>
+
                             </div>
 
                         </div>
 
-                    </div>
+                        {else}
+
+                        <p class="text-center mt-5 text-muted">
+                            Nejsou k dispozici žádná loga. <br/>
+                            Pro přidání přejděte do sekce <a href="{plink :Admin:Logo:default}">Loga</a>.
+                        </p>
+
+                    {/if}
 
                 </div>
 

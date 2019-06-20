@@ -100,54 +100,74 @@ class ValidationService
         $this->validationMapping = [
 
             'username' => static function($filledVal){
-                if(empty($filledVal))
+                if(empty($filledVal)) {
                     return 0;
+                }
                 return -1;
             },
 
             'password' => static function($filledVal){
-                if(empty($filledVal))
+                if(empty($filledVal)) {
                     return 0;
+                }
                 return -1;
             },
 
             //Validate password in administration User section
             'password_confirm' => static function(ArrayHash $filledVal){
-                if(empty($filledVal->password) || empty($filledVal->password_confirm))
+                if(empty($filledVal->password) || empty($filledVal->password_confirm)) {
                     return 0;
-                if(strcmp($filledVal->password, $filledVal->password_confirm))
+                }
+                if(strcmp($filledVal->password, $filledVal->password_confirm)) {
                     return 0;
-                if(strlen($filledVal->password) < 8)
+                }
+                if(strlen($filledVal->password) < 8) {
                     return 1;
+                }
                 return -1;
             },
 
             'groups' => static function(ArrayHash $filledVal){
-                if(count($filledVal) < 1)
+                if(count($filledVal) < 1){
                     return 0;
+                }
                 return -1;
             },
 
             'label' => static function($filledVal){
-                if(empty($filledVal)) return 0;
+                if(empty($filledVal)){
+                    return 0;
+                }
+                if(strlen($filledVal) > 64){
+                    return 1;
+                }
                 return -1;
             },
 
             'logo_file' => static function($filledVal){
-                if(empty($filledVal)) return 0;
+                if(empty($filledVal)){
+                    return 0;
+                }
                 return -1;
             },
 
             'school_year' => static function($filledVal){
-                if(empty($filledVal)) return 0;
-                if(!Strings::match($filledVal, '~[0-9]{4}(\/|\-)([0-9]{4}|[0-9]{2})~'))
+                if(empty($filledVal)){
+                    return 0;
+                }
+                if(!Strings::match($filledVal, '~[0-9]{4}(\/|\-)([0-9]{4}|[0-9]{2})~')) {
                     return 1;
+                }
                 return -1;
             },
 
             'test_number' => static function($filledVal){
-                if(empty($filledVal)) return 0;
-                if($filledVal < 0) return 1;
+                if(empty($filledVal)){
+                    return 0;
+                }
+                if($filledVal < 0){
+                    return 1;
+                }
                 return -1;
             },
 
@@ -158,9 +178,13 @@ class ValidationService
 
             'success_rate' => static function($filledVAl){
                 if(!empty($filledVAl)){
-                    if(!is_numeric($filledVAl)) return 0;
-                    if($filledVAl < 0 || $filledVAl > 1)
+                    $filledVAl = Strings::replace($filledVAl, '~,~', '.');
+                    if(!is_numeric($filledVAl)){
+                        return 0;
+                    }
+                    if($filledVAl < 0 || $filledVAl > 1) {
                         return 1;
+                    }
                 }
                 return -1;
             },
@@ -283,7 +307,8 @@ class ValidationService
             ],
 
             'label' => [
-                0 => 'Název musí být vyplněn.'
+                0 => 'Název musí být vyplněn.',
+                1 => 'Název nesmí být delší než 64 znaků.'
             ],
 
             'logo_file' => [

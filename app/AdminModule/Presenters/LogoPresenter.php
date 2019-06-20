@@ -93,7 +93,7 @@ class LogoPresenter extends AdminPresenter
         $this->logoFormFactory = $logoFormFactory;
     }
 
-    public function renderDefault()
+    public function renderDefault():void
     {
         $this->logoFunctionality->deleteEmpty();
         $this->fileService->clearLogosTmpDir();
@@ -102,7 +102,7 @@ class LogoPresenter extends AdminPresenter
     /**
      * @param $id
      */
-    public function actionEdit($id)
+    public function actionEdit($id): void
     {
         $form = $this['logoEditForm']['form'];
         if(!$form->isSubmitted()){
@@ -119,7 +119,7 @@ class LogoPresenter extends AdminPresenter
      * @param IComponent $form
      * @param Logo $record
      */
-    public function setDefaults(IComponent $form, Logo $record)
+    public function setDefaults(IComponent $form, Logo $record): void
     {
         $form["id"]->setDefaultValue($record->getId());
         $form["id_hidden"]->setDefaultValue($record->getId());
@@ -131,7 +131,7 @@ class LogoPresenter extends AdminPresenter
      * @param $name
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function createComponentLogoGrid($name)
+    public function createComponentLogoGrid($name): void
     {
         $grid = $this->logoGridFactory->create($this, $name);
         $grid->addAction("delete", "", "delete!")
@@ -160,15 +160,16 @@ class LogoPresenter extends AdminPresenter
      * @param int $logoId
      * @throws \Exception
      */
-    public function handleDelete(int $logoId)
+    public function handleDelete(int $logoId): void
     {
         try{
             $this->logoFunctionality->delete($logoId);
             $this->fileService->deleteLogoFile($logoId);
         } catch (\Exception $e){
             $this->informUser(new UserInformArgs('delete', true, 'error', $e));
+            return;
         }
-        $this["logoGrid"]->reload();
+        $this['logoGrid']->reload();
         $this->informUser(new UserInformArgs('delete', true));
     }
 
@@ -176,16 +177,16 @@ class LogoPresenter extends AdminPresenter
      * @param int $id
      * @throws \Nette\Application\AbortException
      */
-    public function handleEdit(int $id)
+    public function handleEdit(int $id): void
     {
-        $this->redirect("edit", $id);
+        $this->redirect('edit', $id);
     }
 
     /**
      * @param int $logoId
      * @param $row
      */
-    public function handleInlineUpdate(int $logoId, $row)
+    public function handleInlineUpdate(int $logoId, $row): void
     {
         try{
             $this->logoFunctionality->update($logoId, $row);

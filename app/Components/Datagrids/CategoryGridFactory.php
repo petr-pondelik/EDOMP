@@ -48,7 +48,7 @@ class CategoryGridFactory extends BaseGrid
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->categoryRepository->createQueryBuilder('er')->orderBy('er.id', 'DESC'));
+        $grid->setDataSource($this->categoryRepository->createQueryBuilder('er'));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()

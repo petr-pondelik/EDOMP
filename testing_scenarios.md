@@ -31,7 +31,7 @@
 -   Nalezení položky Šablony -> vstup do sekce Kvadratické rovnice
 -   Kliknutí na ikonu přidat
 -   Vytvoření šablony kv. rovnice:
-    -   $$ 5 x^2 + 2 + \big(<par min="0" max="8"/> - 3 + 3 x\big) = <par min="0" max="10"/> $$
+    -   $$ 5 x^2 + 2 + \big(<par min="0" max="8"/> - 3 + 3 x\big) \= <par min="0" max="10"/> $$
     -   Neznámá: x
     -   Podmínka diskriminantu: nulový
         -> Po chybové hlášce změna: kladný

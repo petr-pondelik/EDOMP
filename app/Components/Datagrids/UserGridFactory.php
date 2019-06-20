@@ -67,7 +67,6 @@ class UserGridFactory extends BaseGrid
 
         $qb = $this->userRepository->createQueryBuilder('er')
             ->where('er.isAdmin = false');
-            //->orderBy('er.id', 'DESC');
 
         if($container->user->isInRole('teacher')){
             $qb = $qb->andWhere('er.role != :roleId')

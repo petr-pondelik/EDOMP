@@ -112,9 +112,10 @@ class ProblemTypePresenter extends AdminPresenter
         $grid = $this->problemTypeGridFactory->create($this, $name);
 
         $grid->addAction('delete', '', 'delete!')
-            ->setIcon('trash')
+            ->setTemplate(__DIR__ . '/templates/ProblemType/deleteAction.latte');
+            /*->setIcon('trash')
             ->setClass('btn btn-danger btn-sm ajax')
-            ->setTitle("Odstranit kategorii.");
+            ->setTitle("Odstranit kategorii.");*/
 
         $grid->addAction("update", "", "update!")
             ->setIcon("edit")
@@ -125,9 +126,10 @@ class ProblemTypePresenter extends AdminPresenter
             ->setIcon('pencil-alt')
             ->setTitle('Upravit inline')
             ->setClass('btn btn-primary btn-sm ajax')
-            ->onControlAdd[] = function($container) {
+            ->onControlAdd[] = static function($container) {
             $container->addText('label', '');
-        };
+            };
+
         $grid->getInlineEdit()->onSetDefaults[] = function($cont, ProblemType $item) {
             $cont->setDefaults([ "label" => $item->getLabel() ]);
         };

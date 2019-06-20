@@ -39,7 +39,7 @@ class SuperGroup extends BaseEntity
     protected $categories;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Model\Entity\User", inversedBy="superGroupsCreated", cascade={"all"})
+     * @ORM\ManyToOne(targetEntity="App\Model\Entity\User", inversedBy="superGroupsCreated", cascade={"persist", "merge"})
      *
      * @var User
      */

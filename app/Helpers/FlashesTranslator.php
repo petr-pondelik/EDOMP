@@ -159,7 +159,9 @@ class FlashesTranslator
                 'create' => 'Chyba při vytváření kategorie.',
                 'edit' => 'Chyba při editaci kategorie.',
                 'delete' => 'Chyba při odstraňování kategorie.',
-            ]
+            ],
+
+            'constraintViolation' => 'Ke kategorii existují úlohy.'
 
         ],
 
@@ -177,7 +179,9 @@ class FlashesTranslator
                 'edit' => 'Chyba při editaci podkategorie.',
                 'delete' => 'Chyba při odstraňování podkategorie.',
                 'category' => 'Chybě při změně kategorie.'
-            ]
+            ],
+
+            'constraintViolation' => 'K podkategorii existují úlohy.'
 
         ],
 
@@ -243,7 +247,9 @@ class FlashesTranslator
                 'create' => 'Chyba při vytváření loga.',
                 'edit' => 'Chyba při editaci loga.',
                 'delete' => 'Chyba při odstraňování loga.',
-            ]
+            ],
+
+            'constraintViolation' => 'Logo je využíváno alespoň v jednom vygenerovaném testu.'
 
         ],
 
@@ -289,7 +295,6 @@ class FlashesTranslator
     public static function translate(string $operation, string $presenterName, string $type = null, \Exception $e = null): string
     {
         if($e instanceof ForeignKeyConstraintViolationException){
-            return $e->getMessage();
             return self::$presenterMessages[$presenterName]['constraintViolation'];
         }
 

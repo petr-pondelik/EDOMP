@@ -86,7 +86,7 @@ class ProblemGridFactory extends BaseGrid
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->problemRepository->createQueryBuilder('er')->orderBy('er.id', 'DESC'));
+        $grid->setDataSource($this->problemRepository->createQueryBuilder('er'));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()

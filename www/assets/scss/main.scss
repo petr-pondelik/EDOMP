@@ -1,12 +1,5 @@
-/*
-    COLORS
-*/
-
-$bodyBgColor: #eef5f9;
-$blueColor: #2962ff;
-$lightGreyColor: #d6d8d9;
-$darkColor: #3e5569;
-$lightColor: hsla(0,0%,100%,.8);
+// Import variables
+@import "includes/variables";
 
 h2{
     font-size: 1.5em;
@@ -22,7 +15,7 @@ h2{
     transition: all 0.3s;
 }
 
-@media screen and (max-width: 600px){
+@media screen and (max-width: $breakpointSidebar){
     #sidebar{
         width: 100%;
         display: none;
@@ -482,6 +475,12 @@ body {
     }
 }
 
+@media screen and (max-width: $breakpointSidebar) {
+    .jquery-accordion-menu-footer{
+        width: 100% !important;
+    }
+}
+
 /**
     FRONT-MODULE STYLES
  */
@@ -500,4 +499,38 @@ body {
 
 .modal-body h3{
     font-size: 1.2em;
+}
+
+/**
+    CARDS HEADERS RESPONSIVITY
+ */
+
+@media screen and (max-width: $breakpointLg) {
+    .edit-card-header{
+        .btn{
+            display: block !important;
+            width: 100% !important;
+            margin-top: 12px;
+        }
+    }
+    .breadcrumb-edit{
+        .breadcrumb-item:last-of-type{
+            display: block !important;
+            width: 100%;
+            word-wrap: break-word;
+            padding-left: 0 !important;
+            &::before{
+                content: '' !important;
+            }
+        }
+        .breadcrumb-item:nth-last-of-type(2){
+            &::after{
+                content: '/' !important;
+            }
+        }
+        .breadcrumb-item:last-of-type{
+            text-align: center;
+            margin: 12px 0;
+        }
+    }
 }

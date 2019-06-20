@@ -81,6 +81,11 @@
 
             {/foreach}
 
+            {if count($variantAssociations) > 1}
+                <button n:name="submit" id="submit-btn" class="btn btn-primary col-12 mb-3">Uložit</button>
+                <a href={plink :Admin:Test:default} class="btn btn-secondary col-12 mb-4" title="Zpět na přehled">Zpět</a>
+            {/if}
+
         </div>
 
     {/form}

@@ -69,7 +69,7 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css
 //Import custom styles
 import './css/sidemenu.css';
 
-import './scss/global.scss';
+import './scss/main.scss';
 
 //TODO: SCRIPTS NOW WORKING WITH ONE CONDITION TYPE FOR EACH PROTOTYPE (VALIDATION) -> NEED TO BE GENERALIZED
 //TODO: CREATE SCRIPT FILE FOR EACH LOGICAL SECTION AND INCLUDE IT HERE

@@ -88,7 +88,7 @@ class TemplateGridFactory extends BaseGrid
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($repository->createQueryBuilder('er')->orderBy('er.id', 'DESC'));
+        $grid->setDataSource($repository->createQueryBuilder('er'));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()

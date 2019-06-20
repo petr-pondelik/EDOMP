@@ -11,6 +11,7 @@ namespace App\Model\Functionality;
 use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\ProblemTestAssociationRepository;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Strings;
 
 /**
  * Class ProblemTestAssociationFunctionality
@@ -51,9 +52,11 @@ class ProblemTestAssociationFunctionality extends BaseFunctionality
             'test.id' => $data->test_id
         ]);
         if(empty($data->success_rate)){
-            $data->success_rate = null;
+            $association->setSuccessRate(null);
         }
-        $association->setSuccessRate($data->success_rate);
+        else{
+            $association->setSuccessRate(Strings::replace($data->success_rate, '~,~', '.'));
+        }
         $this->em->persist($association);
         $this->em->flush();
         return $association;
