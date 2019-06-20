@@ -183,6 +183,8 @@ class ProblemTemplateFormControl extends EntityFormControl
     {
         $values = $form->getValues();
 
+        bdump($values);
+
         $validateFields['variable'] = $values->variable;
         $validateFields['subCategory'] = $values->subCategory;
         $validateFields['difficulty'] = $values->difficulty;

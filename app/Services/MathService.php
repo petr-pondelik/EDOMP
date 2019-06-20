@@ -134,16 +134,26 @@ class MathService
      * @param string $expression
      * @param string $variable
      * @return false|string
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function getDiscriminantB(string $expression, string $variable)
     {
-        $bExp = Strings::before($expression, $variable, 2);
-        $bExp = Strings::after($bExp, $variable . '^2');
-        $bExp = $this->stringsHelper::trimOperators($bExp);
-        if($bExp === ''){
-            return '0';
+        $bExp = Strings::after($expression, $variable . '^2');
+        $bExpEnd = Strings::indexOf($bExp, $variable);
+        $bExp = Strings::substring($bExp, 0, $bExpEnd + 1);
+        $bExp = $this->newtonApiClient->simplify($bExp);
+        if($bExp === 'x'){
+            return '1';
         }
-        return $bExp;
+        if($bExp === '-x'){
+            return '(-1)';
+        }
+        $bExp = Strings::replace($bExp, '~' . $variable . '~', '');
+        $bExp = Strings::trim($bExp);
+        return $this->stringsHelper::wrap($bExp);
     }
 
     /**
@@ -164,8 +174,8 @@ class MathService
                 return '0';
             }
         }
+        //var_dump($cExp);
         $cExp = $this->newtonApiClient->simplify($cExp);
-        bdump($cExp);
         return $this->stringsHelper::wrap($cExp);
     }
 
@@ -212,10 +222,12 @@ class MathService
         $parameterized = $this->stringsHelper::getParametrized($expression);
 
         $sides = $this->stringsHelper::getEquationSides($parameterized->expression);
+//        var_dump($sides);
         $sides->left = $this->newtonApiClient->simplify($sides->left);
         $sides->right = $this->newtonApiClient->simplify($sides->right);
 
         $expression = $this->stringsHelper::mergeEqSides($sides);
+//        var_dump($expression);
         $expression = $this->newtonApiClient->simplify($expression);
 
         return $expression;
@@ -253,19 +265,20 @@ class MathService
     protected function evaluateQuadraticEquation(ProblemFinal $problem): ArrayHash
     {
         $standardized = $this->standardizeEquation($problem->getBody());
-        bdump($standardized);
         $a = $this->getDiscriminantA($standardized, $problem->getVariable());
         $b = $this->getDiscriminantB($standardized, $problem->getVariable());
-        bdump($a);
-        bdump($b);
+        /*$a = $this->stringsHelper::trim($a);
+        $b = $this->stringsHelper::trim($b);*/
         $discriminant = $this->getDiscriminantExpression($standardized, $problem->getVariable(), self::STANDARDIZED);
-        bdump($discriminant);
         $discriminant = $this->evaluateExpression($discriminant);
-        bdump($discriminant);
+
+        $b = $this->evaluateExpression($b);
+        $a = $this->evaluateExpression($a);
 
         if($discriminant > 0){
             $res1 = ((-$b) + sqrt($discriminant)) / (2*$a);
             $res2 = ((-$b) - sqrt($discriminant)) / (2*$a);
+            bdump(sqrt($discriminant));
             $res = [
                 'type' => 'double',
                 $problem->getVariable() . '_1' => $res1,

@@ -116,6 +116,84 @@ class MathServiceTest extends TestCase
                         return '-12';
                     case ' - 58/3':
                         return '-58/3';
+                    case '4x^2 + x':
+                        return '4 x^2 + x';
+                    case '0':
+                        return '0';
+                    case '4 x^2 + x - (0)':
+                        return '4 x^2 + x';
+                    case ' + x':
+                        return 'x';
+                    case '4x^2 + 5 x':
+                        return '4 x^2 + 5 x';
+                    case '4 x^2 + 5 x - (0)':
+                        return '4 x^2 + 5 x';
+                    case ' + 5 x':
+                        return '5 x';
+                    case '4x^2 - x':
+                        return '4 x^2 - x';
+                    case '4 x^2 - x - (0)':
+                        return '4 x^2 - x';
+                    case ' - x':
+                        return '-x';
+                    case ' + 14 x':
+                        return '14 x';
+                    case ' + 8 x':
+                        return '8 x';
+                    case '4x^2 - 5 x':
+                        return '4 x^2 - 5 x';
+                    case '4 x^2 - 5 x - (0)':
+                        return '4 x^2 - 5 x';
+                    case ' - 5 x':
+                        return '-5 x';
+                    case '3x^2 + x - 2':
+                        return '3 x^2 + x - 2';
+                    case '3 x^2 + x - 2 - (0)':
+                        return '3 x^2 + x - 2';
+                    case ' - 2':
+                        return '-2';
+                    case '4x^2 - 4x + 1':
+                        return '4 x^2 - 4 x + 1';
+                    case '4 x^2 - 4 x + 1 - (0)':
+                        return '4 x^2 - 4 x + 1';
+                    case ' + 1':
+                        return '1';
+                    case ' - 4 x':
+                        return '-4 x';
+                    case 'x^2 + (4 + 1) x + 2':
+                        return 'x^2 + 5 x + 2';
+                    case 'x^2 + 5 x + 2 - (0)':
+                        return 'x^2 + 5 x + 2';
+                    case ' + 2':
+                        return '2';
+                    case 'x^2 + x (4 + 1) + 4 + 2':
+                        return 'x^2 + 5 x + 6';
+                    case 'x^2 + 5 x + 6 - (0)':
+                        return 'x^2 + 5 x + 6';
+                    case 'x^2 -2 x + x - 2':
+                        return 'x^2 - x - 2';
+                    case 'x^2 - x - 2 - (0)':
+                        return 'x^2 - x - 2';
+                    case '(1)/(2) ( 2 x - 1 )^2 - ( (1)/(2) ( x + 1 ) )^2':
+                        return '7/4 x^2 - 5/2 x + 1/4';
+                    case '3 ( ( (1)/(2) x )^2 - ( (1)/(2) )^2 )':
+                        return '3/4 x^2 - 3/4';
+                    case '7/4 x^2 - 5/2 x + 1/4 - (3/4 x^2 - 3/4)':
+                        return 'x^2 - 5/2 x + 1';
+                    case ' - 5/2 x':
+                        return '-5/2 x';
+                    case '5 ( 5 ( 5 ( 5 x - 4 ) - 4 ) - 4 )':
+                        return '625 x - 620';
+                    case '5':
+                        return '5';
+                    case '625 x - 620 - (5)':
+                        return '625 x - 625';
+                    case '3 ( 2 ( 3 x - 6 ) - 2 ( 4 x - 5 ) + 1 ) - 3':
+                        return '-6 x - 6';
+                    case '6 ( 3 - 8 ( x - 3 ) )':
+                        return '-48 x + 162';
+                    case '-6 x - 6 - (-48 x + 162)':
+                        return '42 x - 168';
                     default:
                         return null;
                 }
@@ -174,6 +252,9 @@ class MathServiceTest extends TestCase
         $equation = '$$ 5x^2 + \big( -x + 12x + 4 - 5 \big) + \frac{8 + 3x}{3} = 15 + \big( 4 + 2 + 5x - x \big) $$';
         $this->assertEquals('5 x^2 + 8 x - 58/3', $this->mathService->standardizeEquation($equation));
 
+        // Test quadratic equation
+        $equation = '$$ 4x^2 + x = 0 $$';
+        $this->assertEquals('4 x^2 + x', $this->mathService->standardizeEquation($equation));
     }
 
     /**
@@ -186,15 +267,55 @@ class MathServiceTest extends TestCase
     {
         // Test simple quadratic equation
         $equation = '$$ x^2 + 4x + x + 2 = -4 $$';
-        $this->assertEquals('5^2 - 4 * 1 * (6)', $this->mathService->getDiscriminantExpression($equation, 'x'));
+        $this->assertEquals('(5)^2 - 4 * 1 * (6)', $this->mathService->getDiscriminantExpression($equation, 'x'));
 
         // Test medium quadratic equation
         $equation = '$$ 5x^2 + \big( -x + 12x + 4 - 5 \big) + 8 + 3x = 15 + 4 $$';
-        $this->assertEquals('14^2 - 4 * 5 * (-12)', $this->mathService->getDiscriminantExpression($equation, 'x'));
+        $this->assertEquals('(14)^2 - 4 * 5 * (-12)', $this->mathService->getDiscriminantExpression($equation, 'x'));
 
         // Test hard quadratic equation
         $equation = '$$ 5x^2 + \big( -x + 12x + 4 - 5 \big) + \frac{8 + 3x}{3} = 15 + \big( 4 + 2 + 5x - x \big) $$';
-        $this->assertEquals('8^2 - 4 * 5 * (-58/3)', $this->mathService->getDiscriminantExpression($equation, 'x'));
+        $this->assertEquals('(8)^2 - 4 * 5 * (-58/3)', $this->mathService->getDiscriminantExpression($equation, 'x'));
+
+        // Test quadratic equation
+        $equation = '$$ 4x^2 + x = 0 $$';
+        $this->assertEquals('1^2 - 4 * 4 * 0', $this->mathService->getDiscriminantExpression($equation, 'x'));
+
+        // Test quadratic equation
+        $equation = '$$ 4x^2 - x = 0 $$';
+        $this->assertEquals('(-1)^2 - 4 * 4 * 0', $this->mathService->getDiscriminantExpression($equation, 'x'));
+
+        // Test quadratic equation
+        $equation = '$$ 4x^2 + 5 x = 0 $$';
+        $this->assertEquals('(5)^2 - 4 * 4 * 0', $this->mathService->getDiscriminantExpression($equation, 'x'));
+
+        // Test quadratic equation
+        $equation = '$$ 4x^2 - 5 x = 0 $$';
+        $this->assertEquals('(-5)^2 - 4 * 4 * 0', $this->mathService->getDiscriminantExpression($equation, 'x'));
+
+        // Test quadratic equation
+        $equation = '$$ 3x^2 + x - 2 = 0 $$';
+        $this->assertEquals('1^2 - 4 * 3 * (-2)', $this->mathService->getDiscriminantExpression($equation, 'x'));
+
+        // Test quadratic equation
+        $equation = '$$ 4x^2 - 4x + 1 = 0 $$';
+        $this->assertEquals('(-4)^2 - 4 * 4 * (1)', $this->mathService->getDiscriminantExpression($equation, 'x'));
+
+        // Test quadratic equation
+        $equation = '$$ x^2 + (4 + 1) x + 2 = 0 $$';
+        $this->assertEquals('(5)^2 - 4 * 1 * (2)', $this->mathService->getDiscriminantExpression($equation, 'x'));
+
+        // Test quadratic equation
+        $equation = '$$ x^2 + x (4 + 1) + 4 + 2 = 0 $$';
+        $this->assertEquals('(5)^2 - 4 * 1 * (6)', $this->mathService->getDiscriminantExpression($equation, 'x'));
+
+        // Test quadratic equation
+        $equation = '$$ x^2 -2 x + x - 2 = 0 $$';
+        $this->assertEquals('(-1)^2 - 4 * 1 * (-2)', $this->mathService->getDiscriminantExpression($equation, 'x'));
+
+        // Test quadratic equation
+        $equation = '$$ \frac{1}{2} \big( 2 x - 1 \big)^2 - \big( \frac{1}{2} \big( x + 1 \big) \big)^2 = 3 \big( \big( \frac{1}{2} x \big)^2 - \big( \frac{1}{2} \big)^2 \big) $$';
+        $this->assertEquals('(-5/2)^2 - 4 * 1 * (1)', $this->mathService->getDiscriminantExpression($equation, 'x'));
     }
 
     /**
@@ -216,6 +337,28 @@ class MathServiceTest extends TestCase
             ]
         ), $res);
 
+        // Prepare linear equation
+        $linearEquation->setBody('$$ 5 \big( 5 \big( 5 \big( 5 x - 4 \big) - 4 \big) - 4 \big) = 5 $$');
+
+        // Evaluate linear equation and test it's result
+        $res = $this->mathService->evaluate[$this->constHelper::LINEAR_EQ]($linearEquation);
+        $this->assertEquals(ArrayHash::from(
+            [
+                'x' => 1
+            ]
+        ), $res);
+
+        // Prepare linear equation
+        $linearEquation->setBody('$$ 3 \big[ 2 \big( 3 x - 6 \big) - 2 \big( 4 x - 5 \big) + 1 \big] - 3 = 6 \big[ 3 - 8 \big( x - 3 \big) \big] $$');
+
+        // Evaluate linear equation and test it's result
+        $res = $this->mathService->evaluate[$this->constHelper::LINEAR_EQ]($linearEquation);
+        $this->assertEquals(ArrayHash::from(
+            [
+                'x' => 4
+            ]
+        ), $res);
+
         // Prepare quadratic equation
         $quadraticEquation = new ProblemFinal();
         $quadraticEquation->setBody('$$ x^2 + 4x + x + 2 = -4 $$');
@@ -231,6 +374,12 @@ class MathServiceTest extends TestCase
                 'type' => 'double'
             ]
         ), $res);
+
+        // Prepare second quadratic equation
+        $quadraticEquation = new ProblemFinal();
+        $quadraticEquation->setBody('$$ 4x^2 + x = 0 $$');
+        $quadraticEquation->setVariable('x');
+        $quadraticEquation->setId(3);
 
         // Prepare arithmetic sequence
         $arithmeticSequence = new ProblemFinal();

@@ -72,6 +72,7 @@ class NewtonApiClient
      */
     public function simplify(string $expression)
     {
+//        var_dump('SIMPLIFY');
         $expression = $this->stringsHelper::newtonFormat($expression);
         try {
             $res = $this->client->request('GET', self::NEWTON_API_URL . self::SIMPLIFY . $expression);

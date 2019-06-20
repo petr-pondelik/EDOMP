@@ -72,8 +72,8 @@ trait ProblemTemplateFunctionalityTrait
         if(isset($data->difficulty)){
             $templ->setDifficulty($this->difficultyRepository->find($data->difficulty));
         }
-        if(isset($data->subcategory)){
-            $templ->setSubCategory($this->subCategoryRepository->find($data->subcategory));
+        if(isset($data->subCategory)){
+            $templ->setSubCategory($this->subCategoryRepository->find($data->subCategory));
         }
         if(isset($data->matches)){
             $templ->setMatches($data->matches);
