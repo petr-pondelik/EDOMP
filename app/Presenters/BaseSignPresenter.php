@@ -20,7 +20,7 @@ use App\Services\ValidationService;
  * Class BaseSignPresenter
  * @package app\presenters
  */
-class BaseSignPresenter extends BasePresenter
+abstract class BaseSignPresenter extends BasePresenter
 {
     /**
      * @var Authenticator
@@ -36,6 +36,11 @@ class BaseSignPresenter extends BasePresenter
      * @var SignFormFactory
      */
     protected $signFormFactory;
+
+    /**
+     * @var bool
+     */
+    protected $admin;
 
     /**
      * BaseSignPresenter constructor.
@@ -65,7 +70,7 @@ class BaseSignPresenter extends BasePresenter
      */
     public function createComponentSignForm(): SignFormControl
     {
-        $control = $this->signFormFactory->create();
+        $control = $this->signFormFactory->create($this->admin);
         $control->onSuccess[] = function (){
             if($this->user->identity->firstName || $this->user->identity->lastName){
                 $this->flashMessage('Vítejte, ' . $this->user->identity->firstName . ' ' . $this->user->identity->lastName . '.');
@@ -79,7 +84,7 @@ class BaseSignPresenter extends BasePresenter
         return $control;
     }
 
-    public function handleLogout()
+    public function handleLogout(): void
     {
         $this->user->logout(true);
     }

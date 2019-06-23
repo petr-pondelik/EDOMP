@@ -1,1 +1,0 @@
-INSERT INTO edomp_final.arithmetic_seq_templ (id, variable, first_n, difference) VALUES (238, 'n', 2, null);

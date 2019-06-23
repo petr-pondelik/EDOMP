@@ -4,8 +4,6 @@ use Tracy\Debugger;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-Debugger::enable();
-
 //DIRECTORY_SEPARATOR is PHP constant holding system dir. separator (\ for Win and / for Linux)
 define('APP_DIR', __DIR__);
 define('DATA_DIR', APP_DIR . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data');

@@ -207,9 +207,9 @@ class TestBuilderService
                 //Build final problem object
                 $finalData = new ArrayHash();
 
-                $finalData['text_before'] = $problem->getTextBefore();
+                $finalData['textBefore'] = $problem->getTextBefore();
                 $finalData['body'] = $generatedFinal;
-                $finalData['text_after'] = $problem->getTextAfter();
+                $finalData['textAfter'] = $problem->getTextAfter();
                 $finalData['difficulty'] = $problem->getDifficulty()->getId();
                 $finalData['problemFinalType'] = $problem->getProblemType()->getId();
                 $finalData['subCategory'] = $problem->getSubCategory()->getId();

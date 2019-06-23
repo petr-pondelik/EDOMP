@@ -56,12 +56,12 @@ class ArithmeticSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         $data = ArrayHash::from([
             'variable' => 'T',
             'body' => 'TEST_BODY',
-            'text_before' => 'TEST_TEXT_BEFORE',
-            'text_after' => 'TEST_TEXT_AFTER',
+            'textBefore' => 'TEST_textBefore',
+            'textAfter' => 'TEST_TEXT_AFTER',
             'first_n' => 5,
             'type' => 1,
             'difficulty' => 1,
-            'subcategory' => 1,
+            'subCategory' => 1,
             'condition_1' => 0,
             'condition_2' => 0,
             'created' => new DateTime('2000-01-01')
@@ -71,12 +71,12 @@ class ArithmeticSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         $arithmeticSeqTemplExpected = new ArithmeticSeqTempl();
         $arithmeticSeqTemplExpected->setVariable($data->variable);
         $arithmeticSeqTemplExpected->setBody($data->body);
-        $arithmeticSeqTemplExpected->setTextBefore($data->text_before);
-        $arithmeticSeqTemplExpected->setTextAfter($data->text_after);
+        $arithmeticSeqTemplExpected->setTextBefore($data->textBefore);
+        $arithmeticSeqTemplExpected->setTextAfter($data->textAfter);
         $arithmeticSeqTemplExpected->setFirstN($data->first_n);
         $arithmeticSeqTemplExpected->setProblemType($this->problemTypeRepositoryMock->find($data->type));
         $arithmeticSeqTemplExpected->setDifficulty($this->difficultyRepositoryMock->find($data->difficulty));
-        $arithmeticSeqTemplExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subcategory));
+        $arithmeticSeqTemplExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subCategory));
         $arithmeticSeqTemplExpected->setConditions(new ArrayCollection([
                 $this->problemConditionRepositoryMock->findOneBy([
                     'problemConditionType.id' => 1,
@@ -100,12 +100,12 @@ class ArithmeticSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         $data = ArrayHash::from([
             'variable' => 'U',
             'body' => 'TEST_BODY_NEW',
-            'text_before' => 'TEST_TEXT_BEFORE_NEW',
-            'text_after' => 'TEST_TEXT_AFTER_NEW',
+            'textBefore' => 'TEST_textBefore_NEW',
+            'textAfter' => 'TEST_TEXT_AFTER_NEW',
             'first_n' => 10,
             'type' => 2,
             'difficulty' => 2,
-            'subcategory' => 2,
+            'subCategory' => 2,
             'matches' => '[]',
             'condition_1' => 1,
             'condition_2' => 1,
@@ -115,12 +115,12 @@ class ArithmeticSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         // Prepare updated ArithmeticSeqTempl expected object
         $arithmeticSeqTemplExpected->setVariable($data->variable);
         $arithmeticSeqTemplExpected->setBody($data->body);
-        $arithmeticSeqTemplExpected->setTextBefore($data->text_before);
-        $arithmeticSeqTemplExpected->setTextAfter($data->text_after);
+        $arithmeticSeqTemplExpected->setTextBefore($data->textBefore);
+        $arithmeticSeqTemplExpected->setTextAfter($data->textAfter);
         $arithmeticSeqTemplExpected->setFirstN($data->first_n);
         $arithmeticSeqTemplExpected->setProblemType($this->problemTypeRepositoryMock->find($data->type));
         $arithmeticSeqTemplExpected->setDifficulty($this->difficultyRepositoryMock->find($data->difficulty));
-        $arithmeticSeqTemplExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subcategory));
+        $arithmeticSeqTemplExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subCategory));
         $arithmeticSeqTemplExpected->setMatches($data->matches);
         $arithmeticSeqTemplExpected->setConditions(new ArrayCollection([
                 $this->problemConditionRepositoryMock->findOneBy([

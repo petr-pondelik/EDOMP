@@ -1,7 +1,0 @@
-INSERT INTO edomp_final.problem_test_association (id, problem_id, problem_template_id, test_id, variant, next_page, success_rate, created) VALUES (280, 226, null, 180, 'A', 0, null, '2019-06-18 20:54:12');
-INSERT INTO edomp_final.problem_test_association (id, problem_id, problem_template_id, test_id, variant, next_page, success_rate, created) VALUES (281, 235, null, 181, 'A', 0, null, '2019-06-18 20:58:07');
-INSERT INTO edomp_final.problem_test_association (id, problem_id, problem_template_id, test_id, variant, next_page, success_rate, created) VALUES (282, 167, null, 182, 'A', 0, null, '2019-06-18 20:59:33');
-INSERT INTO edomp_final.problem_test_association (id, problem_id, problem_template_id, test_id, variant, next_page, success_rate, created) VALUES (283, 234, null, 183, 'A', 0, null, '2019-06-18 21:00:14');
-INSERT INTO edomp_final.problem_test_association (id, problem_id, problem_template_id, test_id, variant, next_page, success_rate, created) VALUES (284, 231, null, 184, 'A', 0, null, '2019-06-18 21:36:53');
-INSERT INTO edomp_final.problem_test_association (id, problem_id, problem_template_id, test_id, variant, next_page, success_rate, created) VALUES (285, 221, null, 184, 'A', 0, null, '2019-06-18 21:36:53');
-INSERT INTO edomp_final.problem_test_association (id, problem_id, problem_template_id, test_id, variant, next_page, success_rate, created) VALUES (286, 172, null, 184, 'A', 0, 0.5, '2019-06-18 21:36:53');

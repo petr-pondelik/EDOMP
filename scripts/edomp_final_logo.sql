@@ -1,1 +1,0 @@
-INSERT INTO edomp_final.logo (id, path, extension, extension_tmp, is_used, label, created) VALUES (12, '/data_public/logos/12/file.png', '.png', '.png', 0, 'admasdfasdfadskfljfgjkdfjgjlkjfdlkjadsfj', '2019-06-18 20:25:40');

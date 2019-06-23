@@ -271,13 +271,13 @@ class FlashesTranslator
 
             'success' => [
                 'create' => 'Test úspěšně vytvořen.',
-                'delete' => 'Test úspěšně vytvořen.',
+                'delete' => 'Test úspěšně odstraněn.',
                 'statistics' => 'Statistika testu úspěšně editována.'
             ],
 
             'error' => [
                 'create' => 'Chyba při tvorbě testu.',
-                'delete' => 'Chyba při tvorbě testu',
+                'delete' => 'Chyba při odstraňování testu.',
                 'statistics' => 'Chyba při editaci statistiky testu.'
             ]
 

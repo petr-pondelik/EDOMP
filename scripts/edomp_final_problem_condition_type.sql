@@ -1,2 +1,0 @@
-INSERT INTO edomp_final.problem_condition_type (id, label, created) VALUES (1, 'Podmínka výsledku', '2019-04-27 11:42:36');
-INSERT INTO edomp_final.problem_condition_type (id, label, created) VALUES (2, 'Podmínka diskriminantu', '2019-04-27 11:42:58');

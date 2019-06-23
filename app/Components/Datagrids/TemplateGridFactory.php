@@ -100,12 +100,12 @@ class TemplateGridFactory extends BaseGrid
             ->setFormat('d.m.Y H:i:s')
             ->setSortable();
 
-        $grid->addColumnText('text_before', 'Úvod zadání')
+        $grid->addColumnText('textBefore', 'Úvod zadání')
             ->setFilterText();
 
         $grid->addColumnText('body', 'Úloha');
 
-        $grid->addColumnText('text_after', 'Dodatek k zadání')
+        $grid->addColumnText('textAfter', 'Dodatek k zadání')
             ->setFilterText();
 
         $grid->addColumnText('success_rate', 'Prům. úspěšnost');

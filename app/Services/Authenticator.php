@@ -50,10 +50,19 @@ class Authenticator implements IAuthenticator
      */
     public function authenticate(array $credentials)
     {
-        [$username, $password] = $credentials;
-        $user = $this->userRepository->findOneBy([
-            'username' => $username
-        ]);
+        [$username, $password, $admin] = $credentials;
+
+        if(!$admin){
+            $user = $this->userRepository->findOneBy([
+                'username' => $username
+            ]);
+        }
+        else{
+            $user = $this->userRepository->findOneBy([
+                'username' => $username,
+                'role' => [1,2]
+            ]);
+        }
 
         if(!$user || !Passwords::verify($password, $user->getPassword())){
             throw new AuthenticationException('Zadáno neplatné uživatelské jméno nebo heslo.');

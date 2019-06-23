@@ -17,5 +17,8 @@ use App\Presenters\BaseSignPresenter;
  */
 class SignPresenter extends BaseSignPresenter
 {
-
+    /**
+     * @var bool
+     */
+    protected $admin = true;
 }

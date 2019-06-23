@@ -21,7 +21,6 @@
 		"nette/utils": "^2.4",
 		"latte/latte": "~2.4.0",
 		"tracy/tracy": "^2.4",
-		"dibi/dibi": "^3.2",
 		"webrouse/n-asset-macro": "^2.0",
 		"components/bootstrap": "^4.1",
 		"ublaboo/datagrid": "^5.7",

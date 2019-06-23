@@ -267,9 +267,9 @@ class TestBuilderServiceTest extends TestCase
             ->method('create')
             ->willReturnCallback(static function (ArrayHash $data, array $conditions = null, bool $flush = true) use ($problemType, $difficulty, $subCategory, $problemTemplate) {
                 $problem = new ProblemFinal();
-                $problem->setTextBefore($data->text_before);
+                $problem->setTextBefore($data->textBefore);
                 $problem->setBody($data->body);
-                $problem->setTextAfter($data->text_after);
+                $problem->setTextAfter($data->textAfter);
 
                 if(isset($data->result)){
                     $problem->setResult($data->result);

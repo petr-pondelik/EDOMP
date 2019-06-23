@@ -57,12 +57,12 @@ class GeometricSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         $data = ArrayHash::from([
             'variable' => 'T',
             'body' => 'TEST_BODY',
-            'text_before' => 'TEST_TEXT_BEFORE',
-            'text_after' => 'TEST_TEXT_AFTER',
+            'textBefore' => 'TEST_textBefore',
+            'textAfter' => 'TEST_TEXT_AFTER',
             'first_n' => 5,
             'type' => 1,
             'difficulty' => 1,
-            'subcategory' => 1,
+            'subCategory' => 1,
             'condition_1' => 0,
             'condition_2' => 0,
             'created' => new DateTime('2000-01-01')
@@ -72,12 +72,12 @@ class GeometricSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         $geometricSeqTemplExpected = new GeometricSeqTempl();
         $geometricSeqTemplExpected->setVariable($data->variable);
         $geometricSeqTemplExpected->setBody($data->body);
-        $geometricSeqTemplExpected->setTextBefore($data->text_before);
-        $geometricSeqTemplExpected->setTextAfter($data->text_after);
+        $geometricSeqTemplExpected->setTextBefore($data->textBefore);
+        $geometricSeqTemplExpected->setTextAfter($data->textAfter);
         $geometricSeqTemplExpected->setFirstN($data->first_n);
         $geometricSeqTemplExpected->setProblemType($this->problemTypeRepositoryMock->find($data->type));
         $geometricSeqTemplExpected->setDifficulty($this->difficultyRepositoryMock->find($data->difficulty));
-        $geometricSeqTemplExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subcategory));
+        $geometricSeqTemplExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subCategory));
         $geometricSeqTemplExpected->setConditions(new ArrayCollection([
                 $this->problemConditionRepositoryMock->findOneBy([
                     'problemConditionType.id' => 1,
@@ -101,12 +101,12 @@ class GeometricSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         $data = ArrayHash::from([
             'variable' => 'U',
             'body' => 'TEST_BODY_NEW',
-            'text_before' => 'TEST_TEXT_BEFORE_NEW',
-            'text_after' => 'TEST_TEXT_AFTER_NEW',
+            'textBefore' => 'TEST_textBefore_NEW',
+            'textAfter' => 'TEST_TEXT_AFTER_NEW',
             'first_n' => 10,
             'type' => 2,
             'difficulty' => 2,
-            'subcategory' => 2,
+            'subCategory' => 2,
             'matches' => '[]',
             'condition_1' => 1,
             'condition_2' => 1,
@@ -116,12 +116,12 @@ class GeometricSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         // Prepare updated GeometricSeqTempl expected object
         $geometricSeqTemplExpected->setVariable($data->variable);
         $geometricSeqTemplExpected->setBody($data->body);
-        $geometricSeqTemplExpected->setTextBefore($data->text_before);
-        $geometricSeqTemplExpected->setTextAfter($data->text_after);
+        $geometricSeqTemplExpected->setTextBefore($data->textBefore);
+        $geometricSeqTemplExpected->setTextAfter($data->textAfter);
         $geometricSeqTemplExpected->setFirstN($data->first_n);
         $geometricSeqTemplExpected->setProblemType($this->problemTypeRepositoryMock->find($data->type));
         $geometricSeqTemplExpected->setDifficulty($this->difficultyRepositoryMock->find($data->difficulty));
-        $geometricSeqTemplExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subcategory));
+        $geometricSeqTemplExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subCategory));
         $geometricSeqTemplExpected->setMatches($data->matches);
         $geometricSeqTemplExpected->setConditions(new ArrayCollection([
                 $this->problemConditionRepositoryMock->findOneBy([

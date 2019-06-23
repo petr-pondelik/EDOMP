@@ -126,14 +126,14 @@ class ProblemTemplateFormControl extends EntityFormControl
             ->setPrompt('Zvolte podkategorii')
             ->setHtmlAttribute('class', 'form-control');
 
-        $form->addTextArea('text_before', 'Úvod zadání')
+        $form->addTextArea('textBefore', 'Úvod zadání')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Úvodní text zadání.')
             ->setHtmlId('before');
 
         $form->addTextArea('body', 'Úloha *')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder','Úloha určená k řešení.')
+            ->setHtmlAttribute('placeholder','Sem patří samotné zadání úlohy.')
             ->setHtmlId('body');
 
         $form->addText('variable', 'Neznámá *')
@@ -141,7 +141,7 @@ class ProblemTemplateFormControl extends EntityFormControl
             ->setHtmlAttribute('placeholder', 'Neznámá šablony.')
             ->setHtmlId('variable');
 
-        $form->addTextArea('text_after', 'Dodatek zadání')
+        $form->addTextArea('textAfter', 'Dodatek zadání')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Dodatečný text k zadání.')
             ->setHtmlId('after');

@@ -1,1 +1,0 @@
-INSERT INTO edomp_final.geometric_seq_templ (id, variable, first_n, quotient) VALUES (239, 'n', 2, null);

@@ -10,7 +10,6 @@ import 'jquery';
 //Import Font Awesome modules
 import '@fortawesome/fontawesome-free';
 
-
 //Import Bootstrap modules
 import 'bootstrap';
 import 'bootstrap-select';
@@ -59,7 +58,6 @@ import 'bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone.css';
 //Import Ublaboo Datagrid styles
 import 'ublaboo-datagrid/assets/dist/datagrid.css';
 import 'ublaboo-datagrid/assets/dist/datagrid-spinners.css';
-
 
 //Import File Pond styles
 import 'filepond/dist/filepond.min.css';

@@ -57,11 +57,11 @@ class LinearEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         $data = ArrayHash::from([
             'variable' => 'T',
             'body' => 'TEST_BODY',
-            'text_before' => 'TEST_TEXT_BEFORE',
-            'text_after' => 'TEST_TEXT_AFTER',
+            'textBefore' => 'TEST_textBefore',
+            'textAfter' => 'TEST_TEXT_AFTER',
             'type' => 1,
             'difficulty' => 1,
-            'subcategory' => 1,
+            'subCategory' => 1,
             'condition_1' => 0,
             'condition_2' => 0,
             'created' => new DateTime('2000-01-01')
@@ -71,11 +71,11 @@ class LinearEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         $linearEqTemplExpected = new LinearEqTempl();
         $linearEqTemplExpected->setVariable($data->variable);
         $linearEqTemplExpected->setBody($data->body);
-        $linearEqTemplExpected->setTextBefore($data->text_before);
-        $linearEqTemplExpected->setTextAfter($data->text_after);
+        $linearEqTemplExpected->setTextBefore($data->textBefore);
+        $linearEqTemplExpected->setTextAfter($data->textAfter);
         $linearEqTemplExpected->setProblemType($this->problemTypeRepositoryMock->find($data->type));
         $linearEqTemplExpected->setDifficulty($this->difficultyRepositoryMock->find($data->difficulty));
-        $linearEqTemplExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subcategory));
+        $linearEqTemplExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subCategory));
         $linearEqTemplExpected->setConditions(new ArrayCollection([
                 $this->problemConditionRepositoryMock->findOneBy([
                     'problemConditionType.id' => 1,
@@ -99,11 +99,11 @@ class LinearEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         $data = ArrayHash::from([
             'variable' => 'U',
             'body' => 'TEST_BODY_NEW',
-            'text_before' => 'TEST_TEXT_BEFORE_NEW',
-            'text_after' => 'TEST_TEXT_AFTER_NEW',
+            'textBefore' => 'TEST_textBefore_NEW',
+            'textAfter' => 'TEST_TEXT_AFTER_NEW',
             'type' => 2,
             'difficulty' => 2,
-            'subcategory' => 2,
+            'subCategory' => 2,
             'matches' => '[]',
             'condition_1' => 1,
             'condition_2' => 1,
@@ -113,11 +113,11 @@ class LinearEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         // Prepare updated LinearEqTempl expected object
         $linearEqTemplExpected->setVariable($data->variable);
         $linearEqTemplExpected->setBody($data->body);
-        $linearEqTemplExpected->setTextBefore($data->text_before);
-        $linearEqTemplExpected->setTextAfter($data->text_after);
+        $linearEqTemplExpected->setTextBefore($data->textBefore);
+        $linearEqTemplExpected->setTextAfter($data->textAfter);
         $linearEqTemplExpected->setProblemType($this->problemTypeRepositoryMock->find($data->type));
         $linearEqTemplExpected->setDifficulty($this->difficultyRepositoryMock->find($data->difficulty));
-        $linearEqTemplExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subcategory));
+        $linearEqTemplExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subCategory));
         $linearEqTemplExpected->setMatches($data->matches);
         $linearEqTemplExpected->setConditions(new ArrayCollection([
                 $this->problemConditionRepositoryMock->findOneBy([

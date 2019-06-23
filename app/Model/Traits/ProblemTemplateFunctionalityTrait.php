@@ -57,14 +57,14 @@ trait ProblemTemplateFunctionalityTrait
      */
     public function setBaseValues($templ, ArrayHash $data, int $templateId = null, bool $fromDataGrid = false): ProblemTemplate
     {
-        if(isset($data->text_before)){
-            $templ->setTextBefore($data->text_before);
+        if(isset($data->textBefore)){
+            $templ->setTextBefore($data->textBefore);
         }
         if(isset($data->body)){
             $templ->setBody($data->body);
         }
-        if(isset($data->text_after)){
-            $templ->setTextAfter($data->text_after);
+        if(isset($data->textAfter)){
+            $templ->setTextAfter($data->textAfter);
         }
         if(isset($data->type)){
             $templ->setProblemType($this->problemTypeRepository->find($data->type));

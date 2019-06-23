@@ -98,9 +98,9 @@ class ProblemFinalFunctionality extends BaseFunctionality
     public function create(ArrayHash $data, array $conditions = null, bool $flush = true): ?Object
     {
         $problem = new ProblemFinal();
-        $problem->setTextBefore($data->text_before);
+        $problem->setTextBefore($data->textBefore);
         $problem->setBody($data->body);
-        $problem->setTextAfter($data->text_after);
+        $problem->setTextAfter($data->textAfter);
 
         if(isset($data->result)){
             $problem->setResult($data->result);
@@ -156,14 +156,14 @@ class ProblemFinalFunctionality extends BaseFunctionality
             throw new EntityNotFoundException('Entity for update not found.');
         }
 
-        if(!empty($data->text_before)){
-            $problem->setTextBefore($data->text_before);
+        if(!empty($data->textBefore)){
+            $problem->setTextBefore($data->textBefore);
         }
         if(!empty($data->body)){
             $problem->setBody($data->body);
         }
-        if(!empty($data->text_after)){
-            $problem->setTextAfter($data->text_after);
+        if(!empty($data->textAfter)){
+            $problem->setTextAfter($data->textAfter);
         }
         if(!empty($data->result)){
             $problem->setResult($data->result);

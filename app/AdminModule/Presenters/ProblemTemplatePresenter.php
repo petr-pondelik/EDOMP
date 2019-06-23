@@ -124,9 +124,9 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
         $form['id']->setDefaultValue($record->getId());
         $form['id_hidden']->setDefaultValue($record->getId());
         $form['subCategory']->setDefaultValue($record->getSubCategory()->getId());
-        $form['text_before']->setDefaultValue($record->getTextBefore());
+        $form['textBefore']->setDefaultValue($record->getTextBefore());
         $form['body']->setDefaultValue($record->getBody());
-        $form['text_after']->setDefaultValue($record->getTextAfter());
+        $form['textAfter']->setDefaultValue($record->getTextAfter());
         $form['difficulty']->setDefaultVAlue($record->getDifficulty()->getId());
 
         $conditions = $record->getConditions()->getValues();
@@ -160,14 +160,14 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
             ->setTitle('Upravit inline')
             ->setClass('btn btn-primary btn-sm ajax')
             ->onControlAdd[] = static function($container) {
-            $container->addText('text_before', '');
-            $container->addText('text_after', '');
+            $container->addText('textBefore', '');
+            $container->addText('textAfter', '');
         };
 
         $grid->getInlineEdit()->onSetDefaults[] = static function($cont, $item) {
             $cont->setDefaults([
-                'text_before' => $item->getTextBefore(),
-                'text_after' => $item->getTextAfter(),
+                'textBefore' => $item->getTextBefore(),
+                'textAfter' => $item->getTextAfter(),
             ]);
         };
 

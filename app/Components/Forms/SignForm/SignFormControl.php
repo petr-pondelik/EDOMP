@@ -29,10 +29,12 @@ class SignFormControl extends FormControl
     /**
      * SignFormControl constructor.
      * @param ValidationService $validationService
+     * @param bool $admin
      */
-    public function __construct(ValidationService $validationService)
+    public function __construct(ValidationService $validationService, bool $admin = false)
     {
         parent::__construct($validationService);
+        $this->admin = $admin;
     }
 
     /**
@@ -59,15 +61,17 @@ class SignFormControl extends FormControl
         $values = $form->getValues();
 
         $validateFields = [];
-        foreach($values as $key => $value)
+        foreach($values as $key => $value){
             $validateFields[$key] = $value;
+        }
 
         $validationErrors = $this->validationService->validate($validateFields);
 
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error)
+                foreach($errorGroup as $egKey => $error){
                     $form[$veKey]->addError($error);
+                }
             }
         }
 
@@ -83,11 +87,12 @@ class SignFormControl extends FormControl
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
-            $this->presenter->user->login($values->username, $values->password);
+            $this->presenter->user->login($values->username, $values->password, $this->admin);
             $this->onSuccess();
         } catch(\Exception $e){
-            if ($e instanceof AbortException)
+            if ($e instanceof AbortException){
                 return;
+            }
             $form['signIn']->addError($e->getMessage());
             $this->redrawControl('signInErrorSnippet');
             $this->onError($e);

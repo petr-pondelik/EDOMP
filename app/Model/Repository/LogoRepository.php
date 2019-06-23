@@ -19,7 +19,7 @@ class LogoRepository extends BaseRepository
      */
     public function getSequenceVal(): int
     {
-        $sql = "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'edomp_final' AND TABLE_NAME = 'logo'";
+        $sql = "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'edomp' AND TABLE_NAME = 'logo'";
         return $this->getEntityManager()->getConnection()->query($sql)->fetch()["AUTO_INCREMENT"];
     }
 }

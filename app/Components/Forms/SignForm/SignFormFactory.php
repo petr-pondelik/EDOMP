@@ -18,10 +18,11 @@ use App\Components\Forms\FormFactory;
 class SignFormFactory extends FormFactory
 {
     /**
+     * @param bool $admin
      * @return SignFormControl
      */
-    public function create(): SignFormControl
+    public function create(bool $admin): SignFormControl
     {
-        return new SignFormControl($this->validationService);
+        return new SignFormControl($this->validationService, $admin);
     }
 }

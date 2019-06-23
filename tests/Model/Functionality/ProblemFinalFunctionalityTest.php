@@ -77,8 +77,8 @@ class ProblemFinalFunctionalityTest extends ProblemFunctionalityTestCase
         $data = ArrayHash::from([
             'variable' => 'T',
             'body' => 'TEST_BODY',
-            'text_before' => 'TEST_TEXT_BEFORE',
-            'text_after' => 'TEST_TEXT_AFTER',
+            'textBefore' => 'TEST_textBefore',
+            'textAfter' => 'TEST_TEXT_AFTER',
             'problemFinalType' => 1,
             'difficulty' => 1,
             'subCategory' => 1,
@@ -91,8 +91,8 @@ class ProblemFinalFunctionalityTest extends ProblemFunctionalityTestCase
         $problemFinalExpected = new ProblemFinal();
         $problemFinalExpected->setVariable($data->variable);
         $problemFinalExpected->setBody($data->body);
-        $problemFinalExpected->setTextBefore($data->text_before);
-        $problemFinalExpected->setTextAfter($data->text_after);
+        $problemFinalExpected->setTextBefore($data->textBefore);
+        $problemFinalExpected->setTextAfter($data->textAfter);
         $problemFinalExpected->setProblemType($this->problemTypeRepositoryMock->find($data->problemFinalType));
         $problemFinalExpected->setDifficulty($this->difficultyRepositoryMock->find($data->difficulty));
         $problemFinalExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subCategory));
@@ -118,8 +118,8 @@ class ProblemFinalFunctionalityTest extends ProblemFunctionalityTestCase
         // Data for ProblemFinal update
         $data = ArrayHash::from([
             'body' => '15x + 10x - 5 = 0',
-            'text_before' => 'TEST_TEXT_BEFORE_NEW',
-            'text_after' => 'TEST_TEXT_AFTER_NEW',
+            'textBefore' => 'TEST_textBefore_NEW',
+            'textAfter' => 'TEST_TEXT_AFTER_NEW',
             'problemFinalType' => 2,
             'difficulty' => 2,
             'subCategory' => 2,
@@ -130,8 +130,8 @@ class ProblemFinalFunctionalityTest extends ProblemFunctionalityTestCase
 
         // Prepare updated ProblemFinal expected object
         $problemFinalExpected->setBody($data->body);
-        $problemFinalExpected->setTextBefore($data->text_before);
-        $problemFinalExpected->setTextAfter($data->text_after);
+        $problemFinalExpected->setTextBefore($data->textBefore);
+        $problemFinalExpected->setTextAfter($data->textAfter);
         $problemFinalExpected->setProblemType($this->problemTypeRepositoryMock->find($data->problemFinalType));
         $problemFinalExpected->setDifficulty($this->difficultyRepositoryMock->find($data->difficulty));
         $problemFinalExpected->setSubCategory($this->subCategoryRepositoryMock->find($data->subCategory));

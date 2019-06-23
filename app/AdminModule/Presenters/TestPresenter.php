@@ -32,6 +32,7 @@ use Nette\ComponentModel\IComponent;
 use Nette\Http\IRequest;
 use Nette\Http\IResponse;
 use Nette\Http\Response;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class TestPresenter
@@ -141,12 +142,12 @@ class TestPresenter extends AdminPresenter
     /**
      * @param int $id
      */
-    public function actionStatistics(int $id)
+    public function actionStatistics(int $id): void
     {
         $form = $this['testStatisticsForm']['form'];
         if(!$form->isSubmitted()){
             $this->template->id = $id;
-            $problemAssociations = $this->problemTestAssociationRepository->findBy(["test" => $id]);
+            $problemAssociations = $this->problemTestAssociationRepository->findBy(['test' => $id]);
             $this->setDefaults($form, $id, $problemAssociations);
         }
     }
@@ -156,7 +157,7 @@ class TestPresenter extends AdminPresenter
      * @param int $testId
      * @param array $problemAssociations
      */
-    public function setDefaults(IComponent $form, int $testId, array $problemAssociations)
+    public function setDefaults(IComponent $form, int $testId, array $problemAssociations): void
     {
         $i = 0;
         $form->setDefaults([
@@ -192,7 +193,7 @@ class TestPresenter extends AdminPresenter
      * @param $name
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function createComponentTestGrid($name)
+    public function createComponentTestGrid($name): void
     {
         $grid = $this->testGridFactory->create($this, $name);
         $grid->addAction('delete', '', 'delete!')
@@ -207,30 +208,32 @@ class TestPresenter extends AdminPresenter
             ->addAttributes([
                 'target' => '_blank'
             ]);
-        $grid->addAction("statistics", "", "statistics!")
-            ->setIcon("percent")
-            ->setClass("btn btn-primary btn-sm")
-            ->setTitle("Statistika úspěšnosti");
+        $grid->addAction('statistics', '', 'statistics!')
+            ->setIcon('percent')
+            ->setClass('btn btn-primary btn-sm')
+            ->setTitle('Statistika úspěšnosti');
     }
 
     /**
      * @param int $id
-     * @throws \Exception
      */
-    public function handleDelete(int $id)
+    public function handleDelete(int $id): void
     {
-        //TODO: INFORM USER
-        $this->testFunctionality->delete($id);
-        $this["testGrid"]->reload();
-        $this->flashMessage("Test úspěšně odstraněn.", "success");
-        $this->redrawControl("mainFlashesSnippet");
+        try{
+            $this->testFunctionality->delete($id);
+        } catch (\Exception $e){
+            $this->informUser(new UserInformArgs('delete', true, 'error', $e));
+            return;
+        }
+        $this['testGrid']->reload();
+        $this->informUser(new UserInformArgs('delete', true));
     }
 
     /**
      * @param int $id
      * @throws \Nette\Application\AbortException
      */
-    public function handlePdfOverleaf(int $id)
+    public function handlePdfOverleaf(int $id): void
     {
         $this->fileService->moveTestDirToPublic($id);
         $this->redirectUrl('https://www.overleaf.com/docs?snip_uri=http://wiedzmin.4fan.cz/data_public/tests/test_' . $id . '.zip');
@@ -240,9 +243,9 @@ class TestPresenter extends AdminPresenter
      * @param int $id
      * @throws \Nette\Application\AbortException
      */
-    public function handleDownloadSource(int $id)
+    public function handleDownloadSource(int $id): void
     {
-        $this->sendResponse(new CallbackResponse(function (IRequest $request, IResponse $response) use ($id) {
+        $this->sendResponse(new CallbackResponse(static function (IRequest $request, IResponse $response) use ($id) {
             $response = new Response();
             $response->setHeader('Content-type', 'application/zip');
             $response->setHeader(
@@ -250,11 +253,11 @@ class TestPresenter extends AdminPresenter
                 'attachment; filename=test_' . $id . '.zip'
             );
             $response->setHeader(
-                "Content-length",
+                'Content-length',
                 filesize(DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'test_' . $id . '.zip')
             );
-            $response->setHeader("Pragma", 'no-cache');
-            $response->setHeader("Expires", '0');
+            $response->setHeader('Pragma', 'no-cache');
+            $response->setHeader('Expires', '0');
 
             readfile(DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'test_' . $id . '.zip');
 
@@ -265,9 +268,9 @@ class TestPresenter extends AdminPresenter
      * @param int $id
      * @throws \Nette\Application\AbortException
      */
-    public function handleStatistics(int $id)
+    public function handleStatistics(int $id): void
     {
-        $this->redirect("statistics", $id);
+        $this->redirect('statistics', $id);
     }
 
     /**
@@ -278,11 +281,11 @@ class TestPresenter extends AdminPresenter
         $control =  $this->testFormFactory->create();
         $control->onSuccess[] = function (){
             $this->informUser(new UserInformArgs('create'));
-            //$this->redirect('default');
+            $this->redirect('default');
         };
         $control->onError[] = function ($e){
             $this->informUser(new UserInformArgs('create', true, 'error', $e, false, 'testCreateForm'));
-            //$this->redirect('default');
+            $this->redirect('default');
         };
         return $control;
     }
