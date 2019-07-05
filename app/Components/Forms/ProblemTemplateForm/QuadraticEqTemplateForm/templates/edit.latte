@@ -6,7 +6,7 @@
         </h1>
         <div class="d-inline">
             <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
-            <a href={plink :Admin:LinearEqTemplate:default} class="btn btn-secondary btn-sm">Zpět</a>
+            <a href={plink :Admin:QuadraticEqTemplate:default} class="btn btn-secondary btn-sm">Zpět</a>
         </div>
     </div>
 
@@ -101,11 +101,10 @@
             {/snippet}
         </div>
 
-        {foreach $problemTypes as $typeKey => $type}
-            <div class="form-group {if $typeKey !== \App\Helpers\ConstHelper::LINEAR_EQ}hidden{/if}"
+            <div class="form-group"
                  id="type-wrapper-{$typeKey}">
 
-                {foreach $condByProblemTypes[$typeKey] as $condKey => $cond}
+                {foreach $condByProblemTypes[\App\Helpers\ConstHelper::QUADRATIC_EQ] as $condKey => $cond}
 
                     {var $id = $cond->getId()}
                     <div class="form-group cond-wrapper" id="cond-wrapper-{$id}">
@@ -123,12 +122,11 @@
                 {/foreach}
 
             </div>
-        {/foreach}
 
         {snippet conditionsErrorSnippet}
             {var $form = $control['form']}
             <div n:if="$form->hasErrors()" class="mt-2">
-                {for $i = 1; $i < 3; $i++}
+                {for $i = 2; $i < 3; $i++}
                     <p n:foreach="$form['condition_' . $i]->errors as $error" class="alert alert-danger border-0">
                         {$error}
                     </p>

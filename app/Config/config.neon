@@ -159,7 +159,10 @@ services:
 	factory.grid.problem.type: App\Components\DataGrids\ProblemTypeGridFactory
 	factory.form.problem.type: App\Components\Forms\ProblemTypeForm\ProblemTypeFormFactory
 	factory.grid.template: App\Components\DataGrids\TemplateGridFactory
-	factory.form.problem.template: App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory
+	factory.form.problem.template.lineareq: App\Components\Forms\ProblemTemplateForm\LinearEqTemplateForm\LinearEqTemplateFormFactory
+	factory.form.problem.template.quadraticeq: App\Components\Forms\ProblemTemplateForm\QuadraticEqTemplateForm\QuadraticEqTemplateFormFactory
+	factory.form.problem.template.arithmeticseq: App\Components\Forms\ProblemTemplateForm\ArithmeticSeqTemplateForm\ArithmeticSeqTemplateFormFactory
+	factory.form.problem.template.geometicseq: ProblemTemplateForm\GeometricSeqTemplateForm\GeometricSeqTemplateFormFactory
 	factory.problem.template.help: App\Components\ProblemTemplateHelp\ProblemTemplateHelpFactory
 	factory.grid.logo: App\Components\DataGrids\LogoGridFactory
 	factory.form.logo: App\Components\Forms\LogoForm\LogoFormFactory

@@ -81,7 +81,6 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param TemplateGridFactory $templateGridFactory
-     * @param ProblemTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
      * @param ProblemTemplateHelpFactory $problemTemplateHelpFactory
      */
@@ -89,13 +88,12 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        TemplateGridFactory $templateGridFactory, ProblemTemplateFormFactory $problemTemplateFormFactory,
+        TemplateGridFactory $templateGridFactory,
         ConstHelper $constHelper, ProblemTemplateHelpFactory $problemTemplateHelpFactory
     )
     {
         parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->templateGridFactory = $templateGridFactory;
-        $this->problemTemplateFormFactory = $problemTemplateFormFactory;
         $this->constHelper = $constHelper;
         $this->problemTemplateHelpFactory = $problemTemplateHelpFactory;
     }
@@ -254,7 +252,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
      */
     public function createComponentProblemTemplateCreateForm(): ProblemTemplateFormControl
     {
-        $control = $this->problemTemplateFormFactory->create($this->functionality, $this->typeId);
+        $control = $this->problemTemplateFormFactory->create($this->functionality);
         $control->onSuccess[] = function (){
             $this['templateGrid']->reload();
             $this->informUser(new UserInformArgs('create', true, 'success', null, true));
@@ -270,7 +268,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
      */
     public function createComponentProblemTemplateEditForm(): ProblemTemplateFormControl
     {
-        $control = $this->problemTemplateFormFactory->create($this->functionality, $this->typeId, true);
+        $control = $this->problemTemplateFormFactory->create($this->functionality, true);
         $control->onSuccess[] = function (){
             $this->informUser(new UserInformArgs('edit', true, 'success', null, true));
             $this->redirect('default');

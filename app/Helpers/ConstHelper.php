@@ -47,8 +47,9 @@ class ConstHelper
     // Types group of sequences
     public const SEQUENCES = [self::ARITHMETIC_SEQ, self::GEOMETRIC_SEQ];
 
-    // Structure types constants
+    // Body types constants
     public const BODY_FINAL = 0;
+    public const BODY_TEMPLATE = 1;
 
     // Maximal number of parameters in prototype
     public const PARAMETERS_MAX = 6;

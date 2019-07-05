@@ -22,7 +22,7 @@ use App\Services\ValidationService;
  * Class ProblemTemplateFormFactory
  * @package App\Components\Forms\ProblemTemplateForm
  */
-class ProblemTemplateFormFactory extends FormFactory
+abstract class ProblemTemplateFormFactory extends FormFactory
 {
     /**
      * @var DifficultyRepository
@@ -83,15 +83,8 @@ class ProblemTemplateFormFactory extends FormFactory
 
     /**
      * @param BaseFunctionality $functionality
-     * @param int $templateType
      * @param bool $edit
-     * @return ProblemTemplateFormControl
+     * @return mixed
      */
-    public function create(BaseFunctionality $functionality, int $templateType = 0, bool $edit = false): ProblemTemplateFormControl
-    {
-        return new ProblemTemplateFormControl(
-            $this->validationService, $functionality, $this->difficultyRepository, $this->problemTypeRepository,
-            $this->subCategoryRepository, $this->problemConditionRepository, $this->mathService, $this->constHelper, $templateType, $edit
-        );
-    }
+    abstract public function create(BaseFunctionality $functionality, bool $edit = false);
 }

@@ -21,6 +21,7 @@ use App\Model\Repository\GeometricSeqTemplRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use Nette\ComponentModel\IComponent;
+use ProblemTemplateForm\GeometricSeqTemplateForm\GeometricSeqTemplateFormFactory;
 
 /**
  * Class GeometricSeqTemplatePresenter
@@ -43,7 +44,7 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
      * @param GeometricSeqTemplRepository $repository
      * @param GeometricSeqTemplFunctionality $functionality
      * @param TemplateGridFactory $templateGridFactory
-     * @param ProblemTemplateFormFactory $problemTemplateFormFactory
+     * @param GeometricSeqTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
      * @param ProblemTemplateHelpFactory $problemTemplateHelpFactory
      */
@@ -52,7 +53,7 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         GeometricSeqTemplRepository $repository, GeometricSeqTemplFunctionality $functionality,
-        TemplateGridFactory $templateGridFactory, ProblemTemplateFormFactory $problemTemplateFormFactory,
+        TemplateGridFactory $templateGridFactory, GeometricSeqTemplateFormFactory $problemTemplateFormFactory,
         ConstHelper $constHelper, ProblemTemplateHelpFactory $problemTemplateHelpFactory
     )
     {
@@ -60,11 +61,12 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
         (
             $authorizator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
-            $templateGridFactory, $problemTemplateFormFactory,
+            $templateGridFactory,
             $constHelper, $problemTemplateHelpFactory
         );
         $this->repository = $repository;
         $this->functionality = $functionality;
+        $this->problemTemplateFormFactory = $problemTemplateFormFactory;
         $this->typeId = $this->constHelper::GEOMETRIC_SEQ;
     }
 

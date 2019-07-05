@@ -9,6 +9,7 @@
 namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\TemplateGridFactory;
+use App\Components\Forms\ProblemTemplateForm\LinearEqTemplateForm\LinearEqTemplateFormFactory;
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\ProblemTemplateHelp\ProblemTemplateHelpFactory;
@@ -29,11 +30,6 @@ use Nette\ComponentModel\IComponent;
 class LinearEqTemplatePresenter extends ProblemTemplatePresenter
 {
     /**
-     * @var string
-     */
-    protected $type = 'LinearEqTemplate';
-
-    /**
      * LinearEqTemplatePresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
@@ -52,7 +48,7 @@ class LinearEqTemplatePresenter extends ProblemTemplatePresenter
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         LinearEqTemplRepository $repository, LinearEqTemplFunctionality $functionality,
-        TemplateGridFactory $templateGridFactory, ProblemTemplateFormFactory $problemTemplateFormFactory,
+        TemplateGridFactory $templateGridFactory, LinearEqTemplateFormFactory $problemTemplateFormFactory,
         ConstHelper $constHelper, ProblemTemplateHelpFactory $problemTemplateHelpFactory
     )
     {
@@ -60,11 +56,12 @@ class LinearEqTemplatePresenter extends ProblemTemplatePresenter
         (
             $authorizator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
-            $templateGridFactory, $problemTemplateFormFactory,
+            $templateGridFactory,
             $constHelper, $problemTemplateHelpFactory
         );
         $this->repository = $repository;
         $this->functionality = $functionality;
+        $this->problemTemplateFormFactory = $problemTemplateFormFactory;
         $this->typeId = $this->constHelper::LINEAR_EQ;
     }
 

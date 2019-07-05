@@ -615,7 +615,11 @@ class ValidationService
 
         // Remove all the spaces
         $standardized = $this->stringsHelper::removeWhiteSpaces($standardized);
-        bdump($standardized);
+
+        // Trivial fail case
+        if(Strings::match($standardized, '~' . $variable . '\^' . '~')){
+            return false;
+        }
 
         // Match string against the linear expression regexp
         $matches = Strings::match($standardized, '~' . $this->stringsHelper::getLinearEquationRegExp($variable) . '~');
@@ -800,6 +804,7 @@ class ValidationService
     ): bool
     {
         bdump('VALIDATE DISCRIMINANT COND');
+        //TODO: Pass standardized expression straight !!!
         $parametrized = $this->stringsHelper::getParametrized($body);
         $discriminantExp = $this->mathService->getDiscriminantExpression($parametrized->expression, $variable);
 

@@ -9,7 +9,7 @@
 namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\TemplateGridFactory;
-use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
+use App\Components\Forms\ProblemTemplateForm\QuadraticEqTemplateForm\QuadraticEqTemplateFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\ProblemTemplateHelp\ProblemTemplateHelpFactory;
 use App\Components\SideBar\SideBarFactory;
@@ -43,7 +43,7 @@ class QuadraticEqTemplatePresenter extends ProblemTemplatePresenter
      * @param QuadraticEqTemplRepository $repository
      * @param QuadraticEqTemplFunctionality $functionality
      * @param TemplateGridFactory $templateGridFactory
-     * @param ProblemTemplateFormFactory $problemTemplateFormFactory
+     * @param QuadraticEqTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
      * @param ProblemTemplateHelpFactory $problemTemplateHelpFactory
      */
@@ -52,7 +52,7 @@ class QuadraticEqTemplatePresenter extends ProblemTemplatePresenter
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         QuadraticEqTemplRepository $repository, QuadraticEqTemplFunctionality $functionality,
-        TemplateGridFactory $templateGridFactory, ProblemTemplateFormFactory $problemTemplateFormFactory,
+        TemplateGridFactory $templateGridFactory, QuadraticEqTemplateFormFactory $problemTemplateFormFactory,
         ConstHelper $constHelper, ProblemTemplateHelpFactory $problemTemplateHelpFactory
     )
     {
@@ -60,11 +60,12 @@ class QuadraticEqTemplatePresenter extends ProblemTemplatePresenter
         (
             $authorizator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
-            $templateGridFactory, $problemTemplateFormFactory,
+            $templateGridFactory,
             $constHelper, $problemTemplateHelpFactory
         );
         $this->repository = $repository;
         $this->functionality = $functionality;
+        $this->problemTemplateFormFactory = $problemTemplateFormFactory;
         $this->typeId = $this->constHelper::QUADRATIC_EQ;
     }
 

@@ -9,6 +9,7 @@
 namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\TemplateGridFactory;
+use App\Components\Forms\ProblemTemplateForm\ArithmeticSeqTemplateForm\ArithmeticSeqTemplateFormFactory;
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\ProblemTemplateHelp\ProblemTemplateHelpControl;
@@ -44,7 +45,7 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
      * @param ArithmeticSeqTemplRepository $repository
      * @param ArithmeticSeqTemplFunctionality $functionality
      * @param TemplateGridFactory $templateGridFactory
-     * @param ProblemTemplateFormFactory $problemTemplateFormFactory
+     * @param ArithmeticSeqTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
      * @param ProblemTemplateHelpFactory $problemTemplateHelpFactory
      */
@@ -53,7 +54,7 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ArithmeticSeqTemplRepository $repository, ArithmeticSeqTemplFunctionality $functionality,
-        TemplateGridFactory $templateGridFactory, ProblemTemplateFormFactory $problemTemplateFormFactory,
+        TemplateGridFactory $templateGridFactory, ArithmeticSeqTemplateFormFactory $problemTemplateFormFactory,
         ConstHelper $constHelper, ProblemTemplateHelpFactory $problemTemplateHelpFactory
     )
     {
@@ -61,11 +62,12 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
         (
             $authorizator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
-            $templateGridFactory, $problemTemplateFormFactory,
+            $templateGridFactory,
             $constHelper, $problemTemplateHelpFactory
         );
         $this->repository = $repository;
         $this->functionality = $functionality;
+        $this->problemTemplateFormFactory = $problemTemplateFormFactory;
         $this->typeId = $this->constHelper::ARITHMETIC_SEQ;
     }
 
