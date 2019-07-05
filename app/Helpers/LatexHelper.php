@@ -346,8 +346,10 @@ class LatexHelper
      */
     public static function parseFractions(string $latex): string
     {
-        $res = Strings::replace($latex, '~\\\\frac\{([0-9a-zA-Z" <>\/\=\+\-\*]*)\}\{([0-9a-zA-Z" <>\/\=\+\-\*]*)\}~', '($1)/($2)');
-        return $res;
+        while(Strings::match($latex, '~\\\\frac\{([0-9a-zA-Z" <>\/\=\+\-\*\(\)\^]*)\}\{([0-9a-zA-Z" <>\/\=\+\-\*\(\)\^]*)\}~')){
+            $latex = Strings::replace($latex, '~\\\\frac\{([0-9a-zA-Z" <>\/\=\+\-\*\(\)\^]*)\}\{([0-9a-zA-Z" <>\/\=\+\-\*\(\)\^]*)\}~', '($1)/($2)');
+        }
+        return $latex;
     }
 
     /**

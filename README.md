@@ -140,7 +140,7 @@ ALTER TABLE prototype_json_data DROP INDEX condition_problem_unique;
 -   Vytvoření DB schématu:
 
         sudo php ./www/index.php orm:schema-tool:create
-        
+
 -   Drop schématu:
 
         sudo php ./www/index.php orm:schema-tool:drop --force
@@ -148,7 +148,12 @@ ALTER TABLE prototype_json_data DROP INDEX condition_problem_unique;
 -   Update schématu:
 
         sudo php ./www/index.php orm:schema-tool:update --force
-        
+
 ### PHPUNit Tests
 
 ./vendor/bin/phpunit --bootstrap App/bootstrap.php App/AppTests/Model/Entity
+
+### Known problems - to mention in thesis
+
+-   Timeout - parameters complexity threshhold
+-   Database longtext max length - threshhold

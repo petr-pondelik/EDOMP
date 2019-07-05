@@ -617,7 +617,7 @@ class ValidationService
     {
         bdump('VALIDATE LINEAR EQUATION');
         // Remove all the spaces
-        //$standardized = $this->stringsHelper::removeWhiteSpaces($standardized);
+        $standardized = $this->stringsHelper::removeWhiteSpaces($standardized);
         bdump($standardized);
 
         // RE1: Match operator or whitespace --> (\+\-|)

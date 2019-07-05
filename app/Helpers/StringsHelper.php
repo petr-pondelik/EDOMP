@@ -26,7 +26,10 @@ class StringsHelper
     public const RE_PARAMETER = '(p(\d)+)';
 
     // Match number, parameter or fraction with numbers and parameters
-    public const RE_NUM_PAR_FRAC = '([\dp\+\-\*\(\) ]+\/[\dp\+\-\*\(\) ]+|[\dp\+\-\*\(\) ]+|)';
+    public const RE_NUM_PAR_FRAC = '([\dp\+\-\*\(\)]+\/[\dp\+\-\*\(\)]+|[\dp\+\-\*\(\)]+|)';
+
+    // Match symbols allowed in standardized equation
+    public const RE_EQUATION_SYMBOLS = '[\dp\+\-\*\(\)\/\^]';
 
 
     public const LATEX_INLINE = 'latexInline';
@@ -57,22 +60,13 @@ class StringsHelper
      */
     public static function getLinearEquationRegExp(string $variable): string
     {
-        return self::RE_OPERATOR_WS
-            . '\s?'
-            . self::RE_NUM_PAR_FRAC
-            . '\s?'
+        return '('
+            //. self::RE_OPERATOR_WS
+            . self::RE_EQUATION_SYMBOLS
+            . ')*'
             . $variable
-            . '\s?'
-            . self::RE_OPERATOR_WS
-            . '\s?'
-            . self::RE_NUM_PAR_FRAC
             . '('
-            . '\s?'
-            . self::RE_OPERATOR_WS
-            . '\s?'
-            . self::RE_NUM_PAR_FRAC
-            . '\s?'
-            . self::RE_PARAMETER
+            . self::RE_EQUATION_SYMBOLS
             . ')*';
     }
 

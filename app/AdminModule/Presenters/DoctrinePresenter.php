@@ -171,6 +171,7 @@ class DoctrinePresenter extends AdminPresenter
         bdump($this->latexHelper::parseLatex('$$ \frac{1}{2} \big( 2 x - 1 \big)^2 - \big( \frac{1}{2} \big( x + 1 \big) \big)^2 = 3 \big( \big( \frac{1}{2} x \big)^2 - \big( \frac{1}{<par min="2" max="10"/>} \big)^2 \big)^{2} $$'));
 
         bdump($this->stringsHelper::getLinearEquationRegExp('x'));
+        bdump($this->templateJsonDataRepository->find(35));
 
         /*$entity = new ArithmeticSeqTempl();
         $errors = $this->validator->validate($entity);
