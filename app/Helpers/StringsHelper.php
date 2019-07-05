@@ -61,12 +61,26 @@ class StringsHelper
     public static function getLinearEquationRegExp(string $variable): string
     {
         return '('
-            //. self::RE_OPERATOR_WS
             . self::RE_EQUATION_SYMBOLS
             . ')*'
             . $variable
             . '('
             . self::RE_EQUATION_SYMBOLS
+            . ')*';
+    }
+
+    /**
+     * @param string $variable
+     * @return string
+     */
+    public static function getQuadraticEquationRegExp(string $variable): string
+    {
+        return '('
+            . self::RE_EQUATION_SYMBOLS
+            . ')*'
+            . $variable . '\^2'
+            . '('
+            . '([\dp' . $variable . '\+\-\*\(\)\/\^])'
             . ')*';
     }
 
@@ -286,10 +300,8 @@ class StringsHelper
      */
     public static function getEquationSides(string $expression, bool $validate = true): ArrayHash
     {
-        if($validate){
-            if(!self::isEquation($expression)){
+        if($validate && !self::isEquation($expression)){
                 throw new StringFormatException('Zadaný výraz není rovnicí.');
-            }
         }
         $sides = Strings::split($expression, '~=~');
         return ArrayHash::from([

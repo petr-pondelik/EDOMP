@@ -343,7 +343,6 @@ class ProblemTemplateFormControl extends EntityFormControl
         // Then validate it's type
         $validationFields['type'] = [
             'type_' . $problemType => ArrayHash::from([
-                'body' => $body,
                 'standardized' => $standardized,
                 'variable' => $variable
             ])

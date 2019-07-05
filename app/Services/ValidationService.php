@@ -257,7 +257,7 @@ class ValidationService
                     if(empty($filledVal)){
                         return 0;
                     }
-                    if(!$this->validateEquation($this->latexHelper::parseLatex($filledVal->body), $filledVal->standardized, $filledVal->variable, $this->constHelper::LINEAR_EQ)){
+                    if(!$this->validateEquation($filledVal->standardized, $filledVal->variable, $this->constHelper::LINEAR_EQ)){
                         return 1;
                     }
                     return -1;
@@ -267,7 +267,7 @@ class ValidationService
                     if(empty($filledVal)){
                         return 0;
                     }
-                    if(!$this->validateEquation($this->latexHelper::parseLatex($filledVal->body), $filledVal->standardized, $filledVal->variable, $this->constHelper::QUADRATIC_EQ)){
+                    if(!$this->validateEquation($filledVal->standardized, $filledVal->variable, $this->constHelper::QUADRATIC_EQ)){
                         return 1;
                     }
                     return -1;
@@ -277,7 +277,7 @@ class ValidationService
                     if(empty($filledVal)){
                         return 0;
                     }
-                    if(!$this->validateSequence($this->latexHelper::parseLatex($filledVal->body), $filledVal->variable, $this->constHelper::ARITHMETIC_SEQ)){
+                    if(!$this->validateSequence($filledVal->standardized, $filledVal->variable, $this->constHelper::ARITHMETIC_SEQ)){
                         return 1;
                     }
                     return -1;
@@ -287,7 +287,7 @@ class ValidationService
                     if(empty($filledVal)){
                         return 0;
                     }
-                    if(!$this->validateSequence($this->latexHelper::parseLatex($filledVal->body), $filledVal->variable, $this->constHelper::GEOMETRIC_SEQ)){
+                    if(!$this->validateSequence($filledVal->standardized, $filledVal->variable, $this->constHelper::GEOMETRIC_SEQ)){
                         return 0;
                     }
                     return -1;
@@ -588,17 +588,13 @@ class ValidationService
     }
 
     /**
-     * @param string $expression
      * @param string $standardized
      * @param string $variable
      * @param int $eqType
      * @return bool
      */
-    public function validateEquation(string $expression, string $standardized, string $variable, int $eqType): bool
+    public function validateEquation(string $standardized, string $variable, int $eqType): bool
     {
-        if(!$this->stringsHelper::isEquation($expression)){
-            return false;
-        }
         switch($eqType){
             case $this->constHelper::LINEAR_EQ:
                 return $this->validateLinearEquation($standardized, $variable);
@@ -616,20 +612,12 @@ class ValidationService
     public function validateLinearEquation(string $standardized, string $variable): bool
     {
         bdump('VALIDATE LINEAR EQUATION');
+
         // Remove all the spaces
         $standardized = $this->stringsHelper::removeWhiteSpaces($standardized);
         bdump($standardized);
 
-        // RE1: Match operator or whitespace --> (\+\-|)
-        // RE2: Match parameter --> (p(\d)+)
-        // RE3: Match number, parameter or fraction with numbers and parameters --> ([\dp\+\-\*\(\)]+\/[\dp\+\-\*\(\)]+|[\dp\+\-\*\(\)]+|)
-
         // Match string against the linear expression regexp
-        // (\+|\-|)     ([\dp\+\-\*\(\)]+\/[\dp\+\-\*\(\)]+|[\dp\+\-\*\(\)]+|)    $variable  (\+|\-)     ([\dp\+\-\*\(\)]+\/[\dp\+\-\*\(\)]+|[\dp\+\-\*\(\)]+|)    (   (\+|\-|)   ([\dp\+\-\*\(\)]+\/[\dp\+\-\*\(\)]+|[\dp\+\-\*\(\)]+|)    (p(\d)+)    ) *
-        // RE1          RE3                                                       variable   RE1         RE3                                                       (   RE1        RE3                                                       RE2         ) repetition from 0 to n
-        //$matches = Strings::match($standardized, '~(\+|\-|)((\d)+\/(\d)+|(\d)+|)' . $variable . '(\+|\-)((\d)+\/(\d)+|(\d)+)((\+|\-|)((\d)+|(\d)+\/(\d)+|)(p(\d)+))*~');
-
-        //$matches = Strings::match($standardized, '~' . $this->stringsHelper::RE_OPERATOR_WS . $this->stringsHelper::RE_NUM_PAR_FRAC . $variable . $this->stringsHelper::RE_OPERATOR_WS . $this->stringsHelper::RE_NUM_PAR_FRAC . '(' . $this->stringsHelper::RE_OPERATOR_WS . $this->stringsHelper::RE_NUM_PAR_FRAC . $this->stringsHelper::RE_PARAMETER . ')*' . '~');
         $matches = Strings::match($standardized, '~' . $this->stringsHelper::getLinearEquationRegExp($variable) . '~');
 
         // Check if the whole expression was matched
@@ -647,30 +635,17 @@ class ValidationService
 
         // Remove all the spaces
         $standardized = $this->stringsHelper::removeWhiteSpaces($standardized);
-
         bdump($standardized);
 
         // Match string against the quadratic expression regexp
-        // (\+|\-|)     ((\d)+\/(\d)+|(\d)+|)   $variable\^2    (   (\+|\-|)    ((\d)+\/(\d)+|(\d)+|)    $variable  ) ?                  (       (\+|\-)     (   (\d)+\/(\d)+|(\d)+)    )?                   (    (\+|\-|)   ((\d)+|(\d)+\/(\d)+|)   (p(\d)+)    ) *
-        // operator     number or fraction      variable square (   operator    number or fraction      variable   ) repetition 0 or 1  (       operator    (   number or fraction     ) repetition 0 or 1  (    operator   number or fraction      parameter   ) repetition from 0 to n
-        $matches = Strings::match($standardized, '~(\+|\-|)((\d)+\/(\d)+|(\d)+|)' . $variable . '\^2((\+|\-|)((\d)+\/(\d)+|(\d)+|)' . $variable . ')?((\+|\-)((\d)+\/(\d)+|(\d)+))?((\+|\-|)((\d)+|(\d)+\/(\d)+|)(p(\d)+))*~');
+        $matches = Strings::match($standardized, '~' . $this->stringsHelper::getQuadraticEquationRegExp($variable) . '~');
 
         // Check if the whole expression was matched
         return $matches[0] === $standardized;
-
-        /*if(!Strings::startsWith($standardized, $variable . '^2')) {
-            return false;
-        }
-        if(Strings::match($standardized, '~' . $variable . '\^[3-9]~')) {
-            return false;
-        }
-        return true;*/
-
-
     }
 
     /**
-     * @param string $expression
+     * @param string $standardized
      * @param string $variable
      * @param int $seqType
      * @return bool
@@ -679,10 +654,12 @@ class ValidationService
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function validateSequence(string $expression, string $variable, int $seqType): bool
+    public function validateSequence(string $standardized, string $variable, int $seqType): bool
     {
-        $parametrized = $this->stringsHelper::getParametrized($expression);
-        $parametersInfo = $this->stringsHelper::extractParametersInfo($expression);
+        bdump('VALIDATE SEQUENCE');
+        bdump($standardized);
+        $parametrized = $this->stringsHelper::getParametrized($standardized);
+        $parametersInfo = $this->stringsHelper::extractParametersInfo($standardized);
         $expression = $parametrized->expression;
 
         if(!$this->stringsHelper::isSequence($expression, $variable)){
@@ -723,6 +700,8 @@ class ValidationService
      */
     public function validateArithmeticSequence(string $expression, string $variable): bool
     {
+        bdump('VALIDATE ARITHMETIC SEQUENCE');
+        bdump($expression);
         $expression = $this->newtonApiClient->simplify($expression);
         $expression = $this->stringsHelper::nxpFormat($expression, $variable);
 

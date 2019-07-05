@@ -224,6 +224,7 @@ class MathService
     public function standardizeEquation(string $expression): string
     {
         bdump('STANDARDIZE EQUATION');
+        bdump($expression);
         $expression = $this->latexHelper::parseLatex($expression);
 
         $parameterized = $this->stringsHelper::getParametrized($expression);
@@ -239,6 +240,16 @@ class MathService
 //        var_dump($expression);
         $expression = $this->newtonApiClient->simplify($expression);
 
+        return $expression;
+    }
+
+    /**
+     * @param string $expression
+     * @return string
+     */
+    public function standardizeSequence(string $expression): string
+    {
+        //TODO
         return $expression;
     }
 
