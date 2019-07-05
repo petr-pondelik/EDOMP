@@ -18,6 +18,17 @@ use Nette\Utils\Strings;
  */
 class StringsHelper
 {
+
+    // Match operator or whitespace
+    public const RE_OPERATOR_WS = '(\+|\-|)';
+
+    // Match parameter
+    public const RE_PARAMETER = '(p(\d)+)';
+
+    // Match number, parameter or fraction with numbers and parameters
+    public const RE_NUM_PAR_FRAC = '([\dp\+\-\*\(\) ]+\/[\dp\+\-\*\(\) ]+|[\dp\+\-\*\(\) ]+|)';
+
+
     public const LATEX_INLINE = 'latexInline';
     public const BRACKETS_SIMPLE = 'bracketsSimple';
     public const ADDITION = 'addition';
@@ -39,6 +50,31 @@ class StringsHelper
         'addition' => '+',
         'subtraction' => '-'
     ];
+
+    /**
+     * @param string $variable
+     * @return string
+     */
+    public static function getLinearEquationRegExp(string $variable): string
+    {
+        return self::RE_OPERATOR_WS
+            . '\s?'
+            . self::RE_NUM_PAR_FRAC
+            . '\s?'
+            . $variable
+            . '\s?'
+            . self::RE_OPERATOR_WS
+            . '\s?'
+            . self::RE_NUM_PAR_FRAC
+            . '('
+            . '\s?'
+            . self::RE_OPERATOR_WS
+            . '\s?'
+            . self::RE_NUM_PAR_FRAC
+            . '\s?'
+            . self::RE_PARAMETER
+            . ')*';
+    }
 
     /**
      * @param string $expression

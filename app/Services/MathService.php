@@ -141,6 +141,10 @@ class MathService
      */
     protected function getDiscriminantB(string $expression, string $variable)
     {
+        bdump('GET DISCRIMINANT B');
+        bdump($expression);
+        $expression = $this->newtonApiClient->simplify($expression);
+        bdump($expression);
         $bExp = Strings::after($expression, $variable . '^2');
         $bExpEnd = Strings::indexOf($bExp, $variable);
         $bExp = Strings::substring($bExp, 0, $bExpEnd + 1);
@@ -191,6 +195,8 @@ class MathService
      */
     public function getDiscriminantExpression(string $expression, string $variable, bool $standardized = self::NON_STANDARDIZED): string
     {
+        bdump('GET DISCRIMINANT EXPRESSION');
+        bdump($expression);
         if(!$standardized){
             $expression = $this->standardizeEquation($expression);
         }
@@ -217,9 +223,12 @@ class MathService
      */
     public function standardizeEquation(string $expression): string
     {
+        bdump('STANDARDIZE EQUATION');
         $expression = $this->latexHelper::parseLatex($expression);
 
         $parameterized = $this->stringsHelper::getParametrized($expression);
+
+        bdump($parameterized);
 
         $sides = $this->stringsHelper::getEquationSides($parameterized->expression);
 //        var_dump($sides);

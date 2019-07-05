@@ -26,7 +26,7 @@ class Difficulty extends BaseEntity
     /**
      * @var string
      */
-    protected $toStringAttr = "label";
+    protected $toStringAttr = 'label';
 
     /**
      * @ORM\OneToMany(targetEntity="ProblemFinal", mappedBy="difficulty", cascade={"persist", "merge"})

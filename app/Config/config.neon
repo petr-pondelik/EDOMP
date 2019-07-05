@@ -19,6 +19,10 @@ application:
 session:
 	expiration: 14 days
 
+# Set tracy max lenght for text dumps
+tracy:
+    maxLength: 2000
+
 services:
 	router: App\RouterFactory::createRouter
 

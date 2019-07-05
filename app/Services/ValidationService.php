@@ -10,6 +10,8 @@ namespace App\Services;
 
 use App\Exceptions\InvalidParameterException;
 use App\Exceptions\NewtonApiSyntaxException;
+use App\Exceptions\ProblemFinalCollisionException;
+use App\Exceptions\ProblemTemplateFormatException;
 use App\Exceptions\StringFormatException;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
@@ -19,6 +21,7 @@ use Nette\NotSupportedException;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
+use NXP\Exception\MathExecutorException;
 
 /**
  * Class ValidationService
@@ -265,7 +268,7 @@ class ValidationService
                         return 0;
                     }
                     if(!$this->validateEquation($this->latexHelper::parseLatex($filledVal->body), $filledVal->standardized, $filledVal->variable, $this->constHelper::QUADRATIC_EQ)){
-                        return 0;
+                        return 1;
                     }
                     return -1;
                 },
@@ -275,7 +278,7 @@ class ValidationService
                         return 0;
                     }
                     if(!$this->validateSequence($this->latexHelper::parseLatex($filledVal->body), $filledVal->variable, $this->constHelper::ARITHMETIC_SEQ)){
-                        return 0;
+                        return 1;
                     }
                     return -1;
                 },
@@ -297,17 +300,17 @@ class ValidationService
                 'condition_' . $this->constHelper::RESULT => function(ArrayHash $filledVal, $problemId = null){
                     $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal->body);
 
-                    //Maximal number of parameters exceeded
+                    // Maximal number of parameters exceeded
                     if($parametersInfo->count > $this->constHelper::PARAMETERS_MAX) {
                         return 2;
                     }
 
-                    //Maximal parameters complexity exceeded
+                    // Maximal parameters complexity exceeded
                     if($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX) {
                         return 3;
                     }
 
-                    if(!$this->validateResultCond($filledVal->accessor, $filledVal->body, $filledVal->standardized, $filledVal->variable, $parametersInfo, $problemId)) {
+                    if(!$this->validateResultCond($filledVal->accessor, $filledVal->standardized, $filledVal->variable, $parametersInfo, $problemId)) {
                         return 4;
                     }
 
@@ -318,12 +321,14 @@ class ValidationService
                     $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal['body']);
 
                     //Maximal number of parameters exceeded
-                    if($parametersInfo->count > $this->constHelper::PARAMETERS_MAX)
+                    if($parametersInfo->count > $this->constHelper::PARAMETERS_MAX) {
                         return 2;
+                    }
 
                     //Maximal parameters complexity exceeded
-                    if($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX)
+                    if($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX) {
                         return 3;
+                    }
 
                     if(!$this->validateDiscriminantCond(
                         $filledVal->accessor, $filledVal->body, $filledVal->variable, $parametersInfo, $problemId)) {
@@ -591,11 +596,14 @@ class ValidationService
      */
     public function validateEquation(string $expression, string $standardized, string $variable, int $eqType): bool
     {
-        if(!$this->stringsHelper::isEquation($expression))
+        if(!$this->stringsHelper::isEquation($expression)){
             return false;
+        }
         switch($eqType){
-            case $this->constHelper::LINEAR_EQ: return $this->validateLinearEquation($standardized, $variable);
-            case $this->constHelper::QUADRATIC_EQ: return $this->validateQuadraticEquation($standardized, $variable);
+            case $this->constHelper::LINEAR_EQ:
+                return $this->validateLinearEquation($standardized, $variable);
+            case $this->constHelper::QUADRATIC_EQ:
+                return $this->validateQuadraticEquation($standardized, $variable);
         }
         return false;
     }
@@ -607,9 +615,25 @@ class ValidationService
      */
     public function validateLinearEquation(string $standardized, string $variable): bool
     {
-        if(Strings::contains($standardized, $variable . '^'))
-            return false;
-        return true;
+        bdump('VALIDATE LINEAR EQUATION');
+        // Remove all the spaces
+        //$standardized = $this->stringsHelper::removeWhiteSpaces($standardized);
+        bdump($standardized);
+
+        // RE1: Match operator or whitespace --> (\+\-|)
+        // RE2: Match parameter --> (p(\d)+)
+        // RE3: Match number, parameter or fraction with numbers and parameters --> ([\dp\+\-\*\(\)]+\/[\dp\+\-\*\(\)]+|[\dp\+\-\*\(\)]+|)
+
+        // Match string against the linear expression regexp
+        // (\+|\-|)     ([\dp\+\-\*\(\)]+\/[\dp\+\-\*\(\)]+|[\dp\+\-\*\(\)]+|)    $variable  (\+|\-)     ([\dp\+\-\*\(\)]+\/[\dp\+\-\*\(\)]+|[\dp\+\-\*\(\)]+|)    (   (\+|\-|)   ([\dp\+\-\*\(\)]+\/[\dp\+\-\*\(\)]+|[\dp\+\-\*\(\)]+|)    (p(\d)+)    ) *
+        // RE1          RE3                                                       variable   RE1         RE3                                                       (   RE1        RE3                                                       RE2         ) repetition from 0 to n
+        //$matches = Strings::match($standardized, '~(\+|\-|)((\d)+\/(\d)+|(\d)+|)' . $variable . '(\+|\-)((\d)+\/(\d)+|(\d)+)((\+|\-|)((\d)+|(\d)+\/(\d)+|)(p(\d)+))*~');
+
+        //$matches = Strings::match($standardized, '~' . $this->stringsHelper::RE_OPERATOR_WS . $this->stringsHelper::RE_NUM_PAR_FRAC . $variable . $this->stringsHelper::RE_OPERATOR_WS . $this->stringsHelper::RE_NUM_PAR_FRAC . '(' . $this->stringsHelper::RE_OPERATOR_WS . $this->stringsHelper::RE_NUM_PAR_FRAC . $this->stringsHelper::RE_PARAMETER . ')*' . '~');
+        $matches = Strings::match($standardized, '~' . $this->stringsHelper::getLinearEquationRegExp($variable) . '~');
+
+        // Check if the whole expression was matched
+        return $matches[0] === $standardized;
     }
 
     /**
@@ -619,11 +643,30 @@ class ValidationService
      */
     public function validateQuadraticEquation(string $standardized, string $variable): bool
     {
-        if(!Strings::contains($standardized, $variable . '^2'))
+        bdump('VALIDATE QUADRATIC EQUATION');
+
+        // Remove all the spaces
+        $standardized = $this->stringsHelper::removeWhiteSpaces($standardized);
+
+        bdump($standardized);
+
+        // Match string against the quadratic expression regexp
+        // (\+|\-|)     ((\d)+\/(\d)+|(\d)+|)   $variable\^2    (   (\+|\-|)    ((\d)+\/(\d)+|(\d)+|)    $variable  ) ?                  (       (\+|\-)     (   (\d)+\/(\d)+|(\d)+)    )?                   (    (\+|\-|)   ((\d)+|(\d)+\/(\d)+|)   (p(\d)+)    ) *
+        // operator     number or fraction      variable square (   operator    number or fraction      variable   ) repetition 0 or 1  (       operator    (   number or fraction     ) repetition 0 or 1  (    operator   number or fraction      parameter   ) repetition from 0 to n
+        $matches = Strings::match($standardized, '~(\+|\-|)((\d)+\/(\d)+|(\d)+|)' . $variable . '\^2((\+|\-|)((\d)+\/(\d)+|(\d)+|)' . $variable . ')?((\+|\-)((\d)+\/(\d)+|(\d)+))?((\+|\-|)((\d)+|(\d)+\/(\d)+|)(p(\d)+))*~');
+
+        // Check if the whole expression was matched
+        return $matches[0] === $standardized;
+
+        /*if(!Strings::startsWith($standardized, $variable . '^2')) {
             return false;
-        if(Strings::match($standardized, '~' . $variable . '\^[3-9]~'))
+        }
+        if(Strings::match($standardized, '~' . $variable . '\^[3-9]~')) {
             return false;
-        return true;
+        }
+        return true;*/
+
+
     }
 
     /**
@@ -642,7 +685,9 @@ class ValidationService
         $parametersInfo = $this->stringsHelper::extractParametersInfo($expression);
         $expression = $parametrized->expression;
 
-        if(!$this->stringsHelper::isSequence($expression, $variable)) return false;
+        if(!$this->stringsHelper::isSequence($expression, $variable)){
+            return false;
+        }
 
         try{
             $sides = $this->stringsHelper::getEquationSides($expression, false);
@@ -651,14 +696,17 @@ class ValidationService
         }
 
         $params = [];
-        for($i = 0; $i < $parametersInfo->count; $i++)
+        for($i = 0; $i < $parametersInfo->count; $i++){
             $params['p' . $i] = 1;
+        }
 
         $final = $this->stringsHelper::passValues($sides->right, $params);
 
         switch ($seqType){
-            case $this->constHelper::ARITHMETIC_SEQ:    return $this->validateArithmeticSequence($final, $variable);
-            case $this->constHelper::GEOMETRIC_SEQ:     return $this->validateGeometricSequence($final, $variable);
+            case $this->constHelper::ARITHMETIC_SEQ:
+                return $this->validateArithmeticSequence($final, $variable);
+            case $this->constHelper::GEOMETRIC_SEQ:
+                return $this->validateGeometricSequence($final, $variable);
         }
 
         return false;
@@ -714,32 +762,37 @@ class ValidationService
 
     /**
      * @param int $accessor
-     * @param string $body
      * @param string $standardized
      * @param string $variable
      * @param ArrayHash $parametersInfo
      * @param null $problemId
      * @return bool
      * @throws \Nette\Utils\JsonException
+     * @throws ProblemTemplateFormatException
      */
-    public function validateResultCond(int $accessor, string $body, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null): bool
+    public function validateResultCond
+    (
+        int $accessor, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null
+    ): bool
     {
         $variableExp = $this->stringsHelper::getLinearVariableExpresion($standardized, $variable);
 
-        $matches = $this->conditionMatchingService->findConditionsMatches([
-            $this->constHelper::RESULT => [
-                $accessor => [
-                    'parametersInfo' => $parametersInfo,
-                    'variableExp' => $variableExp
+        try{
+            $matches = $this->conditionMatchingService->findConditionsMatches([
+                $this->constHelper::RESULT => [
+                    $accessor => [
+                        'parametersInfo' => $parametersInfo,
+                        'variableExp' => $variableExp
+                    ]
                 ]
-            ]
-        ]);
+            ]);
+        } catch (MathExecutorException $e){
+            throw new ProblemTemplateFormatException('Zadán chybný formát šablony.');
+        }
 
         if(!$matches){
             return false;
         }
-
-        //$arrayToJson['matches'] = $matches;
 
         $jsonData = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
@@ -762,10 +815,16 @@ class ValidationService
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Nette\Utils\JsonException
      */
-    private function validateDiscriminantCond(int $accessor, string $body, string $variable, ArrayHash $parametersInfo, $problemId = null): bool
+    private function validateDiscriminantCond
+    (
+        int $accessor, string $body, string $variable, ArrayHash $parametersInfo, $problemId = null
+    ): bool
     {
+        bdump('VALIDATE DISCRIMINANT COND');
         $parametrized = $this->stringsHelper::getParametrized($body);
         $discriminantExp = $this->mathService->getDiscriminantExpression($parametrized->expression, $variable);
+
+        bdump($discriminantExp);
 
         $matches = $this->conditionMatchingService->findConditionsMatches([
             $this->constHelper::DISCRIMINANT => [
@@ -779,8 +838,6 @@ class ValidationService
         if(!$matches){
             return false;
         }
-
-        //$arrayToJson['matches'] = $matches;
 
         $jsonData = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
@@ -807,7 +864,7 @@ class ValidationService
             if(is_array($value1)){
                 foreach ($value1 as $key2 => $value2){
                     if(!array_key_exists($key2, $this->validationMapping[$key1])){
-                        throw  new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
+                        throw new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
                     }
                     if( ($validationRes = $this->validationMapping[$key1][$key2]($value2)) !== -1 ){
                         $validationErrors[$key1][] = $this->validationMessages[$key1][$key2][$validationRes];
@@ -827,25 +884,29 @@ class ValidationService
      * @param $problemId
      * @return array
      */
-    public function editValidate($fields, $problemId): array
+    public function conditionValidate($fields, $problemId = null): array
     {
+        // Based on the problemId presence, it will be decided it to update or to create
+
         $validationErrors = [];
 
         foreach((array)$fields as $key1 => $value1){
 
-            if(!array_key_exists($key1, $this->validationMapping))
+            if(!array_key_exists($key1, $this->validationMapping)){
                 throw new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
+            }
 
             if(is_array($value1)){
                 foreach ($value1 as $key2 => $value2){
-                    if(!array_key_exists($key2, $this->validationMapping[$key1]))
-                        throw  new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
-                    if( ($validationRes = $this->validationMapping[$key1][$key2]($value2, $problemId)) !== -1 )
+                    if(!array_key_exists($key2, $this->validationMapping[$key1])){
+                        throw new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
+                    }
+                    if( ($validationRes = $this->validationMapping[$key1][$key2]($value2, $problemId)) !== -1){ // Zde se liší!
                         $validationErrors[$key1][] = $this->validationMessages[$key1][$key2][$validationRes];
+                    }
                 }
             }
-            else{
-                if( ($validationRes = $this->validationMapping[$key1]($value1, $problemId)) !== -1 )
+            else if( ($validationRes = $this->validationMapping[$key1]($value1, $problemId)) !== -1 ){ // Zde se liší!
                     $validationErrors[$key1][] = $this->validationMessages[$key1][$validationRes];
             }
 

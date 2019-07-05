@@ -29,9 +29,10 @@ class RoleRepository extends BaseRepository
             ->indexBy("r", "r.id")
             ->setParameter("adminRoleId", $this->constHelper::ADMIN_ROLE);
 
-        if(!$user->isInRole('admin'))
+        if(!$user->isInRole('admin')){
             $qb = $qb->andWhere("r.id != :teacherRoleId")
                 ->setParameter("teacherRoleId", $this->constHelper::TEACHER_ROLE);
+        }
 
         return $qb->getQuery()->getResult();
     }

@@ -26,7 +26,7 @@ class ProblemCondition extends BaseEntity
     /**
      * @var string
      */
-    protected $toStringAttr = "label";
+    protected $toStringAttr = 'label';
 
     /**
      * @ORM\Column(type="integer", nullable=false)

@@ -22,7 +22,7 @@ class ProblemTestAssociation extends BaseEntity
     /**
      * @var string
      */
-    protected $toStringAttr = "variant";
+    protected $toStringAttr = 'variant';
 
     /**
      * @ORM\Column(type="string", nullable=false)

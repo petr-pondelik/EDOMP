@@ -346,7 +346,8 @@ class LatexHelper
      */
     public static function parseFractions(string $latex): string
     {
-        return Strings::replace($latex, '~(\\\frac\{([^\\\]*)\}\{([^\\\]*)\})~', '($2)/($3)');
+        $res = Strings::replace($latex, '~\\\\frac\{([0-9a-zA-Z" <>\/\=\+\-\*]*)\}\{([0-9a-zA-Z" <>\/\=\+\-\*]*)\}~', '($1)/($2)');
+        return $res;
     }
 
     /**
@@ -373,7 +374,7 @@ class LatexHelper
      * @param string $latex
      * @return string
      */
-    public static function parseExponent(string $latex): string
+    public static function parseSuperscripts(string $latex): string
     {
         return Strings::replace($latex, '~\^{(.*)}~', '^($1)');
     }
@@ -382,8 +383,9 @@ class LatexHelper
      * @param string $latex
      * @return string
      */
-    public static function parseSubscription(string $latex): string
+    public static function parseSubscripts(string $latex): string
     {
+        $latex = Strings::replace($latex, '~_{(.*)}~', '$1');
         return Strings::replace($latex, '~(_)~', '');
     }
 
@@ -415,8 +417,8 @@ class LatexHelper
         $res = self::trim($latex);
         $res = self::parseParentheses($res);
         $res = self::parseFractions($res);
-        $res = self::parseExponent($res);
-        $res = self::parseSubscription($res);
+        $res = self::parseSubscripts($res);
+        $res = self::parseSuperscripts($res);
         bdump($res);
         return $res;
     }

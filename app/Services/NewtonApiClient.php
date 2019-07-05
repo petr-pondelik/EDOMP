@@ -28,9 +28,8 @@ class NewtonApiClient
     /**
      * @const string
      */
-    //protected const NEWTON_API_URL = 'https://newton.now.sh/';
-//    protected const NEWTON_API_URL = 'localhost:3000/';
-    protected const NEWTON_API_URL = 'https://edomp-newton-api.herokuapp.com/';
+    protected const NEWTON_API_URL = 'localhost:3000/';
+    //protected const NEWTON_API_URL = 'https://edomp-newton-api.herokuapp.com/';
 
     /**
      * @const string
@@ -74,6 +73,7 @@ class NewtonApiClient
     {
 //        var_dump('SIMPLIFY');
         $expression = $this->stringsHelper::newtonFormat($expression);
+        bdump($expression);
         try {
             $res = $this->client->request('GET', self::NEWTON_API_URL . self::SIMPLIFY . $expression);
         } catch (RequestException $e){

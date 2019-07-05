@@ -12,6 +12,7 @@ namespace App\Components\Forms\ProblemTemplateForm;
 use App\Components\Forms\EntityFormControl;
 use App\Exceptions\InvalidParameterException;
 use App\Exceptions\NewtonApiException;
+use App\Exceptions\ProblemTemplateFormatException;
 use App\Exceptions\StringFormatException;
 use App\Helpers\ConstHelper;
 use App\Model\Functionality\BaseFunctionality;
@@ -183,8 +184,6 @@ class ProblemTemplateFormControl extends EntityFormControl
     {
         $values = $form->getValues();
 
-        bdump($values);
-
         $validateFields['variable'] = $values->variable;
         $validateFields['subCategory'] = $values->subCategory;
         $validateFields['difficulty'] = $values->difficulty;
@@ -224,7 +223,7 @@ class ProblemTemplateFormControl extends EntityFormControl
 
         $standardized = '';
 
-        //If it's the equation template
+        // If it's the equation template
         if(in_array($values->type, $this->constHelper::EQUATIONS)){
             try{
                 $standardized = $this->mathService->standardizeEquation($values->body);
@@ -237,7 +236,10 @@ class ProblemTemplateFormControl extends EntityFormControl
 
         $validateFields = [];
 
-        //Then validate if the entered problem corresponds to the selected type
+        bdump('STANDARDIZED');
+        bdump($standardized);
+
+        // Then validate if the entered problem corresponds to the selected type
         $validateFields['type'] = [
             'type_' . $values->type => ArrayHash::from([
                 'body' => $values->body,
@@ -248,6 +250,7 @@ class ProblemTemplateFormControl extends EntityFormControl
 
         try{
             $validationErrors = $this->validationService->validate($validateFields);
+            bdump($validationErrors);
         } catch (\Exception $e){
             $form['body']->addError($e->getMessage());
             $this->redrawFormErrors();
@@ -266,7 +269,7 @@ class ProblemTemplateFormControl extends EntityFormControl
 
         $validateFields = [];
 
-        //Then validate if all the conditions has been satisfied
+        // Then validate if all the conditions has been satisfied
         $validateFields['conditions_valid'] = $values->conditions_valid;
         $validationErrors = $this->validationService->validate($validateFields);
 
@@ -313,7 +316,7 @@ class ProblemTemplateFormControl extends EntityFormControl
             return;
         }
 
-        //First validate variable and structure of prototype
+        // First validate variable and structure of template
         if($validationErrors){
             foreach($validationErrors as $veKey => $errorGroup){
                 foreach($errorGroup as $egKey => $error){
@@ -334,7 +337,10 @@ class ProblemTemplateFormControl extends EntityFormControl
 
         $validationFields = [];
 
-        //Then validate it's type
+        bdump('STANDARDIZED');
+        bdump($standardized);
+
+        // Then validate it's type
         $validationFields['type'] = [
             'type_' . $problemType => ArrayHash::from([
                 'body' => $body,
@@ -342,6 +348,8 @@ class ProblemTemplateFormControl extends EntityFormControl
                 'variable' => $variable
             ])
         ];
+
+        bdump('TEST1');
 
         $validationErrors = $this->validationService->validate($validationFields);
 
@@ -355,9 +363,11 @@ class ProblemTemplateFormControl extends EntityFormControl
             return;
         }
 
+        bdump('TEST 2');
+
         $validationFields = [];
 
-        //Then validate specified condition
+        // Then validate specified condition
         $validationFields['condition'] = [
             'condition_' . $conditionType => ArrayHash::from([
                 'body' => $body,
@@ -367,13 +377,13 @@ class ProblemTemplateFormControl extends EntityFormControl
             ])
         ];
 
-        if(!$problemId){
-            //Validate on problem create
-            $validationErrors = $this->validationService->validate($validationFields);
-        }
-        else{
-            //Validate on problem edit
-            $validationErrors = $this->validationService->editValidate($validationFields, $problemId);
+        // Validate template condition
+        try{
+            $validationErrors = $this->validationService->conditionValidate($validationFields, $problemId ?? null);
+        } catch (ProblemTemplateFormatException $e){
+            $this['form']['body']->addError($e->getMessage());
+            $this->redrawFormErrors();
+            return;
         }
 
         if($validationErrors){
@@ -386,7 +396,7 @@ class ProblemTemplateFormControl extends EntityFormControl
 
         $this->redrawFormErrors();
 
-        //If validation succeeded, return true in payload
+        // If validation succeeded, return true in payload
         if(!$validationErrors){
             $this->flashMessage('Podmínka je splnitelná.', 'success');
             $this->presenter->payload->result = true;

@@ -33,7 +33,7 @@ abstract class Problem extends BaseEntity
     /**
      * @var string
      */
-    protected $toStringAttr = "body";
+    protected $toStringAttr = 'body';
 
     /**
      * @ORM\Column(type="text", nullable=false)

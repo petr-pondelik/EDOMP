@@ -26,7 +26,7 @@ class ProblemConditionType extends BaseEntity
     /**
      * @var string
      */
-    protected $toStringAttr = "label";
+    protected $toStringAttr = 'label';
 
     /**
      * @ORM\OneToMany(targetEntity="ProblemCondition", mappedBy="conditionType", cascade={"persist", "merge"})

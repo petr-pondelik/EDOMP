@@ -27,7 +27,7 @@ class ProblemType extends BaseEntity
     /**
      * @var string
      */
-    protected $toStringAttr = "label";
+    protected $toStringAttr = 'label';
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
