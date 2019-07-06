@@ -114,11 +114,9 @@
             {/snippet}
         </div>
 
-        {foreach $problemTypes as $typeKey => $type}
-            <div class="form-group {if $typeKey !== \App\Helpers\ConstHelper::ARITHMETIC_SEQ}hidden{/if}"
-                 id="type-wrapper-{$typeKey}">
+            <div class="form-group" id="type-wrapper">
 
-                {foreach $condByProblemTypes[$typeKey] as $condKey => $cond}
+                {foreach $condByProblemTypes[\App\Helpers\ConstHelper::ARITHMETIC_SEQ] as $condKey => $cond}
                     {var $id = $cond->getId()}
                     <div class="form-group cond-wrapper" id="cond-wrapper-{$id}">
                         {label condition_$id}
@@ -135,7 +133,6 @@
                 {/foreach}
 
             </div>
-        {/foreach}
 
 
         {snippet conditionsErrorSnippet}

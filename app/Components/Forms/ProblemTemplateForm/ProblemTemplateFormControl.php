@@ -127,10 +127,10 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
             ->setHtmlAttribute('placeholder','Sem patří samotné zadání úlohy.')
             ->setHtmlId('body');
 
-//        $form->addText('variable', 'Neznámá *')
-//            ->setHtmlAttribute('class', 'form-control')
-//            ->setHtmlAttribute('placeholder', 'Neznámá šablony.')
-//            ->setHtmlId('variable');
+        $form->addText('variable', 'Neznámá *')
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Neznámá šablony.')
+            ->setHtmlId('variable');
 
         $form->addTextArea('textAfter', 'Dodatek zadání')
             ->setHtmlAttribute('class', 'form-control')
@@ -200,35 +200,20 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
             $this->redrawFormErrors();
             return;
         }
-//
-//        // Then validate if the entered problem corresponds to the selected type
-//        $validateFields['type'] = [
-//            'type_' . $values->type => ArrayHash::from([
-//                'body' => $values->body,
-//                'standardized' => $standardized,
-//                'variable' => $values->variable
-//            ])
-//        ];
-//
-//        try{
-//            $validationErrors = $this->validationService->validate($validateFields);
-//            bdump($validationErrors);
-//        } catch (\Exception $e){
-//            $form['body']->addError($e->getMessage());
-//            $this->redrawFormErrors();
-//            return;
-//        }
-//
-//        if($validationErrors){
-//            foreach($validationErrors as $veKey => $errorGroup){
-//                foreach($errorGroup as $egKey => $error){
-//                    $form['body']->addError($error);
-//                }
-//            }
-//            $this->redrawFormErrors();
-//            return;
-//        }
-//
+
+        // If it's the equation template
+        try{
+            $standardized = $this->standardize($values->body);
+        } catch (\Exception $e){
+            $form['body']->addError($e->getMessage());
+            $this->redrawFormErrors();
+            return;
+        }
+
+        if(!$this->validateType($values, $standardized)){
+            return;
+        }
+
         $validateFields = [];
 
         // Then validate if all the conditions has been satisfied
@@ -240,8 +225,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
                 $form['submit']->addError($error);
             }
         }
-//
-//        $this->redrawFormErrors();
+
+        $this->redrawFormErrors();
     }
 
     /**
@@ -250,9 +235,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      * @param int $accessor
      * @param int $problemType
      * @param string $variable
-     * @return bool
      */
-    public function handleCondValidation(string $body, int $conditionType, int $accessor, int $problemType, string $variable)
+    public function handleCondValidation(string $body, int $conditionType, int $accessor, int $problemType, string $variable): void
     {
         $validationFields['variable'] = $variable;
         $validationFields['body'] = ArrayHash::from([
@@ -271,7 +255,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
                 $this['form']['body']->addError($e->getMessage());
             }
             $this->redrawFormErrors();
-            return false;
+            return;
         }
 
         // First validate variable and body of template
@@ -282,10 +266,57 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
                 }
             }
             $this->redrawFormErrors();
-            return false;
+            return;
         }
 
-        return true;
+        try{
+            $standardized = $this->standardize($body);
+        } catch (\Exception $e){
+            $this['form']['body']->addError($e->getMessage());
+            $this->redrawFormErrors();
+            return;
+        }
+
+        if(!$this->validateType(ArrayHash::from([ 'type' => $problemType, 'variable' => $variable ]), $standardized)){
+            return;
+        }
+
+        $validationFields = [];
+
+        // Then validate specified condition
+        $validationFields['condition'] = [
+            'condition_' . $conditionType => ArrayHash::from([
+                'body' => $body,
+                'standardized' => $standardized,
+                'accessor' => $accessor,
+                'variable' => $variable
+            ])
+        ];
+
+        // Validate template condition
+        try{
+            $validationErrors = $this->validationService->conditionValidate($validationFields, $problemId ?? null);
+        } catch (ProblemTemplateFormatException $e){
+            $this['form']['body']->addError($e->getMessage());
+            $this->redrawFormErrors();
+            return;
+        }
+
+        if($validationErrors){
+            foreach($validationErrors as $veKey => $errorGroup){
+                foreach($errorGroup as $egKey => $error){
+                    $this['form']['condition_' . $conditionType]->addError($error);
+                }
+            }
+        }
+
+        $this->redrawFormErrors();
+
+        // If validation succeeded, return true in payload
+        if(!$validationErrors){
+            $this->flashMessage('Podmínka je splnitelná.', 'success');
+            $this->presenter->payload->result = true;
+        }
     }
 
     /**
@@ -330,15 +361,15 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      */
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
-        try{
-            $this->functionality->create($values);
-            $this->onSuccess();
-        } catch (\Exception $e){
-            if ($e instanceof AbortException){
-                return;
-            }
-            $this->onError($e);
-        }
+//        try{
+//            $this->functionality->create($values);
+//            $this->onSuccess();
+//        } catch (\Exception $e){
+//            if ($e instanceof AbortException){
+//                return;
+//            }
+//            $this->onError($e);
+//        }
     }
 
     /**
@@ -390,4 +421,10 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         $this->redrawControl('flashesSnippet');
         $this->redrawControl('submitErrorSnippet');
     }
+
+    /**
+     * @param $body
+     * @return mixed
+     */
+    abstract public function standardize($body);
 }

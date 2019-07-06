@@ -331,7 +331,7 @@ class ValidationService
                     }
 
                     if(!$this->validateDiscriminantCond(
-                        $filledVal->accessor, $filledVal->body, $filledVal->variable, $parametersInfo, $problemId)) {
+                        $filledVal->accessor, $filledVal->standardized, $filledVal->variable, $parametersInfo, $problemId)) {
                         return 4;
                     }
 
@@ -662,9 +662,9 @@ class ValidationService
     {
         bdump('VALIDATE SEQUENCE');
         bdump($standardized);
-        $parametrized = $this->stringsHelper::getParametrized($standardized);
+        //$parametrized = $this->stringsHelper::getParametrized($standardized);
         $parametersInfo = $this->stringsHelper::extractParametersInfo($standardized);
-        $expression = $parametrized->expression;
+        //$expression = $parametrized->expression;
 
         if(!$this->stringsHelper::isSequence($expression, $variable)){
             return false;

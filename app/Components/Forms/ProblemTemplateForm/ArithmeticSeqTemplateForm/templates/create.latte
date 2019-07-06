@@ -76,12 +76,9 @@
                 {/snippet}
             </div>
 
-            {foreach $problemTypes as $typeKey => $type}
+                <div class="form-group" id="type-wrapper">
 
-                <div class="form-group {if $typeKey !== \App\Helpers\ConstHelper::ARITHMETIC_SEQ}hidden{/if}"
-                     id="type-wrapper-{$typeKey}">
-
-                    {foreach $condByProblemTypes[$typeKey] as $condKey => $cond}
+                    {foreach $condByProblemTypes[\App\Helpers\ConstHelper::ARITHMETIC_SEQ] as $condKey => $cond}
 
                         {var $id = $cond->getId()}
                         <div class="form-group cond-wrapper" id="cond-wrapper-{$id}">
@@ -100,12 +97,10 @@
 
                 </div>
 
-            {/foreach}
-
             {snippet conditionsErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    {for $i = 1; $i < 3; $i++}
+                    {for $i = 1; $i < 1; $i++}
                         <p n:foreach="$form['condition_' . $i]->errors as $error" class="alert alert-danger border-0">
                             {$error}
                         </p>

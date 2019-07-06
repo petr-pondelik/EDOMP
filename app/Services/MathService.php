@@ -186,20 +186,14 @@ class MathService
     /**
      * @param string $expression
      * @param string $variable
-     * @param bool $standardized
      * @return string
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getDiscriminantExpression(string $expression, string $variable, bool $standardized = self::NON_STANDARDIZED): string
+    public function getDiscriminantExpression(string $expression, string $variable): string
     {
-        bdump('GET DISCRIMINANT EXPRESSION');
-        bdump($expression);
-        if(!$standardized){
-            $expression = $this->standardizeEquation($expression);
-        }
         return $this->getDiscriminantB($expression, $variable) . '^2' . ' - 4 * ' . $this->getDiscriminantA($expression, $variable) . ' * ' . $this->getDiscriminantC($expression, $variable);
     }
 
