@@ -66,7 +66,7 @@ class ArithmeticSeqTemplFunctionality extends BaseFunctionality
         $templ = new ArithmeticSeqTempl();
         $templ = $this->setBaseValues($templ, $data);
         $templ->setVariable($data->variable);
-        $templ->setFirstN($data->first_n);
+        $templ->setFirstN($data->firstN);
         $this->em->persist($templ);
         $this->em->flush();
         return $templ;
@@ -85,8 +85,8 @@ class ArithmeticSeqTemplFunctionality extends BaseFunctionality
         if(!empty($data->variable)){
             $templ->setVariable($data->variable);
         }
-        if(!empty($data->first_n)){
-            $templ->setFirstN($data->first_n);
+        if(!empty($data->firstN)){
+            $templ->setFirstN($data->firstN);
         }
         $this->em->persist($templ);
         $this->em->flush();

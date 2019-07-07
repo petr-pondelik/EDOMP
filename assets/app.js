@@ -185,12 +185,14 @@ $(document).ready(() => {
             type: 'POST',
             url: url,
             data: {
-                'conditionType': conditionType,
-                'accessor': accessor,
-                'body': body,
-                'problemId': problemId,
-                'problemType': problemType,
-                'variable': variable
+                'data': {
+                    'conditionType': conditionType,
+                    'accessor': accessor,
+                    'body': body,
+                    'type': problemType,
+                    'variable': variable
+                },
+                'problemId': problemId
             },
             success: (payload) => {
                 if (payload.result) {

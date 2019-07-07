@@ -102,12 +102,12 @@
         </div>
 
         <div class="form-group">
-            {label first_n}
-            {input first_n}
-            {snippet first_nErrorSnippet}
+            {label firstN}
+            {input firstN}
+            {snippet firstNErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['first_n']->errors as $error" class="alert alert-danger border-0">
+                    <p n:foreach="$form['firstN']->errors as $error" class="alert alert-danger border-0">
                         {$error}
                     </p>
                 </div>

@@ -17,6 +17,7 @@ use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
 use App\Model\Functionality\TemplateJsonDataFunctionality;
+use Doctrine\ORM\Query\Expr\Math;
 use Nette\NotSupportedException;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
@@ -210,7 +211,7 @@ class ValidationService
                 return -1;
             },
 
-            'first_n' => static function($filledVal){
+            'firstN' => static function($filledVal){
                 if(empty($filledVal)) {
                     return 0;
                 }
@@ -277,7 +278,7 @@ class ValidationService
                     if(empty($filledVal)){
                         return 0;
                     }
-                    if(!$this->validateSequence($filledVal->standardized, $filledVal->variable, $this->constHelper::ARITHMETIC_SEQ)){
+                    if(!$this->validateSequence($filledVal->body, $filledVal->standardized, $filledVal->variable, $this->constHelper::ARITHMETIC_SEQ)){
                         return 1;
                     }
                     return -1;
@@ -287,8 +288,8 @@ class ValidationService
                     if(empty($filledVal)){
                         return 0;
                     }
-                    if(!$this->validateSequence($filledVal->standardized, $filledVal->variable, $this->constHelper::GEOMETRIC_SEQ)){
-                        return 0;
+                    if(!$this->validateSequence($filledVal->body, $filledVal->standardized, $filledVal->variable, $this->constHelper::GEOMETRIC_SEQ)){
+                        return 1;
                     }
                     return -1;
                 }
@@ -318,7 +319,11 @@ class ValidationService
                 },
 
                 'condition_' . $this->constHelper::DISCRIMINANT => function(ArrayHash $filledVal, $problemId = null){
-                    $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal['body']);
+
+                    bdump('VALIDATE DISCRIMINANT CONDITION');
+                    bdump($filledVal);
+
+                    $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal->body);
 
                     //Maximal number of parameters exceeded
                     if($parametersInfo->count > $this->constHelper::PARAMETERS_MAX) {
@@ -423,7 +428,7 @@ class ValidationService
                 1 => 'Zadejte prosím právě jedno malé písmo abecedy.'
             ],
 
-            'first_n' => [
+            'firstN' => [
                 0 => 'Zvolte počet prvních členů.',
                 1 => 'Počet prvních členů musí být kladný.'
             ],
@@ -612,6 +617,7 @@ class ValidationService
     public function validateLinearEquation(string $standardized, string $variable): bool
     {
         bdump('VALIDATE LINEAR EQUATION');
+        bdump($standardized);
 
         // Remove all the spaces
         $standardized = $this->stringsHelper::removeWhiteSpaces($standardized);
@@ -649,6 +655,7 @@ class ValidationService
     }
 
     /**
+     * @param string $expression
      * @param string $standardized
      * @param string $variable
      * @param int $seqType
@@ -658,30 +665,22 @@ class ValidationService
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function validateSequence(string $standardized, string $variable, int $seqType): bool
+    public function validateSequence(string $expression, string $standardized, string $variable, int $seqType): bool
     {
         bdump('VALIDATE SEQUENCE');
         bdump($standardized);
-        //$parametrized = $this->stringsHelper::getParametrized($standardized);
-        $parametersInfo = $this->stringsHelper::extractParametersInfo($standardized);
-        //$expression = $parametrized->expression;
 
-        if(!$this->stringsHelper::isSequence($expression, $variable)){
-            return false;
-        }
-
-        try{
-            $sides = $this->stringsHelper::getEquationSides($expression, false);
-        } catch (StringFormatException $e){
+        if(!$this->stringsHelper::isSequence($this->latexHelper::parseLatex($expression), $variable)){
             return false;
         }
 
         $params = [];
+        $parametersInfo = $this->stringsHelper::extractParametersInfo($expression);
         for($i = 0; $i < $parametersInfo->count; $i++){
-            $params['p' . $i] = 1;
+            $params['p' . $i] = ($i+2);
         }
 
-        $final = $this->stringsHelper::passValues($sides->right, $params);
+        $final = $this->stringsHelper::passValues($standardized, $params);
 
         switch ($seqType){
             case $this->constHelper::ARITHMETIC_SEQ:
@@ -694,7 +693,7 @@ class ValidationService
     }
 
     /**
-     * @param string $expression
+     * @param string $final
      * @param string $variable
      * @return bool
      * @throws \App\Exceptions\NewtonApiException
@@ -702,21 +701,27 @@ class ValidationService
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function validateArithmeticSequence(string $expression, string $variable): bool
+    public function validateArithmeticSequence(string $final, string $variable): bool
     {
         bdump('VALIDATE ARITHMETIC SEQUENCE');
-        bdump($expression);
-        $expression = $this->newtonApiClient->simplify($expression);
-        $expression = $this->stringsHelper::nxpFormat($expression, $variable);
+        bdump($final);
+        $final = $this->newtonApiClient->simplify($final);
+        $final = $this->stringsHelper::nxpFormat($final, $variable);
 
-        $a1 = $this->stringsHelper::passValues($expression, [ $variable => 1 ]);
-        $a2 = $this->stringsHelper::passValues($expression, [ $variable => 2 ]);
-        $a3 = $this->stringsHelper::passValues($expression, [ $variable => 3 ]);
+        $a1 = $this->stringsHelper::passValues($final, [ $variable => 1 ]);
+        $a2 = $this->stringsHelper::passValues($final, [ $variable => 2 ]);
+        $a3 = $this->stringsHelper::passValues($final, [ $variable => 3 ]);
+
+        bdump($a1);
+        bdump($a2);
+        bdump($a3);
 
         $diff1 = $this->mathService->evaluateExpression('(' . $a2 . ')' . ' - ' . '(' . $a1 . ')');
+        bdump($diff1);
         $diff2 = $this->mathService->evaluateExpression('(' . $a3 . ')' . ' - ' . '(' . $a2 . ')');
+        bdump($diff2);
 
-        return $diff1 === $diff2;
+        return round($diff1, 2) === round($diff2,2);
     }
 
     /**
@@ -730,6 +735,7 @@ class ValidationService
      */
     public function validateGeometricSequence(string $expression, string $variable): bool
     {
+        bdump('Validate geometric sequence');
         $expression = $this->newtonApiClient->simplify($expression);
         $expression = $this->stringsHelper::nxpFormat($expression, $variable);
 
@@ -740,7 +746,7 @@ class ValidationService
         $quot1 = $this->mathService->evaluateExpression('(' . $a2 . ')' . '/' . '(' . $a1 . ')');
         $quot2 = $this->mathService->evaluateExpression('(' . $a3 . ')' . '/' . '(' . $a2 . ')');
 
-        return $quot1 === $quot2;
+        return round($quot1, 2) === round($quot2, 2);
     }
 
     /**
@@ -787,7 +793,7 @@ class ValidationService
 
     /**
      * @param int $accessor
-     * @param string $body
+     * @param string $standardized
      * @param string $variable
      * @param ArrayHash $parametersInfo
      * @param null $problemId
@@ -800,14 +806,12 @@ class ValidationService
      */
     private function validateDiscriminantCond
     (
-        int $accessor, string $body, string $variable, ArrayHash $parametersInfo, $problemId = null
+        int $accessor, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null
     ): bool
     {
         bdump('VALIDATE DISCRIMINANT COND');
-        //TODO: Pass standardized expression straight !!!
-        $parametrized = $this->stringsHelper::getParametrized($body);
-        $discriminantExp = $this->mathService->getDiscriminantExpression($parametrized->expression, $variable);
-
+        bdump($standardized);
+        $discriminantExp = $this->mathService->getDiscriminantExpression($standardized, $variable);
         bdump($discriminantExp);
 
         $matches = $this->conditionMatchingService->findConditionsMatches([

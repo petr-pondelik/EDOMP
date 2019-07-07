@@ -430,10 +430,8 @@ class StringsHelper
      */
     public static function isSequence(string $expression, string $variable): bool
     {
-        $split = Strings::split($expression, '~ = ~');
-        if(count($split) !== 2){
-            return false;
-        }
+        bdump('IS SEQUENCE');
+        bdump($expression);
         if(!Strings::match($expression, '~^\s*\w' . $variable . '\s*=~')){
             return false;
         }

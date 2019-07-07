@@ -281,17 +281,13 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     }
 
     /**
-     * @param string $body
-     * @param int $conditionType
-     * @param int $accessor
-     * @param int $problemType
-     * @param string $variable
-     * @param int|null $problemId
+     * @param array $data
+     * @param int $problemId
      */
-    public function handleCondValidation(string $body, int $conditionType, int $accessor, int $problemType, string $variable, int $problemId = null): void
+    public function handleCondValidation(array $data, $problemId = null): void
     {
         $form = $problemId ? 'problemTemplateEditForm' : 'problemTemplateCreateForm';
-        $this[$form]->handleCondValidation($body, $conditionType, $accessor, $problemType, $variable, $problemId);
+        $this[$form]->handleCondValidation($data, $problemId);
     }
 
     /**

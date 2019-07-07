@@ -79,6 +79,6 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
     {
         parent::setDefaults($form, $record);
         $form['variable']->setDefaultValue($record->getVariable());
-        $form['first_n']->setDefaultValue($record->getFirstN());
+        $form['firstN']->setDefaultValue($record->getFirstN());
     }
 }

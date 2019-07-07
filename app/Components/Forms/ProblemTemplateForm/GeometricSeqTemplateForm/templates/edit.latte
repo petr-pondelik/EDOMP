@@ -102,43 +102,41 @@
         </div>
 
         <div class="form-group">
-            {label first_n}
-            {input first_n}
-            {snippet first_nErrorSnippet}
+            {label firstN}
+            {input firstN}
+            {snippet firstNErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['first_n']->errors as $error" class="alert alert-danger border-0">
+                    <p n:foreach="$form['firstN']->errors as $error" class="alert alert-danger border-0">
                         {$error}
                     </p>
                 </div>
             {/snippet}
         </div>
 
-        {foreach $problemTypes as $typeKey => $type}
-            <div class="form-group {if $typeKey !== \App\Helpers\ConstHelper::GEOMETRIC_SEQ}hidden{/if}"
-                 id="type-wrapper-{$typeKey}">
+        <div class="form-group" id="type-wrapper">
 
-                {foreach $condByProblemTypes[$typeKey] as $condKey => $cond}
-                    {var $id = $cond->getId()}
-                    <div class="form-group cond-wrapper" id="cond-wrapper-{$id}">
-                        {label condition_$id}
-                        {input condition_$id, data-key => $id}
-                        <div class="col-12 text-right mt-3 mb-3"
-                             id="condition-validation-{$id}">
-                            <button type="button" class="btn btn-primary condition-validation-btn"
-                                    id="condition-validation-btn-{$id}"
-                                    data-key="{$id}" data-edit="false">
-                                Ověřit splnitelnost
-                            </button>
-                        </div>
-                    </div>
-                {/foreach}
-
+        {foreach $condByProblemTypes[\App\Helpers\ConstHelper::GEOMETRIC_SEQ] as $condKey => $cond}
+            {var $id = $cond->getId()}
+            <div class="form-group cond-wrapper" id="cond-wrapper-{$id}">
+                {label condition_$id}
+                {input condition_$id, data-key => $id}
+                <div class="col-12 text-right mt-3 mb-3"
+                     id="condition-validation-{$id}">
+                    <button type="button" class="btn btn-primary condition-validation-btn"
+                            id="condition-validation-btn-{$id}"
+                            data-key="{$id}" data-edit="false">
+                        Ověřit splnitelnost
+                    </button>
+                </div>
             </div>
         {/foreach}
 
-        <div n:snippet="flashesSnippet">
-            <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} border-0 alert-dismissible fade show" role="alert"">
+    </div>
+
+    <div n:snippet="flashesSnippet">
+        <div n:foreach="$flashes as $flash"
+                class="flash alert alert-{$flash->type} border-0 alert-dismissible fade show" role="alert">
             {$flash->message}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -148,7 +146,7 @@
         {snippet conditionsErrorSnippet}
             {var $form = $control['form']}
             <div n:if="$form->hasErrors()" class="mt-2">
-                {for $i = 1; $i < 3; $i++}
+                {for $i = 1; $i < 1; $i++}
                     <p n:foreach="$form['condition_' . $i]->errors as $error" class="alert alert-danger border-0">
                         {$error}
                     </p>

@@ -8,6 +8,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ProblemTemplateFormatException;
 use App\Exceptions\StringFormatException;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
@@ -131,7 +132,7 @@ class MathService
     }
 
     /**
-     * @param string $expression
+     * @param string $standardized
      * @param string $variable
      * @return false|string
      * @throws \App\Exceptions\NewtonApiException
@@ -139,15 +140,15 @@ class MathService
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    protected function getDiscriminantB(string $expression, string $variable)
+    protected function getDiscriminantB(string $standardized, string $variable)
     {
         bdump('GET DISCRIMINANT B');
-        bdump($expression);
-        $expression = $this->newtonApiClient->simplify($expression);
-        bdump($expression);
-        $bExp = Strings::after($expression, $variable . '^2');
+        $bExp = Strings::after($standardized, $variable . '^2');
         $bExpEnd = Strings::indexOf($bExp, $variable);
         $bExp = Strings::substring($bExp, 0, $bExpEnd + 1);
+        if($bExp === ' '){
+            return '0';
+        }
         $bExp = $this->newtonApiClient->simplify($bExp);
         if($bExp === 'x'){
             return '1';
@@ -171,20 +172,20 @@ class MathService
      */
     protected function getDiscriminantC(string $expression, string $variable)
     {
+        bdump('GET DISCRIMINANT C');
         $cExp = Strings::after($expression, $variable, 2);
-        if($cExp === ''){
+        if(!$cExp){
             $cExp = Strings::after($expression, $variable . '^2');
             if($cExp === '' || Strings::contains($cExp, $variable)){
                 return '0';
             }
         }
-        //var_dump($cExp);
         $cExp = $this->newtonApiClient->simplify($cExp);
         return $this->stringsHelper::wrap($cExp);
     }
 
     /**
-     * @param string $expression
+     * @param string $standardized
      * @param string $variable
      * @return string
      * @throws \App\Exceptions\NewtonApiException
@@ -192,9 +193,9 @@ class MathService
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getDiscriminantExpression(string $expression, string $variable): string
+    public function getDiscriminantExpression(string $standardized, string $variable): string
     {
-        return $this->getDiscriminantB($expression, $variable) . '^2' . ' - 4 * ' . $this->getDiscriminantA($expression, $variable) . ' * ' . $this->getDiscriminantC($expression, $variable);
+        return $this->getDiscriminantB($standardized, $variable) . '^2' . ' - 4 * ' . $this->getDiscriminantA($standardized, $variable) . ' * ' . $this->getDiscriminantC($standardized, $variable);
     }
 
     /**
@@ -219,6 +220,7 @@ class MathService
     {
         bdump('STANDARDIZE EQUATION');
         bdump($expression);
+
         $expression = $this->latexHelper::parseLatex($expression);
 
         $parameterized = $this->stringsHelper::getParametrized($expression);
@@ -240,10 +242,24 @@ class MathService
     /**
      * @param string $expression
      * @return string
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function standardizeSequence(string $expression): string
     {
-        //TODO
+        bdump('STANDARDIZE SEQUENCE');
+        bdump($expression);
+
+        $expression = $this->latexHelper::parseLatex($expression);
+        bdump($expression);
+        $parametrized = $this->stringsHelper::getParametrized($expression);
+        $sides = $this->stringsHelper::getEquationSides($parametrized->expression);
+        $expression = $this->newtonApiClient->simplify($sides->right);
+
+        bdump($expression);
+
         return $expression;
     }
 
