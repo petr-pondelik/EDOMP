@@ -22,6 +22,7 @@ session:
 # Set tracy max lenght for text dumps
 tracy:
     maxLength: 2000
+    maxDepth: 5
 
 services:
 	router: App\RouterFactory::createRouter

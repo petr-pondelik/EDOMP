@@ -23,19 +23,19 @@ trait FilterTrait
     {
         $filterArr = [];
 
-        if(isset($filters['is_template']) && $filters['is_template'] != -1){
+        if(isset($filters['is_template']) && $filters['is_template'] !== -1){
             $filterArr['isTemplate'] = $filters['is_template'];
         }
 
-        if(isset($filters['problem_type_id']) && $filters['problem_type_id'] != 0){
+        if(isset($filters['problem_type_id']) && $filters['problem_type_id'] !== 0){
             $filterArr['problemType'] = $filters['problem_type_id'];
         }
 
-        if(isset($filters['difficulty_id']) && $filters['difficulty_id'] != 0){
+        if(isset($filters['difficulty_id']) && $filters['difficulty_id'] !== 0){
             $filterArr['difficulty'] = $filters['difficulty_id'];
         }
 
-        if(isset($filters['sub_category_id']) && $filters['sub_category_id'] != 0){
+        if(isset($filters['sub_category_id']) && $filters['sub_category_id'] !== 0){
             $filterArr['subCategory'] = $filters['sub_category_id'];
         }
 

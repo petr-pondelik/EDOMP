@@ -159,7 +159,7 @@ class TestFormControl extends FormControl
             7 => 7,
             8 => 8
         ])
-            ->setHtmlAttribute('class', 'form-control col-12')
+            ->setHtmlAttribute('class', 'form-control col-12 selectpicker')
             ->setDefaultValue(true);
 
         $form->addHidden('problems_cnt')->setDefaultValue(1)
@@ -191,53 +191,53 @@ class TestFormControl extends FormControl
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte číslo testu.');
 
+        // Úvodní text se zobrazí pod hlavičkou testu
         $form->addTextArea('introduction_text', 'Úvodní text')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte úvodní text testu.');
-        // Úvodní text se zobrazí pod hlavičkou testu
 
         for($i = 0; $i < 20; $i++) {
 
             $form->addSelect('is_template_'.$i, 'Šablona', [
-                -1 => 'Bez podmínky',
+                '' => 'Bez podmínky',
                 1 => 'Ano',
                 0 => 'Ne'
             ])
-                ->setHtmlAttribute('class', 'form-control filter')
+                ->setPrompt('Bez podmínky')
+                ->setHtmlAttribute('class', 'form-control filter selectpicker')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlAttribute('data-filter-type', 'is_template')
                 ->setHtmlId('is_template_'.$i);
 
-            $form->addSelect('sub_category_id_' . $i, 'Téma',
-                array_merge([-1 => 'Bez podmínky'], $subCategories)
-            )
-                ->setHtmlAttribute('class', 'form-control filter')
+            $form->addMultiSelect('sub_category_id_' . $i, 'Téma', $subCategories)
+                ->setHtmlAttribute('class', 'form-control filter selectpicker')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlAttribute('data-filter-type', 'sub_category_id')
+                ->setHtmlAttribute('title', 'Zvolte témata')
                 ->setHtmlId('sub_category_id_' . $i);
 
-            $form->addSelect('problem_type_id_' . $i, 'Typ',
-                array_merge([-1 => 'Bez podmínky'], $problemTypes)
-            )
-                ->setHtmlAttribute('class', 'form-control filter')
+            $form->addMultiSelect('problem_type_id_' . $i, 'Typ', $problemTypes)
+                ->setHtmlAttribute('class', 'form-control filter selectpicker')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlAttribute('data-filter-type', 'problem_type_id')
+                ->setHtmlAttribute('title', 'Zvolte typy')
                 ->setHtmlId('problem_type_id_'.$i);
 
-            $form->addSelect('difficulty_id_'.$i, 'Obtížnost',
-                array_merge( [-1 => 'Bez podmínky'], $difficulties)
-            )
-                ->setHtmlAttribute('class', 'form-control filter')
+            $form->addMultiSelect('difficulty_id_'.$i, 'Obtížnost', $difficulties)
+                ->setHtmlAttribute('class', 'form-control filter selectpicker')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlAttribute('data-filter-type', 'difficulty_id')
+                ->setHtmlAttribute('title', 'Zvolte obtížnosti')
                 ->setHtmlId('difficulty_id_'.$i);
 
-            $problems[0] = 'Zvolit náhodně';
+            $problems = [];
             $foundProblems = $this->problemRepository->findAssoc([], 'id');
-            foreach ($foundProblems as $key => $item)
+            foreach ($foundProblems as $key => $item){
                 $problems[$key]  = $item;
+            }
 
             $form->addSelect('problem_'.$i, 'Úloha', $problems)
+                ->setPrompt('Zvolit náhodně')
                 ->setHtmlAttribute('class', 'form-control problem-select')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlId('problem_'.$i);
@@ -314,9 +314,10 @@ class TestFormControl extends FormControl
      */
     public function handleFilterChange(array $filters): void
     {
+        bdump($filters);
         foreach($filters as $problemKey => $problemFilters){
 
-            if(!isset($problemFilters['filters']['is_template']) || $problemFilters['filters']['is_template'] == -1){
+            if(!isset($problemFilters['filters']['is_template']) || $problemFilters['filters']['is_template'] === ''){
                 unset($problemFilters['filters']['is_template']);
                 $filterRes = $this->problemRepository->findFiltered($problemFilters['filters']);
             }
@@ -329,11 +330,10 @@ class TestFormControl extends FormControl
 
             if(isset($problemFilters['filters'])){
                 foreach ($problemFilters['filters'] as $filterType => $filterVal) {
+                    bdump($filterVal);
                     $this['form'][$filterType . '_' . $problemKey]->setValue($filterVal);
                 }
             }
-
-            $filterRes[0] = 'Zvolit náhodně';
 
             $this['form']['problem_' . $problemKey]->setItems($filterRes);
 

@@ -244,8 +244,16 @@ $(document).ready(() => {
 });
 
 let filters = {};
-let selectedProblems = {};
 let problemsCnt = 1;
+
+// Get values from HTML MultiSelect
+function getMultiSelectValues(element){
+    let values = [];
+    for(let i = 0; i < element.selectedOptions.length; i++){
+        values.push(element.selectedOptions[i].value);
+    }
+    return values;
+}
 
 $(document).ready(() => {
 
@@ -289,7 +297,17 @@ $(document).ready(() => {
 
         let problemId = e.target.dataset.problemId;
         let filterType = e.target.dataset.filterType;
-        let filterVal = e.target.value;
+
+        console.log(e.target);
+
+        let filterVal = null;
+        if(e.target.dataset.filterType === 'is_template'){
+            filterVal = e.target.value;
+        } else{
+            filterVal = getMultiSelectValues(e.target);
+        }
+
+        console.log(filterVal);
 
         if (!filters[problemId]) {
             filters[problemId] = {};
