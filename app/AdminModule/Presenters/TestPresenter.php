@@ -10,6 +10,7 @@ namespace App\AdminModule\Presenters;
 
 use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\TestGridFactory;
+use App\Components\Forms\TestForm\ITestFormFactory;
 use App\Components\Forms\TestForm\TestFormControl;
 use App\Components\Forms\TestForm\TestFormFactory;
 use App\Components\Forms\TestStatisticsForm\TestStatisticsFormControl;
@@ -71,7 +72,7 @@ class TestPresenter extends AdminPresenter
     protected $problemTestAssociationRepository;
 
     /**
-     * @var TestFormFactory
+     * @var ITestFormFactory
      */
     protected $testFormFactory;
 
@@ -108,7 +109,7 @@ class TestPresenter extends AdminPresenter
      * @param ProblemRepository $problemRepository
      * @param LogoRepository $logoRepository
      * @param ProblemTestAssociationRepository $problemTestAssociationRepository
-     * @param TestFormFactory $testFormFactory
+     * @param ITestFormFactory $testFormFactory
      * @param TestStatisticsFormFactory $testStatisticsFormFactory
      * @param TestGridFactory $testGridFactory
      * @param FileService $fileService
@@ -121,7 +122,7 @@ class TestPresenter extends AdminPresenter
         TestRepository $testRepository, TestFunctionality $testFunctionality,
         ProblemTemplateRepository $problemTemplateRepository, ProblemRepository $problemRepository, LogoRepository $logoRepository,
         ProblemTestAssociationRepository $problemTestAssociationRepository,
-        TestFormFactory $testFormFactory, TestStatisticsFormFactory $testStatisticsFormFactory, TestGridFactory $testGridFactory,
+        ITestFormFactory $testFormFactory, TestStatisticsFormFactory $testStatisticsFormFactory, TestGridFactory $testGridFactory,
         FileService $fileService, ValidationService $validationService
     )
     {
@@ -281,11 +282,11 @@ class TestPresenter extends AdminPresenter
         $control =  $this->testFormFactory->create();
         $control->onSuccess[] = function (){
             $this->informUser(new UserInformArgs('create'));
-            $this->redirect('default');
+            //$this->redirect('default');
         };
         $control->onError[] = function ($e){
             $this->informUser(new UserInformArgs('create', true, 'error', $e, false, 'testCreateForm'));
-            $this->redirect('default');
+            //$this->redirect('default');
         };
         return $control;
     }

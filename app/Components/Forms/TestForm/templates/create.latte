@@ -16,6 +16,7 @@
                         {input variants}
                     </div>
                 </div>
+
             </div>
 
         </div>
@@ -192,7 +193,7 @@
 
                         <div class="card-body mb-3">
 
-                            <div n:snippet="snippetProblem-{$i}">
+                            <div>
 
                                 <div class="form-group mt-3 mb-3">
                                     {label 'is_template_'.$i}
@@ -210,13 +211,20 @@
                                 </div>
 
                                 <div class="form-group mt-3 mb-3">
-                                    {label "sub_category_id_" . $i}
-                                    {input "sub_category_id_" . $i}
+                                    {label 'sub_category_id_' . $i}
+                                    {input 'sub_category_id_' . $i}
                                 </div>
 
-                                <div class="form-group mt-3 mb-3">
-                                    {label 'problem_'.$i}
-                                    {input 'problem_'.$i}
+                                {foreach $problemConditionTypes as $problemConditionType}
+                                    <div class="form-group mt-3 mb-3 hidden condition-type-id" id="condition-type-id-{$problemConditionType->getId()}-{$i}">
+                                        {label 'condition_type_id_' . $problemConditionType->getId() . '_' . $i}
+                                        {input 'condition_type_id_' . $problemConditionType->getId() . '_' . $i}
+                                    </div>
+                                {/foreach}
+
+                                <div n:snippet="snippetProblem-{$i}" class="form-group mt-3 mb-3">
+                                    {label 'problem_' . $i}
+                                    {input 'problem_' . $i}
                                 </div>
 
                                 <div class="form-group custom-control custom-checkbox">
@@ -247,7 +255,7 @@
 
                         <div class="card-body">
 
-                            <div n:snippet="snippetProblem-{$i}">
+                            <div>
 
                                 <div class="form-group mt-3 mb-3">
                                     {label 'is_template_' . $i}
@@ -269,7 +277,14 @@
                                     {input "sub_category_id_" . $i}
                                 </div>
 
-                                <div class="form-group mt-3 mb-3">
+                                {foreach $problemConditionTypes as $problemConditionType}
+                                    <div class="form-group mt-3 mb-3 hidden condition-type-id" id="condition-type-id-{$problemConditionType->getId()}-{$i}">
+                                        {label 'condition_type_id_' . $problemConditionType->getId() . '_' . $i}
+                                        {input 'condition_type_id_' . $problemConditionType->getId() . '_' . $i}
+                                    </div>
+                                {/foreach}
+
+                                <div n:snippet="snippetProblem-{$i}" class="form-group mt-3 mb-3">
                                     {label 'problem_' . $i}
                                     {input 'problem_' . $i}
                                 </div>

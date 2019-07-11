@@ -73,6 +73,11 @@ services:
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\Category
 
+	repository.condition.type:
+	    class: App\Model\Repository\ProblemConditionTypeRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\ProblemConditionType
+
 	repository.condition:
 	    class: App\Model\Repository\ProblemConditionRepository
 	    tags:
@@ -172,7 +177,7 @@ services:
 	factory.grid.group: App\Components\DataGrids\GroupGridFactory
 	factory.form.group: App\Components\Forms\GroupForm\GroupFormFactory
 	factory.grid.test: App\Components\DataGrids\TestGridFactory
-	factory.form.test: App\Components\Forms\TestForm\TestFormFactory
+	factory.form.test: App\Components\Forms\TestForm\ITestFormFactory
 	factory.form.test.statistics: App\Components\Forms\TestStatisticsForm\TestStatisticsFormFactory
 	factory.form.permission: App\Components\Forms\PermissionForm\PermissionFormFactory
 	factory.form.sign: App\Components\Forms\SignForm\SignFormFactory

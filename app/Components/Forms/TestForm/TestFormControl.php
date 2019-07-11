@@ -10,9 +10,12 @@ namespace App\Components\Forms\TestForm;
 
 
 use App\Components\Forms\FormControl;
+use App\Model\Entity\ProblemConditionType;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\LogoRepository;
+use App\Model\Repository\ProblemConditionRepository;
+use App\Model\Repository\ProblemConditionTypeRepository;
 use App\Model\Repository\ProblemFinalRepository;
 use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTemplateRepository;
@@ -26,6 +29,7 @@ use Kdyby\Doctrine\EntityManager;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Json;
 use Nette\Utils\Strings;
 
 /**
@@ -85,6 +89,11 @@ class TestFormControl extends FormControl
     protected $subCategoryRepository;
 
     /**
+     * @var ProblemConditionTypeRepository
+     */
+    protected $problemConditionTypeRepository;
+
+    /**
      * @var TestBuilderService
      */
     protected $testBuilderService;
@@ -107,6 +116,7 @@ class TestFormControl extends FormControl
      * @param LogoRepository $logoRepository
      * @param GroupRepository $groupRepository
      * @param SubCategoryRepository $subCategoryRepository
+     * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param TestBuilderService $testBuilderService
      * @param FileService $fileService
      */
@@ -118,6 +128,7 @@ class TestFormControl extends FormControl
         ProblemTypeRepository $problemTypeRepository,
         DifficultyRepository $difficultyRepository, LogoRepository $logoRepository, GroupRepository $groupRepository,
         SubCategoryRepository $subCategoryRepository,
+        ProblemConditionTypeRepository $problemConditionTypeRepository,
         TestBuilderService $testBuilderService, FileService $fileService
     )
     {
@@ -132,6 +143,7 @@ class TestFormControl extends FormControl
         $this->logoRepository = $logoRepository;
         $this->groupRepository = $groupRepository;
         $this->subCategoryRepository = $subCategoryRepository;
+        $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->testBuilderService = $testBuilderService;
         $this->fileService = $fileService;
     }
@@ -148,6 +160,14 @@ class TestFormControl extends FormControl
         $difficulties = $this->difficultyRepository->findAssoc([], 'id');
         $groups = $this->groupRepository->findAllowed($this->presenter->user);
         $subCategories = $this->subCategoryRepository->findAssoc([], 'id');
+        $conditionTypes = $this->problemConditionTypeRepository->findAssoc([], 'id');
+
+        $conditionTypesByProblemTypes = [];
+        foreach ($problemTypes as $id => $problemType){
+            foreach ($problemType->getConditionTypes()->getValues() as $conditionType){
+                $conditionTypesByProblemTypes[$id] = $conditionType->getId();
+            }
+        }
 
         $form->addSelect('variants', 'Počet variant *', [
             1 => 1,
@@ -177,7 +197,7 @@ class TestFormControl extends FormControl
 
         $form->addMultiSelect('groups', 'Skupiny *', $groups)
             ->setHtmlAttribute('class', 'form-control selectpicker')
-            ->setHtmlAttribute('title', 'Zvolte skupiny.');
+            ->setHtmlAttribute('title', 'Zvolte skupiny');
 
         $form->addText('test_term', 'Období *')
             ->setHtmlAttribute('class', 'form-control')
@@ -199,11 +219,10 @@ class TestFormControl extends FormControl
         for($i = 0; $i < 20; $i++) {
 
             $form->addSelect('is_template_'.$i, 'Šablona', [
-                '' => 'Bez podmínky',
                 1 => 'Ano',
                 0 => 'Ne'
             ])
-                ->setPrompt('Bez podmínky')
+                ->setPrompt('Zvolte')
                 ->setHtmlAttribute('class', 'form-control filter selectpicker')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlAttribute('data-filter-type', 'is_template')
@@ -217,18 +236,31 @@ class TestFormControl extends FormControl
                 ->setHtmlId('sub_category_id_' . $i);
 
             $form->addMultiSelect('problem_type_id_' . $i, 'Typ', $problemTypes)
-                ->setHtmlAttribute('class', 'form-control filter selectpicker')
+                ->setHtmlAttribute('class', 'form-control filter problem-type-filter selectpicker')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlAttribute('data-filter-type', 'problem_type_id')
+                ->setHtmlAttribute('data-condition-types', Json::encode($conditionTypesByProblemTypes) )
                 ->setHtmlAttribute('title', 'Zvolte typy')
-                ->setHtmlId('problem_type_id_'.$i);
+                ->setHtmlId('problem_type_id_' . $i);
 
-            $form->addMultiSelect('difficulty_id_'.$i, 'Obtížnost', $difficulties)
+            $form->addMultiSelect('difficulty_id_' . $i, 'Obtížnost', $difficulties)
                 ->setHtmlAttribute('class', 'form-control filter selectpicker')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlAttribute('data-filter-type', 'difficulty_id')
                 ->setHtmlAttribute('title', 'Zvolte obtížnosti')
-                ->setHtmlId('difficulty_id_'.$i);
+                ->setHtmlId('difficulty_id_' . $i);
+
+            foreach ($conditionTypes as $conditionType){
+
+                $form->addMultiSelect('condition_type_id_' . $conditionType->getId() . '_' . $i, $conditionType->getLabel(),
+                    $conditionType->getProblemConditions()->getValues()
+                )
+                    ->setHtmlAttribute('class', 'form-control filter selectpicker')
+                    ->setHtmlAttribute('data-problem-id', $i)
+                    ->setHtmlAttribute('data-filter-type', 'condition_type_id_' . $conditionType->getId())
+                    ->setHtmlAttribute('title', $conditionType->getPrompt());
+
+            }
 
             $problems = [];
             $foundProblems = $this->problemRepository->findAssoc([], 'id');
@@ -286,10 +318,13 @@ class TestFormControl extends FormControl
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
+            bdump('HANDLE FORM SUCCESS');
             $testData = $this->testBuilderService->buildTest($values);
         }
         catch(\Exception $e){
             $this->onError($e);
+            bdump($e->getMessage());
+            bdump('BUILD TEST ERROR');
             return;
         }
         $template = $this->getTemplate();
@@ -298,6 +333,7 @@ class TestFormControl extends FormControl
             $this->entityManager->flush();
         } catch (\Exception $e){
             $this->onError($e);
+            return;
         }
         foreach($testData->variants as $variant){
             $template->variant = $variant;
@@ -316,6 +352,10 @@ class TestFormControl extends FormControl
     {
         bdump($filters);
         foreach($filters as $problemKey => $problemFilters){
+
+            if(!isset($problemFilters['filters'])){
+                $problemFilters['filters'] = [];
+            }
 
             if(!isset($problemFilters['filters']['is_template']) || $problemFilters['filters']['is_template'] === ''){
                 unset($problemFilters['filters']['is_template']);
@@ -349,6 +389,7 @@ class TestFormControl extends FormControl
     public function render(): void
     {
         $this->template->logos = $this->logoRepository->findBy([], ['id' => 'DESC']);
+        $this->template->problemConditionTypes = $this->problemConditionTypeRepository->findAssoc([], 'id');
         $this->template->render(__DIR__ . '/templates/create.latte');
     }
 }

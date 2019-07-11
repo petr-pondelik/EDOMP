@@ -6,7 +6,6 @@
 //Import jQuery modules
 import 'jquery';
 
-
 //Import Font Awesome modules
 import '@fortawesome/fontawesome-free';
 
@@ -15,21 +14,16 @@ import 'bootstrap';
 import 'bootstrap-select';
 import 'bootstrap-datepicker';
 
-
 //Import Nette Forms module
 import 'nette-forms';
 
-
 //Import Nette Ajax modules
 import 'nette.ajax.js';
-//import './../../vendor/vojtech-dobes/nette-ajax-history/client-side/history.ajax'
 import './js/nette.ajax.init';
 import './js/spinner.ajax';
-import './js/nette.toggle';
 
 //Import Ublaboo Datagrid modules
 import 'ublaboo-datagrid';
-
 
 //Import FilePond modules
 import 'filepond';
@@ -38,6 +32,7 @@ import './js/filepond.config';
 
 //Import custom modules
 import './js/sidemenu';
+import './js/test-create-filters';
 
 
 /*
@@ -241,95 +236,6 @@ $(document).ready(() => {
             $(document).find('#edit-submit').removeClass('disabled');
         }
     });
-});
-
-let filters = {};
-let problemsCnt = 1;
-
-// Get values from HTML MultiSelect
-function getMultiSelectValues(element){
-    let values = [];
-    for(let i = 0; i < element.selectedOptions.length; i++){
-        values.push(element.selectedOptions[i].value);
-    }
-    return values;
-}
-
-$(document).ready(() => {
-
-    console.log('READY');
-
-    $(document).on('click', '.problem-select', (e) => {
-        let problemId = e.target.dataset.problemId;
-        if (!filters[problemId]) {
-            filters[problemId] = {};
-            filters[problemId]['filters'] = {};
-        }
-        filters[problemId]['selected'] = e.target.value;
-        console.log(filters);
-    });
-
-    $(document).on('click', '.btn-add', (e) => {
-
-        $('#problem-' + (parseInt(e.target.dataset.problemId) + 1)).slideToggle();
-        $('#btn-add-' + e.target.dataset.problemId).hide();
-        $('#btn-remove-' + e.target.dataset.problemId).hide();
-
-        problemsCnt++;
-
-        $('#problemsCnt').val(problemsCnt);
-
-    });
-
-    $(document).on('click', '.btn-remove', (e) => {
-
-        $('#problem-' + (e.target.dataset.problemId)).slideToggle();
-        $('#btn-add-' + (parseInt(e.target.dataset.problemId) - 1)).show();
-        $('#btn-remove-' + (parseInt(e.target.dataset.problemId) - 1)).show();
-
-        problemsCnt--;
-
-        $('#problemsCnt').val(problemsCnt);
-
-    });
-
-    $(document).on('change', '.filter', (e) => {
-
-        let problemId = e.target.dataset.problemId;
-        let filterType = e.target.dataset.filterType;
-
-        console.log(e.target);
-
-        let filterVal = null;
-        if(e.target.dataset.filterType === 'is_template'){
-            filterVal = e.target.value;
-        } else{
-            filterVal = getMultiSelectValues(e.target);
-        }
-
-        console.log(filterVal);
-
-        if (!filters[problemId]) {
-            filters[problemId] = {};
-            filters[problemId]['filters'] = {};
-        }
-
-        filters[problemId]['filters'][filterType] = filterVal;
-        filters[problemId]['selected'] = $('#problem_' + problemId).val();
-
-        console.log(filters);
-
-        $.nette.ajax({
-            type: 'GET',
-            url: '?do=filterChange',
-            data: {
-                'filters': filters,
-                'problemsCnt': problemsCnt
-            }
-        });
-
-    });
-
 });
 
 //Handle card heading chevrons toggle

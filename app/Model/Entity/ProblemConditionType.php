@@ -29,9 +29,20 @@ class ProblemConditionType extends BaseEntity
     protected $toStringAttr = 'label';
 
     /**
-     * @ORM\OneToMany(targetEntity="ProblemCondition", mappedBy="conditionType", cascade={"persist", "merge"})
+     * @ORM\Column(type="string", nullable=true)
+     * @Assert\Type(
+     *     type="string",
+     *     message="Label must be {{ type }}."
+     * )
+     *
+     * @var string
      */
-    protected $conditions;
+    protected $prompt;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ProblemCondition", mappedBy="problemConditionType", cascade={"persist", "merge"})
+     */
+    protected $problemConditions;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Model\Entity\ProblemType", mappedBy="conditionTypes", cascade={"persist", "merge"})
@@ -45,7 +56,7 @@ class ProblemConditionType extends BaseEntity
     public function __construct()
     {
         parent::__construct();
-        $this->conditions = new ArrayCollection();
+        $this->problemConditions = new ArrayCollection();
         $this->problemTypes = new ArrayCollection();
     }
 
@@ -63,5 +74,37 @@ class ProblemConditionType extends BaseEntity
     public function setProblemTypes($problemTypes): void
     {
         $this->problemTypes = $problemTypes;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProblemConditions()
+    {
+        return $this->problemConditions;
+    }
+
+    /**
+     * @param mixed $problemConditions
+     */
+    public function setProblemConditions($problemConditions): void
+    {
+        $this->problemConditions = $problemConditions;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrompt(): string
+    {
+        return $this->prompt;
+    }
+
+    /**
+     * @param string $prompt
+     */
+    public function setPrompt(string $prompt): void
+    {
+        $this->prompt = $prompt;
     }
 }

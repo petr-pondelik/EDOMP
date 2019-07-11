@@ -12,6 +12,7 @@ use App\Exceptions\ProblemFinalCollisionException;
 use App\Model\Entity\Test;
 use App\Model\Functionality\ProblemFinalFunctionality;
 use App\Model\Functionality\TestFunctionality;
+use App\Model\Repository\ProblemConditionTypeRepository;
 use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\TestRepository;
 use Nette\Utils\ArrayHash;
@@ -31,6 +32,11 @@ class TestBuilderService
      * @var TestRepository
      */
     protected $testRepository;
+
+    /**
+     * @var ProblemConditionTypeRepository
+     */
+    protected $problemConditionTypeRepository;
 
     /**
      * @var ProblemFinalFunctionality
@@ -53,25 +59,34 @@ class TestBuilderService
     protected $testVariantsLabels;
 
     /**
+     * @var array
+     */
+    protected $problemConditionTypesId;
+
+    /**
      * TestBuilderService constructor.
      * @param ProblemRepository $problemRepository
      * @param TestRepository $testRepository
+     * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemFinalFunctionality $problemFinalFunctionality
      * @param TestFunctionality $testFunctionality
      * @param GeneratorService $generatorService
      */
     public function __construct
     (
-        ProblemRepository $problemRepository, TestRepository $testRepository,
+        ProblemRepository $problemRepository, TestRepository $testRepository, ProblemConditionTypeRepository $problemConditionTypeRepository,
         ProblemFinalFunctionality $problemFinalFunctionality, TestFunctionality $testFunctionality,
         GeneratorService $generatorService
     )
     {
         $this->problemRepository = $problemRepository;
-        $this->problemFinalFunctionality = $problemFinalFunctionality;
         $this->testRepository = $testRepository;
+        $this->problemConditionTypeRepository = $problemConditionTypeRepository;
+        $this->problemFinalFunctionality = $problemFinalFunctionality;
         $this->testFunctionality = $testFunctionality;
         $this->generatorService = $generatorService;
+
+        $this->problemConditionTypesId = $this->problemConditionTypeRepository->findPairs([], 'id');
 
         $this->testVariantsLabels = [
             0 => 'A',
@@ -106,12 +121,14 @@ class TestBuilderService
      */
     protected function getProblemFilters(int $id, ArrayHash $data): array
     {
-        if($data['is_template_' . $id] !== -1){
-            $filters['is_template'] = $data['is_template_' . $id];
-        }
+        bdump($data);
+        $filters['is_template'] = $data['is_template_' . $id];
         $filters['problem_type_id'] = $data['problem_type_id_' . $id];
         $filters['difficulty_id'] = $data['difficulty_id_' . $id];
         $filters['sub_category_id'] = $data['sub_category_id_' . $id];
+        foreach ($this->problemConditionTypesId as $item){
+            $filters['condition_type_id_' . $item] = $data['condition_type_id_' . $item . '_' . $id];
+        }
         return $filters;
     }
 
@@ -142,16 +159,21 @@ class TestBuilderService
         //Array of chosen final problems IDs
         $usedFinals = [];
 
+        bdump($data);
+
         for($i = 0; $i < $data->problems_cnt; $i++){
             $problemTemplate = null;
-            $problemId = $data['problem_'.$i];
+            $problemId = $data['problem_' . $i];
 
             //In the case of random choice
-            if($problemId === 0){
+            if(!$problemId){
 
                 // Get all problems that match filters
                 $filters = $this->getProblemFilters($i, $data);
+                bdump($filters);
                 $problems = $this->problemRepository->findFiltered($filters);
+
+                bdump($problems);
 
                 // Get problem's templates that match filters
                 $filters['is_template'] = 0;

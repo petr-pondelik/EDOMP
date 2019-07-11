@@ -39,7 +39,7 @@ class ProblemCondition extends BaseEntity
     protected $accessor;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ProblemConditionType", inversedBy="conditions", cascade={"persist", "merge"})
+     * @ORM\ManyToOne(targetEntity="ProblemConditionType", inversedBy="problemConditions", cascade={"persist", "merge"})
      * @Assert\NotBlank(
      *     message="ProblemConditionType can't be blank."
      * )

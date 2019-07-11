@@ -124,7 +124,7 @@ abstract class Problem extends BaseEntity
 
     /**
      * @ORM\ManyToMany(targetEntity="ProblemCondition", cascade={"persist", "merge"})
-     * @ORM\JoinTable(name="problem_condition_problem_template_rel")
+     * @ORM\JoinTable(name="problem_condition_problem_rel")
      */
     protected $conditions;
 
