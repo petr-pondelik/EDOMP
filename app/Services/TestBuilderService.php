@@ -276,7 +276,7 @@ class TestBuilderService
         $variants = $this->testVariantsToArray($data);
 
         $test = $this->testFunctionality->create(ArrayHash::from([
-            'logo_id' => $data->logo_file_hidden,
+            'logo_id' => $data->logo,
             'term' => $data->test_term,
             'school_year' => $data->school_year,
             'test_number' => (int) $data->test_number,

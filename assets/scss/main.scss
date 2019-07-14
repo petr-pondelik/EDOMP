@@ -15,6 +15,10 @@ h2{
     transition: all 0.3s;
 }
 
+.bg-gray{
+    background-color: $lightGreyColor !important;
+}
+
 @media screen and (max-width: $breakpointSidebar){
     #sidebar{
         width: 100%;
@@ -98,8 +102,12 @@ a.disabled{
     opacity: 0.85;
 }
 
+#logo-drop-area li{
+    z-index: $z-index-highest;
+}
+
 .logo-img:hover{
-    cursor: pointer;
+    cursor: grab;
     opacity: 1;
 }
 
@@ -304,7 +312,7 @@ body {
 #ajax-spinner{
     position: fixed;
     display: block;
-    z-index: 10000;
+    z-index: $z-index-highest;
     width: 100% !important;
     height: 100% !important;
     background: rgba(65, 73, 86, 0.15);
@@ -533,4 +541,8 @@ body {
             margin: 12px 0;
         }
     }
+}
+
+#logo-drop-area, #logos-list{
+    min-height: 200px;
 }

@@ -10,11 +10,11 @@ namespace App\Components\Forms\TestForm;
 
 
 use App\Components\Forms\FormControl;
+use App\Model\Entity\Logo;
 use App\Model\Entity\ProblemConditionType;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\LogoRepository;
-use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemConditionTypeRepository;
 use App\Model\Repository\ProblemFinalRepository;
 use App\Model\Repository\ProblemRepository;
@@ -104,6 +104,16 @@ class TestFormControl extends FormControl
     protected $fileService;
 
     /**
+     * @var Logo[]
+     */
+    protected $logos;
+
+    /**
+     * @var ProblemConditionType[]
+     */
+    protected $problemConditionTypes;
+
+    /**
      * TestFormControl constructor.
      * @param ValidationService $validationService
      * @param EntityManager $entityManager
@@ -119,6 +129,7 @@ class TestFormControl extends FormControl
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param TestBuilderService $testBuilderService
      * @param FileService $fileService
+     * @throws \Exception
      */
     public function __construct
     (
@@ -146,6 +157,8 @@ class TestFormControl extends FormControl
         $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->testBuilderService = $testBuilderService;
         $this->fileService = $fileService;
+        $this->logos = $this->logoRepository->findAssoc([],'id');
+        $this->problemConditionTypes = $this->problemConditionTypeRepository->findAssoc([], 'id');
     }
 
     /**
@@ -160,7 +173,6 @@ class TestFormControl extends FormControl
         $difficulties = $this->difficultyRepository->findAssoc([], 'id');
         $groups = $this->groupRepository->findAllowed($this->presenter->user);
         $subCategories = $this->subCategoryRepository->findAssoc([], 'id');
-        $conditionTypes = $this->problemConditionTypeRepository->findAssoc([], 'id');
 
         $conditionTypesByProblemTypes = [];
         foreach ($problemTypes as $id => $problemType){
@@ -185,15 +197,10 @@ class TestFormControl extends FormControl
         $form->addHidden('problems_cnt')->setDefaultValue(1)
             ->setHtmlId('problemsCnt');
 
-        $form->addText('logo_file', 'Logo *')
+        $form->addSelect('logo', 'Logo *', $this->logos)
+            ->setPrompt('Zvolte logo')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Rozbalením a kliknutím zvolte logo z nabídky níže.')
-            ->setHtmlId('test-logo-label')
-            ->setDisabled();
-
-        $form->addHidden('logo_file_hidden')
-            ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlId('test-logo-id');
+            ->setHtmlId('test-logo');
 
         $form->addMultiSelect('groups', 'Skupiny *', $groups)
             ->setHtmlAttribute('class', 'form-control selectpicker')
@@ -250,7 +257,7 @@ class TestFormControl extends FormControl
                 ->setHtmlAttribute('title', 'Zvolte obtížnosti')
                 ->setHtmlId('difficulty_id_' . $i);
 
-            foreach ($conditionTypes as $conditionType){
+            foreach ($this->problemConditionTypes as $conditionType){
 
                 $form->addMultiSelect('condition_type_id_' . $conditionType->getId() . '_' . $i, $conditionType->getLabel(),
                     $conditionType->getProblemConditions()->getValues()
@@ -291,7 +298,8 @@ class TestFormControl extends FormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->getValues();
-        $validateFields['logo_file'] = $values->logo_file_hidden;
+        bdump($values);
+        $validateFields['logo'] = $values->logo;
         $validateFields['groups'] = ArrayHash::from($values->groups);
         $validateFields['school_year'] = $values->school_year;
         $validateFields['test_number'] = $values->test_number;
@@ -304,7 +312,7 @@ class TestFormControl extends FormControl
                 }
             }
         }
-        $this->redrawControl('logoFileErrorSnippet');
+        $this->redrawControl('logoErrorSnippet');
         $this->redrawControl('groupsErrorSnippet');
         $this->redrawControl('schoolYearErrorSnippet');
         $this->redrawControl('testNumberErrorSnippet');
@@ -388,8 +396,8 @@ class TestFormControl extends FormControl
 
     public function render(): void
     {
-        $this->template->logos = $this->logoRepository->findBy([], ['id' => 'DESC']);
-        $this->template->problemConditionTypes = $this->problemConditionTypeRepository->findAssoc([], 'id');
+        $this->template->logos = $this->logos;
+        $this->template->problemConditionTypes = $this->problemConditionTypes;
         $this->template->render(__DIR__ . '/templates/create.latte');
     }
 }

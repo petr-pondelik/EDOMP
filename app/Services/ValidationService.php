@@ -148,7 +148,7 @@ class ValidationService
                 return -1;
             },
 
-            'logo_file' => static function($filledVal){
+            'logo' => static function($filledVal){
                 if(empty($filledVal)){
                     return 0;
                 }
@@ -393,8 +393,8 @@ class ValidationService
                 1 => 'Název nesmí být delší než 64 znaků.'
             ],
 
-            'logo_file' => [
-                0 => 'Soubor musí být zvolen.'
+            'logo' => [
+                0 => 'Zvolte prosím logo.'
             ],
 
             'school_year' => [

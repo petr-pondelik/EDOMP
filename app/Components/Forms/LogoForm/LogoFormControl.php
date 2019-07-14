@@ -57,7 +57,7 @@ class LogoFormControl extends EntityFormControl
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte název loga.');
 
-        $form->addText('logo_file', 'Soubor *')
+        $form->addText('logo', 'Soubor *')
             ->setHtmlAttribute('class', 'file-pond-input');
 
         if($this->edit){
@@ -82,11 +82,11 @@ class LogoFormControl extends EntityFormControl
 
         if($this->edit){
             if($values->edit_logo){
-                $validateFields['logo_file'] = $values->logo_file;
+                $validateFields['logo'] = $values->logo;
             }
         }
         else{
-            $validateFields['logo_file'] = $values->logo_file;
+            $validateFields['logo'] = $values->logo;
         }
 
         $validationErrors = $this->validationService->validate($validateFields);
@@ -100,7 +100,7 @@ class LogoFormControl extends EntityFormControl
         }
 
         $this->redrawControl('labelErrorSnippet');
-        $this->redrawControl('logoFileErrorSnippet');
+        $this->redrawControl('logoErrorSnippet');
     }
 
     /**
@@ -109,10 +109,10 @@ class LogoFormControl extends EntityFormControl
      */
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
-        if($values->logo_file) {
+        if($values->logo) {
             try{
-                $this->fileService->finalStore($values->logo_file);
-                $this->functionality->update($values->logo_file, ArrayHash::from([
+                $this->fileService->finalStore($values->logo);
+                $this->functionality->update($values->logo, ArrayHash::from([
                     'label' => $values->label
                 ]));
                 $this->onSuccess();
@@ -133,8 +133,8 @@ class LogoFormControl extends EntityFormControl
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
-            if($values->edit_logo && $values->logo_file){
-                $this->fileService->finalStore($values->logo_file);
+            if($values->edit_logo && $values->logo){
+                $this->fileService->finalStore($values->logo);
             }
             $this->functionality->update($values->id_hidden, ArrayHash::from([
                 'label' => $values->label

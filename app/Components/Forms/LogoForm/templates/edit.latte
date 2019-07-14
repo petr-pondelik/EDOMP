@@ -40,13 +40,13 @@
 
         <div class="form-group d-none" id="logo-file-wrapper">
 
-            {label logo_file}
-            {input logo_file}
+            {label logo}
+            {input logo}
 
-            {snippet logoFileErrorSnippet}
+            {snippet logoErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['logo_file']->errors as $error" class="alert alert-danger border-0">
+                    <p n:foreach="$form['logo']->errors as $error" class="alert alert-danger border-0">
                         {$error}
                     </p>
                 </div>

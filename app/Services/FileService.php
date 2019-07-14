@@ -106,7 +106,7 @@ class FileService
         $id = $this->logoRepository->getSequenceVal();
 
         //Get uploaded file extension
-        $extension = $this->getFileExtension($httpRequest->getFile('logo_file')->name);
+        $extension = $this->getFileExtension($httpRequest->getFile('logo')->name);
 
         FileSystem::createDir($this->logosTmpDir . DIRECTORY_SEPARATOR . $id);
 
@@ -114,7 +114,7 @@ class FileService
 $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension,
     file_get_contents($httpRequest->getFile('logo_file'))*/
 
-        if(!copy($httpRequest->getFile('logo_file'), $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension)) {
+        if(!copy($httpRequest->getFile('logo'), $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension)) {
             throw new IOException('Chyba při ukládání souboru.');
         }
 
@@ -154,7 +154,7 @@ $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . 
         //Get updated logo id
         $id = $httpRequest->getUrl()->getQueryParameter('logo_id');
 
-        $extension = $this->getFileExtension($httpRequest->getFile('logo_file')->name);
+        $extension = $this->getFileExtension($httpRequest->getFile('logo')->name);
 
         FileSystem::createDir($this->logosTmpDir . DIRECTORY_SEPARATOR . $id);
 
@@ -163,7 +163,7 @@ $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . 
     file_get_contents($httpRequest->getFile('logo_file')
     )*/
 
-        if(!copy($httpRequest->getFile('logo_file'), $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension)){
+        if(!copy($httpRequest->getFile('logo'), $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension)){
             throw new IOException('Chyba při ukládání souboru.');
         }
 

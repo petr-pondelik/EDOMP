@@ -124,7 +124,7 @@ class LogoPresenter extends AdminPresenter
         $form["id"]->setDefaultValue($record->getId());
         $form["id_hidden"]->setDefaultValue($record->getId());
         $form["label"]->setDefaultValue($record->getLabel());
-        $form["logo_file"]->setDefaultValue($record->getId());
+        $form["logo"]->setDefaultValue($record->getId());
     }
 
     /**

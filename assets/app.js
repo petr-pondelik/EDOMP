@@ -3,36 +3,40 @@
  */
 
 
-//Import jQuery modules
-import 'jquery';
+// Import jQuery modules
+// import 'jquery';
 
-//Import Font Awesome modules
+// Import jQuery UI modules
+import 'jquery-ui-dist/jquery-ui';
+
+// Import Font Awesome modules
 import '@fortawesome/fontawesome-free';
 
-//Import Bootstrap modules
+// Import Bootstrap modules
 import 'bootstrap';
 import 'bootstrap-select';
 import 'bootstrap-datepicker';
 
-//Import Nette Forms module
+// Import Nette Forms module
 import 'nette-forms';
 
-//Import Nette Ajax modules
+// Import Nette Ajax modules
 import 'nette.ajax.js';
 import './js/nette.ajax.init';
 import './js/spinner.ajax';
 
-//Import Ublaboo Datagrid modules
+// Import Ublaboo Datagrid modules
 import 'ublaboo-datagrid';
 
-//Import FilePond modules
+// Import FilePond modules
 import 'filepond';
 import 'jquery-filepond/filepond.jquery';
 import './js/filepond.config';
 
-//Import custom modules
+// Import custom modules
 import './js/sidemenu';
 import './js/test-create-filters';
+import './js/test-create-logos-droppable';
 
 
 /*
