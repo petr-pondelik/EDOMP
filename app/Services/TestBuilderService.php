@@ -9,6 +9,7 @@
 namespace App\Services;
 
 use App\Exceptions\ProblemFinalCollisionException;
+use App\Model\Entity\Problem;
 use App\Model\Entity\Test;
 use App\Model\Functionality\ProblemFinalFunctionality;
 use App\Model\Functionality\TestFunctionality;
@@ -121,7 +122,6 @@ class TestBuilderService
      */
     protected function getProblemFilters(int $id, ArrayHash $data): array
     {
-        bdump($data);
         $filters['is_template'] = $data['is_template_' . $id];
         $filters['problem_type_id'] = $data['problem_type_id_' . $id];
         $filters['difficulty_id'] = $data['difficulty_id_' . $id];
@@ -147,6 +147,22 @@ class TestBuilderService
     }
 
     /**
+     * @param array $keys
+     * @param array $problems
+     * @return array
+     */
+    protected function conjunctProblems(array $keys, array $problems): array
+    {
+        $res = [];
+        foreach ($keys as $key){
+            if(array_key_exists($key, $problems)){
+                $res[] = $problems[$key];
+            }
+        }
+        return $res;
+    }
+
+    /**
      * @param Test $test
      * @param string $variant
      * @param ArrayHash $data
@@ -163,16 +179,15 @@ class TestBuilderService
 
         for($i = 0; $i < $data->problems_cnt; $i++){
             $problemTemplate = null;
-            $problemId = $data['problem_' . $i];
+            $selectedProblems = $data['problem_' . $i];
 
             //In the case of random choice
-            if(!$problemId){
+            if(!$selectedProblems){
 
                 // Get all problems that match filters
                 $filters = $this->getProblemFilters($i, $data);
                 bdump($filters);
                 $problems = $this->problemRepository->findFiltered($filters);
-
                 bdump($problems);
 
                 // Get problem's templates that match filters
@@ -180,14 +195,15 @@ class TestBuilderService
                 $finals = $this->problemRepository->findFiltered($filters);
 
                 $finalsFree = [];
-
                 foreach($finals as $final){
                     $finalsFree[$final->getId()] = true;
                 }
 
                 while(true){
+
+                    // Generate index
                     $index = $this->generatorService->generateInteger(0, count($problems) - 1);
-                    //var_dump($index);
+
                     // Pick up the problem from problems array at generated index
                     $indexCounter = 0;
                     $problem = null;
@@ -199,12 +215,12 @@ class TestBuilderService
                         $indexCounter++;
                     }
 
-                    //var_dump($problem);
-
+                    // If there isn't any free final problem and all the problems are finals, stop and throw exception
                     if(!$this->hasFree($finalsFree) && (count($problems) === count($finals))){
                         throw new ProblemFinalCollisionException('Test nelze vygenerovat bez opakujících se úloh.');
                     }
 
+                    // If the problems isn't template, mark used final problem
                     if(!$problem->isTemplate()){
                         if(!in_array($problem->getId(), $usedFinals, true)){
                             $usedFinals[] = $problem->getId();
@@ -215,10 +231,63 @@ class TestBuilderService
                     else{
                         break;
                     }
+
                 }
             }
+            // If more problems was selected, pick one of them randomly
+            else if(count($selectedProblems) > 1){
+
+                // Get applied filters and extend in by not-template condition
+                $filters = $this->getProblemFilters($i, $data);
+                $filters['is_template'] = 0;
+
+                // Get all final problem that match applied filters
+                $finals = $this->problemRepository->findFiltered($filters);
+
+                // Conjunct selected problems with filtered final problems
+                $selectedFinals = $this->conjunctProblems($selectedProblems, $finals);
+                bdump($selectedFinals);
+
+                // Prepare bool array for selected final problems
+                $selectedFinalsFree = [];
+                foreach ($selectedFinals as $free){
+                    $selectedFinalsFree[$free->getId()] = true;
+                }
+
+                while(true){
+
+                    // Generate index
+                    $inx = $this->generatorService->generateInteger(0, count($selectedProblems) - 1);
+
+                    // Pick up the problem from selected problems array
+                    $problem = $this->problemRepository->find($selectedProblems[$inx]);
+                    bdump($problem);
+
+                    // If there isn't any free final problem and all the problems are finals, stop and throw exception
+                    if(!$this->hasFree($selectedFinalsFree) && (count($selectedProblems) === count($selectedFinals))){
+                        // TODO: It should be TestException!
+                        throw new ProblemFinalCollisionException('Test nelze vygenerovat bez opakujících se úloh');
+                    }
+
+                    // If the problem isn't template, mak used final problem
+                    if(!$problem->isTemplate()){
+                        if(!in_array($problem->getId(), $usedFinals, true)){
+                            $usedFinals[] = $problem->getId();
+                            break;
+                        }
+                        $selectedFinalsFree[$problem->getId()] = false;
+                    }
+                    else{
+                        break;
+                    }
+
+                }
+
+
+            }
+            // If only one problem was selected, just pick it up
             else{
-                $problem = $this->problemRepository->find($problemId);
+                $problem = $this->problemRepository->find($selectedProblems[0]);
             }
 
             //If the problem is prototype, it needs to be generated to it's final form

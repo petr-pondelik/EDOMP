@@ -1,5 +1,6 @@
 parameters:
     imagesPath: 'assets/images/'
+    testMaxProblems: 20
 
 extensions:
     console: Kdyby\Console\DI\ConsoleExtension
@@ -182,6 +183,7 @@ services:
 	factory.form.permission: App\Components\Forms\PermissionForm\PermissionFormFactory
 	factory.form.sign: App\Components\Forms\SignForm\SignFormFactory
 	factory.form.problem.filter: App\Components\Forms\ProblemFilterForm\ProblemFilterFormFactory
+	factory.draganddrop.problem: App\Components\ProblemDragAndDrop\IProblemDragAndDropFactory
 
 	#Services
 	service.newtopapi.client: App\Services\NewtonApiClient

@@ -29,26 +29,13 @@ create table logo
 )
 collate=utf8_unicode_ci;
 
-create table problem_condition_problem_rel
-(
-	problem_final_id int not null,
-	problem_condition_id int not null,
-	primary key (problem_final_id, problem_condition_id)
-)
-collate=utf8_unicode_ci;
-
-create index IDX_1430909773A5214B
-	on problem_condition_problem_rel (problem_condition_id);
-
-create index IDX_14309097DA3E196B
-	on problem_condition_problem_rel (problem_final_id);
-
 create table problem_condition_type
 (
 	id int auto_increment
 		primary key,
 	label varchar(255) not null,
-	created datetime not null
+	created datetime not null,
+	prompt varchar(255) null
 )
 collate=utf8_unicode_ci;
 
@@ -188,6 +175,26 @@ create index IDX_D7E7CCC8F7BFE87C
 
 create index IDX_D7E7CCC8FCFA9DAE
 	on problem (difficulty_id);
+
+create table problem_condition_problem_rel
+(
+	problem_id int not null,
+	problem_condition_id int not null,
+	primary key (problem_id, problem_condition_id),
+	constraint FK_1430909773A5214B
+		foreign key (problem_condition_id) references problem_condition (id)
+			on delete cascade,
+	constraint FK_14309097A0DCED86
+		foreign key (problem_id) references problem (id)
+			on delete cascade
+)
+collate=utf8_unicode_ci;
+
+create index IDX_1430909773A5214B
+	on problem_condition_problem_rel (problem_condition_id);
+
+create index IDX_14309097A0DCED86
+	on problem_condition_problem_rel (problem_id);
 
 create table problem_condition_problem_template_rel
 (

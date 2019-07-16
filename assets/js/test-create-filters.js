@@ -69,19 +69,27 @@ $(document).ready(() => {
             filters[problemId]['filters'] = {};
         }
 
-        filters[problemId]['filters'][filterType] = filterVal;
+
         filters[problemId]['selected'] = $('#problem_' + problemId).val();
 
+        console.log($('#problem_' + problemId).val());
         console.log(filters);
 
-        $.nette.ajax({
-            type: 'GET',
-            url: '?do=filterChange',
-            data: {
-                'filters': filters,
-                'problemsCnt': problemsCnt
-            }
-        });
+        // Select problem doesn't have set filter type --> is should not trigger filter request
+        if(filterType){
+
+            filters[problemId]['filters'][filterType] = filterVal;
+
+            $.nette.ajax({
+                type: 'GET',
+                url: '?do=filterChange',
+                data: {
+                    'filters': filters,
+                    'problemsCnt': problemsCnt
+                }
+            });
+
+        }
 
     });
 

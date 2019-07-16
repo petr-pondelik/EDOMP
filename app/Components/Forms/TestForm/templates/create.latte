@@ -44,7 +44,7 @@
 
                         <ul id="logos-list" class="d-flex justify-content-center justify-content-center align-items-center flex-wrap p-4 list-unstyled border">
 
-                            <li n:foreach="$logos as $logo" class="d-inline-block mb-3 ml-2 mr-2">
+                            <li n:foreach="$logos as $logo" class="d-inline-block my-3 mx-2">
                                 <img class="img-fluid logo-img" alt="{$basePath}{$logo}"
                                      src="{$basePath}{$logo->getPath()}" data-logo-id="{$logo->getId()}" data-logo-label="{$logo->getLabel()}"
                                      width="300px"
@@ -227,7 +227,7 @@
 
         </div>
 
-        {for $i = 0; $i < 20; $i++}
+        {for $i = 0; $i < $maxProblems; $i++}
 
             {if $i === 0}
 
@@ -269,8 +269,12 @@
                                 {/foreach}
 
                                 <div n:snippet="snippetProblem-{$i}" class="form-group mt-3 mb-3">
+
                                     {label 'problem_' . $i}
                                     {input 'problem_' . $i}
+
+                                    {control problemDragAndDrop$i}
+
                                 </div>
 
                                 <div class="form-group custom-control custom-checkbox">
@@ -331,8 +335,12 @@
                                 {/foreach}
 
                                 <div n:snippet="snippetProblem-{$i}" class="form-group mt-3 mb-3">
+
                                     {label 'problem_' . $i}
                                     {input 'problem_' . $i}
+
+                                    {control problemDragAndDrop$i}
+
                                 </div>
 
                                 <div class="form-group custom-control custom-checkbox">

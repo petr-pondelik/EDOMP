@@ -1,0 +1,49 @@
+{snippet componentSnippet}
+
+    <div class="mt-5">
+
+        <div id="problem-drop-area-{$id}" class="problem-drop-area justify-content-center align-items-center flex-wrap mb-4 p-4 border">
+            {ifset $selectedProblems}
+
+                {dump $selectedProblems}
+
+                <ul class="list-unstyled">
+                    <li n:foreach="$selectedProblems as $selectedProblem" class="col-12 d-inline-block mb-3 ml-2 mr-2 hover-grab" data-problem-key="{$id}" data-problem-id="{$selectedProblem->getId()}">
+                        <div class="card card-shadow border-light">
+                            <div class="d-flex align-items-center card-header py-0 problem-card-header">
+                                id: {$selectedProblem->getId()}
+                            </div>
+                            <div class="card-body py-3">
+                                {$selectedProblem->getBody()}
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+            {else}
+
+                <p class="text-center text-muted">
+                    Kliknutím na karty úloh zvolte úlohy nacházející se v boxu níže.
+                </p>
+
+            {/ifset}
+        </div>
+
+        <div class="p-0">
+            <ul id="problem-stack-{$id}" class="problem-stack d-flex justify-content-center align-items-center flex-wrap p-4 list-unstyled border">
+                <li n:foreach="$problems as $problem" class="col-12 d-inline-block mb-3 ml-2 mr-2 hover-grab" data-problem-key="{$id}" data-problem-id="{$problem->getId()}">
+                    <div class="card card-shadow border-light">
+                        <div class="d-flex align-items-center card-header py-0 problem-card-header">
+                            id: {$problem->getId()}
+                        </div>
+                        <div class="card-body py-3">
+                            {$problem->getBody()}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+{/snippet}

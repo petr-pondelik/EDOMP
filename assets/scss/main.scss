@@ -106,6 +106,10 @@ a.disabled{
     z-index: $z-index-highest;
 }
 
+.hover-grab:hover{
+    cursor: grab;
+}
+
 .logo-img:hover{
     cursor: grab;
     opacity: 1;
@@ -545,4 +549,8 @@ body {
 
 #logo-drop-area, #logos-list{
     min-height: 200px;
+}
+
+.problem-card-header{
+    min-height: 2rem;
 }

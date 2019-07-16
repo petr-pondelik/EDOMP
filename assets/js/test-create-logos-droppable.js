@@ -10,7 +10,7 @@ $(document).ready(() => {
     let $logosList = $('#logos-list');
 
     // Placeholder paragraph for logo drop area
-    let $logoDropAreaPlaceholder = '<p class="text-center text-muted">Tažením umístěte jedno z dostupných log</p>';
+    let $logoDropAreaPlaceholder = '<p class="text-center text-muted">Tažením umístěte jedno z dostupných log.</p>';
 
     // Make the logos list draggable
     $('li', $logosList).draggable({
@@ -102,5 +102,47 @@ $(document).ready(() => {
         console.log("RESETTING TEST'S LOGO");
         $testLogo.val('');
     }
+
+    // ===============================================
+    // Drag & Drop fallback for mobile devices (by click)
+
+    $(document).on('click', '#logos-list li', function () {
+
+        let $item = $(this);
+        $(this).fadeOut(() => {
+            let selectedCnt = $('ul', $logoDropArea).length;
+
+            // If there already exists selected logo, switch old selected logo with newly selected logo
+            if(selectedCnt){
+                let $switchedItem = $logoDropArea.find('li');
+                $logosList.append($switchedItem);
+                let $list = $logoDropArea.find('ul');
+                $item.appendTo($list).fadeIn();
+            }
+            else{
+                // Append logo into droppable area
+                $logoDropArea.find('p').remove();
+                let $list = $('<ul class="list-unstyled">').appendTo($logoDropArea);
+                $item.appendTo($list).fadeIn();
+            }
+
+            setLogo();
+        });
+
+    });
+
+    $(document).on('click', '#logo-drop-area li', function () {
+
+        let $item = $(this);
+
+        $item.fadeOut(() => {
+            $logoDropArea.append();
+            $item.appendTo($logosList).fadeIn();
+            $logoDropArea.find('ul').remove();
+            $logoDropArea.append($logoDropAreaPlaceholder);
+            resetLogo();
+        });
+
+    });
 
 });

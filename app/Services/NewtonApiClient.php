@@ -29,7 +29,7 @@ class NewtonApiClient
      * @const string
      */
     protected const NEWTON_API_URL = 'localhost:3000/';
-    //protected const NEWTON_API_URL = 'https://edomp-newton-api.herokuapp.com/';
+//    protected const NEWTON_API_URL = 'https://edomp-newton-api.herokuapp.com/';
 
     /**
      * @const string

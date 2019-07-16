@@ -9,6 +9,9 @@
 // Import jQuery UI modules
 import 'jquery-ui-dist/jquery-ui';
 
+// Import jQuery UI touch-punch
+import './js/jquery-ui-touch-punch';
+
 // Import Font Awesome modules
 import '@fortawesome/fontawesome-free';
 
@@ -37,6 +40,7 @@ import './js/filepond.config';
 import './js/sidemenu';
 import './js/test-create-filters';
 import './js/test-create-logos-droppable';
+import './js/test-create-problems-droppable';
 
 
 /*
