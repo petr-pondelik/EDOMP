@@ -10,9 +10,9 @@ namespace App\Components\Forms\TestForm;
 
 
 use App\Components\Forms\FormControl;
+use App\Components\LogoDragAndDrop\ILogoDragAndDropFactory;
+use App\Components\LogoDragAndDrop\LogoDragAndDropControl;
 use App\Components\ProblemStack\IProblemStackFactory;
-use App\Model\Entity\Logo;
-use App\Model\Entity\Problem;
 use App\Model\Entity\ProblemConditionType;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\GroupRepository;
@@ -106,19 +106,14 @@ class TestFormControl extends FormControl
     protected $fileService;
 
     /**
+     * @var ILogoDragAndDropFactory
+     */
+    protected $logoDragAndDropFactory;
+
+    /**
      * @var IProblemStackFactory
      */
     protected $problemStackFactory;
-
-    /**
-     * @var Logo[]
-     */
-    protected $logos;
-
-    /**
-     * @var Problem[]
-     */
-    protected $problems;
 
     /**
      * @var ProblemConditionType[]
@@ -146,6 +141,7 @@ class TestFormControl extends FormControl
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param TestBuilderService $testBuilderService
      * @param FileService $fileService
+     * @param ILogoDragAndDropFactory $logoDragAndDropFactory
      * @param IProblemStackFactory $problemStackFactory
      * @throws \Exception
      */
@@ -159,7 +155,7 @@ class TestFormControl extends FormControl
         SubCategoryRepository $subCategoryRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository,
         TestBuilderService $testBuilderService, FileService $fileService,
-        IProblemStackFactory $problemStackFactory
+        ILogoDragAndDropFactory $logoDragAndDropFactory, IProblemStackFactory $problemStackFactory
     )
     {
         parent::__construct($validationService);
@@ -177,10 +173,8 @@ class TestFormControl extends FormControl
         $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->testBuilderService = $testBuilderService;
         $this->fileService = $fileService;
+        $this->logoDragAndDropFactory = $logoDragAndDropFactory;
         $this->problemStackFactory = $problemStackFactory;
-
-        $this->logos = $this->logoRepository->findAssoc([],'id');
-        $this->problems = $this->problemRepository->findAssoc([], 'id');
         $this->problemConditionTypes = $this->problemConditionTypeRepository->findAssoc([], 'id');
     }
 
@@ -200,6 +194,14 @@ class TestFormControl extends FormControl
     }
 
     /**
+     * @return LogoDragAndDropControl
+     */
+    public function createComponentLogoDragAndDrop(): LogoDragAndDropControl
+    {
+        return $this->logoDragAndDropFactory->create();
+    }
+
+    /**
      * @return Form
      * @throws \Exception
      */
@@ -211,6 +213,8 @@ class TestFormControl extends FormControl
         $difficulties = $this->difficultyRepository->findAssoc([], 'id');
         $groups = $this->groupRepository->findAllowed($this->presenter->user);
         $subCategories = $this->subCategoryRepository->findAssoc([], 'id');
+        $logos = $this->logoRepository->findAssoc([],'id');
+        $problems = $this->problemRepository->findAssoc([], 'id');
 
         $conditionTypesByProblemTypes = [];
         foreach ($problemTypes as $id => $problemType){
@@ -235,7 +239,7 @@ class TestFormControl extends FormControl
         $form->addHidden('problems_cnt')->setDefaultValue(1)
             ->setHtmlId('problemsCnt');
 
-        $form->addSelect('logo', 'Logo *', $this->logos)
+        $form->addSelect('logo', 'Logo *', $logos)
             ->setPrompt('Zvolte logo')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('test-logo');
@@ -307,7 +311,7 @@ class TestFormControl extends FormControl
 
             }
 
-            $form->addMultiSelect('problem_'.$i, 'Zvolené úlohy', $this->problems)
+            $form->addMultiSelect('problem_'.$i, 'Zvolené úlohy', $problems)
                 ->setHtmlAttribute('class', 'form-control filter problem-select')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlId('problem_'.$i);
@@ -329,7 +333,6 @@ class TestFormControl extends FormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->getValues();
-        bdump($values);
         $validateFields['logo'] = $values->logo;
         $validateFields['groups'] = ArrayHash::from($values->groups);
         $validateFields['school_year'] = $values->school_year;
@@ -431,8 +434,6 @@ class TestFormControl extends FormControl
                 }
             }
 
-            bdump($valuesToSetArr);
-
             $this['form']['problem_' . $problemKey]->setValue($valuesToSetArr);
             $this['problemDragAndDrop' . $problemKey]->setProblems($filterRes, $valuesToSetObj);
 
@@ -445,7 +446,6 @@ class TestFormControl extends FormControl
     public function render(): void
     {
         $this->template->maxProblems = $this->maxProblems;
-        $this->template->logos = $this->logos;
         $this->template->problemConditionTypes = $this->problemConditionTypes;
 
         for ($i = 0; $i < $this->maxProblems; $i++){

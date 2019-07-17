@@ -34,33 +34,7 @@
                     {label logo}
                     {input logo, class => 'hidden'}
 
-                    {if $logos}
-
-                        <div id="logo-drop-area" class="d-flex justify-content-center align-items-center flex-wrap mb-4 p-4 border">
-                            <p class="text-center text-muted">
-                                Tažením umístěte jedno z dostupných log.
-                            </p>
-                        </div>
-
-                        <ul id="logos-list" class="d-flex justify-content-center justify-content-center align-items-center flex-wrap p-4 list-unstyled border">
-
-                            <li n:foreach="$logos as $logo" class="d-inline-block my-3 mx-2">
-                                <img class="img-fluid logo-img" alt="{$basePath}{$logo}"
-                                     src="{$basePath}{$logo->getPath()}" data-logo-id="{$logo->getId()}" data-logo-label="{$logo->getLabel()}"
-                                     width="300px"
-                                >
-                            </li>
-
-                        </ul>
-
-                    {else}
-
-                        <p class="text-center mt-5 text-muted">
-                            Nejsou k dispozici žádná loga. <br/>
-                            Pro přidání přejděte do sekce <a href="{plink :Admin:Logo:default}">Loga</a>.
-                        </p>
-
-                    {/if}
+                    {control logoDragAndDrop}
 
                     {snippet logoErrorSnippet}
                         {var $form = $control['form']}
