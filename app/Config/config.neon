@@ -183,7 +183,7 @@ services:
 	factory.form.permission: App\Components\Forms\PermissionForm\PermissionFormFactory
 	factory.form.sign: App\Components\Forms\SignForm\SignFormFactory
 	factory.form.problem.filter: App\Components\Forms\ProblemFilterForm\ProblemFilterFormFactory
-	factory.draganddrop.problem: App\Components\ProblemDragAndDrop\IProblemDragAndDropFactory
+	factory.stack.problem: App\Components\ProblemStack\IProblemStackFactory
 
 	#Services
 	service.newtopapi.client: App\Services\NewtonApiClient

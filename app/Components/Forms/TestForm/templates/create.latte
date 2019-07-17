@@ -271,9 +271,9 @@
                                 <div n:snippet="snippetProblem-{$i}" class="form-group mt-3 mb-3">
 
                                     {label 'problem_' . $i}
-                                    {input 'problem_' . $i}
+                                    {input 'problem_' . $i, class => 'hidden'}
 
-                                    {control problemDragAndDrop$i}
+                                    {control problemStack$i}
 
                                 </div>
 
@@ -339,7 +339,7 @@
                                     {label 'problem_' . $i}
                                     {input 'problem_' . $i}
 
-                                    {control problemDragAndDrop$i}
+                                    {control problemStack$i}
 
                                 </div>
 

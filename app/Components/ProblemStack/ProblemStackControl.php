@@ -6,7 +6,7 @@
  * Time: 18:15
  */
 
-namespace App\Components\ProblemDragAndDrop;
+namespace App\Components\ProblemStack;
 
 
 use App\Model\Entity\Problem;
@@ -14,10 +14,10 @@ use App\Model\Repository\ProblemRepository;
 use Nette\Application\UI\Control;
 
 /**
- * Class ProblemDragAndDropControl
- * @package App\Components\ProblemDragAndDrop
+ * Class ProblemStackControl
+ * @package App\Components\ProblemStack
  */
-class ProblemDragAndDropControl extends Control
+class ProblemStackControl extends Control
 {
     /**
      * @var ProblemRepository

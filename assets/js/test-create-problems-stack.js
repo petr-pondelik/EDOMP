@@ -1,12 +1,6 @@
 $(document).ready(() => {
 
-    // // Collect problem drop area elements
-    // let $problemSelectedAreas = $(document).find('.problem-drop-area');
-    //
-    // // Collect problem stack area elements
-    // let $problemStackAreas = $(document).find('.problem-stack');
-
-    let $problemSelectedAreaPlaceholder = '<p class="text-center text-muted">Tažením umístěte úlohy nacházející se v boxu níže.</p>';
+    let $problemSelectedAreaPlaceholder = '<p class="mb-0 text-center text-muted">Kliknutím umístěte úlohy nacházející se v boxu níže.</p>';
 
     // Move problem from problem stack into problem selected area
     $(document).on('click', '.problem-stack li', function () {
@@ -14,7 +8,7 @@ $(document).ready(() => {
         let $item = $(this);
         let problemKey = $item.data('problemKey');
         let problemId = $item.data('problemId');
-        let $problemSelectedArea = $(document).find('#problem-drop-area-' + problemKey);
+        let $problemSelectedArea = $(document).find('#problem-select-area-' + problemKey);
         let selectedCnt = $('ul', $problemSelectedArea).length;
 
         console.log($problemSelectedArea);
@@ -34,7 +28,7 @@ $(document).ready(() => {
             else{
                 // Append problem into problem selected area
                 $problemSelectedArea.append($item);
-                let $list = $('<ul class="list-unstyled">').appendTo($problemSelectedArea);
+                let $list = $('<ul class="list-unstyled m-0">').appendTo($problemSelectedArea);
                 $item.appendTo($list).fadeIn();
             }
 
@@ -57,13 +51,13 @@ $(document).ready(() => {
     }
 
     // Move problem from problem selected area into problem stack
-    $(document).on('click', '.problem-drop-area li', function () {
+    $(document).on('click', '.problem-select-area li', function () {
 
         let $item = $(this);
         let problemKey = $item.data('problemKey');
         let problemId = $item.data('problemId');
         let $problemStack = $(document).find('#problem-stack-' + problemKey);
-        let $problemSelectedArea = $(document).find('#problem-drop-area-' + problemKey);
+        let $problemSelectedArea = $(document).find('#problem-select-area-' + problemKey);
 
         console.log($problemStack);
 

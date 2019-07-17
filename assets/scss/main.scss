@@ -110,6 +110,10 @@ a.disabled{
     cursor: grab;
 }
 
+.hover-pointer:hover{
+    cursor: pointer;
+}
+
 .logo-img:hover{
     cursor: grab;
     opacity: 1;
@@ -553,4 +557,10 @@ body {
 
 .problem-card-header{
     min-height: 2rem;
+}
+
+.problem-select-area, .problem-stack{
+    ul > li:first-of-type{
+        margin-top: 0 !important;
+    }
 }
