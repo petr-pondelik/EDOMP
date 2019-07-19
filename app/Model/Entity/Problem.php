@@ -125,13 +125,10 @@ abstract class Problem extends BaseEntity
     /**
      * @ORM\ManyToMany(targetEntity="ProblemCondition", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="problem_condition_problem_rel")
+     *
+     * @var ProblemCondition[]
      */
     protected $conditions;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\ProblemTestAssociation", mappedBy="problemTemplate", cascade={"all"})
-     */
-    protected $testAssociations;
 
     /**
      * ProblemFinal constructor.
@@ -141,7 +138,6 @@ abstract class Problem extends BaseEntity
     {
         parent::__construct();
         $this->conditions = new ArrayCollection();
-        $this->testAssociations = new ArrayCollection();
     }
 
     /**
@@ -279,24 +275,10 @@ abstract class Problem extends BaseEntity
      */
     public function addCondition(ProblemCondition $condition): void
     {
-        if($this->conditions->contains($condition)) return;
+        if($this->conditions->contains($condition)){
+            return;
+        }
         $this->conditions[] = $condition;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTestAssociations()
-    {
-        return $this->testAssociations;
-    }
-
-    /**
-     * @param mixed $testAssociations
-     */
-    public function setTestAssociations($testAssociations): void
-    {
-        $this->testAssociations = $testAssociations;
     }
 
     /**

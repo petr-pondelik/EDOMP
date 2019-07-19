@@ -10,7 +10,7 @@ namespace App\Model\Functionality;
 
 use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\ProblemRepository;
-use App\Model\Repository\ProblemTestAssociationRepository;
+use App\Model\Repository\ProblemFinalTestVariantAssociationRepository;
 use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
 
@@ -21,25 +21,25 @@ use Nette\Utils\ArrayHash;
 class ProblemFunctionality extends BaseFunctionality
 {
     /**
-     * @var ProblemTestAssociationRepository
+     * @var ProblemFinalTestVariantAssociationRepository
      */
-    protected $problemTestAssociationRepository;
+    protected $problemFinalTestVariantAssociationRepository;
 
     /**
      * ProblemFunctionality constructor.
      * @param ConstraintEntityManager $entityManager
      * @param ProblemRepository $problemRepository
-     * @param ProblemTestAssociationRepository $problemTestAssociationRepository
+     * @param ProblemFinalTestVariantAssociationRepository $problemTestAssociationRepository
      */
     public function __construct
     (
         ConstraintEntityManager $entityManager, ProblemRepository $problemRepository,
-        ProblemTestAssociationRepository $problemTestAssociationRepository
+        ProblemFinalTestVariantAssociationRepository $problemFinalTestVariantAssociationRepository
     )
     {
         parent::__construct($entityManager);
         $this->repository = $problemRepository;
-        $this->problemTestAssociationRepository = $problemTestAssociationRepository;
+        $this->problemFinalTestVariantAssociationRepository = $problemFinalTestVariantAssociationRepository;
     }
 
     /**
@@ -77,8 +77,8 @@ class ProblemFunctionality extends BaseFunctionality
     public function calculateSuccessRate(int $id, bool $isTemplate = false): void
     {
         !$isTemplate ?
-            $associations = $this->problemTestAssociationRepository->findBy(['problem.id' => $id]) :
-            $associations = $this->problemTestAssociationRepository->findBy(['problemTemplate.id' => $id]);
+            $associations = $this->problemFinalTestVariantAssociationRepository->findBy(['problemFinal.id' => $id]) :
+            $associations = $this->problemFinalTestVariantAssociationRepository->findBy(['problemTemplate.id' => $id]);
         $cnt = 0;
         $ratingSum = 0;
         foreach ($associations as $association){

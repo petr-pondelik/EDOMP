@@ -8,6 +8,7 @@
 
 namespace App\Model\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -76,6 +77,13 @@ class ProblemFinal extends Problem
     protected $problemTemplate;
 
     /**
+     * @ORM\OneToMany(targetEntity="ProblemFinalTestVariantAssociation", mappedBy="problemFinal", cascade={"all"})
+     *
+     * @var ProblemFinalTestVariantAssociation[]
+     */
+    protected $testVariantAssociations;
+
+    /**
      * ProblemFinal constructor.
      * @throws \Exception
      */
@@ -83,6 +91,7 @@ class ProblemFinal extends Problem
     {
         parent::__construct();
         $this->isTemplate = false;
+        $this->testVariantAssociations = new ArrayCollection();
     }
 
     /**
@@ -163,6 +172,22 @@ class ProblemFinal extends Problem
     public function setFirstN(int $firstN = null): void
     {
         $this->firstN = $firstN;
+    }
+
+    /**
+     * @return ProblemFinalTestVariantAssociation[]
+     */
+    public function getTestVariantAssociations(): array
+    {
+        return $this->testVariantAssociations;
+    }
+
+    /**
+     * @param ProblemFinalTestVariantAssociation[] $testVariantAssociations
+     */
+    public function setTestVariantAssociations(array $testVariantAssociations): void
+    {
+        $this->testVariantAssociations = $testVariantAssociations;
     }
 
 }

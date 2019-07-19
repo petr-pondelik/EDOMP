@@ -8,7 +8,7 @@
 
 namespace App\Model\Repository;
 
-use App\Model\Entity\ProblemTestAssociation;
+use App\Model\Entity\ProblemFinalTestVariantAssociation;
 use App\Model\Traits\SequenceValTrait;
 
 /**
@@ -33,7 +33,7 @@ class TestRepository extends BaseRepository
         $qb = $this->createQueryBuilder('t');
 
         $qb->select('pta.variant')
-            ->from(ProblemTestAssociation::class, 'pta')
+            ->from(ProblemFinalTestVariantAssociation::class, 'pta')
             ->where('pta.test = :testId')
             ->groupBy('pta.variant')
             ->setParameter('testId', $id);

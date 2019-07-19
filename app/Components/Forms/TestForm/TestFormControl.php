@@ -360,13 +360,10 @@ class TestFormControl extends FormControl
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
-            bdump('HANDLE FORM SUCCESS');
-            $testData = $this->testBuilderService->buildTest($values);
+            $test = $this->testBuilderService->buildTest($values);
         }
         catch(\Exception $e){
             $this->onError($e);
-            bdump($e->getMessage());
-            bdump('BUILD TEST ERROR');
             return;
         }
         $template = $this->getTemplate();
@@ -377,14 +374,17 @@ class TestFormControl extends FormControl
             $this->onError($e);
             return;
         }
-        foreach($testData->variants as $variant){
-            $template->variant = $variant;
-            $template->test = $testData->test;
-            FileSystem::createDir( DATA_DIR . '/tests/' . $testData->testId);
-            file_put_contents( DATA_DIR . '/tests/' . $testData->testId . '/variant_' . Strings::lower($variant) . '.tex', (string) $template);
+
+        if($test){
+            $template->test = $test;
+            foreach($test->getTestVariants()->getValues() as $testVariant){
+                $template->testVariant = $testVariant;
+                FileSystem::createDir( DATA_DIR . '/tests/' . $test->getId());
+                file_put_contents( DATA_DIR . '/tests/' . $test->getId() . '/variant_' . Strings::lower($testVariant->getLabel()) . '.tex', (string) $template);
+            }
+            $this->fileService->createTestZip($test);
+            $this->onSuccess();
         }
-        $this->fileService->createTestZip($testData->testId);
-        $this->onSuccess();
     }
 
     /**
@@ -435,7 +435,7 @@ class TestFormControl extends FormControl
             }
 
             $this['form']['problem_' . $problemKey]->setValue($valuesToSetArr);
-            $this['problemDragAndDrop' . $problemKey]->setProblems($filterRes, $valuesToSetObj);
+            $this['problemStack' . $problemKey]->setProblems($filterRes, $valuesToSetObj);
 
         }
 

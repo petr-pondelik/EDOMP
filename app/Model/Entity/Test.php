@@ -84,6 +84,8 @@ class Test extends BaseEntity
      * @Assert\NotBlank(
      *     message="Groups can't be blank."
      * )
+     *
+     * @var Group[]
      */
     protected $groups;
 
@@ -98,12 +100,14 @@ class Test extends BaseEntity
     protected $logo;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Model\Entity\ProblemTestAssociation", mappedBy="test", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="App\Model\Entity\TestVariant", mappedBy="test", cascade={"all"})
      * @Assert\NotBlank(
-     *     message="ProblemAssociations can't be blank."
+     *     message="TestVariants can't be blank."
      * )
+     *
+     * @var TestVariant[]
      */
-    protected $problemAssociations;
+    protected $testVariants;
 
     /**
      * Test constructor.
@@ -113,7 +117,7 @@ class Test extends BaseEntity
     {
         parent::__construct();
         $this->groups = new ArrayCollection();
-        $this->problemAssociations = new ArrayCollection();
+        $this->testVariants = new ArrayCollection();
     }
 
     /**
@@ -224,29 +228,29 @@ class Test extends BaseEntity
     }
 
     /**
-     * @return mixed
+     * @return TestVariant[]|ArrayCollection
      */
-    public function getProblemAssociations()
+    public function getTestVariants()
     {
-        return $this->problemAssociations;
+        return $this->testVariants;
     }
 
     /**
-     * @param mixed $problemAssociations
+     * @param TestVariant[] $testVariants
      */
-    public function setProblemAssociations($problemAssociations): void
+    public function setTestVariants(array $testVariants): void
     {
-        $this->problemAssociations = $problemAssociations;
+        $this->testVariants = $testVariants;
     }
 
     /**
-     * @param ProblemTestAssociation $association
+     * @param TestVariant $testVariant
      */
-    public function addProblemAssociation(ProblemTestAssociation $association): void
+    public function addTestVariant(TestVariant $testVariant): void
     {
-        if($this->problemAssociations->contains($association)){
+        if($this->testVariants->contains($testVariant)){
             return;
         }
-        $this->problemAssociations[] = $association;
+        $this->testVariants[] = $testVariant;
     }
 }

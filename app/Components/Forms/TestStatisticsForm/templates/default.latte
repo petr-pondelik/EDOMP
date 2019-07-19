@@ -4,7 +4,7 @@
 
         <div class="card-header d-flex justify-content-between">
             <h1 class="col-6 pl-0 mb-0 font-weight-bold card-heading">
-                <i class="fas fa-file-alt mr-3"></i>Statistika: Test {$id}
+                <i class="fas fa-file-alt mr-3"></i>Statistika: Test {$test->getId()}
             </h1>
             <div>
                 <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
@@ -25,42 +25,44 @@
 
             {var $i = 0}
 
-            {foreach $associationsByVariant as $variant => $variantAssociations}
+            {foreach $test->getTestVariants()->getValues() as $variant}
 
                 <div class="card card-shadow border-light mb-5">
 
                     <div class="card-header">
-                        <h2>Varianta {$variant}</h2>
+                        <h2>Varianta {$variant->getLabel()}</h2>
                     </div>
 
                     <div class="card-body">
 
-                        {foreach $variantAssociations as $association}
+                        {var $j = 0}
+
+                        {foreach $variant->getProblemFinalAssociations()->getValues() as $problemFinalAssociation}
 
                             <div class="card card-shadow border-light mb-5">
 
                                 <div class="card-body">
 
                                     <div class="form-group">
-                                        {label problem_final_id_disabled_$i}
-                                        {input problem_final_id_disabled_$i}
+                                        {label problem_final_id_disabled_{$i}_$j}
+                                        {input problem_final_id_disabled_{$i}_$j}
                                     </div>
 
                                     <div class="form-group">
-                                        {label problem_prototype_id_disabled_$i}
-                                        {input problem_prototype_id_disabled_$i}
+                                        {label problem_template_id_disabled_{$i}_$j}
+                                        {input problem_template_id_disabled_{$i}_$j}
                                     </div>
 
-                                    <p class="text-center mt-5 mb-5">{$association->getProblem()->getBody()}</p>
+                                    <p class="text-center mt-5 mb-5">{$problemFinalAssociation->getProblemFinal()->getBody()}</p>
 
                                     <div class="form-group">
-                                        {label success_rate_$i}
-                                        {input success_rate_$i}
+                                        {label success_rate_{$i}_$j}
+                                        {input success_rate_{$i}_$j}
                                     </div>
 
-                                    {snippet successRate{$i}ErrorSnippet}
+                                    {snippet successRate{$i}{$j}ErrorSnippet}
                                         <div n:if="$control['form']->hasErrors()" class="mt-2">
-                                            <p n:foreach="$control['form']['success_rate_' . $i]->errors as $error"
+                                            <p n:foreach="$control['form']['success_rate_' . $i . '_' . $j]->errors as $error"
                                                     class="alert alert-danger border-0">
                                                 {$error}
                                             </p>
@@ -71,7 +73,7 @@
 
                             </div>
 
-                            {var $i += 1}
+                            {var $j += 1}
 
                         {/foreach}
 
@@ -79,9 +81,11 @@
 
                 </div>
 
+                {var $i += 1}
+
             {/foreach}
 
-            {if count($variantAssociations) > 1}
+            {if count($test->getTestVariants()->getValues()) > 1}
                 <button n:name="submit" id="submit-btn" class="btn btn-primary col-12 mb-3">Uložit</button>
                 <a href={plink :Admin:Test:default} class="btn btn-secondary col-12 mb-4" title="Zpět na přehled">Zpět</a>
             {/if}

@@ -14,7 +14,7 @@
 
 \pagestyle{{(empty)}}
 
-{dump $test}
+{dump $testVariant}
 
 \begin{{(document)}}
 \begin{{(minipage)}}{{('9cm')}}
@@ -24,12 +24,12 @@
 \end{{(minipage)}}
 \begin{{(minipage)}}{{('5cm')}}
 \begin{{(tabbing)}}
-{$test->getSchoolYear()}, {$test->getTerm()}, test {$test->getTestNumber()}, {$variant}\\[.1cm]
+{$test->getSchoolYear()}, {$test->getTerm()}, test {$test->getTestNumber()}, {$testVariant}\\[.1cm]
 $\Box$ řádný, \hspace{{('.2cm')}} $\Box$ náhradní, \hspace{{('.2cm')}} $\Box$ opravný. \\[.1cm]
 {dump $test->getGroups()->getValues()}
 Skupina:
 {foreach $test->getGroups()->getValues() as $group}
-$\Box$ {$group->getLabel()}, \hspace{{('.2cm')}} \\[.1cm]
+$\Box$ {$group->getLabel()}, \hspace{{('.2cm')}} {if $group->getId() !== $test->getGroups()->last()->getProperty()->getId()} \\[.1cm] {/if}
 {/foreach}
 Jméno: \hspace{{('2cm')}} \= \rule{{('4.7cm')}}{{('.1mm')}} \\[.1cm]
 Datum: \hspace{{('2cm')}} \= \rule{{('4.7cm')}}{{('.1mm')}} \\[.1cm]
@@ -47,18 +47,14 @@ Počet papírů:\> zadání + \rule{{('1.2cm')}}{{('.1mm')}}
 
 \begin{{(enumerate)}}
 
-{foreach $test->getProblemAssociations()->getValues() as $key => $problemAssociation}
+{foreach $testVariant->getProblemFinalAssociations()->getValues() as $key => $problemFinalAssociation}
 
-    {if $problemAssociation->getVariant() == $variant}
+    \item {$problemFinalAssociation->getProblemFinal()->getTextBefore()}
+    {$problemFinalAssociation->getProblemFinal()->getBody()}
+    {$problemFinalAssociation->getProblemFinal()->getTextAfter()}
 
-    \item {$problemAssociation->getProblem()->getTextBefore()}
-    {$problemAssociation->getProblem()->getBody()}
-    {$problemAssociation->getProblem()->getTextAfter()}
-
-    {if $problemAssociation->isNextPage()}
+    {if $problemFinalAssociation->isNextPage()}
         \newpage
-    {/if}
-
     {/if}
 
 {/foreach}

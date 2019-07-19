@@ -35,7 +35,7 @@ class ProblemStackControl extends Control
     protected $selectedProblems;
 
     /**
-     * ProblemDragAndDropControl constructor.
+     * ProblemStackControl constructor.
      * @param ProblemRepository $problemRepository
      * @throws \Exception
      */

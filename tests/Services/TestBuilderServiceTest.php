@@ -16,7 +16,7 @@ use App\Model\Entity\LinearEqTempl;
 use App\Model\Entity\Logo;
 use App\Model\Entity\ProblemFinal;
 use App\Model\Entity\ProblemTemplate;
-use App\Model\Entity\ProblemTestAssociation;
+use App\Model\Entity\ProblemFinalTestVariantAssociation;
 use App\Model\Entity\ProblemType;
 use App\Model\Entity\SubCategory;
 use App\Model\Entity\SuperGroup;
@@ -326,7 +326,7 @@ class TestBuilderServiceTest extends TestCase
             ->willReturnCallback(static function (
                 Test $test, ProblemFinal $problem, string $variant, ProblemTemplate $template = null, bool $newPage = false
             ) {
-                $association = new ProblemTestAssociation();
+                $association = new ProblemFinalTestVariantAssociation();
                 $association->setTest($test);
                 $association->setProblem($problem);
                 $association->setVariant($variant);
@@ -520,13 +520,13 @@ class TestBuilderServiceTest extends TestCase
         $expectedTest->setCreated(new DateTime('2000-01-01'));
         $expectedTest->setId(1);
 
-        $aProblemTestAssociation = new ProblemTestAssociation();
+        $aProblemTestAssociation = new ProblemFinalTestVariantAssociation();
         $aProblemTestAssociation->setTest($expectedTest);
         $aProblemTestAssociation->setProblem($this->problemRepositoryMock->find(1));
         $aProblemTestAssociation->setVariant('A');
         $aProblemTestAssociation->setCreated(new DateTime('2000-01-01'));
 
-        $bProblemTestAssociation = new ProblemTestAssociation();
+        $bProblemTestAssociation = new ProblemFinalTestVariantAssociation();
         $bProblemTestAssociation->setTest($expectedTest);
         $bProblemTestAssociation->setProblem($this->problemRepositoryMock->find(1));
         $bProblemTestAssociation->setVariant('B');

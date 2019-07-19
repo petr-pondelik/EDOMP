@@ -11,8 +11,9 @@ namespace App\Components\Forms\TestStatisticsForm;
 
 use App\Components\Forms\FormFactory;
 use App\Model\Functionality\ProblemFunctionality;
-use App\Model\Functionality\ProblemTestAssociationFunctionality;
-use App\Model\Repository\ProblemTestAssociationRepository;
+use App\Model\Functionality\ProblemFinalTestVariantAssociationFunctionality;
+use App\Model\Repository\ProblemFinalTestVariantAssociationRepository;
+use App\Model\Repository\TestRepository;
 use App\Services\ValidationService;
 
 /**
@@ -22,33 +23,28 @@ use App\Services\ValidationService;
 class TestStatisticsFormFactory extends FormFactory
 {
     /**
-     * @var ProblemTestAssociationRepository
+     * @var TestRepository
      */
-    protected $problemTestAssociationRepository;
+    protected $testRepository;
 
     /**
-     * @var ProblemTestAssociationFunctionality
+     * @var ProblemFinalTestVariantAssociationFunctionality
      */
-    protected $problemTestAssociationFunctionality;
+    protected $problemFinalTestVariantAssociationFunctionality;
 
-    /**
-     * TestStatisticsFormFactory constructor.
-     * @param ValidationService $validationService
-     * @param ProblemFunctionality $problemFunctionality
-     * @param ProblemTestAssociationRepository $problemTestAssociationRepository
-     * @param ProblemTestAssociationFunctionality $problemTestAssociationFunctionality
-     */
+
     public function __construct
     (
         ValidationService $validationService,
         ProblemFunctionality $problemFunctionality,
-        ProblemTestAssociationRepository $problemTestAssociationRepository, ProblemTestAssociationFunctionality $problemTestAssociationFunctionality
+        ProblemFinalTestVariantAssociationFunctionality $problemFinalTestVariantAssociationFunctionality,
+        TestRepository $testRepository
     )
     {
         parent::__construct($validationService);
         $this->functionality = $problemFunctionality;
-        $this->problemTestAssociationRepository = $problemTestAssociationRepository;
-        $this->problemTestAssociationFunctionality = $problemTestAssociationFunctionality;
+        $this->problemFinalTestVariantAssociationFunctionality = $problemFinalTestVariantAssociationFunctionality;
+        $this->testRepository = $testRepository;
     }
 
     /**
@@ -59,7 +55,7 @@ class TestStatisticsFormFactory extends FormFactory
     {
         return new TestStatisticsFormControl(
             $this->validationService, $this->functionality,
-            $this->problemTestAssociationRepository, $this->problemTestAssociationFunctionality, $testId
+            $this->problemFinalTestVariantAssociationFunctionality, $this->testRepository, $testId
         );
     }
 }

@@ -14,14 +14,14 @@ use App\Model\Entity\Group;
 use App\Model\Entity\LinearEqTempl;
 use App\Model\Entity\Logo;
 use App\Model\Entity\ProblemFinal;
-use App\Model\Entity\ProblemTestAssociation;
+use App\Model\Entity\ProblemFinalTestVariantAssociation;
 use App\Model\Entity\ProblemType;
 use App\Model\Entity\SubCategory;
 use App\Model\Entity\SuperGroup;
 use App\Model\Entity\Test;
 use App\Model\Functionality\ProblemFunctionality;
 use App\Model\Repository\ProblemRepository;
-use App\Model\Repository\ProblemTestAssociationRepository;
+use App\Model\Repository\ProblemFinalTestVariantAssociationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -132,7 +132,7 @@ class ProblemFunctionalityTest extends FunctionalityTestCase
         $test->setId(1);
 
         // Create first ProblemTestAssociation
-        $firstProblemTestAssociation = new ProblemTestAssociation();
+        $firstProblemTestAssociation = new ProblemFinalTestVariantAssociation();
         $firstProblemTestAssociation->setProblem($firstProblemFinal);
         $firstProblemTestAssociation->setProblemTemplate($problemTemplate);
         $firstProblemTestAssociation->setTest($test);
@@ -141,7 +141,7 @@ class ProblemFunctionalityTest extends FunctionalityTestCase
         $firstProblemTestAssociation->setId(1);
 
         // Create second ProblemTestAssociation
-        $secondProblemTestAssociation = new ProblemTestAssociation();
+        $secondProblemTestAssociation = new ProblemFinalTestVariantAssociation();
         $secondProblemTestAssociation->setProblem($firstProblemFinal);
         $secondProblemTestAssociation->setProblemTemplate($problemTemplate);
         $secondProblemTestAssociation->setTest($test);
@@ -150,7 +150,7 @@ class ProblemFunctionalityTest extends FunctionalityTestCase
         $secondProblemTestAssociation->setId(2);
 
         // Create third ProblemTestAssociation
-        $thirdProblemTestAssociation = new ProblemTestAssociation();
+        $thirdProblemTestAssociation = new ProblemFinalTestVariantAssociation();
         $thirdProblemTestAssociation->setProblem($secondProblemFinal);
         $thirdProblemTestAssociation->setTest($test);
         $thirdProblemTestAssociation->setVariant('A');
@@ -158,7 +158,7 @@ class ProblemFunctionalityTest extends FunctionalityTestCase
         $thirdProblemTestAssociation->setId(3);
 
         // Create fourth ProblemTestAssociation
-        $fourthProblemTestAssociation = new ProblemTestAssociation();
+        $fourthProblemTestAssociation = new ProblemFinalTestVariantAssociation();
         $fourthProblemTestAssociation->setProblem($secondProblemFinal);
         $fourthProblemTestAssociation->setTest($test);
         $fourthProblemTestAssociation->setVariant('B');
@@ -166,7 +166,7 @@ class ProblemFunctionalityTest extends FunctionalityTestCase
         $fourthProblemTestAssociation->setId(4);
 
         // Create fifth ProblemTestAssociation
-        $fifthProblemTestAssociation = new ProblemTestAssociation();
+        $fifthProblemTestAssociation = new ProblemFinalTestVariantAssociation();
         $fifthProblemTestAssociation->setProblem($thirdProblemFinal);
         $fifthProblemTestAssociation->setProblemTemplate($problemTemplate);
         $fifthProblemTestAssociation->setTest($test);
@@ -197,7 +197,7 @@ class ProblemFunctionalityTest extends FunctionalityTestCase
             });
 
         // Mock the ProblemTestAssociationRepository
-        $this->problemTestAssociationRepositoryMock = $this->getMockBuilder(ProblemTestAssociationRepository::class)
+        $this->problemTestAssociationRepositoryMock = $this->getMockBuilder(ProblemFinalTestVariantAssociationRepository::class)
             ->setMethods(['findBy'])
             ->disableOriginalConstructor()
             ->getMock();

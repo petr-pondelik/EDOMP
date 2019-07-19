@@ -24,13 +24,16 @@ use App\Model\Entity\Logo;
 use App\Model\Entity\ProblemCondition;
 use App\Model\Entity\ProblemConditionType;
 use App\Model\Entity\ProblemFinal;
-use App\Model\Entity\ProblemTestAssociation;
+use App\Model\Entity\ProblemFinalTestVariantAssociation;
 use App\Model\Entity\ProblemType;
 use App\Model\Entity\QuadraticEqTempl;
 use App\Model\Entity\Role;
 use App\Model\Entity\SubCategory;
 use App\Model\Entity\Test;
+use App\Model\Entity\TestVariant;
 use App\Model\Entity\User;
+use App\Model\Functionality\TestFunctionality;
+use App\Model\Functionality\TestVariantFunctionality;
 use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\DifficultyRepository;
@@ -39,11 +42,13 @@ use App\Model\Repository\ProblemTemplateRepository;
 use App\Model\Repository\QuadraticEqTemplRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
+use App\Model\Repository\TestRepository;
 use App\Presenters\BasePresenter;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use App\Services\ValidationService;
 use Kdyby\Doctrine\EntityManager;
+use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
 use Nette\Utils\Json;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -101,6 +106,21 @@ class DoctrinePresenter extends AdminPresenter
     protected $validationService;
 
     /**
+     * @var TestFunctionality
+     */
+    protected $testFunctionality;
+
+    /**
+     * @var TestVariantFunctionality
+     */
+    protected $testVariantFunctionality;
+
+    /**
+     * @var TestRepository
+     */
+    protected $testRepository;
+
+    /**
      * DoctrinePresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
@@ -114,6 +134,12 @@ class DoctrinePresenter extends AdminPresenter
      * @param ProblemTemplateRepository $problemTemplateRepository
      * @param QuadraticEqTemplRepository $quadraticEqTemplRepository
      * @param ValidatorInterface $validator
+     * @param LatexHelper $latexHelper
+     * @param StringsHelper $stringsHelper
+     * @param ValidationService $validationService
+     * @param TestVariantFunctionality $testVariantFunctionality
+     * @param TestFunctionality $testFunctionality
+     * @param TestRepository $testRepository
      */
     public function __construct
     (
@@ -123,7 +149,9 @@ class DoctrinePresenter extends AdminPresenter
         TemplateJsonDataRepository $templateJsonDataRepository,
         ProblemTemplateRepository $problemTemplateRepository, QuadraticEqTemplRepository $quadraticEqTemplRepository,
         ValidatorInterface $validator,
-        LatexHelper $latexHelper, StringsHelper $stringsHelper, ValidationService $validationService
+        LatexHelper $latexHelper, StringsHelper $stringsHelper, ValidationService $validationService, TestVariantFunctionality $testVariantFunctionality,
+        TestFunctionality $testFunctionality,
+        TestRepository $testRepository
     )
     {
         parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
@@ -137,11 +165,37 @@ class DoctrinePresenter extends AdminPresenter
         $this->latexHelper = $latexHelper;
         $this->validationService = $validationService;
         $this->stringsHelper = $stringsHelper;
+        $this->testVariantFunctionality = $testVariantFunctionality;
+        $this->testFunctionality = $testFunctionality;
+        $this->testRepository = $testRepository;
     }
 
-
+    /**
+     * @throws \Exception
+     */
     public function actionDefault()
     {
+        $test = $this->testFunctionality->create(ArrayHash::from([
+            'logo_id' => 1,
+            'term' => '1. pol.',
+            'school_year' => '2018/19',
+            'test_number' => 1,
+            'groups' => [1],
+            'introduction_text' => ''
+        ]));
+
+        $testVariant = $this->testVariantFunctionality->create(ArrayHash::from([
+            'variantLabel' => 'TEST LABEL',
+            'test' => $test
+        ]));
+
+        bdump($testVariant);
+
+        $test->addTestVariant($testVariant);
+
+        $this->em->persist($testVariant);
+        $this->em->flush();
+
 //        $category = new Category();
 //        $category->setLabel("TESTCATEGORY1");
 //        //$this->em->persist($category);
@@ -166,13 +220,13 @@ class DoctrinePresenter extends AdminPresenter
 //        $problemType = new ProblemType();
 //        $problemType->setLabel("Funkce");
 
-        bdump($this->validationService->validateLinearEquation('55/15 x - 42/22 + 2/3 p2 - 43/20 p2 + 4 p3 + 15 p4', 'x'));
-        bdump($this->latexHelper::parseLatex('$$ x^{2} $$'));
-        bdump($this->latexHelper::parseLatex('$$ \frac{1}{2} \big( 2 x - 1 \big)^2 - \big( \frac{1}{2} \big( x + 1 \big) \big)^2 = 3 \big( \big( \frac{1}{2} x \big)^2 - \big( \frac{1}{<par min="2" max="10"/>} \big)^2 \big)^{2} $$'));
-
-        bdump($this->stringsHelper::getLinearEquationRegExp('x'));
-        bdump($this->stringsHelper::getQuadraticEquationRegExp('x'));
-        bdump($this->templateJsonDataRepository->find(35));
+//        bdump($this->validationService->validateLinearEquation('55/15 x - 42/22 + 2/3 p2 - 43/20 p2 + 4 p3 + 15 p4', 'x'));
+//        bdump($this->latexHelper::parseLatex('$$ x^{2} $$'));
+//        bdump($this->latexHelper::parseLatex('$$ \frac{1}{2} \big( 2 x - 1 \big)^2 - \big( \frac{1}{2} \big( x + 1 \big) \big)^2 = 3 \big( \big( \frac{1}{2} x \big)^2 - \big( \frac{1}{<par min="2" max="10"/>} \big)^2 \big)^{2} $$'));
+//
+//        bdump($this->stringsHelper::getLinearEquationRegExp('x'));
+//        bdump($this->stringsHelper::getQuadraticEquationRegExp('x'));
+//        bdump($this->templateJsonDataRepository->find(35));
 
         /*$entity = new ArithmeticSeqTempl();
         $errors = $this->validator->validate($entity);

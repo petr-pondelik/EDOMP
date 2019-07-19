@@ -12,7 +12,7 @@ namespace App\Model\Repository;
  * Class ProblemTestAssociationRepository
  * @package App\Model\Repository
  */
-class ProblemTestAssociationRepository extends BaseRepository
+class ProblemFinalTestVariantAssociationRepository extends BaseRepository
 {
     /**
      * @param int $testId

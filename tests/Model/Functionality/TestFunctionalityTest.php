@@ -13,7 +13,7 @@ use App\Model\Entity\Difficulty;
 use App\Model\Entity\Group;
 use App\Model\Entity\Logo;
 use App\Model\Entity\ProblemFinal;
-use App\Model\Entity\ProblemTestAssociation;
+use App\Model\Entity\ProblemFinalTestVariantAssociation;
 use App\Model\Entity\SubCategory;
 use App\Model\Entity\SuperGroup;
 use App\Model\Entity\Test;
@@ -219,13 +219,13 @@ class TestFunctionalityTest extends FunctionalityTestCase
         $this->assertEquals($testExpected, $test);
 
         // Create first ProblemTestAssociation
-        $firstProblemTestAssociation = new ProblemTestAssociation();
+        $firstProblemTestAssociation = new ProblemFinalTestVariantAssociation();
         $firstProblemTestAssociation->setProblem($this->firstProblem);
         $firstProblemTestAssociation->setTest($test);
         $firstProblemTestAssociation->setVariant('A');
 
         // Create second ProblemTestAssociation
-        $secondProblemTestAssociation = new ProblemTestAssociation();
+        $secondProblemTestAssociation = new ProblemFinalTestVariantAssociation();
         $secondProblemTestAssociation->setProblem($this->secondProblem);
         $secondProblemTestAssociation->setTest($test);
         $secondProblemTestAssociation->setVariant('B');
@@ -241,11 +241,11 @@ class TestFunctionalityTest extends FunctionalityTestCase
 
         // Test updated Test against expected object
         $this->assertCount(2, $test->getProblemAssociations()->getValues());
-        $this->assertInstanceOf(ProblemTestAssociation::class,$test->getProblemAssociations()->get(0));
+        $this->assertInstanceOf(ProblemFinalTestVariantAssociation::class,$test->getProblemAssociations()->get(0));
         $this->assertEquals($firstProblemTestAssociation->getProblem(),$test->getProblemAssociations()->get(0)->getProblem());
         $this->assertEquals($firstProblemTestAssociation->getTest(),$test->getProblemAssociations()->get(0)->getTest());
         $this->assertEquals($firstProblemTestAssociation->getVariant(),$test->getProblemAssociations()->get(0)->getVariant());
-        $this->assertInstanceOf(ProblemTestAssociation::class,$test->getProblemAssociations()->get(1));
+        $this->assertInstanceOf(ProblemFinalTestVariantAssociation::class,$test->getProblemAssociations()->get(1));
         $this->assertEquals($secondProblemTestAssociation->getProblem(),$test->getProblemAssociations()->get(1)->getProblem());
         $this->assertEquals($secondProblemTestAssociation->getTest(),$test->getProblemAssociations()->get(1)->getTest());
         $this->assertEquals($secondProblemTestAssociation->getVariant(),$test->getProblemAssociations()->get(1)->getVariant());

@@ -17,7 +17,7 @@ use Nette\Utils\Strings;
  * Class ProblemTestAssociationFunctionality
  * @package App\Model\Functionality
  */
-class ProblemTestAssociationFunctionality extends BaseFunctionality
+class ProblemFinalTestVariantAssociationFunctionality extends BaseFunctionality
 {
     /**
      * ProblemTestAssociationFunctionality constructor.
@@ -48,8 +48,8 @@ class ProblemTestAssociationFunctionality extends BaseFunctionality
     public function update(int $id, ArrayHash $data): ?Object
     {
         $association = $this->repository->findOneBy([
-            'problem.id' => $id,
-            'test.id' => $data->test_id
+            'problemFinal.id' => $id,
+            'testVariant.id' => $data->test_variants_id
         ]);
         if(empty($data->success_rate)){
             $association->setSuccessRate(null);

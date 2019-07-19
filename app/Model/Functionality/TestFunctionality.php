@@ -8,9 +8,6 @@
 
 namespace App\Model\Functionality;
 
-use App\Model\Entity\ProblemFinal;
-use App\Model\Entity\ProblemTemplate;
-use App\Model\Entity\ProblemTestAssociation;
 use App\Model\Entity\Test;
 use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\GroupRepository;
@@ -92,31 +89,6 @@ class TestFunctionality extends BaseFunctionality
         foreach ($groups as $groupId){
             $test->addGroup($this->groupRepository->find($groupId));
         }
-        return $test;
-    }
-
-    /**
-     * @param Test $test
-     * @param ProblemFinal $problem
-     * @param string $variant
-     * @param ProblemTemplate $template
-     * @param bool $newPage
-     * @return Test
-     * @throws \Exception
-     */
-    public function attachProblem(Test $test, ProblemFinal $problem, string $variant, ProblemTemplate $template = null, bool $newPage = false): Test
-    {
-        $association = new ProblemTestAssociation();
-        $association->setTest($test);
-        $association->setProblem($problem);
-        $association->setVariant($variant);
-        if($template !== null){
-            $association->setProblemTemplate($template);
-        }
-        $association->setNextPage($newPage);
-        $this->em->persist($association);
-        $test->addProblemAssociation($association);
-        $this->em->persist($test);
         return $test;
     }
 }

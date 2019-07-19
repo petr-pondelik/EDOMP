@@ -12,17 +12,17 @@ use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\TestGridFactory;
 use App\Components\Forms\TestForm\ITestFormFactory;
 use App\Components\Forms\TestForm\TestFormControl;
-use App\Components\Forms\TestForm\TestFormFactory;
 use App\Components\Forms\TestStatisticsForm\TestStatisticsFormControl;
 use App\Components\Forms\TestStatisticsForm\TestStatisticsFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
+use App\Model\Entity\Test;
 use App\Model\Functionality\TestFunctionality;
 use App\Model\Repository\LogoRepository;
 use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\ProblemTemplateRepository;
-use App\Model\Repository\ProblemTestAssociationRepository;
+use App\Model\Repository\ProblemFinalTestVariantAssociationRepository;
 use App\Model\Repository\TestRepository;
 use App\Services\Authorizator;
 use App\Services\FileService;
@@ -33,7 +33,6 @@ use Nette\ComponentModel\IComponent;
 use Nette\Http\IRequest;
 use Nette\Http\IResponse;
 use Nette\Http\Response;
-use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class TestPresenter
@@ -67,7 +66,7 @@ class TestPresenter extends AdminPresenter
     protected $logoRepository;
 
     /**
-     * @var ProblemTestAssociationRepository
+     * @var ProblemFinalTestVariantAssociationRepository
      */
     protected $problemTestAssociationRepository;
 
@@ -108,7 +107,7 @@ class TestPresenter extends AdminPresenter
      * @param ProblemTemplateRepository $problemTemplateRepository
      * @param ProblemRepository $problemRepository
      * @param LogoRepository $logoRepository
-     * @param ProblemTestAssociationRepository $problemTestAssociationRepository
+     * @param ProblemFinalTestVariantAssociationRepository $problemTestAssociationRepository
      * @param ITestFormFactory $testFormFactory
      * @param TestStatisticsFormFactory $testStatisticsFormFactory
      * @param TestGridFactory $testGridFactory
@@ -121,7 +120,7 @@ class TestPresenter extends AdminPresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         TestRepository $testRepository, TestFunctionality $testFunctionality,
         ProblemTemplateRepository $problemTemplateRepository, ProblemRepository $problemRepository, LogoRepository $logoRepository,
-        ProblemTestAssociationRepository $problemTestAssociationRepository,
+        ProblemFinalTestVariantAssociationRepository $problemTestAssociationRepository,
         ITestFormFactory $testFormFactory, TestStatisticsFormFactory $testStatisticsFormFactory, TestGridFactory $testGridFactory,
         FileService $fileService, ValidationService $validationService
     )
@@ -148,34 +147,43 @@ class TestPresenter extends AdminPresenter
         $form = $this['testStatisticsForm']['form'];
         if(!$form->isSubmitted()){
             $this->template->id = $id;
-            $problemAssociations = $this->problemTestAssociationRepository->findBy(['test' => $id]);
-            $this->setDefaults($form, $id, $problemAssociations);
+            $test = $this->testRepository->find($id);
+            $this->setDefaults($form, $test);
         }
     }
 
     /**
      * @param IComponent $form
-     * @param int $testId
-     * @param array $problemAssociations
+     * @param Test $test
      */
-    public function setDefaults(IComponent $form, int $testId, array $problemAssociations): void
+    public function setDefaults(IComponent $form, Test $test): void
     {
-        $i = 0;
+        $testVariants = $test->getTestVariants()->getValues();
+
         $form->setDefaults([
-            'problems_cnt' => count($problemAssociations),
-            'test_id' => $testId
+            'test_id' => $test->getId(),
+            'variants_cnt' => count($testVariants),
+            'problems_per_variant' => count($testVariants[0]->getProblemFinalAssociations()->getValues())
         ]);
-        foreach($problemAssociations as $association){
-            $form->setDefaults([
-                'problem_final_id_disabled_' . $i => $association->getProblem()->getId(),
-                'problem_final_id_' . $i => $association->getProblem()->getId(),
-                'success_rate_' . $i => $association->getSuccessRate()
-            ]);
-            if($association->getProblemTemplate()){
+
+        $i = 0;
+        foreach($testVariants as $testVariant){
+            $j = 0;
+            foreach ($testVariant->getProblemFinalAssociations()->getValues() as $problemFinalAssociation) {
+                $problemFinal = $problemFinalAssociation->getProblemFinal();
                 $form->setDefaults([
-                    'problem_prototype_id_disabled_' . $i => $association->getProblemTemplate()->getId(),
-                    'problem_prototype_id_' . $i => $association->getProblemTemplate()->getId()
+                    'problem_final_id_disabled_' . $i . '_' . $j => $problemFinal->getId(),
+                    'problem_final_id_' . $i . '_' . $j => $problemFinal->getId(),
+                    'success_rate_' . $i . '_' . $j => $problemFinalAssociation->getSuccessRate()
                 ]);
+                if($problemTemplate = $problemFinalAssociation->getProblemTemplate()){
+                    bdump($problemTemplate->getId());
+                    $form->setDefaults([
+                        'problem_template_id_disabled_' . $i . '_' . $j => $problemTemplate->getId(),
+                        'problem_template_id_' . $i . '_' . $j => $problemTemplate->getId()
+                    ]);
+                }
+                $j++;
             }
             $i++;
         }

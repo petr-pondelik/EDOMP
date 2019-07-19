@@ -12,31 +12,17 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Repository\ProblemTestAssociationRepository")
+ * @ORM\Entity(repositoryClass="App\Model\Repository\ProblemFinalTestVariantAssociationRepository")
  *
  * Class ProblemTestAssociation
  * @package App\Model\Entity
  */
-class ProblemTestVariantAssociation extends BaseEntity
+class ProblemFinalTestVariantAssociation extends BaseEntity
 {
     /**
      * @var string
      */
-    protected $toStringAttr = 'variant';
-
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank(
-     *     message="Variant can't be blank."
-     * )
-     *
-     * @Assert\Type(
-     *     type="string",
-     *     message="Variant must be {{type}}."
-     * )
-     * @var string
-     */
-    protected $variant;
+    protected $toStringAttr = 'successRate';
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -66,7 +52,7 @@ class ProblemTestVariantAssociation extends BaseEntity
      *
      * @var ProblemFinal
      */
-    protected $problem;
+    protected $problemFinal;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\ProblemTemplate", cascade={"persist", "merge"})
@@ -76,30 +62,14 @@ class ProblemTestVariantAssociation extends BaseEntity
     protected $problemTemplate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Model\Entity\Test", inversedBy="problemAssociations", cascade={"persist", "merge"})
+     * @ORM\ManyToOne(targetEntity="App\Model\Entity\TestVariant", inversedBy="problemFinalAssociations", cascade={"persist", "merge"})
      * @Assert\NotBlank(
-     *     message="Test can't be blank."
+     *     message="TestVariant can't be blank."
      * )
      *
-     * @var Test
+     * @var TestVariant
      */
-    protected $test;
-
-    /**
-     * @return string
-     */
-    public function getVariant(): string
-    {
-        return $this->variant;
-    }
-
-    /**
-     * @param string $variant
-     */
-    public function setVariant(string $variant): void
-    {
-        $this->variant = $variant;
-    }
+    protected $testVariant;
 
     /**
      * @return bool
@@ -136,17 +106,33 @@ class ProblemTestVariantAssociation extends BaseEntity
     /**
      * @return ProblemFinal
      */
-    public function getProblem(): ProblemFinal
+    public function getProblemFinal(): ProblemFinal
     {
-        return $this->problem;
+        return $this->problemFinal;
     }
 
     /**
-     * @param ProblemFinal $problem
+     * @param ProblemFinal $problemFinal
      */
-    public function setProblem(ProblemFinal $problem): void
+    public function setProblemFinal(ProblemFinal $problemFinal): void
     {
-        $this->problem = $problem;
+        $this->problemFinal = $problemFinal;
+    }
+
+    /**
+     * @return TestVariant
+     */
+    public function getTestVariant(): TestVariant
+    {
+        return $this->testVariant;
+    }
+
+    /**
+     * @param TestVariant $testVariant
+     */
+    public function setTestVariant(TestVariant $testVariant): void
+    {
+        $this->testVariant = $testVariant;
     }
 
     /**
@@ -158,26 +144,10 @@ class ProblemTestVariantAssociation extends BaseEntity
     }
 
     /**
-     * @param ProblemTemplate $problemTemplate
+     * @param ProblemTemplate|null $problemTemplate
      */
-    public function setProblemTemplate(ProblemTemplate $problemTemplate): void
+    public function setProblemTemplate(ProblemTemplate $problemTemplate = null): void
     {
         $this->problemTemplate = $problemTemplate;
-    }
-
-    /**
-     * @return Test
-     */
-    public function getTest(): Test
-    {
-        return $this->test;
-    }
-
-    /**
-     * @param Test $test
-     */
-    public function setTest(Test $test): void
-    {
-        $this->test = $test;
     }
 }

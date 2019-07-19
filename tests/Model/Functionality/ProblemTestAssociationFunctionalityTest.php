@@ -13,12 +13,12 @@ use App\Model\Entity\Difficulty;
 use App\Model\Entity\Group;
 use App\Model\Entity\Logo;
 use App\Model\Entity\ProblemFinal;
-use App\Model\Entity\ProblemTestAssociation;
+use App\Model\Entity\ProblemFinalTestVariantAssociation;
 use App\Model\Entity\SubCategory;
 use App\Model\Entity\SuperGroup;
 use App\Model\Entity\Test;
-use App\Model\Functionality\ProblemTestAssociationFunctionality;
-use App\Model\Repository\ProblemTestAssociationRepository;
+use App\Model\Functionality\ProblemFinalTestVariantAssociationFunctionality;
+use App\Model\Repository\ProblemFinalTestVariantAssociationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
@@ -40,7 +40,7 @@ class ProblemTestAssociationFunctionalityTest extends FunctionalityTestCase
     protected $problemFinal;
 
     /**
-     * @var ProblemTestAssociation
+     * @var ProblemFinalTestVariantAssociation
      */
     protected $problemTestAssociation;
 
@@ -109,7 +109,7 @@ class ProblemTestAssociationFunctionalityTest extends FunctionalityTestCase
         $this->problemFinal = $problemFinal;
 
         // Create ProblemTestAssociation
-        $problemTestAssociation = new ProblemTestAssociation();
+        $problemTestAssociation = new ProblemFinalTestVariantAssociation();
         $problemTestAssociation->setProblem($problemFinal);
         $problemTestAssociation->setTest($test);
         $problemTestAssociation->setVariant('A');
@@ -117,7 +117,7 @@ class ProblemTestAssociationFunctionalityTest extends FunctionalityTestCase
         $this->problemTestAssociation = $problemTestAssociation;
 
         // Mock the ProblemTestAssociationRepository
-        $this->repositoryMock = $this->getMockBuilder(ProblemTestAssociationRepository::class)
+        $this->repositoryMock = $this->getMockBuilder(ProblemFinalTestVariantAssociationRepository::class)
             ->setMethods(['findOneBy'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -140,7 +140,7 @@ class ProblemTestAssociationFunctionalityTest extends FunctionalityTestCase
             });
 
         // Instantiate tested class
-        $this->functionality = new ProblemTestAssociationFunctionality($this->em, $this->repositoryMock);
+        $this->functionality = new ProblemFinalTestVariantAssociationFunctionality($this->em, $this->repositoryMock);
     }
 
     /**
@@ -155,7 +155,7 @@ class ProblemTestAssociationFunctionalityTest extends FunctionalityTestCase
         ]);
 
         // Prepare expected ProblemTestAssociation object
-        $problemTestAssociationExpected = new ProblemTestAssociation();
+        $problemTestAssociationExpected = new ProblemFinalTestVariantAssociation();
         $problemTestAssociationExpected->setProblem($this->problemFinal);
         $problemTestAssociationExpected->setTest($this->test);
         $problemTestAssociationExpected->setVariant('A');

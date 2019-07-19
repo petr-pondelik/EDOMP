@@ -124,10 +124,15 @@ services:
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\Test
 
-	repository.problem.test.association:
-	    class: App\Model\Repository\ProblemTestAssociationRepository
+	repository.test.variant:
+	    class: App\Model\Repository\TestVariantRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\ProblemTestAssociation
+	        doctrine.repositoryEntity: App\Model\Entity\TestVariant
+
+	repository.problem.final.test.variant.association:
+	    class: App\Model\Repository\ProblemFinalTestVariantAssociationRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\ProblemFinalTestVariantAssociation
 
 	repository.template.jsondata:
 	    class: App\Model\Repository\TemplateJsonDataRepository
@@ -141,7 +146,7 @@ services:
 	functionality.subcategory: App\Model\Functionality\SubCategoryFunctionality
 	functionality.problem: App\Model\Functionality\ProblemFunctionality
 	functionality.problem.type: App\Model\Functionality\ProblemTypeFunctionality
-	functionality.problem.test.association: App\Model\Functionality\ProblemTestAssociationFunctionality
+	functionality.problem.final.test.variant.association: App\Model\Functionality\ProblemFinalTestVariantAssociationFunctionality
 	functionality.template.equation.linear: App\Model\Functionality\LinearEqTemplFunctionality
 	functionality.template.equation.quadratic: App\Model\Functionality\QuadraticEqTemplFunctionality
 	functionality.template.sequence.arithmetic: App\Model\Functionality\ArithmeticSeqTemplFunctionality
@@ -150,6 +155,7 @@ services:
 	functionality.group: App\Model\Functionality\GroupFunctionality
 	functionality.logo: App\Model\Functionality\LogoFunctionality
 	functionality.test: App\Model\Functionality\TestFunctionality
+	functionality.test.variant: App\Model\Functionality\TestVariantFunctionality
 	functionality.template.jsondata: App\Model\Functionality\TemplateJsonDataFunctionality
 
 	#Factories

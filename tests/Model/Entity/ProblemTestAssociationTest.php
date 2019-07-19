@@ -12,7 +12,7 @@ namespace Tests\Model\Entity;
 use App\Model\Entity\Group;
 use App\Model\Entity\Logo;
 use App\Model\Entity\ProblemFinal;
-use App\Model\Entity\ProblemTestAssociation;
+use App\Model\Entity\ProblemFinalTestVariantAssociation;
 use App\Model\Entity\SuperGroup;
 use App\Model\Entity\Test;
 
@@ -89,7 +89,7 @@ class ProblemTestAssociationTest extends ProblemEntityTestCase
      */
     public function testValues(): void
     {
-        $entity = new ProblemTestAssociation();
+        $entity = new ProblemFinalTestVariantAssociation();
         $entity->setTest($this->test);
         $entity->setVariant('A');
         $entity->setProblem($this->problemFinal);
@@ -106,12 +106,12 @@ class ProblemTestAssociationTest extends ProblemEntityTestCase
      */
     public function testCreateSuccess(): void
     {
-        $entity = new ProblemTestAssociation();
+        $entity = new ProblemFinalTestVariantAssociation();
         $entity->setTest($this->test);
         $entity->setVariant('A');
         $entity->setProblem($this->problemFinal);
 
-        $this->assertInstanceOf(ProblemTestAssociation::class, $entity);
+        $this->assertInstanceOf(ProblemFinalTestVariantAssociation::class, $entity);
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 0);
     }
@@ -127,9 +127,9 @@ class ProblemTestAssociationTest extends ProblemEntityTestCase
             2 => "Test can't be blank."
         ];
 
-        $entity = new ProblemTestAssociation();
+        $entity = new ProblemFinalTestVariantAssociation();
 
-        $this->assertInstanceOf(ProblemTestAssociation::class, $entity);
+        $this->assertInstanceOf(ProblemFinalTestVariantAssociation::class, $entity);
         $errors = $this->validator->validate($entity);
         $this->assertEquals($errors->count(), 3);
 

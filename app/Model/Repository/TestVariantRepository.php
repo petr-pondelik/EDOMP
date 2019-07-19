@@ -8,8 +8,11 @@
 
 namespace App\Model\Repository;
 
-
-class TestVariantRepository
+/**
+ * Class TestVariantRepository
+ * @package App\Model\Repository
+ */
+class TestVariantRepository extends BaseRepository
 {
 
 }

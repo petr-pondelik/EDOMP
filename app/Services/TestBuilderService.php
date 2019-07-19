@@ -9,10 +9,10 @@
 namespace App\Services;
 
 use App\Exceptions\ProblemFinalCollisionException;
-use App\Model\Entity\Problem;
 use App\Model\Entity\Test;
 use App\Model\Functionality\ProblemFinalFunctionality;
 use App\Model\Functionality\TestFunctionality;
+use App\Model\Functionality\TestVariantFunctionality;
 use App\Model\Repository\ProblemConditionTypeRepository;
 use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\TestRepository;
@@ -50,6 +50,11 @@ class TestBuilderService
     protected $testFunctionality;
 
     /**
+     * @var TestVariantFunctionality
+     */
+    protected $testVariantFunctionality;
+
+    /**
      * @var GeneratorService
      */
     protected $generatorService;
@@ -71,12 +76,14 @@ class TestBuilderService
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemFinalFunctionality $problemFinalFunctionality
      * @param TestFunctionality $testFunctionality
+     * @param TestVariantFunctionality $testVariantFunctionality
      * @param GeneratorService $generatorService
      */
     public function __construct
     (
-        ProblemRepository $problemRepository, TestRepository $testRepository, ProblemConditionTypeRepository $problemConditionTypeRepository,
-        ProblemFinalFunctionality $problemFinalFunctionality, TestFunctionality $testFunctionality,
+        ProblemRepository $problemRepository, TestRepository $testRepository,
+        ProblemConditionTypeRepository $problemConditionTypeRepository,
+        ProblemFinalFunctionality $problemFinalFunctionality, TestFunctionality $testFunctionality, TestVariantFunctionality $testVariantFunctionality,
         GeneratorService $generatorService
     )
     {
@@ -85,6 +92,7 @@ class TestBuilderService
         $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->problemFinalFunctionality = $problemFinalFunctionality;
         $this->testFunctionality = $testFunctionality;
+        $this->testVariantFunctionality = $testVariantFunctionality;
         $this->generatorService = $generatorService;
 
         $this->problemConditionTypesId = $this->problemConditionTypeRepository->findPairs([], 'id');
@@ -164,18 +172,21 @@ class TestBuilderService
 
     /**
      * @param Test $test
-     * @param string $variant
+     * @param string $variantLabel
      * @param ArrayHash $data
      * @return Test
-     * @throws ProblemFinalCollisionException
-     * @throws \Nette\Utils\JsonException
+     * @throws \Exception
      */
-    protected function buildTestVariant(Test $test, string $variant, ArrayHash $data): Test
+    protected function buildTestVariant(Test $test, string $variantLabel, ArrayHash $data): Test
     {
+        // Create TestVariant entity
+        $testVariant = $this->testVariantFunctionality->create(ArrayHash::from([
+            'variantLabel' => $variantLabel,
+            'test' => $test
+        ]));
+
         //Array of chosen final problems IDs
         $usedFinals = [];
-
-        bdump($data);
 
         for($i = 0; $i < $data->problems_cnt; $i++){
             $problemTemplate = null;
@@ -186,9 +197,7 @@ class TestBuilderService
 
                 // Get all problems that match filters
                 $filters = $this->getProblemFilters($i, $data);
-                bdump($filters);
                 $problems = $this->problemRepository->findFiltered($filters);
-                bdump($problems);
 
                 // Get problem's templates that match filters
                 $filters['is_template'] = 0;
@@ -246,7 +255,6 @@ class TestBuilderService
 
                 // Conjunct selected problems with filtered final problems
                 $selectedFinals = $this->conjunctProblems($selectedProblems, $finals);
-                bdump($selectedFinals);
 
                 // Prepare bool array for selected final problems
                 $selectedFinalsFree = [];
@@ -261,7 +269,6 @@ class TestBuilderService
 
                     // Pick up the problem from selected problems array
                     $problem = $this->problemRepository->find($selectedProblems[$inx]);
-                    bdump($problem);
 
                     // If there isn't any free final problem and all the problems are finals, stop and throw exception
                     if(!$this->hasFree($selectedFinalsFree) && (count($selectedProblems) === count($selectedFinals))){
@@ -327,17 +334,17 @@ class TestBuilderService
             }
 
             //Attach current problem to the created test
-            $test = $this->testFunctionality->attachProblem($test, $problem, $variant, $problemTemplate ?? null, $data->{'newpage_' . $i});
+            $testVariant = $this->testVariantFunctionality->attachProblem($testVariant, $problem, $problemTemplate ?? null, $data->{'newpage_' . $i});
         }
+
+        $test->addTestVariant($testVariant);
 
         return $test;
     }
 
     /**
      * @param ArrayHash $data
-     * @return bool|ArrayHash
-     * @throws ProblemFinalCollisionException
-     * @throws \Nette\Utils\JsonException
+     * @return Test|Object|null
      * @throws \Exception
      */
     public function buildTest(ArrayHash $data)
@@ -353,17 +360,13 @@ class TestBuilderService
             'introduction_text' => $data->introduction_text
         ]));
 
-        foreach($variants as $variant){
-            $test = $this->buildTestVariant($test, $variant, $data);
+        if($test){
+            foreach($variants as $variant){
+                $test = $this->buildTestVariant($test, $variant, $data);
+            }
         }
 
-        $resArr = [
-            'testId' => $this->testRepository->getSequenceVal(),
-            'variants' => $variants,
-            'test' => $test
-        ];
-
-        return ArrayHash::from($resArr);
+        return $test;
     }
 
 }

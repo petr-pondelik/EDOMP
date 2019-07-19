@@ -8,6 +8,7 @@
 
 namespace App\Services;
 
+use App\Model\Entity\Test;
 use App\Model\Functionality\LogoFunctionality;
 use App\Model\Repository\LogoRepository;
 use App\Model\Repository\TestRepository;
@@ -110,10 +111,6 @@ class FileService
 
         FileSystem::createDir($this->logosTmpDir . DIRECTORY_SEPARATOR . $id);
 
-        /*!file_put_contents(
-$this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension,
-    file_get_contents($httpRequest->getFile('logo_file'))*/
-
         if(!copy($httpRequest->getFile('logo'), $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension)) {
             throw new IOException('Chyba při ukládání souboru.');
         }
@@ -157,11 +154,6 @@ $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . 
         $extension = $this->getFileExtension($httpRequest->getFile('logo')->name);
 
         FileSystem::createDir($this->logosTmpDir . DIRECTORY_SEPARATOR . $id);
-
-        /*!file_put_contents(
-    $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension,
-    file_get_contents($httpRequest->getFile('logo_file')
-    )*/
 
         if(!copy($httpRequest->getFile('logo'), $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension)){
             throw new IOException('Chyba při ukládání souboru.');
@@ -209,39 +201,36 @@ $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . 
     }
 
     /**
-     * @param int $testId
+     * @param Test $test
      */
-    public function createTestZip(int $testId): void
+    public function createTestZip(Test $test): void
     {
         $zip = new \ZipArchive();
 
-        $variants = $this->testRepository->findVariants($testId);
-
-        bdump($variants);
-
         //Check files existence
-        foreach ($variants as $variant){
-            if(!file_exists(DATA_DIR  . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($variant['variant']) . '.tex' )){
+        $testVariants = $test->getTestVariants()->getValues();
+        foreach ($testVariants as $testVariant){
+            if(!file_exists(DATA_DIR  . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $test->getId() . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($testVariant) . '.tex' )){
                 throw new FileNotFoundException('Soubor s testem nenalezen.');
             }
         }
 
-        $logoId = $this->testRepository->find($testId)->getLogo()->getId();
-        $logoExt = $this->logoRepository->find($logoId)->getExtension();
+        $logoId = $test->getLogo()->getId();
+        $logoExt = $test->getLogo()->getExtension();
 
         //Check logo file existence
         if(!file_exists(LOGOS_DIR . DIRECTORY_SEPARATOR . $logoId . DIRECTORY_SEPARATOR . 'file' . $logoExt)){
             throw new FileNotFoundException('Soubor s logem nenalezen');
         }
 
-        if(!$zip->open(DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'test_' . $testId . '.zip', \ZipArchive::CREATE)){
+        if(!$zip->open(DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $test->getId() . DIRECTORY_SEPARATOR . 'test_' . $test->getId() . '.zip', \ZipArchive::CREATE)){
             throw new IOException('Zip archiv nemohl být vytvořen.');
         }
 
-        foreach ($variants as $variant){
+        foreach ($testVariants as $testVariant){
             $zip->addFile(
-                DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($variant['variant']) . '.tex',
-                'variant_' . Strings::lower($variant['variant']) . '.tex'
+                DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $test->getId() . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($testVariant) . '.tex',
+                'variant_' . Strings::lower($testVariant) . '.tex'
             );
         }
 
