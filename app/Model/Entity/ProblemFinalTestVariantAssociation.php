@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class ProblemTestAssociation
  * @package App\Model\Entity
  */
-class ProblemTestAssociation extends BaseEntity
+class ProblemTestVariantAssociation extends BaseEntity
 {
     /**
      * @var string

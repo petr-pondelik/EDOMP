@@ -9,7 +9,7 @@
 namespace App\Model\Functionality;
 
 use App\Model\Manager\ConstraintEntityManager;
-use App\Model\Repository\ProblemTestAssociationRepository;
+use App\Model\Repository\ProblemFinalTestVariantAssociationRepository;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 
@@ -22,9 +22,9 @@ class ProblemTestAssociationFunctionality extends BaseFunctionality
     /**
      * ProblemTestAssociationFunctionality constructor.
      * @param ConstraintEntityManager $entityManager
-     * @param ProblemTestAssociationRepository $repository
+     * @param ProblemFinalTestVariantAssociationRepository $repository
      */
-    public function __construct(ConstraintEntityManager $entityManager, ProblemTestAssociationRepository $repository)
+    public function __construct(ConstraintEntityManager $entityManager, ProblemFinalTestVariantAssociationRepository $repository)
     {
         parent::__construct($entityManager);
         $this->repository = $repository;
