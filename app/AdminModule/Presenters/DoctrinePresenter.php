@@ -10,6 +10,7 @@ namespace App\AdminModule\Presenters;
 
 
 use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Exceptions\EntityException;
 use App\Helpers\FlashesTranslator;
@@ -140,6 +141,7 @@ class DoctrinePresenter extends AdminPresenter
      * @param TestVariantFunctionality $testVariantFunctionality
      * @param TestFunctionality $testFunctionality
      * @param TestRepository $testRepository
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
@@ -151,10 +153,11 @@ class DoctrinePresenter extends AdminPresenter
         ValidatorInterface $validator,
         LatexHelper $latexHelper, StringsHelper $stringsHelper, ValidationService $validationService, TestVariantFunctionality $testVariantFunctionality,
         TestFunctionality $testFunctionality,
-        TestRepository $testRepository
+        TestRepository $testRepository,
+        ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->problemRepository = $problemRepository;
         $this->categoryRepository = $categoryRepository;
         $this->templateJsonDataRepository = $templateJsonDataRepository;

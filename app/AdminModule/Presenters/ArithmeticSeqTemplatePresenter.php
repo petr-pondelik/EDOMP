@@ -10,10 +10,8 @@ namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\TemplateGridFactory;
 use App\Components\Forms\ProblemTemplateForm\ArithmeticSeqTemplateForm\ArithmeticSeqTemplateFormFactory;
-use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
-use App\Components\ProblemTemplateHelp\ProblemTemplateHelpControl;
-use App\Components\ProblemTemplateHelp\ProblemTemplateHelpFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\FlashesTranslator;
@@ -31,11 +29,6 @@ use Nette\ComponentModel\IComponent;
 class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
 {
     /**
-     * @var string
-     */
-    protected $type = 'ArithmeticSeqTemplate';
-
-    /**
      * ArithmeticSeqTemplatePresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
@@ -47,7 +40,7 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
      * @param TemplateGridFactory $templateGridFactory
      * @param ArithmeticSeqTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
-     * @param ProblemTemplateHelpFactory $problemTemplateHelpFactory
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
@@ -55,15 +48,14 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ArithmeticSeqTemplRepository $repository, ArithmeticSeqTemplFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, ArithmeticSeqTemplateFormFactory $problemTemplateFormFactory,
-        ConstHelper $constHelper, ProblemTemplateHelpFactory $problemTemplateHelpFactory
+        ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
         parent::__construct
         (
             $authorizator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
-            $templateGridFactory,
-            $constHelper, $problemTemplateHelpFactory
+            $templateGridFactory, $constHelper, $sectionHelpModalFactory
         );
         $this->repository = $repository;
         $this->functionality = $functionality;

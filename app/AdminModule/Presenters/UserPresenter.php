@@ -13,6 +13,7 @@ use App\Components\DataGrids\UserGridFactory;
 use App\Components\Forms\UserForm\UserFormControl;
 use App\Components\Forms\UserForm\UserFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Entity\User;
@@ -67,6 +68,7 @@ class UserPresenter extends AdminPresenter
      * @param ValidationService $validationService
      * @param UserGridFactory $userGridFactory
      * @param UserFormFactory $userFormFactory
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
@@ -74,10 +76,11 @@ class UserPresenter extends AdminPresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         UserRepository $userRepository, UserFunctionality $userFunctionality,
         ValidationService $validationService,
-        UserGridFactory $userGridFactory, UserFormFactory $userFormFactory
+        UserGridFactory $userGridFactory, UserFormFactory $userFormFactory,
+        ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->userRepository = $userRepository;
         $this->userFunctionality = $userFunctionality;
         $this->validationService = $validationService;

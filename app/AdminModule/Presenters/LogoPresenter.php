@@ -13,6 +13,7 @@ use App\Components\DataGrids\LogoGridFactory;
 use App\Components\Forms\LogoForm\LogoFormControl;
 use App\Components\Forms\LogoForm\LogoFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Entity\Logo;
@@ -74,6 +75,7 @@ class LogoPresenter extends AdminPresenter
      * @param FileService $fileService
      * @param LogoGridFactory $logoGridFactory
      * @param LogoFormFactory $logoFormFactory
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
@@ -81,10 +83,11 @@ class LogoPresenter extends AdminPresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         LogoRepository $logoRepository, LogoFunctionality $logoFunctionality,
         ValidationService $validationService, FileService $fileService,
-        LogoGridFactory $logoGridFactory, LogoFormFactory $logoFormFactory
+        LogoGridFactory $logoGridFactory, LogoFormFactory $logoFormFactory,
+        ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->logoRepository = $logoRepository;
         $this->logoFunctionality = $logoFunctionality;
         $this->validationService = $validationService;

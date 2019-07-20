@@ -15,6 +15,7 @@ use App\Components\Forms\TestForm\TestFormControl;
 use App\Components\Forms\TestStatisticsForm\TestStatisticsFormControl;
 use App\Components\Forms\TestStatisticsForm\TestStatisticsFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Entity\Test;
@@ -113,6 +114,7 @@ class TestPresenter extends AdminPresenter
      * @param TestGridFactory $testGridFactory
      * @param FileService $fileService
      * @param ValidationService $validationService
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
@@ -122,10 +124,11 @@ class TestPresenter extends AdminPresenter
         ProblemTemplateRepository $problemTemplateRepository, ProblemRepository $problemRepository, LogoRepository $logoRepository,
         ProblemFinalTestVariantAssociationRepository $problemTestAssociationRepository,
         ITestFormFactory $testFormFactory, TestStatisticsFormFactory $testStatisticsFormFactory, TestGridFactory $testGridFactory,
-        FileService $fileService, ValidationService $validationService
+        FileService $fileService, ValidationService $validationService,
+        ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->testRepository = $testRepository;
         $this->testFunctionality = $testFunctionality;
         $this->problemTemplateRepository = $problemTemplateRepository;

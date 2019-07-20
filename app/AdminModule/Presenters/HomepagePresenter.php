@@ -3,6 +3,7 @@
 namespace App\AdminModule\Presenters;
 
 use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Entity\Category;
@@ -86,6 +87,7 @@ final class HomepagePresenter extends AdminPresenter
      * @param TestRepository $testRepository
      * @param UserRepository $userRepository
      * @param HomepageStatisticsManager $homepageStatisticsManager
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
@@ -93,10 +95,11 @@ final class HomepagePresenter extends AdminPresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemFinalRepository,
         CategoryRepository $categoryRepository, SubCategoryRepository $subCategoryRepository,
-        TestRepository $testRepository, UserRepository $userRepository, HomepageStatisticsManager $homepageStatisticsManager
+        TestRepository $testRepository, UserRepository $userRepository, HomepageStatisticsManager $homepageStatisticsManager,
+        ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->problemTemplateRepository = $problemTemplateRepository;
         $this->problemFinalRepository = $problemFinalRepository;
         $this->categoryRepository = $categoryRepository;

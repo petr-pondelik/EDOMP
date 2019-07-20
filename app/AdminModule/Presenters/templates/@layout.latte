@@ -24,6 +24,8 @@
 
 <main id="content" class="mt-2">
 
+    {control sectionHelpModal}
+
     {if $user->isInRole("admin") || $user->isInRole("teacher")}
 
         {if !$newtonApiConnection}

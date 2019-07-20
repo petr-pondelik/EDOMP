@@ -13,6 +13,7 @@ use App\Components\DataGrids\CategoryGridFactory;
 use App\Components\Forms\CategoryForm\CategoryFormControl;
 use App\Components\Forms\CategoryForm\CategoryFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Entity\Category;
@@ -61,16 +62,18 @@ class CategoryPresenter extends AdminPresenter
      * @param CategoryFunctionality $categoryFunctionality
      * @param CategoryGridFactory $categoryGridFactory
      * @param CategoryFormFactory $categoryFormFactory
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         CategoryRepository $categoryRepository, CategoryFunctionality $categoryFunctionality,
-        CategoryGridFactory $categoryGridFactory, CategoryFormFactory $categoryFormFactory
+        CategoryGridFactory $categoryGridFactory, CategoryFormFactory $categoryFormFactory,
+        ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->categoryRepository = $categoryRepository;
         $this->categoryFunctionality = $categoryFunctionality;
         $this->categoryGridFactory = $categoryGridFactory;

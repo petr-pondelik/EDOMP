@@ -14,6 +14,7 @@ use App\Components\DataGrids\SuperGroupGridFactory;
 use App\Components\Forms\PermissionForm\PermissionFormControl;
 use App\Components\Forms\PermissionForm\PermissionFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Repository\GroupRepository;
@@ -66,16 +67,18 @@ class SettingsPresenter extends AdminPresenter
      * @param GroupGridFactory $groupGridFactory
      * @param SuperGroupGridFactory $superGroupGridFactory
      * @param PermissionFormFactory $permissionFormFactory
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         GroupRepository $groupRepository, SuperGroupRepository $superGroupRepository,
-        GroupGridFactory $groupGridFactory, SuperGroupGridFactory $superGroupGridFactory, PermissionFormFactory $permissionFormFactory
+        GroupGridFactory $groupGridFactory, SuperGroupGridFactory $superGroupGridFactory, PermissionFormFactory $permissionFormFactory,
+        ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->groupRepository = $groupRepository;
         $this->superGroupRepository = $superGroupRepository;
         $this->groupGridFactory = $groupGridFactory;

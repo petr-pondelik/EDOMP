@@ -1,0 +1,27 @@
+{dump $type}
+
+<div class="modal fade" tabindex="-1" id="sectionHelpModal" role="dialog" aria-labelledby="sectionHelpModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h2 class="modal-title" id="sectionHelpModalLabel">Nápověda sekce</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <section class="modal-body">
+                {* Include section help content *}
+                {include './includes/help' . $type . '.latte'}
+            </section>
+
+            <div class="modal-footer">
+                <div class="col-12 text-right">
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Zavřít</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

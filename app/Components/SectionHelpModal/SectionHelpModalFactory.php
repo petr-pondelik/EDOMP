@@ -14,13 +14,13 @@ use App\Components\IControlFactory;
  * Class ProblemTemplateHelpFactory
  * @package App\Components\ProblemTemplateHelp
  */
-class ProblemTemplateHelpFactory implements IControlFactory
+class SectionHelpModalFactory implements IControlFactory
 {
     /**
-     * @return ProblemTemplateHelpControl
+     * @return SectionHelpModalControl
      */
-    public function create(): ProblemTemplateHelpControl
+    public function create(): SectionHelpModalControl
     {
-        return new ProblemTemplateHelpControl();
+        return new SectionHelpModalControl();
     }
 }

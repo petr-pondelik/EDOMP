@@ -11,7 +11,7 @@ namespace App\AdminModule\Presenters;
 use App\Components\DataGrids\TemplateGridFactory;
 use App\Components\Forms\ProblemTemplateForm\QuadraticEqTemplateForm\QuadraticEqTemplateFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
-use App\Components\ProblemTemplateHelp\ProblemTemplateHelpFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\FlashesTranslator;
@@ -29,11 +29,6 @@ use Nette\ComponentModel\IComponent;
 class QuadraticEqTemplatePresenter extends ProblemTemplatePresenter
 {
     /**
-     * @var string
-     */
-    protected $type = 'QuadraticEqTemplate';
-
-    /**
      * QuadraticEqTemplatePresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
@@ -45,7 +40,7 @@ class QuadraticEqTemplatePresenter extends ProblemTemplatePresenter
      * @param TemplateGridFactory $templateGridFactory
      * @param QuadraticEqTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
-     * @param ProblemTemplateHelpFactory $problemTemplateHelpFactory
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
@@ -53,7 +48,7 @@ class QuadraticEqTemplatePresenter extends ProblemTemplatePresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         QuadraticEqTemplRepository $repository, QuadraticEqTemplFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, QuadraticEqTemplateFormFactory $problemTemplateFormFactory,
-        ConstHelper $constHelper, ProblemTemplateHelpFactory $problemTemplateHelpFactory
+        ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
         parent::__construct
@@ -61,7 +56,7 @@ class QuadraticEqTemplatePresenter extends ProblemTemplatePresenter
             $authorizator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
             $templateGridFactory,
-            $constHelper, $problemTemplateHelpFactory
+            $constHelper, $sectionHelpModalFactory
         );
         $this->repository = $repository;
         $this->functionality = $functionality;

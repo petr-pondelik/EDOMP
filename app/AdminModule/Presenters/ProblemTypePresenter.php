@@ -13,6 +13,7 @@ use App\Components\DataGrids\ProblemTypeGridFactory;
 use App\Components\Forms\ProblemTypeForm\ProblemTypeFormControl;
 use App\Components\Forms\ProblemTypeForm\ProblemTypeFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Entity\ProblemType;
@@ -61,16 +62,18 @@ class ProblemTypePresenter extends AdminPresenter
      * @param ProblemTypeFunctionality $problemTypeFunctionality
      * @param ProblemTypeGridFactory $problemTypeGridFactory
      * @param ProblemTypeFormFactory $problemTypeFormFactory
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ProblemTypeRepository $problemTypeRepository, ProblemTypeFunctionality $problemTypeFunctionality,
-        ProblemTypeGridFactory $problemTypeGridFactory, ProblemTypeFormFactory $problemTypeFormFactory
+        ProblemTypeGridFactory $problemTypeGridFactory, ProblemTypeFormFactory $problemTypeFormFactory,
+        ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->problemTypeRepository = $problemTypeRepository;
         $this->problemTypeFunctionality = $problemTypeFunctionality;
         $this->problemTypeGridFactory = $problemTypeGridFactory;

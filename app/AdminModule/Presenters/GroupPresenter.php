@@ -14,6 +14,7 @@ use App\Components\DataGrids\GroupGridFactory;
 use App\Components\Forms\GroupForm\GroupFormControl;
 use App\Components\Forms\GroupForm\GroupFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Entity\Group;
@@ -75,6 +76,7 @@ class GroupPresenter extends AdminPresenter
      * @param ValidationService $validationService
      * @param GroupGridFactory $groupGridFactory
      * @param GroupFormFactory $groupFormFactory
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
@@ -82,10 +84,11 @@ class GroupPresenter extends AdminPresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         GroupRepository $groupRepository, GroupFunctionality $groupFunctionality, SuperGroupRepository $superGroupRepository,
         ValidationService $validationService,
-        GroupGridFactory $groupGridFactory, GroupFormFactory $groupFormFactory
+        GroupGridFactory $groupGridFactory, GroupFormFactory $groupFormFactory,
+        ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->groupRepository = $groupRepository;
         $this->groupFunctionality = $groupFunctionality;
         $this->superGroupRepository = $superGroupRepository;

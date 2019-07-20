@@ -14,6 +14,7 @@ use App\Components\DataGrids\SuperGroupGridFactory;
 use App\Components\Forms\SuperGroupForm\SuperGroupFormControl;
 use App\Components\Forms\SuperGroupForm\SuperGroupFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Entity\SuperGroup;
@@ -67,6 +68,7 @@ class SuperGroupPresenter extends AdminPresenter
      * @param SuperGroupGridFactory $superGroupGridFactory
      * @param SuperGroupFormFactory $superGroupFormFactory
      * @param ValidationService $validationService
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
@@ -74,10 +76,11 @@ class SuperGroupPresenter extends AdminPresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         SuperGroupRepository $superGroupRepository, SuperGroupFunctionality $superGroupFunctionality,
         SuperGroupGridFactory $superGroupGridFactory, SuperGroupFormFactory $superGroupFormFactory,
-        ValidationService $validationService
+        ValidationService $validationService,
+        ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->superGroupRepository = $superGroupRepository;
         $this->superGroupFunctionality = $superGroupFunctionality;
         $this->superGroupGridFactory = $superGroupGridFactory;

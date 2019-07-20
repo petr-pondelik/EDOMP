@@ -13,6 +13,7 @@ use App\Components\DataGrids\ProblemGridFactory;
 use App\Components\Forms\ProblemFinalForm\ProblemFinalFormControl;
 use App\Components\Forms\ProblemFinalForm\ProblemFinalFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Entity\ProblemFinal;
@@ -75,6 +76,7 @@ class ProblemFinalPresenter extends AdminPresenter
      * @param ProblemFinalFunctionality $problemFunctionality
      * @param ValidationService $validationService
      * @param MathService $mathService
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
@@ -82,10 +84,11 @@ class ProblemFinalPresenter extends AdminPresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ProblemGridFactory $problemGridFactory, ProblemFinalFormFactory $problemFinalFormFactory,
         ProblemFinalRepository $problemRepository, ProblemFinalFunctionality $problemFunctionality,
-        ValidationService $validationService, MathService $mathService
+        ValidationService $validationService, MathService $mathService,
+        ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->problemGridFactory = $problemGridFactory;
         $this->problemFinalFormFactory = $problemFinalFormFactory;
         $this->problemRepository = $problemRepository;

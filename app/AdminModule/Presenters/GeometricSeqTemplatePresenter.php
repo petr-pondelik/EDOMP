@@ -9,9 +9,8 @@
 namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\TemplateGridFactory;
-use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
-use App\Components\ProblemTemplateHelp\ProblemTemplateHelpFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\FlashesTranslator;
@@ -30,11 +29,6 @@ use ProblemTemplateForm\GeometricSeqTemplateForm\GeometricSeqTemplateFormFactory
 class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
 {
     /**
-     * @var string
-     */
-    protected $type = 'GeometricSeqTemplate';
-
-    /**
      * GeometricSeqTemplatePresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
@@ -46,7 +40,7 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
      * @param TemplateGridFactory $templateGridFactory
      * @param GeometricSeqTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
-     * @param ProblemTemplateHelpFactory $problemTemplateHelpFactory
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
@@ -54,7 +48,7 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         GeometricSeqTemplRepository $repository, GeometricSeqTemplFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, GeometricSeqTemplateFormFactory $problemTemplateFormFactory,
-        ConstHelper $constHelper, ProblemTemplateHelpFactory $problemTemplateHelpFactory
+        ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
         parent::__construct
@@ -62,7 +56,7 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
             $authorizator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
             $templateGridFactory,
-            $constHelper, $problemTemplateHelpFactory
+            $constHelper, $sectionHelpModalFactory
         );
         $this->repository = $repository;
         $this->functionality = $functionality;
@@ -78,6 +72,6 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
     {
         parent::setDefaults($form, $record);
         $form['variable']->setDefaultValue($record->getVariable());
-        $form['first_n']->setDefaultValue($record->getFirstN());
+        $form['firstN']->setDefaultValue($record->getFirstN());
     }
 }

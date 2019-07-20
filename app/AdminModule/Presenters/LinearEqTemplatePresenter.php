@@ -10,9 +10,8 @@ namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\TemplateGridFactory;
 use App\Components\Forms\ProblemTemplateForm\LinearEqTemplateForm\LinearEqTemplateFormFactory;
-use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
-use App\Components\ProblemTemplateHelp\ProblemTemplateHelpFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\FlashesTranslator;
@@ -39,9 +38,9 @@ class LinearEqTemplatePresenter extends ProblemTemplatePresenter
      * @param LinearEqTemplRepository $repository
      * @param LinearEqTemplFunctionality $functionality
      * @param TemplateGridFactory $templateGridFactory
-     * @param ProblemTemplateFormFactory $problemTemplateFormFactory
+     * @param LinearEqTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
-     * @param ProblemTemplateHelpFactory $problemTemplateHelpFactory
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
@@ -49,7 +48,7 @@ class LinearEqTemplatePresenter extends ProblemTemplatePresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         LinearEqTemplRepository $repository, LinearEqTemplFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, LinearEqTemplateFormFactory $problemTemplateFormFactory,
-        ConstHelper $constHelper, ProblemTemplateHelpFactory $problemTemplateHelpFactory
+        ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
         parent::__construct
@@ -57,7 +56,7 @@ class LinearEqTemplatePresenter extends ProblemTemplatePresenter
             $authorizator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
             $templateGridFactory,
-            $constHelper, $problemTemplateHelpFactory
+            $constHelper, $sectionHelpModalFactory
         );
         $this->repository = $repository;
         $this->functionality = $functionality;

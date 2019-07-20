@@ -13,6 +13,7 @@ use App\Components\DataGrids\SubCategoryGridFactory;
 use App\Components\Forms\SubCategoryForm\SubCategoryFormControl;
 use App\Components\Forms\SubCategoryForm\SubCategoryFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Entity\SubCategory;
@@ -75,6 +76,7 @@ class SubCategoryPresenter extends AdminPresenter
      * @param ValidationService $validationService
      * @param SubCategoryGridFactory $subCategoryGridFactory
      * @param SubCategoryFormFactory $subCategoryFormFactory
+     * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
@@ -83,10 +85,11 @@ class SubCategoryPresenter extends AdminPresenter
         SubCategoryRepository $subCategoryRepository, SubCategoryFunctionality $subCategoryFunctionality,
         CategoryRepository $categoryRepository,
         ValidationService $validationService,
-        SubCategoryGridFactory $subCategoryGridFactory, SubCategoryFormFactory $subCategoryFormFactory
+        SubCategoryGridFactory $subCategoryGridFactory, SubCategoryFormFactory $subCategoryFormFactory,
+        ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator);
+        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->subCategoryRepository = $subCategoryRepository;
         $this->subCategoryFunctionality = $subCategoryFunctionality;
         $this->categoryRepository = $categoryRepository;

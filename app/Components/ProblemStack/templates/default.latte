@@ -5,13 +5,11 @@
         <div id="problem-select-area-{$id}" class="problem-select-area justify-content-center align-items-center flex-wrap mb-4 px-3 px-lg-4 py-4 border">
             {ifset $selectedProblems}
 
-                {dump $selectedProblems}
-
                 <ul class="problem-select-list list-unstyled m-0">
                     <li n:foreach="$selectedProblems as $selectedProblem" class="col-12 d-inline-block mb-3 hover-pointer" data-problem-key="{$id}" data-problem-id="{$selectedProblem->getId()}">
                         <div class="card card-shadow border-light">
                             <div class="d-flex align-items-center card-header py-0 problem-card-header">
-                                id: {$selectedProblem->getId()}
+                                {$selectedProblem->getProblemType()->getLabel()}
                             </div>
                             <div class="card-body py-3">
                                 {$selectedProblem->getBody()}
@@ -34,7 +32,7 @@
                 <li n:foreach="$problems as $problem" class="col-12 d-inline-block mt-3 hover-pointer" data-problem-key="{$id}" data-problem-id="{$problem->getId()}">
                     <div class="card card-shadow border-light">
                         <div class="d-flex align-items-center card-header py-0 problem-card-header">
-                            id: {$problem->getId()}
+                            {$problem->getProblemType()->getLabel()}
                         </div>
                         <div class="card-body py-3">
                             {$problem->getBody()}
