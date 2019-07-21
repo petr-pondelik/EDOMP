@@ -3,11 +3,11 @@
     <div class="card-header edit-card-header d-lg-flex justify-content-between">
         <h1 class="mb-0 font-weight-bold card-heading">
             <i class="fas fa-folder-open mr-3"></i>{$entityLabel}
-            </h2>
-            <div class="d-inline">
-                <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
-                <a href={plink :Admin:SubCategory:default} class="btn btn-secondary btn-sm">Zpět</a>
-            </div>
+        </h1>
+        <div class="d-inline">
+            <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
+            <a href={plink :Admin:SubCategory:default} class="btn btn-secondary btn-sm">Zpět</a>
+        </div>
     </div>
 
     <div class="card-body">
@@ -23,8 +23,11 @@
             {snippet labelErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['label']->errors as $error" class="alert alert-danger border-0">
+                    <p n:foreach="$form['label']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                         {$error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </p>
                 </div>
             {/snippet}
@@ -36,8 +39,11 @@
             {snippet categoryErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['category']->errors as $error" class="alert alert-danger border-0">
+                    <p n:foreach="$form['category']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                         {$error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </p>
                 </div>
             {/snippet}

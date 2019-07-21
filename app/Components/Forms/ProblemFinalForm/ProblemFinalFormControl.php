@@ -9,6 +9,7 @@
 namespace App\Components\Forms\ProblemFinalForm;
 
 
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Helpers\ConstHelper;
 use App\Model\Functionality\ProblemFinalFunctionality;
@@ -104,7 +105,7 @@ class ProblemFinalFormControl extends EntityFormControl
 
         $form->addHidden('is_generatable_hidden');
 
-        $form->addSelect('problemFinalType', 'Typ *', $types)
+        $form->addSelect('problemType', 'Typ *', $types)
             ->setPrompt('Zvolte typ úlohy')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('type');
@@ -141,7 +142,7 @@ class ProblemFinalFormControl extends EntityFormControl
             ->setHtmlAttribute('placeholder', 'Výsledek úlohy.')
             ->setHtmlAttribute('class', 'form-control');
 
-        //Conditions
+        // Conditions
         $form->addSelect('condition_' . $this->constHelper::RESULT, 'Podmínka výsledku', $resultConditions)
             ->setHtmlAttribute('class', 'form-control condition')
             ->setHtmlId('condition-' . $this->constHelper::RESULT);
@@ -159,32 +160,18 @@ class ProblemFinalFormControl extends EntityFormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->getValues();
-
-        // First validate problem body, if it's not generated problem
+        // First validate problem body, if it's not generatable problem
         if(!$values->is_generatable_hidden){
-            $validateFields['problemFinalType'] = $values->problemFinalType;
-            $validateFields['body'] = ArrayHash::from([
+            $validateFields['problemType'] = new ValidatorArgument($values->problemType, 'notEmpty', 'problemType');
+            $validateFields['body'] = new ValidatorArgument([
                 'body' => $values->body,
                 'bodyType' => $this->constHelper::BODY_FINAL
-            ]);
+            ], 'body');
         }
-
-        $validateFields['difficulty'] = $values->difficulty;
-        $validateFields['subCategory'] = $values->subCategory;
-
-        $validationErrors = $this->validationService->validate($validateFields);
-
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error){
-                    $form[$veKey]->addError($error);
-                }
-            }
-        }
-
-        bdump($validationErrors);
-
-        $this->redrawSnippets();
+        $validateFields['difficulty'] = new ValidatorArgument($values->difficulty, 'notEmpty', 'difficulty');
+        $validateFields['subCategory'] = new ValidatorArgument($values->subCategory, 'notEmpty', 'subCategory');
+        $this->validationService->validate($form, $validateFields);
+        $this->redrawErrors();
     }
 
     /**
@@ -197,7 +184,7 @@ class ProblemFinalFormControl extends EntityFormControl
             $this->functionality->create($values);
             $this->onSuccess();
         } catch (\Exception $e){
-            //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
+            // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
             if ($e instanceof AbortException){
                 return;
             }
@@ -239,14 +226,5 @@ class ProblemFinalFormControl extends EntityFormControl
         else{
             $this->template->render(__DIR__ . '/templates/create.latte');
         }
-    }
-
-    public function redrawSnippets(): void
-    {
-        $this->redrawControl('flashesSnippet');
-        $this->redrawControl('problemFinalTypeErrorSnippet');
-        $this->redrawControl('subCategoryErrorSnippet');
-        $this->redrawControl('bodyErrorSnippet');
-        $this->redrawControl('difficultyErrorSnippet');
     }
 }

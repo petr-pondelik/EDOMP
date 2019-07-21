@@ -69,24 +69,18 @@ class PermissionFormControl extends FormControl
     public function createComponentForm(): Form
     {
         $form = parent::createComponentForm();
-
         $categoryOptions = $this->categoryRepository->findAssoc([], 'id');
-
         $form->addHidden('id');
-
         $form->addMultiSelect('categories', 'Kategorie', $categoryOptions)
             ->setHtmlAttribute('class', 'form-control selectpicker')
             ->setHtmlAttribute('title', 'Zvolte kategorie');
-
         $form['submit']->caption = 'Uložit';
-
         if ($this->super){
             $form->onSuccess[] = [$this, 'handleSuperFormSuccess'];
         }
         else{
             $form->onSuccess[] = [$this, 'handleFormSuccess'];
         }
-
         return $form;
     }
 

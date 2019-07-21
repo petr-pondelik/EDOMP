@@ -9,6 +9,7 @@
 namespace App\Components\Forms\LogoForm;
 
 
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\LogoFunctionality;
 use App\Services\FileService;
@@ -77,30 +78,28 @@ class LogoFormControl extends EntityFormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->values;
-
-        $validateFields['label'] = $values->label;
-
+        $validateFields['label'] = new ValidatorArgument($values->label, 'stringNotEmpty');
         if($this->edit){
             if($values->edit_logo){
-                $validateFields['logo'] = $values->logo;
+                $validateFields['logo'] = new ValidatorArgument($values->logo, 'notEmpty');
             }
         }
         else{
-            $validateFields['logo'] = $values->logo;
+            $validateFields['logo'] = new ValidatorArgument($values->logo, 'notEmpty');
         }
+        $this->validationService->validate($form, $validateFields);
 
-        $validationErrors = $this->validationService->validate($validateFields);
-
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error){
-                    $form[$veKey]->addError($error);
-                }
-            }
-        }
-
-        $this->redrawControl('labelErrorSnippet');
-        $this->redrawControl('logoErrorSnippet');
+//        if($validationErrors){
+//            foreach($validationErrors as $veKey => $errorGroup){
+//                foreach($errorGroup as $egKey => $error){
+//                    $form[$veKey]->addError($error);
+//                }
+//            }
+//        }
+//
+//        $this->redrawControl('labelErrorSnippet');
+//        $this->redrawControl('logoErrorSnippet');
+        $this->redrawErrors();
     }
 
     /**

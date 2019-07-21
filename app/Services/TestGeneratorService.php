@@ -350,22 +350,19 @@ class TestGeneratorService
     public function generateTest(ArrayHash $data)
     {
         $variants = $this->testVariantsToArray($data);
-
         $test = $this->testFunctionality->create(ArrayHash::from([
-            'logo_id' => $data->logo,
-            'term' => $data->test_term,
-            'school_year' => $data->school_year,
-            'test_number' => (int) $data->test_number,
+            'logo' => $data->logo,
+            'term' => $data->testTerm,
+            'schoolYear' => $data->schoolYear,
+            'testNumber' => (int) $data->testNumber,
             'groups' => $data->groups,
-            'introduction_text' => $data->introduction_text
+            'introductionText' => $data->introductionText
         ]));
-
         if($test){
             foreach($variants as $variant){
                 $test = $this->generateTestVariant($test, $variant, $data);
             }
         }
-
         return $test;
     }
 }

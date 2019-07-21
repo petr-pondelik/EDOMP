@@ -9,6 +9,7 @@
 namespace App\Components\Forms\TestStatisticsForm;
 
 
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\FormControl;
 use App\Model\Entity\Test;
 use App\Model\Functionality\ProblemFunctionality;
@@ -100,15 +101,8 @@ class TestStatisticsFormControl extends FormControl
         $values = $form->getValues();
         for($i = 0; $i < $values->variants_cnt; $i++){
             for($j = 0; $j < $values->problems_per_variant; $j++){
-                $validateFields['success_rate'] = $values->{'success_rate_' . $i . '_' . $j};
-                $validationErrors = $this->validationService->validate($validateFields);
-                if($validationErrors){
-                    foreach($validationErrors as $veKey => $errorGroup){
-                        foreach($errorGroup as $egKey => $error){
-                            $form['success_rate_' . $i . '_' . $j]->addError($error);
-                        }
-                    }
-                }
+                $validateFields['success_rate'] = new ValidatorArgument($values->{'success_rate_' . $i . '_' . $j}, 'range0to1', 'success_rate_' . $i . '_' . $j);
+                $this->validationService->validate($form, $validateFields);
             }
         }
         $this->redrawControl('successRateSnippetArea');

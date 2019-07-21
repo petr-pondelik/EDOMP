@@ -9,6 +9,7 @@
 namespace App\Components\Forms\TestForm;
 
 
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\FormControl;
 use App\Components\LogoDragAndDrop\ILogoDragAndDropFactory;
 use App\Components\LogoDragAndDrop\LogoDragAndDropControl;
@@ -248,20 +249,20 @@ class TestFormControl extends FormControl
             ->setHtmlAttribute('class', 'form-control selectpicker')
             ->setHtmlAttribute('title', 'Zvolte skupiny');
 
-        $form->addText('test_term', 'Období *')
+        $form->addText('testTerm', 'Období *')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte období ve školním roce.');
 
-        $form->addText('school_year', 'Školní rok *')
+        $form->addText('schoolYear', 'Školní rok *')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'rrrr/rr(rr) nebo rrrr-rr(rr)');
 
-        $form->addInteger('test_number', 'Číslo testu *')
+        $form->addInteger('testNumber', 'Číslo testu *')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte číslo testu.');
 
         // Úvodní text se zobrazí pod hlavičkou testu
-        $form->addTextArea('introduction_text', 'Úvodní text')
+        $form->addTextArea('introductionText', 'Úvodní text')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte úvodní text testu.');
 
@@ -333,24 +334,13 @@ class TestFormControl extends FormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->getValues();
-        $validateFields['logo'] = $values->logo;
-        $validateFields['groups'] = ArrayHash::from($values->groups);
-        $validateFields['school_year'] = $values->school_year;
-        $validateFields['test_number'] = $values->test_number;
-        $validateFields['test_term'] = $values->test_term;
-        $validationErrors = $this->validationService->validate($validateFields);
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error){
-                    $form[$veKey]->addError($error);
-                }
-            }
-        }
-        $this->redrawControl('logoErrorSnippet');
-        $this->redrawControl('groupsErrorSnippet');
-        $this->redrawControl('schoolYearErrorSnippet');
-        $this->redrawControl('testNumberErrorSnippet');
-        $this->redrawControl('testTermErrorSnippet');
+        $validateFields['logo'] = new ValidatorArgument($values->logo, 'notEmpty');
+        $validateFields['groups'] = new ValidatorArgument($values->groups, 'arrayNotEmpty');
+        $validateFields['schoolYear'] = new ValidatorArgument($values->schoolYear, 'schoolYear');
+        $validateFields['testNumber'] = new ValidatorArgument($values->testNumber, 'intNotNegative');
+        $validateFields['testTerm'] = new ValidatorArgument($values->testTerm, 'notEmpty');
+        $this->validationService->validate($form, $validateFields);
+        $this->redrawErrors();
     }
 
     /**

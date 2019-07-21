@@ -15,7 +15,7 @@
         <div class="card-body col-12">
 
             {snippet flashesSnippet}
-                <div n:foreach="$flashes as $flash" class="mb-4 flash alert alert-{$flash->type} alert-dismissible fade show border-0">
+                <div n:foreach="$flashes as $flash" class="mb-4 flash alert alert-{$flash->type} alert-dismissible fade show border-0" role="alert">
                     {$flash->message}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -63,8 +63,11 @@
                                     {snippet successRate{$i}{$j}ErrorSnippet}
                                         <div n:if="$control['form']->hasErrors()" class="mt-2">
                                             <p n:foreach="$control['form']['success_rate_' . $i . '_' . $j]->errors as $error"
-                                                    class="alert alert-danger border-0">
+                                                    class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                                                 {$error}
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
                                             </p>
                                         </div>
                                     {/snippet}

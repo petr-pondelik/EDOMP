@@ -15,6 +15,7 @@ use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
 use App\Model\Functionality\TemplateJsonDataFunctionality;
+use App\Model\Repository\UserRepository;
 use Nette\Application\UI\Form;
 use Nette\NotSupportedException;
 use Nette\Utils\ArrayHash;
@@ -42,6 +43,11 @@ class ValidationService
      * @var ConditionService
      */
     protected $conditionService;
+
+    /**
+     * @var UserRepository
+     */
+    protected $userRepository;
 
     /**
      * @var TemplateJsonDataFunctionality
@@ -78,6 +84,7 @@ class ValidationService
      * @param NewtonApiClient $newtonApiClient
      * @param MathService $mathService
      * @param ConditionService $conditionService
+     * @param UserRepository $userRepository
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param ConstHelper $constHelper
      * @param StringsHelper $stringsHelper
@@ -87,13 +94,14 @@ class ValidationService
     (
         NewtonApiClient $newtonApiClient,
         MathService $mathService, ConditionService $conditionService,
-        TemplateJsonDataFunctionality $templateJsonDataFunctionality,
+        UserRepository $userRepository, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
         ConstHelper $constHelper, StringsHelper $stringsHelper, LatexHelper $latexHelper
     )
     {
         $this->newtonApiClient = $newtonApiClient;
         $this->mathService = $mathService;
         $this->conditionService = $conditionService;
+        $this->userRepository = $userRepository;
         $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
         $this->constHelper = $constHelper;
         $this->stringsHelper = $stringsHelper;
@@ -115,6 +123,16 @@ class ValidationService
                 return -1;
             },
 
+            'stringNotEmpty' => static function($data){
+                if(empty($data)){
+                    return 0;
+                }
+                if(strlen($data) > 64){
+                    return 1;
+                }
+                return -1;
+            },
+
             'isTrue' => static function($data){
                 if(!$data) {
                     return 0;
@@ -122,14 +140,39 @@ class ValidationService
                 return -1;
             },
 
-            'password' => static function($filledVal){
-                if(empty($filledVal)) {
+            'intNotNegative' => static function($data){
+                if(empty($data)){
                     return 0;
+                }
+                if(!is_numeric($data)){
+                    return 1;
+                }
+                if($data < 0){
+                    return 2;
                 }
                 return -1;
             },
 
-            //Validate password in administration User section
+            'username' => function($data){
+                if(empty($data->username)){
+                    return 0;
+                }
+                if(strlen($data->username) > 64){
+                    return 1;
+                }
+                if($data->edit){
+                    $user = $this->userRepository->findOneBy(['username' => $data->username]);
+                    if($user->getId() !== (int) $data->userId){
+                        return 2;
+                    }
+                }
+                else if($this->userRepository->findOneBy(['username' => $data->username])){
+                    return 2;
+                }
+                return -1;
+            },
+
+            // Validate password in administration User section
             'passwordConfirm' => static function(ArrayHash $data){
                 if(empty($data->password) || empty($data->passwordConfirm)) {
                     return 0;
@@ -143,31 +186,7 @@ class ValidationService
                 return -1;
             },
 
-            'groups' => static function(ArrayHash $filledVal){
-                if(count($filledVal) < 1){
-                    return 0;
-                }
-                return -1;
-            },
-
-            'label' => static function($filledVal){
-                if(empty($filledVal)){
-                    return 0;
-                }
-                if(strlen($filledVal) > 64){
-                    return 1;
-                }
-                return -1;
-            },
-
-            'logo' => static function($filledVal){
-                if(empty($filledVal)){
-                    return 0;
-                }
-                return -1;
-            },
-
-            'school_year' => static function($filledVal){
+            'schoolYear' => static function($filledVal){
                 if(empty($filledVal)){
                     return 0;
                 }
@@ -177,22 +196,7 @@ class ValidationService
                 return -1;
             },
 
-            'test_number' => static function($filledVal){
-                if(empty($filledVal)){
-                    return 0;
-                }
-                if($filledVal < 0){
-                    return 1;
-                }
-                return -1;
-            },
-
-            'test_term' => static function($filledVal){
-                if(empty($filledVal)) return 0;
-                return -1;
-            },
-
-            'success_rate' => static function($filledVAl){
+            'range0to1' => static function($filledVAl){
                 if(!empty($filledVAl)){
                     $filledVAl = Strings::replace($filledVAl, '~,~', '.');
                     if(!is_numeric($filledVAl)){
@@ -231,37 +235,6 @@ class ValidationService
                     return 1;
                 }
                 return -1;
-            },
-
-            'category' => static function($filledVal){
-                if(empty($filledVal)){
-                    return 0;
-                }
-                return -1;
-            },
-
-            'subCategory' => static function($filledVal){
-                if(empty($filledVal)){
-                    return 0;
-                }
-                return -1;
-            },
-
-            'difficulty' => static function($filledVal){
-                if(empty($filledVal)){
-                    return 0;
-                }
-                return -1;
-            },
-
-            'problemFinalType' => static function($filledVal){
-
-                if(empty($filledVal)){
-                    return 0;
-                }
-
-                return -1;
-
             },
 
                 'type_' . $this->constHelper::LINEAR_EQ => function($filledVal){
@@ -306,61 +279,45 @@ class ValidationService
 
                 'condition_' . $this->constHelper::RESULT => function(ArrayHash $filledVal, $problemId = null){
                     $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal->body);
-
                     // Maximal number of parameters exceeded
                     if($parametersInfo->count > $this->constHelper::PARAMETERS_MAX) {
                         return 2;
                     }
-
                     // Maximal parameters complexity exceeded
                     if($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX) {
                         return 3;
                     }
-
                     if(!$this->validateResultCond($filledVal->accessor, $filledVal->standardized, $filledVal->variable, $parametersInfo, $problemId)) {
                         return 4;
                     }
-
                     return -1;
                 },
 
                 'condition_' . $this->constHelper::DISCRIMINANT => function(ArrayHash $filledVal, $problemId = null){
-
                     bdump('VALIDATE DISCRIMINANT CONDITION');
-
                     $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal->body);
-
-                    //Maximal number of parameters exceeded
+                    // Maximal number of parameters exceeded
                     if($parametersInfo->count > $this->constHelper::PARAMETERS_MAX) {
                         return 2;
                     }
-
-                    //Maximal parameters complexity exceeded
+                    // Maximal parameters complexity exceeded
                     if($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX) {
                         return 3;
                     }
-
                     if(!$this->validateDiscriminantCond(
                         $filledVal->accessor, $filledVal->standardized, $filledVal->variable, $parametersInfo, $problemId)) {
                         return 4;
                     }
-
                     return -1;
                 },
-
-            'superGroup' => static function($filledVal){
-                if(!$filledVal){
-                    return 0;
-                }
-                return -1;
-            }
-
         ];
 
         $this->validationMessages = [
 
             'username' => [
-                0 => 'Zadejte uživatelské jméno.'
+                0 => 'Zadejte uživatelské jméno.',
+                1 => 'Uživatelské jméno nesmí být delší než 64 znaků.',
+                2 => 'Zadané uživatelské jméno již existuje.'
             ],
 
             'password' => [
@@ -386,17 +343,18 @@ class ValidationService
                 0 => 'Zvolte prosím logo.'
             ],
 
-            'school_year' => [
+            'schoolYear' => [
                 0 => 'Školní rok musí bý vyplněn.',
                 1 => 'Školní roku musí být ve formátu rrrr/rr(rr) nebo rrrr-rr(rr).'
             ],
 
-            'test_number' => [
+            'testNumber' => [
                 0 => 'Číslo testu musí být vyplněno.',
-                1 => 'Číslo testu nesmí být záporné.'
+                1 => 'Číslo testu musí být celé číslo.',
+                2 => 'Číslo testu nesmí být záporné.'
             ],
 
-            'test_term' => [
+            'testTerm' => [
                 0 => 'Období testu musí být vyplněno.'
             ],
 
@@ -423,27 +381,19 @@ class ValidationService
             ],
 
             'category' => [
-
                 0 => 'Zvolte prosím kategorii.'
-
             ],
 
             'subCategory' => [
-
                 0 => 'Zvolte prosím podkategorii.'
-
             ],
 
             'difficulty' => [
-
                 0 => 'Zvolte prosím obtížnost.'
-
             ],
 
-            'problemFinalType' => [
-
+            'problemType' => [
                 0 => 'Zvolte prosím typ úlohy.'
-
             ],
 
                 'type_' . $this->constHelper::LINEAR_EQ => [
@@ -811,15 +761,15 @@ class ValidationService
     {
         foreach((array)$fields as $field => $item){
 
-            $validation = $item->validation;
+            $validationRule = $item->validationRule;
             $data = $item->data;
 
             // Check if the validator supports entered validation
-            if(!array_key_exists($validation, $this->validationMapping)){
+            if(!array_key_exists($validationRule, $this->validationMapping)){
                 throw new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
             }
 
-            if( ($validationRes = $this->validationMapping[$validation]($data)) !== -1 ){
+            if( ($validationRes = $this->validationMapping[$validationRule]($data)) !== -1 ){
                 if(isset($this->validationMessages[$field][$validationRes])){
                     if(isset($item->display)){
                         $form[$item->display]->addError($this->validationMessages[$field][$validationRes]);
@@ -830,10 +780,10 @@ class ValidationService
                 }
                 else{
                     if(isset($item->display)){
-                        $form[$item->display]->addError($this->validationMessages[$validation][$validationRes]);
+                        $form[$item->display]->addError($this->validationMessages[$validationRule][$validationRes]);
                     }
                     else{
-                        $form[$field]->addError($this->validationMessages[$validation][$validationRes]);
+                        $form[$field]->addError($this->validationMessages[$validationRule][$validationRes]);
                     }
                 }
             }
@@ -851,18 +801,17 @@ class ValidationService
     public function conditionValidate(Form $form, $fields, $problemId = null): Form
     {
         // Based on the problemId presence, it will be decided it to update or to create
-
         foreach((array)$fields as $field => $item){
 
-            $validation = $item->validation;
+            $validationRule = $item->validationRule;
             $data = $item->data;
 
             // Check if the validator supports entered validation
-            if(!array_key_exists($validation, $this->validationMapping)){
+            if(!array_key_exists($validationRule, $this->validationMapping)){
                 throw new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
             }
 
-            if( ($validationRes = $this->validationMapping[$validation]($data, $problemId)) !== -1 ){ // Zde se liší!
+            if(($validationRes = $this->validationMapping[$validationRule]($data, $problemId)) !== -1){ // Zde se liší!
                 if(isset($this->validationMessages[$field][$validationRes])){
                     if(isset($item->display)){
                         $form[$item->display]->addError($this->validationMessages[$field][$validationRes]);
@@ -873,10 +822,10 @@ class ValidationService
                 }
                 else{
                     if(isset($item->display)){
-                        $form[$item->display]->addError($this->validationMessages[$validation][$validationRes]);
+                        $form[$item->display]->addError($this->validationMessages[$validationRule][$validationRes]);
                     }
                     else{
-                        $form[$field]->addError($this->validationMessages[$validation][$validationRes]);
+                        $form[$field]->addError($this->validationMessages[$validationRule][$validationRes]);
                     }
                 }
             }

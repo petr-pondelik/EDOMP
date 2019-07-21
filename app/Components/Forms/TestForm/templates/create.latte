@@ -39,8 +39,11 @@
                     {snippet logoErrorSnippet}
                         {var $form = $control['form']}
                         <div n:if="$form->hasErrors()" class="mt-2">
-                            <p n:foreach="$form['logo']->errors as $error" class="alert alert-danger border-0">
+                            <p n:foreach="$form['logo']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                                 {$error}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </p>
                         </div>
                     {/snippet}
@@ -128,21 +131,27 @@
                             {snippet groupsErrorSnippet}
                                 {var $form = $control['form']}
                                 <div n:if="$form->hasErrors()" class="mt-2">
-                                    <p n:foreach="$form['groups']->errors as $error" class="alert alert-danger border-0">
+                                    <p n:foreach="$form['groups']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                                         {$error}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </p>
                                 </div>
                             {/snippet}
                         </div>
 
                         <div class="form-group col-md-6">
-                            {label test_term}
-                            {input test_term}
+                            {label testTerm}
+                            {input testTerm}
                             {snippet testTermErrorSnippet}
                                 {var $form = $control['form']}
                                 <div n:if="$form->hasErrors()" class="mt-2">
-                                    <p n:foreach="$form['test_term']->errors as $error" class="alert alert-danger border-0">
+                                    <p n:foreach="$form['testTerm']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                                         {$error}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </p>
                                 </div>
                             {/snippet}
@@ -153,26 +162,32 @@
                     <div class="row d-flex justify-content-between">
 
                         <div class="form-group col-md-6 md-3">
-                            {label school_year}
-                            {input school_year}
+                            {label schoolYear}
+                            {input schoolYear}
                             {snippet schoolYearErrorSnippet}
                                 {var $form = $control['form']}
                                 <div n:if="$form->hasErrors()" class="mt-2">
-                                    <p n:foreach="$form['school_year']->errors as $error" class="alert alert-danger border-0">
+                                    <p n:foreach="$form['schoolYear']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                                         {$error}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </p>
                                 </div>
                             {/snippet}
                         </div>
 
                         <div class="form-group col-md-6 md-3">
-                            {label test_number}
-                            {input test_number}
+                            {label testNumber}
+                            {input testNumber}
                             {snippet testNumberErrorSnippet}
                                 {var $form = $control['form']}
                                 <div n:if="$form->hasErrors()" class="mt-2">
-                                    <p n:foreach="$form['test_number']->errors as $error" class="alert alert-danger border-0">
+                                    <p n:foreach="$form['testNumber']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                                         {$error}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </p>
                                 </div>
                             {/snippet}
@@ -193,8 +208,8 @@
             <div class="card-body mb-3">
 
                 <div class="form-group mt-3 mb-3">
-                    {label introduction_text}
-                    {input introduction_text}
+                    {label introductionText}
+                    {input introductionText}
                 </div>
 
             </div>
@@ -358,6 +373,6 @@
 
     {/form}
 
-    <a href={plink :Admin:Test:default} class="btn btn-secondary col-12">Zpět</a>
+    <a href="{plink :Admin:Test:default}" class="btn btn-secondary col-12">Zpět</a>
 
 </div>

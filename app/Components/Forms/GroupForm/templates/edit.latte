@@ -6,7 +6,7 @@
         </h1>
         <div class="d-inline">
             <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
-            <a href={plink :Admin:Group:default} class="btn btn-secondary btn-sm">Zpět</a>
+            <a href="{plink :Admin:Group:default}" class="btn btn-secondary btn-sm">Zpět</a>
         </div>
     </div>
 
@@ -23,8 +23,11 @@
             {snippet labelErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['label']->errors as $error" class="alert alert-danger border-0">
+                    <p n:foreach="$form['label']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                         {$error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </p>
                 </div>
             {/snippet}
@@ -37,8 +40,11 @@
             {snippet superGroupErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['superGroup']->errors as $error" class="alert alert-danger border-0">
+                    <p n:foreach="$form['superGroup']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                         {$error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </p>
                 </div>
             {/snippet}

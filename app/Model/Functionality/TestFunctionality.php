@@ -56,12 +56,12 @@ class TestFunctionality extends BaseFunctionality
     public function create(ArrayHash $data): ?Object
     {
         $test = new Test();
-        $test->setLogo($this->logoRepository->find($data->logo_id));
+        $test->setLogo($this->logoRepository->find($data->logo));
         $test->setTerm($data->term);
         $test = $this->attachGroups($test, $data->groups);
-        $test->setSchoolYear($data->school_year);
-        $test->setTestNumber($data->test_number);
-        $test->setIntroductionText($data->introduction_text);
+        $test->setSchoolYear($data->schoolYear);
+        $test->setTestNumber($data->testNumber);
+        $test->setIntroductionText($data->introductionText);
         if(isset($data->created)){
             $test->setCreated($data->created);
         }

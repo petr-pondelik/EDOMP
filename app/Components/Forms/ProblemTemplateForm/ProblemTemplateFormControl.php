@@ -9,6 +9,7 @@
 namespace App\Components\Forms\ProblemTemplateForm;
 
 
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Exceptions\NewtonApiException;
 use App\Exceptions\ProblemTemplateFormatException;
@@ -171,25 +172,15 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     {
         if(!$conditions){
             foreach ($this->baseItems as $item){
-                $validateFields[$item['field']] = ArrayHash::from([
-                    'data' => $values[$item['field']],
-                    'validation' => $item['validation']
-                ]);
+                $validateFields[$item['field']] = new ValidatorArgument($values[$item['field']], $item['validation']);
             }
         }
         else{
             foreach ($this->baseItemsCondition as $item){
-                $validateFields[$item['field']] = ArrayHash::from([
-                    'data' => $values[$item['field']],
-                    'validation' => $item['validation']
-                ]);
+                $validateFields[$item['field']] = new ValidatorArgument($values[$item['field']], $item['validation']);
             }
         }
-
-        $validateFields['body'] = ArrayHash::from([
-            'data' => $this->collectBodyValidationData($values),
-            'validation' => 'body'
-        ]);
+        $validateFields['body'] = new ValidatorArgument($this->collectBodyValidationData($values), 'body');
 
         try{
             $form = $this->validationService->validate($this['form'], $validateFields);
@@ -219,6 +210,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
         // VALIDATE BASE ITEMS
         if(!$this->validateBaseItems($values)){
+            bdump('RETURN');
             $this->redrawErrors();
             return;
         }
@@ -231,15 +223,12 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
         // VALIDATE TYPE
         if(!$this->validateType($values, $standardized)){
+            $this->redrawErrors();
             return;
         }
 
         // VALIDATE IF ALL CONDITIONS ARE SATISFIED
-        $validateFields['conditions_valid'] = ArrayHash::from([
-            'data' => $values->conditions_valid,
-            'validation' => 'isTrue',
-            'display' => 'submit'
-        ]);
+        $validateFields['conditions_valid'] = new ValidatorArgument($values->conditions_valid, 'isTrue', 'submit');
         $this->validationService->validate($form, $validateFields);
 
         // REDRAW ERRORS
@@ -297,15 +286,11 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     public function validateType(ArrayHash $values, $standardized): bool
     {
         // Validate if the entered problem corresponds to the selected type
-        $validateFields['type'] = ArrayHash::from([
-            'data' => [
-                'body' => $values->body,
-                'standardized' => $standardized,
-                'variable' => $values->variable
-            ],
-            'validation' => 'type_' . $values->type,
-            'display' => 'body'
-        ]);
+        $validateFields['type'] = new ValidatorArgument([
+            'body' => $values->body,
+            'standardized' => $standardized,
+            'variable' => $values->variable
+        ], 'type_' . $values->type, 'body');
 
         try{
             $form = $this->validationService->validate($this['form'], $validateFields);
@@ -331,16 +316,14 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      */
     public function validateCondition(ArrayHash $values, $standardized, int $problemId = null): bool
     {
-        $validationFields['condition_' . $values->conditionType] = ArrayHash::from([
-            'data' => [
-                'body' => $values->body,
-                'standardized' => $standardized,
-                'accessor' => $values->accessor,
-                'variable' => $values->variable
+        $validationFields['condition_' . $values->conditionType] = new ValidatorArgument([
+            'body' => $values->body,
+            'standardized' => $standardized,
+            'accessor' => $values->accessor,
+            'variable' => $values->variable
             ],
-            'validation' => 'condition_' . $values->conditionType,
-            'display' => 'condition_' . $values->conditionType
-        ]);
+            'condition_' . $values->conditionType, 'condition_' . $values->conditionType
+        );
 
         // Validate template condition
         try{
@@ -418,6 +401,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     {
         parent::redrawErrors($submited);
         $this->redrawControl('conditionsErrorSnippet');
+        $this->redrawControl('flashesSnippet');
+        $this->redrawControl('submitErrorSnippet');
     }
 
     /**

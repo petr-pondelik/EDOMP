@@ -9,6 +9,7 @@
 namespace App\Components\Forms\UserForm;
 
 
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\UserFunctionality;
 use App\Model\Repository\GroupRepository;
@@ -113,27 +114,35 @@ class UserFormControl extends EntityFormControl
     {
         $values = $form->values;
 
-        $validateFields['username'] = ArrayHash::from([
-            'data' => $values->username,
-            'validation' => 'notEmpty'
-        ]);
+        $validateFields['username'] = new ValidatorArgument([
+            'username' => $values->username,
+            'edit' => $this->edit,
+            'userId' => $values->idHidden ?? null
+        ], 'username');
+
+//            ArrayHash::from([
+//            'data' => $values->username,
+//            'validation' => 'notEmpty'
+//        ]);
+
         if(!isset($values->changePassword) || $values->changePassword){
-            $validateFields['passwordConfirm'] = ArrayHash::from([
-                'data' => [
-                    'password' => $values->password,
-                    'passwordConfirm' => $values->passwordConfirm
-                ],
-                'validation' => 'passwordConfirm',
-            ]);
+            $validateFields['passwordConfirm'] = new ValidatorArgument([
+                'password' => $values->password, 'passwordConfirm' => $values->passwordConfirm
+            ],'passwordConfirm');
         }
-        $validateFields['role'] = ArrayHash::from([
-            'data' => $values->role,
-            'validation' => 'notEmpty'
-        ]);
-        $validateFields['groups'] = ArrayHash::from([
-            'data' => $values->groups,
-            'validation' => 'arrayNotEmpty'
-        ]);
+        $validateFields['role'] = new ValidatorArgument($values->role, 'notEmpty');
+
+//            ArrayHash::from([
+//            'data' => $values->role,
+//            'validation' => 'notEmpty'
+//        ]);
+
+        $validateFields['groups'] = new ValidatorArgument($values->groups, 'arrayNotEmpty');
+
+//            ArrayHash::from([
+//            'data' => $values->groups,
+//            'validation' => 'arrayNotEmpty'
+//        ]);
 
         $this->validationService->validate($form, $validateFields);
 

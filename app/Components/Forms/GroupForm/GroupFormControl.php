@@ -9,6 +9,7 @@
 namespace App\Components\Forms\GroupForm;
 
 
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\GroupFunctionality;
 use App\Model\Repository\SuperGroupRepository;
@@ -74,22 +75,10 @@ class GroupFormControl extends EntityFormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->values;
-
-        $validateFields['label'] = $values->label;
-        $validateFields['superGroup'] = $values->superGroup;
-
-        $validationErrors = $this->validationService->validate($validateFields);
-
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error){
-                    $form[$veKey]->addError($error);
-                }
-            }
-        }
-
-        $this->redrawControl('labelErrorSnippet');
-        $this->redrawControl('superGroupErrorSnippet');
+        $validateFields['label'] = new ValidatorArgument($values->label, 'stringNotEmpty');
+        $validateFields['superGroup'] = new ValidatorArgument($values->superGroup, 'notEmpty');
+        $this->validationService->validate($form, $validateFields);
+        $this->redrawErrors();
     }
 
     /**
