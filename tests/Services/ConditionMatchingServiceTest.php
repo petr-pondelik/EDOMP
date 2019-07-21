@@ -11,7 +11,7 @@ namespace Tests\Model\Services;
 
 use App\Helpers\ConstHelper;
 use App\Helpers\StringsHelper;
-use App\Services\ConditionMatchingService;
+use App\Services\ConditionService;
 use App\Services\MathService;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
@@ -41,7 +41,7 @@ class ConditionMatchingServiceTest extends TestCase
     protected $mathServiceMock;
 
     /**
-     * @var ConditionMatchingService
+     * @var ConditionService
      */
     protected $conditionMatchingService;
 
@@ -75,7 +75,7 @@ class ConditionMatchingServiceTest extends TestCase
             });
 
         // Instantiate tested class
-        $this->conditionMatchingService = new ConditionMatchingService($this->mathServiceMock, $this->stringsHelper, $this->constHelper);
+        $this->conditionMatchingService = new ConditionService($this->mathServiceMock, $this->stringsHelper, $this->constHelper);
     }
 
     public function testResultFindConditionsMatches(): void

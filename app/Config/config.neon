@@ -197,9 +197,9 @@ services:
 	service.validation: App\Services\ValidationService
 	service.math: App\Services\MathService
 	service.generator: App\Services\GeneratorService
-	service.condition.matching: App\Services\ConditionMatchingService
+	service.condition: App\Services\ConditionService
 	service.file: App\Services\FileService(%logosDir%, %logosTmpDir%)
-	service.test.builder: App\Services\TestBuilderService
+	service.test.generator: App\Services\TestGeneratorService
 	service.authenticator: App\Services\Authenticator
 	service.authorizator: App\Services\Authorizator
 

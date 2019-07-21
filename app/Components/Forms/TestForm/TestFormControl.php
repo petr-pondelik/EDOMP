@@ -25,7 +25,7 @@ use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TestRepository;
 use App\Services\FileService;
-use App\Services\TestBuilderService;
+use App\Services\TestGeneratorService;
 use App\Services\ValidationService;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Application\UI\Form;
@@ -96,9 +96,9 @@ class TestFormControl extends FormControl
     protected $problemConditionTypeRepository;
 
     /**
-     * @var TestBuilderService
+     * @var TestGeneratorService
      */
-    protected $testBuilderService;
+    protected $testGeneratorService;
 
     /**
      * @var FileService
@@ -139,7 +139,7 @@ class TestFormControl extends FormControl
      * @param GroupRepository $groupRepository
      * @param SubCategoryRepository $subCategoryRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
-     * @param TestBuilderService $testBuilderService
+     * @param TestGeneratorService $testGeneratorService
      * @param FileService $fileService
      * @param ILogoDragAndDropFactory $logoDragAndDropFactory
      * @param IProblemStackFactory $problemStackFactory
@@ -154,7 +154,7 @@ class TestFormControl extends FormControl
         DifficultyRepository $difficultyRepository, LogoRepository $logoRepository, GroupRepository $groupRepository,
         SubCategoryRepository $subCategoryRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository,
-        TestBuilderService $testBuilderService, FileService $fileService,
+        TestGeneratorService $testGeneratorService, FileService $fileService,
         ILogoDragAndDropFactory $logoDragAndDropFactory, IProblemStackFactory $problemStackFactory
     )
     {
@@ -171,7 +171,7 @@ class TestFormControl extends FormControl
         $this->groupRepository = $groupRepository;
         $this->subCategoryRepository = $subCategoryRepository;
         $this->problemConditionTypeRepository = $problemConditionTypeRepository;
-        $this->testBuilderService = $testBuilderService;
+        $this->testGeneratorService = $testGeneratorService;
         $this->fileService = $fileService;
         $this->logoDragAndDropFactory = $logoDragAndDropFactory;
         $this->problemStackFactory = $problemStackFactory;
@@ -360,7 +360,7 @@ class TestFormControl extends FormControl
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
-            $test = $this->testBuilderService->buildTest($values);
+            $test = $this->testGeneratorService->generateTest($values);
         }
         catch(\Exception $e){
             $this->onError($e);

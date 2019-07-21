@@ -26,7 +26,7 @@ use App\Model\Functionality\TestFunctionality;
 use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\TestRepository;
 use App\Services\GeneratorService;
-use App\Services\TestBuilderService;
+use App\Services\TestGeneratorService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
@@ -65,7 +65,7 @@ class TestBuilderServiceTest extends TestCase
     protected $generatorServiceMock;
 
     /**
-     * @var TestBuilderService
+     * @var TestGeneratorService
      */
     protected $testBuilderService;
 
@@ -363,7 +363,7 @@ class TestBuilderServiceTest extends TestCase
             });
 
         // Instantiate tested class
-        $this->testBuilderService = new TestBuilderService
+        $this->testBuilderService = new TestGeneratorService
         (
             $this->problemRepositoryMock, $this->testRepositoryMock, $this->problemFinalFunctionalityMock,
             $this->testFunctionalityMock, $this->generatorServiceMock

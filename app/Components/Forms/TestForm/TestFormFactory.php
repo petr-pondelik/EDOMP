@@ -19,7 +19,7 @@ use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TestRepository;
 use App\Services\FileService;
-use App\Services\TestBuilderService;
+use App\Services\TestGeneratorService;
 use App\Services\ValidationService;
 use Kdyby\Doctrine\EntityManager;
 
@@ -80,9 +80,9 @@ class TestFormFactory extends FormFactory
     protected $subCategoryRepository;
 
     /**
-     * @var TestBuilderService
+     * @var TestGeneratorService
      */
-    protected $testBuilderService;
+    protected $testGeneratorService;
 
     /**
      * @var FileService
@@ -102,7 +102,7 @@ class TestFormFactory extends FormFactory
      * @param LogoRepository $logoRepository
      * @param GroupRepository $groupRepository
      * @param SubCategoryRepository $subCategoryRepository
-     * @param TestBuilderService $testBuilderService
+     * @param TestGeneratorService $testGeneratorService
      * @param FileService $fileService
      */
     public function __construct
@@ -113,7 +113,7 @@ class TestFormFactory extends FormFactory
         ProblemTypeRepository $problemTypeRepository,
         DifficultyRepository $difficultyRepository, LogoRepository $logoRepository, GroupRepository $groupRepository,
         SubCategoryRepository $subCategoryRepository,
-        TestBuilderService $testBuilderService, FileService $fileService
+        TestGeneratorService $testGeneratorService, FileService $fileService
     )
     {
         parent::__construct($validationService);
@@ -127,7 +127,7 @@ class TestFormFactory extends FormFactory
         $this->logoRepository = $logoRepository;
         $this->groupRepository = $groupRepository;
         $this->subCategoryRepository = $subCategoryRepository;
-        $this->testBuilderService = $testBuilderService;
+        $this->testGeneratorService = $testGeneratorService;
         $this->fileService = $fileService;
     }
 
@@ -143,7 +143,7 @@ class TestFormFactory extends FormFactory
             $this->problemRepository, $this->problemTemplateRepository, $this->problemFinalRepository,
             $this->problemTypeRepository, $this->difficultyRepository,
             $this->logoRepository, $this->groupRepository, $this->subCategoryRepository,
-            $this->testBuilderService, $this->fileService
+            $this->testGeneratorService, $this->fileService
         );
     }
 }

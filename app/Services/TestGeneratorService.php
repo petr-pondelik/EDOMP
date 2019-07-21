@@ -19,10 +19,10 @@ use App\Model\Repository\TestRepository;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class TestBuilderService
+ * Class TestGeneratorService
  * @package App\Services
  */
-class TestBuilderService
+class TestGeneratorService
 {
     /**
      * @var ProblemRepository
@@ -70,7 +70,7 @@ class TestBuilderService
     protected $problemConditionTypesId;
 
     /**
-     * TestBuilderService constructor.
+     * TestGeneratorService constructor.
      * @param ProblemRepository $problemRepository
      * @param TestRepository $testRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
@@ -177,7 +177,7 @@ class TestBuilderService
      * @return Test
      * @throws \Exception
      */
-    protected function buildTestVariant(Test $test, string $variantLabel, ArrayHash $data): Test
+    protected function generateTestVariant(Test $test, string $variantLabel, ArrayHash $data): Test
     {
         // Create TestVariant entity
         $testVariant = $this->testVariantFunctionality->create(ArrayHash::from([
@@ -347,7 +347,7 @@ class TestBuilderService
      * @return Test|Object|null
      * @throws \Exception
      */
-    public function buildTest(ArrayHash $data)
+    public function generateTest(ArrayHash $data)
     {
         $variants = $this->testVariantsToArray($data);
 
@@ -362,11 +362,10 @@ class TestBuilderService
 
         if($test){
             foreach($variants as $variant){
-                $test = $this->buildTestVariant($test, $variant, $data);
+                $test = $this->generateTestVariant($test, $variant, $data);
             }
         }
 
         return $test;
     }
-
 }

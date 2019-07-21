@@ -41,9 +41,9 @@ class ValidationService
     protected $mathService;
 
     /**
-     * @var ConditionMatchingService
+     * @var ConditionService
      */
-    protected $conditionMatchingService;
+    protected $conditionService;
 
     /**
      * @var TemplateJsonDataFunctionality
@@ -79,7 +79,7 @@ class ValidationService
      * ValidationService constructor.
      * @param NewtonApiClient $newtonApiClient
      * @param MathService $mathService
-     * @param ConditionMatchingService $conditionMatchingService
+     * @param ConditionService $conditionService
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param ConstHelper $constHelper
      * @param StringsHelper $stringsHelper
@@ -88,14 +88,14 @@ class ValidationService
     public function __construct
     (
         NewtonApiClient $newtonApiClient,
-        MathService $mathService, ConditionMatchingService $conditionMatchingService,
+        MathService $mathService, ConditionService $conditionService,
         TemplateJsonDataFunctionality $templateJsonDataFunctionality,
         ConstHelper $constHelper, StringsHelper $stringsHelper, LatexHelper $latexHelper
     )
     {
         $this->newtonApiClient = $newtonApiClient;
         $this->mathService = $mathService;
-        $this->conditionMatchingService = $conditionMatchingService;
+        $this->conditionService = $conditionService;
         $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
         $this->constHelper = $constHelper;
         $this->stringsHelper = $stringsHelper;
@@ -767,7 +767,7 @@ class ValidationService
         $variableExp = $this->stringsHelper::getLinearVariableExpresion($standardized, $variable);
 
         try{
-            $matches = $this->conditionMatchingService->findConditionsMatches([
+            $matches = $this->conditionService->findConditionsMatches([
                 $this->constHelper::RESULT => [
                     $accessor => [
                         'parametersInfo' => $parametersInfo,
@@ -814,7 +814,7 @@ class ValidationService
         $discriminantExp = $this->mathService->getDiscriminantExpression($standardized, $variable);
         bdump($discriminantExp);
 
-        $matches = $this->conditionMatchingService->findConditionsMatches([
+        $matches = $this->conditionService->findConditionsMatches([
             $this->constHelper::DISCRIMINANT => [
                 $accessor => [
                     'parametersInfo' => $parametersInfo,

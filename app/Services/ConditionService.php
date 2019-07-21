@@ -15,10 +15,10 @@ use Nette\NotSupportedException;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class ConditionMatchingService
+ * Class ConditionService
  * @package App\Services
  */
-class ConditionMatchingService
+class ConditionService
 {
     /**
      * @var MathService
@@ -46,16 +46,12 @@ class ConditionMatchingService
     protected $validationFunctions;
 
     /**
-     * ConditionMatchingService constructor.
+     * ConditionService constructor.
      * @param MathService $mathService
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      */
-    public function __construct
-    (
-        MathService $mathService,
-        StringsHelper $stringsHelper, ConstHelper $constHelper
-    )
+    public function __construct(MathService $mathService, StringsHelper $stringsHelper, ConstHelper $constHelper)
     {
         $this->mathService = $mathService;
         $this->stringsHelper = $stringsHelper;
