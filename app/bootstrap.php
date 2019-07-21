@@ -27,6 +27,7 @@ $configurator->setTempDirectory(__DIR__ . '/../temp');
 
 $configurator->createRobotLoader()
 	->addDirectory(__DIR__)
+    // Not in production
     ->addDirectory(__DIR__ . '/../tests')
 	->register();
 

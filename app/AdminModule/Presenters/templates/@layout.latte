@@ -24,7 +24,9 @@
 
 <main id="content" class="mt-2">
 
-    {control sectionHelpModal}
+    {if $presenter->name !== 'Admin:Sign'}
+        {control sectionHelpModal}
+    {/if}
 
     {if $user->isInRole("admin") || $user->isInRole("teacher")}
 
