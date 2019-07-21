@@ -23,6 +23,6 @@ class SignFormFactory extends FormFactory
      */
     public function create(bool $admin): SignFormControl
     {
-        return new SignFormControl($this->validationService, $admin);
+        return new SignFormControl($this->validator, $admin);
     }
 }

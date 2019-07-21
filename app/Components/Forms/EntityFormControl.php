@@ -8,7 +8,7 @@
 
 namespace App\Components\Forms;
 
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -25,12 +25,12 @@ abstract class EntityFormControl extends FormControl
 
     /**
      * EntityFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param bool $edit
      */
-    public function __construct(ValidationService $validationService, bool $edit = false)
+    public function __construct(Validator $validator, bool $edit = false)
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->edit = $edit;
     }
 
@@ -42,11 +42,11 @@ abstract class EntityFormControl extends FormControl
         $form = parent::createComponentForm();
 
         if ($this->edit) {
-            $form->addInteger("id", "ID")
-                ->setHtmlAttribute("class", "form-control")
+            $form->addInteger('id', 'ID')
+                ->setHtmlAttribute('class', 'form-control')
                 ->setDisabled();
 
-            $form->addHidden("id_hidden");
+            $form->addHidden('idHidden');
 
             $form->onSuccess[] = [$this, 'handleEditFormSuccess'];
         }

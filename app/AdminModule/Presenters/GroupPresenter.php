@@ -23,7 +23,7 @@ use App\Model\Repository\GroupRepository;
 use App\Model\Repository\SuperGroupRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
 
@@ -49,9 +49,9 @@ class GroupPresenter extends AdminPresenter
     protected $superGroupRepository;
 
     /**
-     * @var ValidationService
+     * @var Validator
      */
-    protected $validationService;
+    protected $validator;
 
     /**
      * @var GroupGridFactory
@@ -73,7 +73,7 @@ class GroupPresenter extends AdminPresenter
      * @param GroupRepository $groupRepository
      * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupRepository $superGroupRepository
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param GroupGridFactory $groupGridFactory
      * @param GroupFormFactory $groupFormFactory
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
@@ -83,7 +83,7 @@ class GroupPresenter extends AdminPresenter
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         GroupRepository $groupRepository, GroupFunctionality $groupFunctionality, SuperGroupRepository $superGroupRepository,
-        ValidationService $validationService,
+        Validator $validator,
         GroupGridFactory $groupGridFactory, GroupFormFactory $groupFormFactory,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
@@ -92,7 +92,7 @@ class GroupPresenter extends AdminPresenter
         $this->groupRepository = $groupRepository;
         $this->groupFunctionality = $groupFunctionality;
         $this->superGroupRepository = $superGroupRepository;
-        $this->validationService = $validationService;
+        $this->validator = $validator;
         $this->groupGridFactory = $groupGridFactory;
         $this->groupFormFactory = $groupFormFactory;
     }
@@ -123,7 +123,7 @@ class GroupPresenter extends AdminPresenter
     public function setDefaults(IComponent $form, Group $record): void
     {
         $form["id"]->setDefaultValue($record->getId());
-        $form["id_hidden"]->setDefaultValue($record->getId());
+        $form["idHidden"]->setDefaultValue($record->getId());
         $form["label"]->setDefaultValue($record->getLabel());
         $form["superGroup"]->setDefaultValue($record->getSuperGroup()->getId());
     }

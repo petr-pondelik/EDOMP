@@ -8,21 +8,24 @@
             {snippet usernameErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['username']->errors as $error" class="alert alert-danger border-0">
+                    <p n:foreach="$form['username']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                         {$error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </p>
                 </div>
             {/snippet}
         </div>
 
         <div class="form-group col-12">
-            {label first_name}
-            {input first_name}
+            {label firstName}
+            {input firstName}
         </div>
 
         <div class="form-group col-12">
-            {label last_name}
-            {input last_name}
+            {label lastName}
+            {input lastName}
         </div>
 
         <div class="form-group col-12">
@@ -31,13 +34,16 @@
         </div>
 
         <div class="form-group col-12">
-            {label password_confirm}
-            {input password_confirm}
+            {label passwordConfirm}
+            {input passwordConfirm}
             {snippet passwordConfirmErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['password_confirm']->errors as $error" class="alert alert-danger border-0">
+                    <p n:foreach="$form['passwordConfirm']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                         {$error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </p>
                 </div>
             {/snippet}
@@ -49,8 +55,11 @@
             {snippet roleErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['role']->errors as $error" class="alert alert-danger border-0">
+                    <p n:foreach="$form['role']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                         {$error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </p>
                 </div>
             {/snippet}
@@ -62,8 +71,11 @@
             {snippet groupsErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['groups']->errors as $error" class="alert alert-danger border-0">
+                    <p n:foreach="$form['groups']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                         {$error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </p>
                 </div>
             {/snippet}

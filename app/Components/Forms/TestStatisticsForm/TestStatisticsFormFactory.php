@@ -14,7 +14,7 @@ use App\Model\Functionality\ProblemFunctionality;
 use App\Model\Functionality\ProblemFinalTestVariantAssociationFunctionality;
 use App\Model\Repository\ProblemFinalTestVariantAssociationRepository;
 use App\Model\Repository\TestRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 
 /**
  * Class TestStatisticsFormFactory
@@ -35,13 +35,13 @@ class TestStatisticsFormFactory extends FormFactory
 
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         ProblemFunctionality $problemFunctionality,
         ProblemFinalTestVariantAssociationFunctionality $problemFinalTestVariantAssociationFunctionality,
         TestRepository $testRepository
     )
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->functionality = $problemFunctionality;
         $this->problemFinalTestVariantAssociationFunctionality = $problemFinalTestVariantAssociationFunctionality;
         $this->testRepository = $testRepository;
@@ -54,7 +54,7 @@ class TestStatisticsFormFactory extends FormFactory
     public function create(int $testId): TestStatisticsFormControl
     {
         return new TestStatisticsFormControl(
-            $this->validationService, $this->functionality,
+            $this->validator, $this->functionality,
             $this->problemFinalTestVariantAssociationFunctionality, $this->testRepository, $testId
         );
     }

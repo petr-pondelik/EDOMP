@@ -10,14 +10,13 @@ namespace App\Services;
 
 use App\Exceptions\InvalidParameterException;
 use App\Exceptions\NewtonApiSyntaxException;
-use App\Exceptions\ProblemFinalCollisionException;
 use App\Exceptions\ProblemTemplateFormatException;
-use App\Exceptions\StringFormatException;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
 use App\Model\Functionality\TemplateJsonDataFunctionality;
-use Doctrine\ORM\Query\Expr\Math;
+use App\Model\Repository\UserRepository;
+use Nette\Application\UI\Form;
 use Nette\NotSupportedException;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
@@ -25,10 +24,10 @@ use Nette\Utils\Strings;
 use NXP\Exception\MathExecutorException;
 
 /**
- * Class ValidationService
+ * Class Validator
  * @package App\Service
  */
-class ValidationService
+class Validator
 {
     /**
      * @var NewtonApiClient
@@ -44,6 +43,11 @@ class ValidationService
      * @var ConditionService
      */
     protected $conditionService;
+
+    /**
+     * @var UserRepository
+     */
+    protected $userRepository;
 
     /**
      * @var TemplateJsonDataFunctionality
@@ -76,10 +80,11 @@ class ValidationService
     protected $validationMessages;
 
     /**
-     * ValidationService constructor.
+     * Validator constructor.
      * @param NewtonApiClient $newtonApiClient
      * @param MathService $mathService
      * @param ConditionService $conditionService
+     * @param UserRepository $userRepository
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param ConstHelper $constHelper
      * @param StringsHelper $stringsHelper
@@ -89,13 +94,14 @@ class ValidationService
     (
         NewtonApiClient $newtonApiClient,
         MathService $mathService, ConditionService $conditionService,
-        TemplateJsonDataFunctionality $templateJsonDataFunctionality,
+        UserRepository $userRepository, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
         ConstHelper $constHelper, StringsHelper $stringsHelper, LatexHelper $latexHelper
     )
     {
         $this->newtonApiClient = $newtonApiClient;
         $this->mathService = $mathService;
         $this->conditionService = $conditionService;
+        $this->userRepository = $userRepository;
         $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
         $this->constHelper = $constHelper;
         $this->stringsHelper = $stringsHelper;
@@ -103,282 +109,221 @@ class ValidationService
 
         $this->validationMapping = [
 
-            'username' => static function($filledVal){
-                if(empty($filledVal)) {
+            'notEmpty' => static function ($data) {
+                if (empty($data)) {
                     return 0;
                 }
                 return -1;
             },
 
-            'password' => static function($filledVal){
-                if(empty($filledVal)) {
+            'arrayNotEmpty' => static function ($data) {
+                if (count($data) < 1) {
                     return 0;
                 }
                 return -1;
             },
 
-            //Validate password in administration User section
-            'password_confirm' => static function(ArrayHash $filledVal){
-                if(empty($filledVal->password) || empty($filledVal->password_confirm)) {
+            'stringNotEmpty' => static function ($data) {
+                if (empty($data)) {
                     return 0;
                 }
-                if(strcmp($filledVal->password, $filledVal->password_confirm)) {
-                    return 0;
-                }
-                if(strlen($filledVal->password) < 8) {
+                if (strlen($data) > 64) {
                     return 1;
                 }
                 return -1;
             },
 
-            'groups' => static function(ArrayHash $filledVal){
-                if(count($filledVal) < 1){
+            'isTrue' => static function ($data) {
+                if (!$data) {
                     return 0;
                 }
                 return -1;
             },
 
-            'label' => static function($filledVal){
-                if(empty($filledVal)){
+            'intNotNegative' => static function ($data) {
+                if (empty($data)) {
                     return 0;
                 }
-                if(strlen($filledVal) > 64){
+                if (!is_numeric($data)) {
+                    return 1;
+                }
+                if ($data < 0) {
+                    return 2;
+                }
+                return -1;
+            },
+
+            'username' => function ($data) {
+                if (empty($data->username)) {
+                    return 0;
+                }
+                if (strlen($data->username) > 64) {
+                    return 1;
+                }
+                if ($data->edit) {
+                    $user = $this->userRepository->findOneBy(['username' => $data->username]);
+                    if ($user->getId() !== (int)$data->userId) {
+                        return 2;
+                    }
+                } else if ($this->userRepository->findOneBy(['username' => $data->username])) {
+                    return 2;
+                }
+                return -1;
+            },
+
+            // Validate password in administration User section
+            'passwordConfirm' => static function (ArrayHash $data) {
+                if (empty($data->password) || empty($data->passwordConfirm)) {
+                    return 0;
+                }
+                if (strcmp($data->password, $data->passwordConfirm)) {
+                    return 0;
+                }
+                if (strlen($data->password) < 8) {
                     return 1;
                 }
                 return -1;
             },
 
-            'logo' => static function($filledVal){
-                if(empty($filledVal)){
+            'schoolYear' => static function ($filledVal) {
+                if (empty($filledVal)) {
                     return 0;
                 }
-                return -1;
-            },
-
-            'school_year' => static function($filledVal){
-                if(empty($filledVal)){
-                    return 0;
-                }
-                if(!Strings::match($filledVal, '~[0-9]{4}(\/|\-)([0-9]{4}|[0-9]{2})~')) {
+                if (!Strings::match($filledVal, '~[0-9]{4}(\/|\-)([0-9]{4}|[0-9]{2})~')) {
                     return 1;
                 }
                 return -1;
             },
 
-            'test_number' => static function($filledVal){
-                if(empty($filledVal)){
-                    return 0;
-                }
-                if($filledVal < 0){
-                    return 1;
-                }
-                return -1;
-            },
-
-            'test_term' => static function($filledVal){
-                if(empty($filledVal)) return 0;
-                return -1;
-            },
-
-            'success_rate' => static function($filledVAl){
-                if(!empty($filledVAl)){
+            'range0to1' => static function ($filledVAl) {
+                if (!empty($filledVAl)) {
                     $filledVAl = Strings::replace($filledVAl, '~,~', '.');
-                    if(!is_numeric($filledVAl)){
+                    if (!is_numeric($filledVAl)) {
                         return 0;
                     }
-                    if($filledVAl < 0 || $filledVAl > 1) {
+                    if ($filledVAl < 0 || $filledVAl > 1) {
                         return 1;
                     }
                 }
                 return -1;
             },
 
-            'body' => function($filledVal){
-                if(isset($filledVal->variable)) {
-                    return $this->validateBody($filledVal->body, $filledVal->bodyType, $filledVal->variable);
+            'body' => function ($data) {
+                if (isset($data->variable)) {
+                    return $this->validateBody($data->body, $data->bodyType, $data->variable);
                 }
-                return $this->validateBody($filledVal->body, $filledVal->bodyType);
+                return $this->validateBody($data->body, $data->bodyType);
             },
 
-            'variable' => static function($filledVal){
-                if(empty($filledVal)){
+            'variable' => static function ($filledVal) {
+                if (empty($filledVal)) {
                     return 0;
                 }
                 $matches = Strings::match($filledVal, '~^[a-z]$~');
-                if(strlen($filledVal) !== 1 || !$matches || count($matches) !== 1) {
+                if (strlen($filledVal) !== 1 || !$matches || count($matches) !== 1) {
                     return 1;
                 }
                 return -1;
             },
 
-            'firstN' => static function($filledVal){
-                if(empty($filledVal)) {
+            'notEmptyPositive' => static function ($filledVal) {
+                if (empty($filledVal)) {
                     return 0;
                 }
-                if($filledVal <= 0) {
+                if ($filledVal <= 0) {
                     return 1;
                 }
                 return -1;
             },
 
-            'category' => static function($filledVal){
-                if(empty($filledVal)){
+            'type_' . $this->constHelper::LINEAR_EQ => function ($filledVal) {
+                if (empty($filledVal)) {
                     return 0;
+                }
+                if (!$this->validateEquation($filledVal->standardized, $filledVal->variable, $this->constHelper::LINEAR_EQ)) {
+                    return 1;
                 }
                 return -1;
             },
 
-            'subCategory' => static function($filledVal){
-                if(empty($filledVal)){
+            'type_' . $this->constHelper::QUADRATIC_EQ => function ($filledVal) {
+                if (empty($filledVal)) {
                     return 0;
+                }
+                if (!$this->validateEquation($filledVal->standardized, $filledVal->variable, $this->constHelper::QUADRATIC_EQ)) {
+                    return 1;
                 }
                 return -1;
             },
 
-            'difficulty' => static function($filledVal){
-                if(empty($filledVal)){
+            'type_' . $this->constHelper::ARITHMETIC_SEQ => function ($filledVal) {
+                if (empty($filledVal)) {
                     return 0;
+                }
+                if (!$this->validateSequence($filledVal->body, $filledVal->standardized, $filledVal->variable, $this->constHelper::ARITHMETIC_SEQ)) {
+                    return 1;
                 }
                 return -1;
             },
 
-            'problemFinalType' => static function($filledVal){
-
-                if(empty($filledVal)){
+            'type_' . $this->constHelper::GEOMETRIC_SEQ => function ($filledVal) {
+                if (empty($filledVal)) {
                     return 0;
                 }
-
-                return -1;
-
-            },
-
-            'type' => [
-
-                'type_' . $this->constHelper::LINEAR_EQ => function($filledVal){
-                    if(empty($filledVal)){
-                        return 0;
-                    }
-                    if(!$this->validateEquation($filledVal->standardized, $filledVal->variable, $this->constHelper::LINEAR_EQ)){
-                        return 1;
-                    }
-                    return -1;
-                },
-
-                'type_' . $this->constHelper::QUADRATIC_EQ => function($filledVal){
-                    if(empty($filledVal)){
-                        return 0;
-                    }
-                    if(!$this->validateEquation($filledVal->standardized, $filledVal->variable, $this->constHelper::QUADRATIC_EQ)){
-                        return 1;
-                    }
-                    return -1;
-                },
-
-                'type_' . $this->constHelper::ARITHMETIC_SEQ => function($filledVal){
-                    if(empty($filledVal)){
-                        return 0;
-                    }
-                    if(!$this->validateSequence($filledVal->body, $filledVal->standardized, $filledVal->variable, $this->constHelper::ARITHMETIC_SEQ)){
-                        return 1;
-                    }
-                    return -1;
-                },
-
-                'type_' . $this->constHelper::GEOMETRIC_SEQ => function($filledVal){
-                    if(empty($filledVal)){
-                        return 0;
-                    }
-                    if(!$this->validateSequence($filledVal->body, $filledVal->standardized, $filledVal->variable, $this->constHelper::GEOMETRIC_SEQ)){
-                        return 1;
-                    }
-                    return -1;
-                }
-
-            ],
-
-            'condition' => [
-
-                'condition_' . $this->constHelper::RESULT => function(ArrayHash $filledVal, $problemId = null){
-                    $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal->body);
-
-                    // Maximal number of parameters exceeded
-                    if($parametersInfo->count > $this->constHelper::PARAMETERS_MAX) {
-                        return 2;
-                    }
-
-                    // Maximal parameters complexity exceeded
-                    if($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX) {
-                        return 3;
-                    }
-
-                    if(!$this->validateResultCond($filledVal->accessor, $filledVal->standardized, $filledVal->variable, $parametersInfo, $problemId)) {
-                        return 4;
-                    }
-
-                    return -1;
-                },
-
-                'condition_' . $this->constHelper::DISCRIMINANT => function(ArrayHash $filledVal, $problemId = null){
-
-                    bdump('VALIDATE DISCRIMINANT CONDITION');
-                    bdump($filledVal);
-
-                    $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal->body);
-
-                    //Maximal number of parameters exceeded
-                    if($parametersInfo->count > $this->constHelper::PARAMETERS_MAX) {
-                        return 2;
-                    }
-
-                    //Maximal parameters complexity exceeded
-                    if($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX) {
-                        return 3;
-                    }
-
-                    if(!$this->validateDiscriminantCond(
-                        $filledVal->accessor, $filledVal->standardized, $filledVal->variable, $parametersInfo, $problemId)) {
-                        return 4;
-                    }
-
-                    return -1;
-                }
-
-            ],
-
-            'conditions_valid' => static function(int $filledVal){
-                if(!$filledVal) {
-                    return 0;
+                if (!$this->validateSequence($filledVal->body, $filledVal->standardized, $filledVal->variable, $this->constHelper::GEOMETRIC_SEQ)) {
+                    return 1;
                 }
                 return -1;
             },
 
-            'role' => static function($filledVal){
-                if(!$filledVal){
-                    return 0;
+            'condition_' . $this->constHelper::RESULT => function (ArrayHash $filledVal, $problemId = null) {
+                $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal->body);
+                // Maximal number of parameters exceeded
+                if ($parametersInfo->count > $this->constHelper::PARAMETERS_MAX) {
+                    return 2;
+                }
+                // Maximal parameters complexity exceeded
+                if ($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX) {
+                    return 3;
+                }
+                if (!$this->validateResultCond($filledVal->accessor, $filledVal->standardized, $filledVal->variable, $parametersInfo, $problemId)) {
+                    return 4;
                 }
                 return -1;
             },
 
-            'superGroup' => static function($filledVal){
-                if(!$filledVal){
-                    return 0;
+            'condition_' . $this->constHelper::DISCRIMINANT => function (ArrayHash $filledVal, $problemId = null) {
+                bdump('VALIDATE DISCRIMINANT CONDITION');
+                $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal->body);
+                // Maximal number of parameters exceeded
+                if ($parametersInfo->count > $this->constHelper::PARAMETERS_MAX) {
+                    return 2;
+                }
+                // Maximal parameters complexity exceeded
+                if ($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX) {
+                    return 3;
+                }
+                if (!$this->validateDiscriminantCond(
+                    $filledVal->accessor, $filledVal->standardized, $filledVal->variable, $parametersInfo, $problemId)) {
+                    return 4;
                 }
                 return -1;
-            }
-
+            },
         ];
 
         $this->validationMessages = [
 
             'username' => [
-                0 => 'Zadejte uživatelské jméno.'
+                0 => 'Zadejte uživatelské jméno.',
+                1 => 'Uživatelské jméno nesmí být delší než 64 znaků.',
+                2 => 'Zadané uživatelské jméno již existuje.'
             ],
 
             'password' => [
                 0 => 'Zadejte heslo.'
             ],
 
-            'password_confirm' => [
+            'passwordConfirm' => [
                 0 => 'Obě hesla musí být vyplněna a shodovat se.',
                 1 => 'Heslo musí mít délku alespoň 8 znaků.'
             ],
@@ -397,17 +342,18 @@ class ValidationService
                 0 => 'Zvolte prosím logo.'
             ],
 
-            'school_year' => [
+            'schoolYear' => [
                 0 => 'Školní rok musí bý vyplněn.',
                 1 => 'Školní roku musí být ve formátu rrrr/rr(rr) nebo rrrr-rr(rr).'
             ],
 
-            'test_number' => [
+            'testNumber' => [
                 0 => 'Číslo testu musí být vyplněno.',
-                1 => 'Číslo testu nesmí být záporné.'
+                1 => 'Číslo testu musí být celé číslo.',
+                2 => 'Číslo testu nesmí být záporné.'
             ],
 
-            'test_term' => [
+            'testTerm' => [
                 0 => 'Období testu musí být vyplněno.'
             ],
 
@@ -434,71 +380,55 @@ class ValidationService
             ],
 
             'category' => [
-
                 0 => 'Zvolte prosím kategorii.'
-
             ],
 
             'subCategory' => [
-
                 0 => 'Zvolte prosím podkategorii.'
-
             ],
 
             'difficulty' => [
-
                 0 => 'Zvolte prosím obtížnost.'
-
             ],
 
-            'problemFinalType' => [
-
+            'problemType' => [
                 0 => 'Zvolte prosím typ úlohy.'
-
             ],
 
-            'type' => [
-
-                'type_' . $this->constHelper::LINEAR_EQ => [
-                    0 => 'Zvolte prosím typ úlohy.',
-                    1 => 'Zadaná úloha není lineární rovnicí.'
-                ],
-
-                'type_' . $this->constHelper::QUADRATIC_EQ => [
-                    0 => 'Zvolte prosím typ úlohy.',
-                    1 => 'Zadaná úloha není kvadratickou rovnicí.'
-                ],
-
-                'type_' . $this->constHelper::ARITHMETIC_SEQ => [
-                    0 => 'Zvolte prosím typ úlohy.',
-                    1 => 'Zadaná úloha není aritmetickou posloupností.'
-                ],
-
-                'type_' . $this->constHelper::GEOMETRIC_SEQ => [
-                    0 => 'Zvolte prosím typ úlohy.',
-                    1 => 'Zadaná úloha není geometrickou posloupností.'
-                ]
-
+            'type_' . $this->constHelper::LINEAR_EQ => [
+                0 => 'Zvolte prosím typ úlohy.',
+                1 => 'Zadaná úloha není lineární rovnicí.'
             ],
 
-            'condition' => [
+            'type_' . $this->constHelper::QUADRATIC_EQ => [
+                0 => 'Zvolte prosím typ úlohy.',
+                1 => 'Zadaná úloha není kvadratickou rovnicí.'
+            ],
 
-                'condition_' . $this->constHelper::RESULT => [
-                    0 => 'Struktura musí být vyplněna',
-                    1 => 'Chybný formát vstupního LaTeXu',
-                    2 => 'Překročen povolený počet parametrů. (maximálně ' . $this->constHelper::PARAMETERS_MAX . ')',
-                    3 => 'Překročena povolená složitost parametrů. (maximálně ' . $this->constHelper::COMPLEXITY_MAX . ')',
-                    4 => 'Podmínka není splnitelná.'
-                ],
+            'type_' . $this->constHelper::ARITHMETIC_SEQ => [
+                0 => 'Zvolte prosím typ úlohy.',
+                1 => 'Zadaná úloha není aritmetickou posloupností.'
+            ],
 
-                'condition_' . $this->constHelper::DISCRIMINANT => [
-                    0 => 'Struktura úlohy musí být vyplněna.',
-                    1 => 'Chybný formát vstupního LaTeXu.',
-                    2 => 'Překročen povolený počet parametrů. (maximálně ' . $this->constHelper::PARAMETERS_MAX . ')',
-                    3 => 'Překročena povolená složitost parametrů. (maximálně ' . $this->constHelper::COMPLEXITY_MAX . ')',
-                    4 => 'Podmínka není splnitelná.'
-                ],
+            'type_' . $this->constHelper::GEOMETRIC_SEQ => [
+                0 => 'Zvolte prosím typ úlohy.',
+                1 => 'Zadaná úloha není geometrickou posloupností.'
+            ],
 
+            'condition_' . $this->constHelper::RESULT => [
+                0 => 'Struktura musí být vyplněna',
+                1 => 'Chybný formát vstupního LaTeXu',
+                2 => 'Překročen povolený počet parametrů. (maximálně ' . $this->constHelper::PARAMETERS_MAX . ')',
+                3 => 'Překročena povolená složitost parametrů. (maximálně ' . $this->constHelper::COMPLEXITY_MAX . ')',
+                4 => 'Podmínka není splnitelná.'
+            ],
+
+            'condition_' . $this->constHelper::DISCRIMINANT => [
+                0 => 'Struktura úlohy musí být vyplněna.',
+                1 => 'Chybný formát vstupního LaTeXu.',
+                2 => 'Překročen povolený počet parametrů. (maximálně ' . $this->constHelper::PARAMETERS_MAX . ')',
+                3 => 'Překročena povolená složitost parametrů. (maximálně ' . $this->constHelper::COMPLEXITY_MAX . ')',
+                4 => 'Podmínka není splnitelná.'
             ],
 
             'conditions_valid' => [
@@ -527,15 +457,15 @@ class ValidationService
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    private function validateBody(string $body, int $type,  string $variable = null): int
+    private function validateBody(string $body, int $type, string $variable = null): int
     {
-        if(empty($body)){
+        if (empty($body)) {
             return 0;
         }
 
-        if($type !== $this->constHelper::BODY_FINAL){
+        if ($type !== $this->constHelper::BODY_FINAL) {
 
-            if(!$this->latexHelper::latexWrapped($body)){
+            if (!$this->latexHelper::latexWrapped($body)) {
                 return 1;
             }
 
@@ -546,15 +476,15 @@ class ValidationService
 
             $split = $this->stringsHelper::splitByParameters($parsed);
 
-            if(empty($variable) || !$this->stringsHelper::containsVariable($split, $variable)){
+            if (empty($variable) || !$this->stringsHelper::containsVariable($split, $variable)) {
                 return 2;
             }
 
             $parametrized = $this->stringsHelper::getParametrized($parsed);
 
-            try{
+            try {
                 $this->newtonApiClient->simplify($parametrized->expression);
-            } catch (NewtonApiSyntaxException $e){
+            } catch (NewtonApiSyntaxException $e) {
                 return 3;
             }
 
@@ -571,19 +501,18 @@ class ValidationService
     {
         $split = $this->stringsHelper::splitByParameters($expression, true);
 
-        if(count($split) <= 1){
+        if (count($split) <= 1) {
             throw new InvalidParameterException('Zadaná šablona neobsahuje parametr.');
         }
 
-        foreach($split as $part){
-            if($part !== '' && Strings::startsWith($part, '<par')){
-                if(!Strings::match($part, '~<par min="[0-9]+" max="[0-9]+"/>~')){
+        foreach ($split as $part) {
+            if ($part !== '' && Strings::startsWith($part, '<par')) {
+                if (!Strings::match($part, '~<par min="[0-9]+" max="[0-9]+"/>~')) {
                     throw new InvalidParameterException('Zadaná šablona obsahuje nevalidní parametr.');
-                }
-                else{
+                } else {
                     $min = $this->stringsHelper::extractParAttr($part, 'min');
                     $max = $this->stringsHelper::extractParAttr($part, 'max');
-                    if($min > $max){
+                    if ($min > $max) {
                         throw new InvalidParameterException('Neplatný interval parametru.');
                     }
                 }
@@ -600,7 +529,7 @@ class ValidationService
      */
     public function validateEquation(string $standardized, string $variable, int $eqType): bool
     {
-        switch($eqType){
+        switch ($eqType) {
             case $this->constHelper::LINEAR_EQ:
                 return $this->validateLinearEquation($standardized, $variable);
             case $this->constHelper::QUADRATIC_EQ:
@@ -617,13 +546,12 @@ class ValidationService
     public function validateLinearEquation(string $standardized, string $variable): bool
     {
         bdump('VALIDATE LINEAR EQUATION');
-        bdump($standardized);
 
         // Remove all the spaces
         $standardized = $this->stringsHelper::removeWhiteSpaces($standardized);
 
         // Trivial fail case
-        if(Strings::match($standardized, '~' . $variable . '\^' . '~')){
+        if (Strings::match($standardized, '~' . $variable . '\^' . '~')) {
             return false;
         }
 
@@ -645,7 +573,6 @@ class ValidationService
 
         // Remove all the spaces
         $standardized = $this->stringsHelper::removeWhiteSpaces($standardized);
-        bdump($standardized);
 
         // Match string against the quadratic expression regexp
         $matches = Strings::match($standardized, '~' . $this->stringsHelper::getQuadraticEquationRegExp($variable) . '~');
@@ -668,21 +595,20 @@ class ValidationService
     public function validateSequence(string $expression, string $standardized, string $variable, int $seqType): bool
     {
         bdump('VALIDATE SEQUENCE');
-        bdump($standardized);
 
-        if(!$this->stringsHelper::isSequence($this->latexHelper::parseLatex($expression), $variable)){
+        if (!$this->stringsHelper::isSequence($this->latexHelper::parseLatex($expression), $variable)) {
             return false;
         }
 
         $params = [];
         $parametersInfo = $this->stringsHelper::extractParametersInfo($expression);
-        for($i = 0; $i < $parametersInfo->count; $i++){
-            $params['p' . $i] = ($i+2);
+        for ($i = 0; $i < $parametersInfo->count; $i++) {
+            $params['p' . $i] = ($i + 2);
         }
 
         $final = $this->stringsHelper::passValues($standardized, $params);
 
-        switch ($seqType){
+        switch ($seqType) {
             case $this->constHelper::ARITHMETIC_SEQ:
                 return $this->validateArithmeticSequence($final, $variable);
             case $this->constHelper::GEOMETRIC_SEQ:
@@ -704,24 +630,17 @@ class ValidationService
     public function validateArithmeticSequence(string $final, string $variable): bool
     {
         bdump('VALIDATE ARITHMETIC SEQUENCE');
-        bdump($final);
         $final = $this->newtonApiClient->simplify($final);
         $final = $this->stringsHelper::nxpFormat($final, $variable);
 
-        $a1 = $this->stringsHelper::passValues($final, [ $variable => 1 ]);
-        $a2 = $this->stringsHelper::passValues($final, [ $variable => 2 ]);
-        $a3 = $this->stringsHelper::passValues($final, [ $variable => 3 ]);
-
-        bdump($a1);
-        bdump($a2);
-        bdump($a3);
+        $a1 = $this->stringsHelper::passValues($final, [$variable => 1]);
+        $a2 = $this->stringsHelper::passValues($final, [$variable => 2]);
+        $a3 = $this->stringsHelper::passValues($final, [$variable => 3]);
 
         $diff1 = $this->mathService->evaluateExpression('(' . $a2 . ')' . ' - ' . '(' . $a1 . ')');
-        bdump($diff1);
         $diff2 = $this->mathService->evaluateExpression('(' . $a3 . ')' . ' - ' . '(' . $a2 . ')');
-        bdump($diff2);
 
-        return round($diff1, 2) === round($diff2,2);
+        return round($diff1, 2) === round($diff2, 2);
     }
 
     /**
@@ -735,13 +654,12 @@ class ValidationService
      */
     public function validateGeometricSequence(string $expression, string $variable): bool
     {
-        bdump('Validate geometric sequence');
         $expression = $this->newtonApiClient->simplify($expression);
         $expression = $this->stringsHelper::nxpFormat($expression, $variable);
 
-        $a1 = $this->stringsHelper::passValues($expression, [ $variable => 1 ]);
-        $a2 = $this->stringsHelper::passValues($expression, [ $variable => 2 ]);
-        $a3 = $this->stringsHelper::passValues($expression, [ $variable => 3 ]);
+        $a1 = $this->stringsHelper::passValues($expression, [$variable => 1]);
+        $a2 = $this->stringsHelper::passValues($expression, [$variable => 2]);
+        $a3 = $this->stringsHelper::passValues($expression, [$variable => 3]);
 
         $quot1 = $this->mathService->evaluateExpression('(' . $a2 . ')' . '/' . '(' . $a1 . ')');
         $quot2 = $this->mathService->evaluateExpression('(' . $a3 . ')' . '/' . '(' . $a2 . ')');
@@ -766,7 +684,7 @@ class ValidationService
     {
         $variableExp = $this->stringsHelper::getLinearVariableExpresion($standardized, $variable);
 
-        try{
+        try {
             $matches = $this->conditionService->findConditionsMatches([
                 $this->constHelper::RESULT => [
                     $accessor => [
@@ -775,11 +693,11 @@ class ValidationService
                     ]
                 ]
             ]);
-        } catch (MathExecutorException $e){
+        } catch (MathExecutorException $e) {
             throw new ProblemTemplateFormatException('Zadán chybný formát šablony.');
         }
 
-        if(!$matches){
+        if (!$matches) {
             return false;
         }
 
@@ -809,10 +727,7 @@ class ValidationService
         int $accessor, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null
     ): bool
     {
-        bdump('VALIDATE DISCRIMINANT COND');
-        bdump($standardized);
         $discriminantExp = $this->mathService->getDiscriminantExpression($standardized, $variable);
-        bdump($discriminantExp);
 
         $matches = $this->conditionService->findConditionsMatches([
             $this->constHelper::DISCRIMINANT => [
@@ -823,7 +738,7 @@ class ValidationService
             ]
         ]);
 
-        if(!$matches){
+        if (!$matches) {
             return false;
         }
 
@@ -836,71 +751,80 @@ class ValidationService
     }
 
     /**
+     * @param Form $form
      * @param $fields
-     * @return array
+     * @return Form
      */
-    public function validate($fields): array
+    public function validate(Form $form, $fields): Form
     {
-        $validationErrors = [];
+        foreach ((array)$fields as $field => $item) {
 
-        foreach((array)$fields as $key1 => $value1){
+            $validationRule = $item->validationRule;
+            $data = $item->data;
 
-            if(!array_key_exists($key1, $this->validationMapping)){
+            // Check if the validator supports entered validation
+            if (!array_key_exists($validationRule, $this->validationMapping)) {
                 throw new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
             }
 
-            if(is_array($value1)){
-                foreach ($value1 as $key2 => $value2){
-                    if(!array_key_exists($key2, $this->validationMapping[$key1])){
-                        throw new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
+            if (($validationRes = $this->validationMapping[$validationRule]($data)) !== -1) {
+                if (isset($this->validationMessages[$field][$validationRes])) {
+                    if (isset($item->display)) {
+                        $form[$item->display]->addError($this->validationMessages[$field][$validationRes]);
+                    } else {
+                        $form[$field]->addError($this->validationMessages[$field][$validationRes]);
                     }
-                    if( ($validationRes = $this->validationMapping[$key1][$key2]($value2)) !== -1 ){
-                        $validationErrors[$key1][] = $this->validationMessages[$key1][$key2][$validationRes];
+                } else {
+                    if (isset($item->display)) {
+                        $form[$item->display]->addError($this->validationMessages[$validationRule][$validationRes]);
+                    } else {
+                        $form[$field]->addError($this->validationMessages[$validationRule][$validationRes]);
                     }
                 }
             }
-            else if( ($validationRes = $this->validationMapping[$key1]($value1)) !== -1 ){
-                $validationErrors[$key1][] = $this->validationMessages[$key1][$validationRes];
-            }
         }
 
-        return $validationErrors;
+        return $form;
     }
 
     /**
+     * @param Form $form
      * @param $fields
      * @param $problemId
-     * @return array
+     * @return Form
      */
-    public function conditionValidate($fields, $problemId = null): array
+    public function conditionValidate(Form $form, $fields, $problemId = null): Form
     {
         // Based on the problemId presence, it will be decided it to update or to create
+        foreach ((array)$fields as $field => $item) {
 
-        $validationErrors = [];
+            $validationRule = $item->validationRule;
+            $data = $item->data;
 
-        foreach((array)$fields as $key1 => $value1){
-
-            if(!array_key_exists($key1, $this->validationMapping)){
+            // Check if the validator supports entered validation
+            if (!array_key_exists($validationRule, $this->validationMapping)) {
                 throw new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
             }
 
-            if(is_array($value1)){
-                foreach ($value1 as $key2 => $value2){
-                    if(!array_key_exists($key2, $this->validationMapping[$key1])){
-                        throw new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
+            if (($validationRes = $this->validationMapping[$validationRule]($data, $problemId)) !== -1) { // Zde se liší!
+                if (isset($this->validationMessages[$field][$validationRes])) {
+                    if (isset($item->display)) {
+                        $form[$item->display]->addError($this->validationMessages[$field][$validationRes]);
+                    } else {
+                        $form[$field]->addError($this->validationMessages[$field][$validationRes]);
                     }
-                    if( ($validationRes = $this->validationMapping[$key1][$key2]($value2, $problemId)) !== -1){ // Zde se liší!
-                        $validationErrors[$key1][] = $this->validationMessages[$key1][$key2][$validationRes];
+                } else {
+                    if (isset($item->display)) {
+                        $form[$item->display]->addError($this->validationMessages[$validationRule][$validationRes]);
+                    } else {
+                        $form[$field]->addError($this->validationMessages[$validationRule][$validationRes]);
                     }
                 }
-            }
-            else if( ($validationRes = $this->validationMapping[$key1]($value1, $problemId)) !== -1 ){ // Zde se liší!
-                    $validationErrors[$key1][] = $this->validationMessages[$key1][$validationRes];
             }
 
         }
 
-        return $validationErrors;
+        return $form;
     }
 
 }

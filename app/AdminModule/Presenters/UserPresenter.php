@@ -21,7 +21,7 @@ use App\Model\Functionality\UserFunctionality;
 use App\Model\Repository\UserRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\ComponentModel\IComponent;
 use Ublaboo\DataGrid\DataGrid;
 
@@ -42,9 +42,9 @@ class UserPresenter extends AdminPresenter
     protected $userFunctionality;
 
     /**
-     * @var ValidationService
+     * @var Validator
      */
-    protected $validationService;
+    protected $validator;
 
     /**
      * @var UserGridFactory
@@ -65,7 +65,7 @@ class UserPresenter extends AdminPresenter
      * @param FlashesTranslator $flashesTranslator
      * @param UserRepository $userRepository
      * @param UserFunctionality $userFunctionality
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param UserGridFactory $userGridFactory
      * @param UserFormFactory $userFormFactory
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
@@ -75,7 +75,7 @@ class UserPresenter extends AdminPresenter
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         UserRepository $userRepository, UserFunctionality $userFunctionality,
-        ValidationService $validationService,
+        Validator $validator,
         UserGridFactory $userGridFactory, UserFormFactory $userFormFactory,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
@@ -83,7 +83,7 @@ class UserPresenter extends AdminPresenter
         parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->userRepository = $userRepository;
         $this->userFunctionality = $userFunctionality;
-        $this->validationService = $validationService;
+        $this->validator = $validator;
         $this->userGridFactory = $userGridFactory;
         $this->userFormFactory = $userFormFactory;
     }
@@ -92,12 +92,12 @@ class UserPresenter extends AdminPresenter
      * @param int $id
      * @throws \Nette\Application\AbortException
      */
-    public function actionEdit(int $id)
+    public function actionEdit(int $id): void
     {
         $record = $this->userRepository->find($id);
-        if($this->user->isInRole("teacher") && !$this->authorizator->isUserAllowed($this->user->identity, $record)){
-            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
-            $this->redirect("Homepage:default");
+        if($this->user->isInRole('teacher') && !$this->authorizator->isUserAllowed($this->user->identity, $record)){
+            $this->flashMessage('Nedostatečná přístupová práva.', 'danger');
+            $this->redirect('Homepage:default');
         }
         $form = $this['userEditForm']['form'];
         if(!$form->isSubmitted()){
@@ -114,10 +114,10 @@ class UserPresenter extends AdminPresenter
     public function setDefaults(IComponent $form, User $user): void
     {
         $form['id']->setDefaultValue($user->getId());
-        $form['id_hidden']->setDefaultValue($user->getId());
+        $form['idHidden']->setDefaultValue($user->getId());
         $form['username']->setDefaultValue($user->getUsername());
-        $form['first_name']->setDefaultValue($user->getFirstName());
-        $form['last_name']->setDefaultValue($user->getLastName());
+        $form['firstName']->setDefaultValue($user->getFirstName());
+        $form['lastName']->setDefaultValue($user->getLastName());
         $form['role']->setDefaultValue($user->getRole()->getId());
         $form['groups']->setDefaultValue($user->getGroupsId());
     }

@@ -12,8 +12,11 @@
                 {snippet subCategoryErrorSnippet}
                     {var $form = $control['form']}
                     <div n:if="$form->hasErrors()" class="mt-2">
-                        <p n:foreach="$form['subCategory']->errors as $error" class="alert alert-danger border-0">
+                        <p n:foreach="$form['subCategory']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                             {$error}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </p>
                     </div>
                 {/snippet}
@@ -29,8 +32,11 @@
                 {snippet bodyErrorSnippet}
                     {var $form = $control['form']}
                     <div n:if="$form->hasErrors()" class="mt-2">
-                        <p n:foreach="$form['body']->errors as $error" class="alert alert-danger border-0">
+                        <p n:foreach="$form['body']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                             {$error}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </p>
                     </div>
                 {/snippet}
@@ -41,8 +47,11 @@
                 {snippet variableErrorSnippet}
                     {var $form = $control['form']}
                     <div n:if="$form->hasErrors()" class="mt-2">
-                        <p n:foreach="$form['variable']->errors as $error" class="alert alert-danger border-0">
+                        <p n:foreach="$form['variable']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                             {$error}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </p>
                     </div>
                 {/snippet}
@@ -57,8 +66,11 @@
                 {snippet difficultyErrorSnippet}
                     {var $form = $control['form']}
                     <div n:if="$form->hasErrors()" class="mt-2">
-                        <p n:foreach="$form['difficulty']->errors as $error" class="alert alert-danger border-0">
+                        <p n:foreach="$form['difficulty']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                             {$error}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </p>
                     </div>
                 {/snippet}
@@ -89,8 +101,11 @@
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
                     {for $i = 1; $i < 2; $i++}
-                        <p n:foreach="$form['condition_' . $i]->errors as $error" class="alert alert-danger border-0">
+                        <p n:foreach="$form['condition_' . $i]->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                             {$error}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </p>
                     {/for}
                 </div>
@@ -107,8 +122,11 @@
             {snippet submitErrorSnippet}
                 {var $form = $control['form']}
                 <div n:if="$form->hasErrors()" class="mt-2">
-                    <p n:foreach="$form['submit']->errors as $error" class="alert alert-danger border-0">
+                    <p n:foreach="$form['submit']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                         {$error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </p>
                 </div>
             {/snippet}

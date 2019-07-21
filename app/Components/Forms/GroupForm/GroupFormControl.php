@@ -9,10 +9,11 @@
 namespace App\Components\Forms\GroupForm;
 
 
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\GroupFunctionality;
 use App\Model\Repository\SuperGroupRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -30,19 +31,19 @@ class GroupFormControl extends EntityFormControl
 
     /**
      * GroupFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupRepository $superGroupRepository
      * @param bool $edit
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         GroupFunctionality $groupFunctionality, SuperGroupRepository $superGroupRepository,
         bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit);
+        parent::__construct($validator, $edit);
         $this->functionality = $groupFunctionality;
         $this->superGroupRepository = $superGroupRepository;
     }
@@ -74,22 +75,10 @@ class GroupFormControl extends EntityFormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->values;
-
-        $validateFields['label'] = $values->label;
-        $validateFields['superGroup'] = $values->superGroup;
-
-        $validationErrors = $this->validationService->validate($validateFields);
-
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error){
-                    $form[$veKey]->addError($error);
-                }
-            }
-        }
-
-        $this->redrawControl('labelErrorSnippet');
-        $this->redrawControl('superGroupErrorSnippet');
+        $validateFields['label'] = new ValidatorArgument($values->label, 'stringNotEmpty');
+        $validateFields['superGroup'] = new ValidatorArgument($values->superGroup, 'notEmpty');
+        $this->validator->validate($form, $validateFields);
+        $this->redrawErrors();
     }
 
     /**
@@ -118,7 +107,7 @@ class GroupFormControl extends EntityFormControl
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
-            $this->functionality->update($values->id_hidden, ArrayHash::from([
+            $this->functionality->update($values->idHidden, ArrayHash::from([
                 'label' => $values->label,
                 'superGroup' => $values->superGroup
             ]));

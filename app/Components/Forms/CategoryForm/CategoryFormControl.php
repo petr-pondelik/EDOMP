@@ -8,9 +8,10 @@
 
 namespace App\Components\Forms\CategoryForm;
 
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\CategoryFunctionality;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -23,18 +24,18 @@ class CategoryFormControl extends EntityFormControl
 {
     /**
      * CategoryFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param CategoryFunctionality $categoryFunctionality
      * @param bool $edit
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         CategoryFunctionality $categoryFunctionality,
         bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit);
+        parent::__construct($validator, $edit);
         $this->functionality = $categoryFunctionality;
     }
 
@@ -56,15 +57,9 @@ class CategoryFormControl extends EntityFormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->values;
-        $validateFields["label"] = $values->label;
-        $validationErrors = $this->validationService->validate($validateFields);
-        if ($validationErrors) {
-            foreach ($validationErrors as $veKey => $errorGroup) {
-                foreach ($errorGroup as $egKey => $error)
-                    $form[$veKey]->addError($error);
-            }
-        }
-        $this->redrawControl("labelErrorSnippet");
+        $validateFields['label'] = new ValidatorArgument($values->label, 'stringNotEmpty');
+        $this->validator->validate($form, $validateFields);
+        $this->redrawErrors();
     }
 
     /**
@@ -91,7 +86,7 @@ class CategoryFormControl extends EntityFormControl
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
         try {
-            $this->functionality->update($values->id_hidden, $values);
+            $this->functionality->update($values->idHidden, $values);
             $this->onSuccess();
         } catch (\Exception $e) {
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.

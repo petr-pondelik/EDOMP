@@ -9,10 +9,11 @@
 namespace App\Components\Forms\LogoForm;
 
 
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\LogoFunctionality;
 use App\Services\FileService;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -30,18 +31,18 @@ class LogoFormControl extends EntityFormControl
 
     /**
      * LogoFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param LogoFunctionality $logoFunctionality
      * @param FileService $fileService
      * @param bool $edit
      */
     public function __construct
     (
-        ValidationService $validationService, LogoFunctionality $logoFunctionality, FileService $fileService,
+        Validator $validator, LogoFunctionality $logoFunctionality, FileService $fileService,
         bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit);
+        parent::__construct($validator, $edit);
         $this->functionality = $logoFunctionality;
         $this->fileService = $fileService;
     }
@@ -77,30 +78,28 @@ class LogoFormControl extends EntityFormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->values;
-
-        $validateFields['label'] = $values->label;
-
+        $validateFields['label'] = new ValidatorArgument($values->label, 'stringNotEmpty');
         if($this->edit){
             if($values->edit_logo){
-                $validateFields['logo'] = $values->logo;
+                $validateFields['logo'] = new ValidatorArgument($values->logo, 'notEmpty');
             }
         }
         else{
-            $validateFields['logo'] = $values->logo;
+            $validateFields['logo'] = new ValidatorArgument($values->logo, 'notEmpty');
         }
+        $this->validator->validate($form, $validateFields);
 
-        $validationErrors = $this->validationService->validate($validateFields);
-
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error){
-                    $form[$veKey]->addError($error);
-                }
-            }
-        }
-
-        $this->redrawControl('labelErrorSnippet');
-        $this->redrawControl('logoErrorSnippet');
+//        if($validationErrors){
+//            foreach($validationErrors as $veKey => $errorGroup){
+//                foreach($errorGroup as $egKey => $error){
+//                    $form[$veKey]->addError($error);
+//                }
+//            }
+//        }
+//
+//        $this->redrawControl('labelErrorSnippet');
+//        $this->redrawControl('logoErrorSnippet');
+        $this->redrawErrors();
     }
 
     /**
@@ -136,7 +135,7 @@ class LogoFormControl extends EntityFormControl
             if($values->edit_logo && $values->logo){
                 $this->fileService->finalStore($values->logo);
             }
-            $this->functionality->update($values->id_hidden, ArrayHash::from([
+            $this->functionality->update($values->idHidden, ArrayHash::from([
                 'label' => $values->label
             ]));
             $this->onSuccess();

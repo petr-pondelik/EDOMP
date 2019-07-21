@@ -9,11 +9,12 @@
 namespace App\Components\Forms\UserForm;
 
 
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\UserFunctionality;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\RoleRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -36,7 +37,7 @@ class UserFormControl extends EntityFormControl
 
     /**
      * UserFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param UserFunctionality $userFunctionality
      * @param GroupRepository $groupRepository
      * @param RoleRepository $roleRepository
@@ -44,13 +45,13 @@ class UserFormControl extends EntityFormControl
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         UserFunctionality $userFunctionality,
         GroupRepository $groupRepository, RoleRepository $roleRepository,
         bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit);
+        parent::__construct($validator, $edit);
         $this->functionality = $userFunctionality;
         $this->groupRepository = $groupRepository;
         $this->roleRepository = $roleRepository;
@@ -75,15 +76,15 @@ class UserFormControl extends EntityFormControl
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte heslo uživatele. (min. 8 znaků)');
 
-        $form->addPassword('password_confirm', 'Potvrzení hesla *')
+        $form->addPassword('passwordConfirm', 'Potvrzení hesla *')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zopakujte heslo uživatele. (min. 8 znaků)');
 
-        $form->addText('first_name', 'Jméno')
+        $form->addText('firstName', 'Jméno')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte jméno uživatele.');
 
-        $form->addText('last_name', 'Příjmení')
+        $form->addText('lastName', 'Příjmení')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte příjmení uživatele.');
 
@@ -96,7 +97,7 @@ class UserFormControl extends EntityFormControl
             ->setHtmlAttribute('title', 'Zvolte skupiny');
 
         if($this->edit){
-            $form->addSelect('change_password', 'Změnit heslo', [
+            $form->addSelect('changePassword', 'Změnit heslo', [
                 0 => 'Ne',
                 1 => 'Ano'
             ])
@@ -113,30 +114,39 @@ class UserFormControl extends EntityFormControl
     {
         $values = $form->values;
 
-        $validateFields['username'] = $values->username;
-        if(!isset($values->change_password) || $values->change_password){
-            $validateFields['password_confirm'] = ArrayHash::from([
-                'password' => $values->password,
-                'password_confirm' => $values->password_confirm
-            ]);
+        $validateFields['username'] = new ValidatorArgument([
+            'username' => $values->username,
+            'edit' => $this->edit,
+            'userId' => $values->idHidden ?? null
+        ], 'username');
+
+//            ArrayHash::from([
+//            'data' => $values->username,
+//            'validation' => 'notEmpty'
+//        ]);
+
+        if(!isset($values->changePassword) || $values->changePassword){
+            $validateFields['passwordConfirm'] = new ValidatorArgument([
+                'password' => $values->password, 'passwordConfirm' => $values->passwordConfirm
+            ],'passwordConfirm');
         }
-        $validateFields['role'] = $values->role;
-        $validateFields['groups'] = ArrayHash::from($values->groups);
+        $validateFields['role'] = new ValidatorArgument($values->role, 'notEmpty');
 
-        $validationErrors = $this->validationService->validate($validateFields);
+//            ArrayHash::from([
+//            'data' => $values->role,
+//            'validation' => 'notEmpty'
+//        ]);
 
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error){
-                    $form[$veKey]->addError($error);
-                }
-            }
-        }
+        $validateFields['groups'] = new ValidatorArgument($values->groups, 'arrayNotEmpty');
 
-        $this->redrawControl('usernameErrorSnippet');
-        $this->redrawControl('passwordConfirmErrorSnippet');
-        $this->redrawControl('roleErrorSnippet');
-        $this->redrawControl('groupsErrorSnippet');
+//            ArrayHash::from([
+//            'data' => $values->groups,
+//            'validation' => 'arrayNotEmpty'
+//        ]);
+
+        $this->validator->validate($form, $validateFields);
+
+        $this->redrawErrors();
     }
 
     /**
@@ -146,7 +156,7 @@ class UserFormControl extends EntityFormControl
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
-            $values->user_id = $this->presenter->user->id;
+            $values->userId = $this->presenter->user->id;
             $this->functionality->create($values);
             $this->onSuccess();
         } catch (\Exception $e){
@@ -165,7 +175,7 @@ class UserFormControl extends EntityFormControl
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
-            $this->functionality->update($values->id_hidden, $values);
+            $this->functionality->update($values->idHidden, $values);
             $this->onSuccess();
         } catch (\Exception $e){
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.

@@ -25,7 +25,7 @@ class ArithmeticSeqTemplateFormFactory extends ProblemTemplateFormFactory
     public function create(BaseFunctionality $functionality, bool $edit = false)
     {
         return new ArithmeticSeqTemplateFormControl(
-            $this->validationService, $functionality, $this->difficultyRepository, $this->problemTypeRepository,
+            $this->validator, $functionality, $this->difficultyRepository, $this->problemTypeRepository,
             $this->subCategoryRepository, $this->problemConditionRepository, $this->mathService, $this->constHelper, $edit
         );
     }

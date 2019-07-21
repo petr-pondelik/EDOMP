@@ -9,7 +9,7 @@
 namespace App\Components\Forms;
 
 use App\Model\Functionality\BaseFunctionality;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -26,9 +26,9 @@ abstract class FormControl extends Control
     protected $functionality;
 
     /**
-     * @var ValidationService
+     * @var Validator
      */
-    protected $validationService;
+    protected $validator;
 
     /**
      * @var array
@@ -42,12 +42,12 @@ abstract class FormControl extends Control
 
     /**
      * BaseFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      */
-    public function __construct(ValidationService $validationService)
+    public function __construct(Validator $validator)
     {
         parent::__construct();
-        $this->validationService = $validationService;
+        $this->validator = $validator;
     }
 
     /**
@@ -74,6 +74,25 @@ abstract class FormControl extends Control
         $form->onValidate[] = [$this, 'handleFormValidate'];
 
         return $form;
+    }
+
+    public function redrawErrors(bool $submited = true): void
+    {
+        $form = $this['form'];
+        $values = $form->getValues();
+        bdump($values);
+        if($submited){
+            if($form->isSubmitted()){
+                foreach ($values as $key => $value){
+                    $this->redrawControl($key . 'ErrorSnippet');
+                }
+            }
+        }
+        else{
+            foreach ($values as $key => $value){
+                $this->redrawControl($key . 'ErrorSnippet');
+            }
+        }
     }
 
     /**

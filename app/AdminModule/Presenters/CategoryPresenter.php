@@ -101,7 +101,7 @@ class CategoryPresenter extends AdminPresenter
     private function setDefaults(IComponent $form, Category $record)
     {
         $form["id"]->setDefaultValue($record->getId());
-        $form["id_hidden"]->setDefaultValue($record->getId());
+        $form["idHidden"]->setDefaultValue($record->getId());
         $form["label"]->setDefaultValue($record->getLabel());
     }
 

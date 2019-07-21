@@ -12,7 +12,7 @@ namespace App\Components\Forms\LogoForm;
 use App\Components\Forms\FormFactory;
 use App\Model\Functionality\LogoFunctionality;
 use App\Services\FileService;
-use App\Services\ValidationService;
+use App\Services\Validator;
 
 /**
  * Class LogoFormFactory
@@ -27,16 +27,16 @@ class LogoFormFactory extends FormFactory
 
     /**
      * LogoFormFactory constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param LogoFunctionality $logoFunctionality
      * @param FileService $fileService
      */
     public function __construct
     (
-        ValidationService $validationService, LogoFunctionality $logoFunctionality, FileService $fileService
+        Validator $validator, LogoFunctionality $logoFunctionality, FileService $fileService
     )
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->functionality = $logoFunctionality;
         $this->fileService = $fileService;
     }
@@ -47,6 +47,6 @@ class LogoFormFactory extends FormFactory
      */
     public function create(bool $edit = false): LogoFormControl
     {
-        return new LogoFormControl($this->validationService, $this->functionality, $this->fileService, $edit);
+        return new LogoFormControl($this->validator, $this->functionality, $this->fileService, $edit);
     }
 }

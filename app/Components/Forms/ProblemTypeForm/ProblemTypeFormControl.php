@@ -9,9 +9,10 @@
 namespace App\Components\Forms\ProblemTypeForm;
 
 
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\ProblemTypeFunctionality;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -24,18 +25,18 @@ class ProblemTypeFormControl extends EntityFormControl
 {
     /**
      * ProblemTypeFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param ProblemTypeFunctionality $problemTypeFunctionality
      * @param bool $edit
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         ProblemTypeFunctionality $problemTypeFunctionality,
         bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit);
+        parent::__construct($validator, $edit);
         $this->functionality = $problemTypeFunctionality;
     }
 
@@ -57,15 +58,9 @@ class ProblemTypeFormControl extends EntityFormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->values;
-        $validateFields["label"] = $values->label;
-        $validationErrors = $this->validationService->validate($validateFields);
-        if ($validationErrors) {
-            foreach ($validationErrors as $veKey => $errorGroup) {
-                foreach ($errorGroup as $egKey => $error)
-                    $form[$veKey]->addError($error);
-            }
-        }
-        $this->redrawControl("labelErrorSnippet");
+        $validateFields['label'] = new ValidatorArgument($values->label, 'stringNotEmpty');
+        $this->validator->validate($form, $validateFields);
+        $this->redrawErrors();
     }
 
     /**
@@ -78,9 +73,10 @@ class ProblemTypeFormControl extends EntityFormControl
             $this->functionality->create($values);
             $this->onSuccess();
         } catch (\Exception $e) {
-            //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException)
+            // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
+            if ($e instanceof AbortException){
                 return;
+            }
             $this->onError($e);
         }
     }
@@ -92,21 +88,24 @@ class ProblemTypeFormControl extends EntityFormControl
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
         try {
-            $this->functionality->update($values->id_hidden, $values);
+            $this->functionality->update($values->idHidden, $values);
             $this->onSuccess();
         } catch (\Exception $e) {
-            //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException)
+            // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
+            if ($e instanceof AbortException){
                 return;
+            }
             $this->onError($e);
         }
     }
 
     public function render(): void
     {
-        if ($this->edit)
+        if ($this->edit){
             $this->template->render(__DIR__ . '/templates/edit.latte');
-        else
+        }
+        else{
             $this->template->render(__DIR__ . '/templates/create.latte');
+        }
     }
 }

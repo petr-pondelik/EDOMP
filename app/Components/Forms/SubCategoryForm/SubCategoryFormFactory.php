@@ -11,7 +11,7 @@ namespace App\Components\Forms\SubCategoryForm;
 use App\Components\Forms\FormFactory;
 use App\Model\Functionality\SubCategoryFunctionality;
 use App\Model\Repository\CategoryRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 
 /**
  * Class SubCategoryFormControlFactory
@@ -26,16 +26,16 @@ class SubCategoryFormFactory extends FormFactory
 
     /**
      * SubCategoryFormFactory constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param SubCategoryFunctionality $subCategoryFunctionality
      * @param CategoryRepository $categoryRepository
      */
     public function __construct(
-        ValidationService $validationService,
+        Validator $validator,
         SubCategoryFunctionality $subCategoryFunctionality, CategoryRepository $categoryRepository
     )
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->functionality = $subCategoryFunctionality;
         $this->categoryRepository = $categoryRepository;
     }
@@ -46,6 +46,6 @@ class SubCategoryFormFactory extends FormFactory
      */
     public function create(bool $edit = false): SubCategoryFormControl
     {
-        return new SubCategoryFormControl($this->validationService, $this->functionality, $this->categoryRepository, $edit);
+        return new SubCategoryFormControl($this->validator, $this->functionality, $this->categoryRepository, $edit);
     }
 }

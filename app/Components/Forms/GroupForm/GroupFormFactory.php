@@ -12,7 +12,7 @@ namespace App\Components\Forms\GroupForm;
 use App\Components\Forms\FormFactory;
 use App\Model\Functionality\GroupFunctionality;
 use App\Model\Repository\SuperGroupRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 
 /**
  * Class GroupFormFactory
@@ -27,17 +27,17 @@ class GroupFormFactory extends FormFactory
 
     /**
      * GroupFormFactory constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupRepository $superGroupRepository
      */
     public function __construct
     (
-        ValidationService $validationService, GroupFunctionality $groupFunctionality,
+        Validator $validator, GroupFunctionality $groupFunctionality,
         SuperGroupRepository $superGroupRepository
     )
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->functionality = $groupFunctionality;
         $this->superGroupRepository = $superGroupRepository;
     }
@@ -48,6 +48,6 @@ class GroupFormFactory extends FormFactory
      */
     public function create(bool $edit = false): GroupFormControl
     {
-        return new GroupFormControl($this->validationService, $this->functionality, $this->superGroupRepository, $edit);
+        return new GroupFormControl($this->validator, $this->functionality, $this->superGroupRepository, $edit);
     }
 }

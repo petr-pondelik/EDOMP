@@ -20,7 +20,7 @@ use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TestRepository;
 use App\Services\FileService;
 use App\Services\TestGeneratorService;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Kdyby\Doctrine\EntityManager;
 
 /**
@@ -91,7 +91,7 @@ class TestFormFactory extends FormFactory
 
     /**
      * TestFormFactory constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param EntityManager $entityManager
      * @param TestRepository $testRepository
      * @param ProblemRepository $problemRepository
@@ -107,7 +107,7 @@ class TestFormFactory extends FormFactory
      */
     public function __construct
     (
-        ValidationService $validationService, EntityManager $entityManager,
+        Validator $validator, EntityManager $entityManager,
         TestRepository $testRepository,
         ProblemRepository $problemRepository, ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemFinalRepository,
         ProblemTypeRepository $problemTypeRepository,
@@ -116,7 +116,7 @@ class TestFormFactory extends FormFactory
         TestGeneratorService $testGeneratorService, FileService $fileService
     )
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->entityManager = $entityManager;
         $this->testRepository = $testRepository;
         $this->problemRepository = $problemRepository;
@@ -138,7 +138,7 @@ class TestFormFactory extends FormFactory
     {
         return new TestFormControl
         (
-            $this->validationService, $this->entityManager,
+            $this->validator, $this->entityManager,
             $this->testRepository,
             $this->problemRepository, $this->problemTemplateRepository, $this->problemFinalRepository,
             $this->problemTypeRepository, $this->difficultyRepository,

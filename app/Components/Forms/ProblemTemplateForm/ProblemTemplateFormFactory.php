@@ -16,7 +16,7 @@ use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Services\MathService;
-use App\Services\ValidationService;
+use App\Services\Validator;
 
 /**
  * Class ProblemTemplateFormFactory
@@ -56,7 +56,7 @@ abstract class ProblemTemplateFormFactory extends FormFactory
 
     /**
      * ProblemTemplateFormFactory constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param SubCategoryRepository $subCategoryRepository
@@ -66,13 +66,13 @@ abstract class ProblemTemplateFormFactory extends FormFactory
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository, ProblemConditionRepository $problemConditionRepository,
         MathService $mathService, ConstHelper $constHelper
     )
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->difficultyRepository = $difficultyRepository;
         $this->problemTypeRepository = $problemTypeRepository;
         $this->subCategoryRepository = $subCategoryRepository;

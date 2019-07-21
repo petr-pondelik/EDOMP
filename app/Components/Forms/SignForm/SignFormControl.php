@@ -9,8 +9,9 @@
 namespace App\Components\Forms\SignForm;
 
 
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\FormControl;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -28,12 +29,12 @@ class SignFormControl extends FormControl
 
     /**
      * SignFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param bool $admin
      */
-    public function __construct(ValidationService $validationService, bool $admin = false)
+    public function __construct(Validator $validator, bool $admin = false)
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->admin = $admin;
     }
 
@@ -59,25 +60,10 @@ class SignFormControl extends FormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->getValues();
-
-        $validateFields = [];
-        foreach($values as $key => $value){
-            $validateFields[$key] = $value;
-        }
-
-        $validationErrors = $this->validationService->validate($validateFields);
-
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error){
-                    $form[$veKey]->addError($error);
-                }
-            }
-        }
-
-        $this->redrawControl('usernameErrorSnippet');
-        $this->redrawControl('passwordErrorSnippet');
-        $this->redrawControl('signInErrorSnippet');
+        $validateFields['username'] = new ValidatorArgument($values->username, 'notEmpty');
+        $validateFields['password'] = new ValidatorArgument($values->username, 'notEmpty');
+        $this->validator->validate($form, $validateFields);
+        $this->redrawErrors();
     }
 
     /**

@@ -22,7 +22,7 @@ use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
@@ -49,9 +49,9 @@ class SubCategoryPresenter extends AdminPresenter
     protected $categoryRepository;
 
     /**
-     * @var ValidationService
+     * @var Validator
      */
-    protected $validationService;
+    protected $validator;
 
     /**
      * @var SubCategoryGridFactory
@@ -73,7 +73,7 @@ class SubCategoryPresenter extends AdminPresenter
      * @param SubCategoryRepository $subCategoryRepository
      * @param SubCategoryFunctionality $subCategoryFunctionality
      * @param CategoryRepository $categoryRepository
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param SubCategoryGridFactory $subCategoryGridFactory
      * @param SubCategoryFormFactory $subCategoryFormFactory
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
@@ -84,7 +84,7 @@ class SubCategoryPresenter extends AdminPresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         SubCategoryRepository $subCategoryRepository, SubCategoryFunctionality $subCategoryFunctionality,
         CategoryRepository $categoryRepository,
-        ValidationService $validationService,
+        Validator $validator,
         SubCategoryGridFactory $subCategoryGridFactory, SubCategoryFormFactory $subCategoryFormFactory,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
@@ -93,7 +93,7 @@ class SubCategoryPresenter extends AdminPresenter
         $this->subCategoryRepository = $subCategoryRepository;
         $this->subCategoryFunctionality = $subCategoryFunctionality;
         $this->categoryRepository = $categoryRepository;
-        $this->validationService = $validationService;
+        $this->validator = $validator;
         $this->subCategoryGridFactory = $subCategoryGridFactory;
         $this->subCategoryFormFactory = $subCategoryFormFactory;
     }
@@ -116,7 +116,7 @@ class SubCategoryPresenter extends AdminPresenter
     private function setDefaults(IComponent $form, SubCategory $record)
     {
         $form["id"]->setDefaultValue($record->getId());
-        $form["id_hidden"]->setDefaultValue($record->getId());
+        $form["idHidden"]->setDefaultValue($record->getId());
         $form["label"]->setDefaultValue($record->getLabel());
         $form["category"]->setDefaultValue($record->getCategory()->getId());
     }

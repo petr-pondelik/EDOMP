@@ -9,9 +9,10 @@
 namespace App\Components\Forms\SuperGroupForm;
 
 
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\SuperGroupFunctionality;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -24,18 +25,18 @@ class SuperGroupFormControl extends EntityFormControl
 {
     /**
      * SuperGroupFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param SuperGroupFunctionality $superGroupFunctionality
      * @param bool $edit
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         SuperGroupFunctionality $superGroupFunctionality,
         bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit);
+        parent::__construct($validator, $edit);
         $this->functionality = $superGroupFunctionality;
     }
 
@@ -59,16 +60,9 @@ class SuperGroupFormControl extends EntityFormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->values;
-        $validateFields['label'] = $values->label;
-        $validationErrors = $this->validationService->validate($validateFields);
-        if($validationErrors){
-            foreach($validationErrors as $veKey => $errorGroup){
-                foreach($errorGroup as $egKey => $error){
-                    $form[$veKey]->addError($error);
-                }
-            }
-        }
-        $this->redrawControl('labelErrorSnippet');
+        $validateFields['label'] = new ValidatorArgument($values->label, 'stringNotEmpty');
+        $this->validator->validate($form, $validateFields);
+        $this->redrawErrors();
     }
 
     /**
@@ -98,7 +92,7 @@ class SuperGroupFormControl extends EntityFormControl
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
-            $this->functionality->update($values->id_hidden, ArrayHash::from([
+            $this->functionality->update($values->idHidden, ArrayHash::from([
                 'label' => $values->label
             ]));
             $this->onSuccess();

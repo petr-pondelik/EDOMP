@@ -10,7 +10,7 @@ namespace App\Components\Forms\CategoryForm;
 
 use App\Components\Forms\FormFactory;
 use App\Model\Functionality\CategoryFunctionality;
-use App\Services\ValidationService;
+use App\Services\Validator;
 
 /**
  * Class CategoryFormFactory
@@ -20,12 +20,12 @@ class CategoryFormFactory extends FormFactory
 {
     /**
      * CategoryFormFactory constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param CategoryFunctionality $categoryFunctionality
      */
-    public function __construct(ValidationService $validationService, CategoryFunctionality $categoryFunctionality)
+    public function __construct(Validator $validator, CategoryFunctionality $categoryFunctionality)
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->functionality = $categoryFunctionality;
     }
 
@@ -35,6 +35,6 @@ class CategoryFormFactory extends FormFactory
      */
     public function create(bool $edit = false): CategoryFormControl
     {
-        return new CategoryFormControl($this->validationService, $this->functionality, $edit);
+        return new CategoryFormControl($this->validator, $this->functionality, $edit);
     }
 }

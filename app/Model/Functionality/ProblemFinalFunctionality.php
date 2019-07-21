@@ -118,7 +118,7 @@ class ProblemFinalFunctionality extends BaseFunctionality
             $problem->setCreated($data->created);
         }
 
-        $problem->setProblemType($this->problemTypeRepository->find($data->problemFinalType));
+        $problem->setProblemType($this->problemTypeRepository->find($data->problemType));
         $problem->setDifficulty($this->difficultyRepository->find($data->difficulty));
         $problem->setSubCategory($this->subCategoryRepository->find($data->subCategory));
 
@@ -172,8 +172,8 @@ class ProblemFinalFunctionality extends BaseFunctionality
             $problem->setCreated($data->created);
         }
 
-        if(!empty($data->problemFinalType)){
-            $problem->setProblemType($this->problemTypeRepository->find($data->problemFinalType));
+        if(!empty($data->problemType)){
+            $problem->setProblemType($this->problemTypeRepository->find($data->problemType));
         }
         if(!empty($data->subCategory)){
             $problem->setSubCategory($this->subCategoryRepository->find($data->subCategory));
@@ -182,7 +182,7 @@ class ProblemFinalFunctionality extends BaseFunctionality
             $problem->setDifficulty($this->difficultyRepository->find($data->difficulty));
         }
 
-        if($updateConditions && $data->problemFinalType){
+        if($updateConditions && $data->problemType){
             $problem->setConditions(new ArrayCollection());
             $this->attachConditions($problem, $data);
         }
@@ -200,7 +200,7 @@ class ProblemFinalFunctionality extends BaseFunctionality
      */
     public function attachConditions(ProblemFinal $problem, ArrayHash $data): ProblemFinal
     {
-        $type = $this->problemTypeRepository->find($data->problemFinalType);
+        $type = $this->problemTypeRepository->find($data->problemType);
         $problemCondTypes = $type->getConditionTypes()->getValues();
 
         foreach ($problemCondTypes as $problemCondType){

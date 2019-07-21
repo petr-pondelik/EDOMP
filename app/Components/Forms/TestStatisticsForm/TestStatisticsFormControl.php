@@ -9,12 +9,13 @@
 namespace App\Components\Forms\TestStatisticsForm;
 
 
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\FormControl;
 use App\Model\Entity\Test;
 use App\Model\Functionality\ProblemFunctionality;
 use App\Model\Functionality\ProblemFinalTestVariantAssociationFunctionality;
 use App\Model\Repository\TestRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -41,7 +42,7 @@ class TestStatisticsFormControl extends FormControl
 
     /**
      * TestStatisticsFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param ProblemFunctionality $problemFunctionality
      * @param ProblemFinalTestVariantAssociationFunctionality $problemFinalTestVariantAssociationFunctionality
      * @param TestRepository $testRepository
@@ -49,14 +50,14 @@ class TestStatisticsFormControl extends FormControl
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         ProblemFunctionality $problemFunctionality,
         ProblemFinalTestVariantAssociationFunctionality $problemFinalTestVariantAssociationFunctionality,
         TestRepository $testRepository,
         int $testId
     )
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->functionality = $problemFunctionality;
         $this->problemFinalTestVariantAssociationFunctionality = $problemFinalTestVariantAssociationFunctionality;
         $this->testRepository = $testRepository;
@@ -100,15 +101,8 @@ class TestStatisticsFormControl extends FormControl
         $values = $form->getValues();
         for($i = 0; $i < $values->variants_cnt; $i++){
             for($j = 0; $j < $values->problems_per_variant; $j++){
-                $validateFields['success_rate'] = $values->{'success_rate_' . $i . '_' . $j};
-                $validationErrors = $this->validationService->validate($validateFields);
-                if($validationErrors){
-                    foreach($validationErrors as $veKey => $errorGroup){
-                        foreach($errorGroup as $egKey => $error){
-                            $form['success_rate_' . $i . '_' . $j]->addError($error);
-                        }
-                    }
-                }
+                $validateFields['success_rate'] = new ValidatorArgument($values->{'success_rate_' . $i . '_' . $j}, 'range0to1', 'success_rate_' . $i . '_' . $j);
+                $this->validator->validate($form, $validateFields);
             }
         }
         $this->redrawControl('successRateSnippetArea');

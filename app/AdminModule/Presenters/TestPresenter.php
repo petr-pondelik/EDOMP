@@ -28,7 +28,7 @@ use App\Model\Repository\TestRepository;
 use App\Services\Authorizator;
 use App\Services\FileService;
 use App\Services\NewtonApiClient;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\Responses\CallbackResponse;
 use Nette\ComponentModel\IComponent;
 use Nette\Http\IRequest;
@@ -92,9 +92,9 @@ class TestPresenter extends AdminPresenter
     protected $fileService;
 
     /**
-     * @var ValidationService
+     * @var Validator
      */
-    protected $validationService;
+    protected $validator;
 
     /**
      * TestPresenter constructor.
@@ -113,7 +113,7 @@ class TestPresenter extends AdminPresenter
      * @param TestStatisticsFormFactory $testStatisticsFormFactory
      * @param TestGridFactory $testGridFactory
      * @param FileService $fileService
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
@@ -124,7 +124,7 @@ class TestPresenter extends AdminPresenter
         ProblemTemplateRepository $problemTemplateRepository, ProblemRepository $problemRepository, LogoRepository $logoRepository,
         ProblemFinalTestVariantAssociationRepository $problemTestAssociationRepository,
         ITestFormFactory $testFormFactory, TestStatisticsFormFactory $testStatisticsFormFactory, TestGridFactory $testGridFactory,
-        FileService $fileService, ValidationService $validationService,
+        FileService $fileService, Validator $validator,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
@@ -139,7 +139,7 @@ class TestPresenter extends AdminPresenter
         $this->testStatisticsFormFactory = $testStatisticsFormFactory;
         $this->testGridFactory = $testGridFactory;
         $this->fileService = $fileService;
-        $this->validationService = $validationService;
+        $this->validator = $validator;
     }
 
     /**
