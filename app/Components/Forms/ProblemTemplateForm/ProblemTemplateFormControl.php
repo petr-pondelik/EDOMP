@@ -20,7 +20,7 @@ use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Services\MathService;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -83,7 +83,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
     /**
      * ProblemTemplateFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param BaseFunctionality $functionality
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
@@ -95,7 +95,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         BaseFunctionality $functionality,
         DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository, ProblemConditionRepository $problemConditionRepository,
@@ -103,7 +103,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit);
+        parent::__construct($validator, $edit);
         $this->functionality = $functionality;
         $this->difficultyRepository = $difficultyRepository;
         $this->problemTypeRepository = $problemTypeRepository;
@@ -183,7 +183,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         $validateFields['body'] = new ValidatorArgument($this->collectBodyValidationData($values), 'body');
 
         try{
-            $form = $this->validationService->validate($this['form'], $validateFields);
+            $form = $this->validator->validate($this['form'], $validateFields);
         } catch (\Exception $e){
             if($e instanceof NewtonApiException){
                 $this['form']['submit']->addError($e->getMessage());
@@ -229,7 +229,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
         // VALIDATE IF ALL CONDITIONS ARE SATISFIED
         $validateFields['conditions_valid'] = new ValidatorArgument($values->conditions_valid, 'isTrue', 'submit');
-        $this->validationService->validate($form, $validateFields);
+        $this->validator->validate($form, $validateFields);
 
         // REDRAW ERRORS
         $this->redrawErrors();
@@ -293,7 +293,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         ], 'type_' . $values->type, 'body');
 
         try{
-            $form = $this->validationService->validate($this['form'], $validateFields);
+            $form = $this->validator->validate($this['form'], $validateFields);
         } catch (\Exception $e){
             $this['form']['body']->addError($e->getMessage());
             $this->redrawErrors();
@@ -327,7 +327,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
         // Validate template condition
         try{
-            $form = $this->validationService->conditionValidate($this['form'], $validationFields, $problemId ?? null);
+            $form = $this->validator->conditionValidate($this['form'], $validationFields, $problemId ?? null);
         } catch (ProblemTemplateFormatException $e){
             $this['form']['body']->addError($e->getMessage());
             return false;

@@ -12,7 +12,7 @@ namespace App\Components\Forms\SuperGroupForm;
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\SuperGroupFunctionality;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -25,18 +25,18 @@ class SuperGroupFormControl extends EntityFormControl
 {
     /**
      * SuperGroupFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param SuperGroupFunctionality $superGroupFunctionality
      * @param bool $edit
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         SuperGroupFunctionality $superGroupFunctionality,
         bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit);
+        parent::__construct($validator, $edit);
         $this->functionality = $superGroupFunctionality;
     }
 
@@ -61,7 +61,7 @@ class SuperGroupFormControl extends EntityFormControl
     {
         $values = $form->values;
         $validateFields['label'] = new ValidatorArgument($values->label, 'stringNotEmpty');
-        $this->validationService->validate($form, $validateFields);
+        $this->validator->validate($form, $validateFields);
         $this->redrawErrors();
     }
 

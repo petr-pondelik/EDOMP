@@ -22,7 +22,7 @@ use App\Model\Repository\ProblemFinalRepository;
 use App\Services\Authorizator;
 use App\Services\MathService;
 use App\Services\NewtonApiClient;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
@@ -54,9 +54,9 @@ class ProblemFinalPresenter extends AdminPresenter
     protected $problemFunctionality;
 
     /**
-     * @var ValidationService
+     * @var Validator
      */
-    protected $validationService;
+    protected $validator;
 
     /**
      * @var MathService
@@ -74,7 +74,7 @@ class ProblemFinalPresenter extends AdminPresenter
      * @param ProblemFinalFormFactory $problemFinalFormFactory
      * @param ProblemFinalRepository $problemRepository
      * @param ProblemFinalFunctionality $problemFunctionality
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param MathService $mathService
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
@@ -84,7 +84,7 @@ class ProblemFinalPresenter extends AdminPresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ProblemGridFactory $problemGridFactory, ProblemFinalFormFactory $problemFinalFormFactory,
         ProblemFinalRepository $problemRepository, ProblemFinalFunctionality $problemFunctionality,
-        ValidationService $validationService, MathService $mathService,
+        Validator $validator, MathService $mathService,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
@@ -93,7 +93,7 @@ class ProblemFinalPresenter extends AdminPresenter
         $this->problemFinalFormFactory = $problemFinalFormFactory;
         $this->problemRepository = $problemRepository;
         $this->problemFunctionality = $problemFunctionality;
-        $this->validationService = $validationService;
+        $this->validator = $validator;
         $this->mathService = $mathService;
     }
 

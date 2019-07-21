@@ -13,7 +13,7 @@ use App\Components\Forms\FormFactory;
 use App\Model\Functionality\GroupFunctionality;
 use App\Model\Functionality\SuperGroupFunctionality;
 use App\Model\Repository\CategoryRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 
 /**
  * Class PermissionFormFactory
@@ -33,19 +33,19 @@ class PermissionFormFactory extends FormFactory
 
     /**
      * PermissionFormFactory constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupFunctionality $superGroupFunctionality
      * @param CategoryRepository $categoryRepository
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         GroupFunctionality $groupFunctionality, SuperGroupFunctionality $superGroupFunctionality,
         CategoryRepository $categoryRepository
     )
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->functionality = $groupFunctionality;
         $this->superGroupFunctionality = $superGroupFunctionality;
         $this->categoryRepository = $categoryRepository;
@@ -58,7 +58,7 @@ class PermissionFormFactory extends FormFactory
     public function create(bool $super = false): PermissionFormControl
     {
         return new PermissionFormControl(
-            $this->validationService, $this->functionality, $this->superGroupFunctionality, $this->categoryRepository, $super
+            $this->validator, $this->functionality, $this->superGroupFunctionality, $this->categoryRepository, $super
         );
     }
 }

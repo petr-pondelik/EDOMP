@@ -22,7 +22,7 @@ use App\Model\Repository\LogoRepository;
 use App\Services\Authorizator;
 use App\Services\FileService;
 use App\Services\NewtonApiClient;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\Responses\TextResponse;
 use Nette\ComponentModel\IComponent;
 
@@ -43,9 +43,9 @@ class LogoPresenter extends AdminPresenter
     protected $logoFunctionality;
 
     /**
-     * @var ValidationService
+     * @var Validator
      */
-    protected $validationService;
+    protected $validator;
 
     /**
      * @var FileService
@@ -71,7 +71,7 @@ class LogoPresenter extends AdminPresenter
      * @param FlashesTranslator $flashesTranslator
      * @param LogoRepository $logoRepository
      * @param LogoFunctionality $logoFunctionality
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param FileService $fileService
      * @param LogoGridFactory $logoGridFactory
      * @param LogoFormFactory $logoFormFactory
@@ -82,7 +82,7 @@ class LogoPresenter extends AdminPresenter
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         LogoRepository $logoRepository, LogoFunctionality $logoFunctionality,
-        ValidationService $validationService, FileService $fileService,
+        Validator $validator, FileService $fileService,
         LogoGridFactory $logoGridFactory, LogoFormFactory $logoFormFactory,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
@@ -90,7 +90,7 @@ class LogoPresenter extends AdminPresenter
         parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->logoRepository = $logoRepository;
         $this->logoFunctionality = $logoFunctionality;
-        $this->validationService = $validationService;
+        $this->validator = $validator;
         $this->fileService = $fileService;
         $this->logoGridFactory = $logoGridFactory;
         $this->logoFormFactory = $logoFormFactory;

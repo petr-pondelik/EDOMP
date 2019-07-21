@@ -13,7 +13,7 @@ use App\Components\Forms\FormFactory;
 use App\Model\Functionality\UserFunctionality;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\RoleRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 
 /**
  * Class UserFormFactory
@@ -33,19 +33,19 @@ class UserFormFactory extends FormFactory
 
     /**
      * UserFormFactory constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param UserFunctionality $userFunctionality
      * @param GroupRepository $groupRepository
      * @param RoleRepository $roleRepository
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         UserFunctionality $userFunctionality,
         GroupRepository $groupRepository, RoleRepository $roleRepository
     )
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->functionality = $userFunctionality;
         $this->groupRepository = $groupRepository;
         $this->roleRepository = $roleRepository;
@@ -57,6 +57,6 @@ class UserFormFactory extends FormFactory
      */
     public function create(bool $edit = false): UserFormControl
     {
-        return new UserFormControl($this->validationService, $this->functionality, $this->groupRepository, $this->roleRepository, $edit);
+        return new UserFormControl($this->validator, $this->functionality, $this->groupRepository, $this->roleRepository, $edit);
     }
 }

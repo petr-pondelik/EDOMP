@@ -11,7 +11,7 @@ namespace App\Components\Forms\CategoryForm;
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\CategoryFunctionality;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -24,18 +24,18 @@ class CategoryFormControl extends EntityFormControl
 {
     /**
      * CategoryFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param CategoryFunctionality $categoryFunctionality
      * @param bool $edit
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         CategoryFunctionality $categoryFunctionality,
         bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit);
+        parent::__construct($validator, $edit);
         $this->functionality = $categoryFunctionality;
     }
 
@@ -58,7 +58,7 @@ class CategoryFormControl extends EntityFormControl
     {
         $values = $form->values;
         $validateFields['label'] = new ValidatorArgument($values->label, 'stringNotEmpty');
-        $this->validationService->validate($form, $validateFields);
+        $this->validator->validate($form, $validateFields);
         $this->redrawErrors();
     }
 

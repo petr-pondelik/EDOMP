@@ -13,7 +13,7 @@ use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\LogoFunctionality;
 use App\Services\FileService;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -31,18 +31,18 @@ class LogoFormControl extends EntityFormControl
 
     /**
      * LogoFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param LogoFunctionality $logoFunctionality
      * @param FileService $fileService
      * @param bool $edit
      */
     public function __construct
     (
-        ValidationService $validationService, LogoFunctionality $logoFunctionality, FileService $fileService,
+        Validator $validator, LogoFunctionality $logoFunctionality, FileService $fileService,
         bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit);
+        parent::__construct($validator, $edit);
         $this->functionality = $logoFunctionality;
         $this->fileService = $fileService;
     }
@@ -87,7 +87,7 @@ class LogoFormControl extends EntityFormControl
         else{
             $validateFields['logo'] = new ValidatorArgument($values->logo, 'notEmpty');
         }
-        $this->validationService->validate($form, $validateFields);
+        $this->validator->validate($form, $validateFields);
 
 //        if($validationErrors){
 //            foreach($validationErrors as $veKey => $errorGroup){

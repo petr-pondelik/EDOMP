@@ -17,7 +17,7 @@ use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 
 /**
  * Class ProblemFinalFormFactory
@@ -52,7 +52,7 @@ class ProblemFinalFormFactory extends FormFactory
 
     /**
      * ProblemFinalFormFactory constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param ProblemFinalFunctionality $problemFinalFunctionality
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
@@ -62,14 +62,14 @@ class ProblemFinalFormFactory extends FormFactory
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         ProblemFinalFunctionality $problemFinalFunctionality,
         DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository, ProblemConditionRepository $problemConditionRepository,
         ConstHelper $constHelper
     )
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->functionality = $problemFinalFunctionality;
         $this->difficultyRepository = $difficultyRepository;
         $this->problemTypeRepository = $problemTypeRepository;
@@ -86,7 +86,7 @@ class ProblemFinalFormFactory extends FormFactory
     {
         return new ProblemFinalFormControl
         (
-            $this->validationService, $this->functionality, $this->difficultyRepository, $this->problemTypeRepository,
+            $this->validator, $this->functionality, $this->difficultyRepository, $this->problemTypeRepository,
             $this->subCategoryRepository, $this->problemConditionRepository, $this->constHelper, $edit
         );
     }

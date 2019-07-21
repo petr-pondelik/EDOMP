@@ -17,7 +17,7 @@ use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -55,7 +55,7 @@ class ProblemFinalFormControl extends EntityFormControl
 
     /**
      * ProblemFinalFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param ProblemFinalFunctionality $problemFinalFunctionality
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
@@ -66,7 +66,7 @@ class ProblemFinalFormControl extends EntityFormControl
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         ProblemFinalFunctionality $problemFinalFunctionality,
         DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository, ProblemConditionRepository $problemConditionRepository,
@@ -74,7 +74,7 @@ class ProblemFinalFormControl extends EntityFormControl
         bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit);
+        parent::__construct($validator, $edit);
         $this->functionality = $problemFinalFunctionality;
         $this->difficultyRepository = $difficultyRepository;
         $this->problemTypeRepository = $problemTypeRepository;
@@ -170,7 +170,7 @@ class ProblemFinalFormControl extends EntityFormControl
         }
         $validateFields['difficulty'] = new ValidatorArgument($values->difficulty, 'notEmpty', 'difficulty');
         $validateFields['subCategory'] = new ValidatorArgument($values->subCategory, 'notEmpty', 'subCategory');
-        $this->validationService->validate($form, $validateFields);
+        $this->validator->validate($form, $validateFields);
         $this->redrawErrors();
     }
 

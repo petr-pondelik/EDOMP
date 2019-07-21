@@ -47,7 +47,7 @@ use App\Model\Repository\TestRepository;
 use App\Presenters\BasePresenter;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
@@ -101,10 +101,10 @@ class DoctrinePresenter extends AdminPresenter
      */
     protected $stringsHelper;
 
-    /**
-     * @var ValidationService
-     */
-    protected $validationService;
+//    /**
+//     * @var Validator
+//     */
+//    protected $validator;
 
     /**
      * @var TestFunctionality
@@ -137,7 +137,7 @@ class DoctrinePresenter extends AdminPresenter
      * @param ValidatorInterface $validator
      * @param LatexHelper $latexHelper
      * @param StringsHelper $stringsHelper
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param TestVariantFunctionality $testVariantFunctionality
      * @param TestFunctionality $testFunctionality
      * @param TestRepository $testRepository
@@ -151,7 +151,7 @@ class DoctrinePresenter extends AdminPresenter
         TemplateJsonDataRepository $templateJsonDataRepository,
         ProblemTemplateRepository $problemTemplateRepository, QuadraticEqTemplRepository $quadraticEqTemplRepository,
         ValidatorInterface $validator,
-        LatexHelper $latexHelper, StringsHelper $stringsHelper, ValidationService $validationService, TestVariantFunctionality $testVariantFunctionality,
+        LatexHelper $latexHelper, StringsHelper $stringsHelper, TestVariantFunctionality $testVariantFunctionality,
         TestFunctionality $testFunctionality,
         TestRepository $testRepository,
         ISectionHelpModalFactory $sectionHelpModalFactory
@@ -166,7 +166,6 @@ class DoctrinePresenter extends AdminPresenter
         $this->em = $em;
         $this->validator = $validator;
         $this->latexHelper = $latexHelper;
-        $this->validationService = $validationService;
         $this->stringsHelper = $stringsHelper;
         $this->testVariantFunctionality = $testVariantFunctionality;
         $this->testFunctionality = $testFunctionality;
@@ -178,26 +177,26 @@ class DoctrinePresenter extends AdminPresenter
      */
     public function actionDefault()
     {
-        $test = $this->testFunctionality->create(ArrayHash::from([
-            'logo_id' => 1,
-            'term' => '1. pol.',
-            'school_year' => '2018/19',
-            'test_number' => 1,
-            'groups' => [1],
-            'introduction_text' => ''
-        ]));
-
-        $testVariant = $this->testVariantFunctionality->create(ArrayHash::from([
-            'variantLabel' => 'TEST LABEL',
-            'test' => $test
-        ]));
-
-        bdump($testVariant);
-
-        $test->addTestVariant($testVariant);
-
-        $this->em->persist($testVariant);
-        $this->em->flush();
+//        $test = $this->testFunctionality->create(ArrayHash::from([
+//            'logo_id' => 1,
+//            'term' => '1. pol.',
+//            'school_year' => '2018/19',
+//            'test_number' => 1,
+//            'groups' => [1],
+//            'introduction_text' => ''
+//        ]));
+//
+//        $testVariant = $this->testVariantFunctionality->create(ArrayHash::from([
+//            'variantLabel' => 'TEST LABEL',
+//            'test' => $test
+//        ]));
+//
+//        bdump($testVariant);
+//
+//        $test->addTestVariant($testVariant);
+//
+//        $this->em->persist($testVariant);
+//        $this->em->flush();
 
 //        $category = new Category();
 //        $category->setLabel("TESTCATEGORY1");
@@ -223,7 +222,7 @@ class DoctrinePresenter extends AdminPresenter
 //        $problemType = new ProblemType();
 //        $problemType->setLabel("Funkce");
 
-//        bdump($this->validationService->validateLinearEquation('55/15 x - 42/22 + 2/3 p2 - 43/20 p2 + 4 p3 + 15 p4', 'x'));
+//        bdump($this->validator->validateLinearEquation('55/15 x - 42/22 + 2/3 p2 - 43/20 p2 + 4 p3 + 15 p4', 'x'));
 //        bdump($this->latexHelper::parseLatex('$$ x^{2} $$'));
 //        bdump($this->latexHelper::parseLatex('$$ \frac{1}{2} \big( 2 x - 1 \big)^2 - \big( \frac{1}{2} \big( x + 1 \big) \big)^2 = 3 \big( \big( \frac{1}{2} x \big)^2 - \big( \frac{1}{<par min="2" max="10"/>} \big)^2 \big)^{2} $$'));
 //

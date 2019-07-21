@@ -12,7 +12,7 @@ use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\SubCategoryFunctionality;
 use App\Model\Repository\CategoryRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -30,19 +30,19 @@ class SubCategoryFormControl extends EntityFormControl
 
     /**
      * SubCategoryFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param SubCategoryFunctionality $subCategoryFunctionality
      * @param CategoryRepository $categoryRepository
      * @param bool $edit
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         SubCategoryFunctionality $subCategoryFunctionality, CategoryRepository $categoryRepository,
         bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit);
+        parent::__construct($validator, $edit);
         $this->functionality = $subCategoryFunctionality;
         $this->categoryRepository = $categoryRepository;
     }
@@ -76,7 +76,7 @@ class SubCategoryFormControl extends EntityFormControl
         $values = $form->values;
         $validateFields['label'] = new ValidatorArgument($values->label, 'stringNotEmpty');
         $validateFields['category'] = new ValidatorArgument($values->category, 'notEmpty');
-        $this->validationService->validate($form, $validateFields);
+        $this->validator->validate($form, $validateFields);
         $this->redrawErrors();
     }
 

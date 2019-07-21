@@ -12,7 +12,7 @@ namespace App\Components\Forms\ProblemTypeForm;
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\ProblemTypeFunctionality;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -25,18 +25,18 @@ class ProblemTypeFormControl extends EntityFormControl
 {
     /**
      * ProblemTypeFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param ProblemTypeFunctionality $problemTypeFunctionality
      * @param bool $edit
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         ProblemTypeFunctionality $problemTypeFunctionality,
         bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit);
+        parent::__construct($validator, $edit);
         $this->functionality = $problemTypeFunctionality;
     }
 
@@ -59,7 +59,7 @@ class ProblemTypeFormControl extends EntityFormControl
     {
         $values = $form->values;
         $validateFields['label'] = new ValidatorArgument($values->label, 'stringNotEmpty');
-        $this->validationService->validate($form, $validateFields);
+        $this->validator->validate($form, $validateFields);
         $this->redrawErrors();
     }
 

@@ -13,7 +13,7 @@ use App\Components\Forms\FormControl;
 use App\Model\Functionality\GroupFunctionality;
 use App\Model\Functionality\SuperGroupFunctionality;
 use App\Model\Repository\CategoryRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -41,7 +41,7 @@ class PermissionFormControl extends FormControl
 
     /**
      * PermissionFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupFunctionality $superGroupFunctionality
      * @param CategoryRepository $categoryRepository
@@ -49,13 +49,13 @@ class PermissionFormControl extends FormControl
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         GroupFunctionality $groupFunctionality, SuperGroupFunctionality $superGroupFunctionality,
         CategoryRepository $categoryRepository,
         bool $super = false
     )
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->functionality = $groupFunctionality;
         $this->superGroupFunctionality = $superGroupFunctionality;
         $this->categoryRepository = $categoryRepository;

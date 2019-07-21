@@ -9,7 +9,7 @@
 namespace App\Components\Forms;
 
 use App\Model\Functionality\BaseFunctionality;
-use App\Services\ValidationService;
+use App\Services\Validator;
 
 /**
  * Class BaseFormFactory
@@ -18,9 +18,9 @@ use App\Services\ValidationService;
 abstract class FormFactory
 {
     /**
-     * @var ValidationService
+     * @var Validator
      */
-    protected $validationService;
+    protected $validator;
 
     /**
      * @var BaseFunctionality
@@ -29,10 +29,10 @@ abstract class FormFactory
 
     /**
      * BaseFormFactory constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      */
-    public function __construct(ValidationService $validationService)
+    public function __construct(Validator $validator)
     {
-        $this->validationService = $validationService;
+        $this->validator = $validator;
     }
 }

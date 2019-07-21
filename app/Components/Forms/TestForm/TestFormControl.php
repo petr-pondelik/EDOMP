@@ -27,7 +27,7 @@ use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TestRepository;
 use App\Services\FileService;
 use App\Services\TestGeneratorService;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -128,7 +128,7 @@ class TestFormControl extends FormControl
 
     /**
      * TestFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param EntityManager $entityManager
      * @param TestRepository $testRepository
      * @param ProblemRepository $problemRepository
@@ -148,7 +148,7 @@ class TestFormControl extends FormControl
      */
     public function __construct
     (
-        ValidationService $validationService, EntityManager $entityManager,
+        Validator $validator, EntityManager $entityManager,
         TestRepository $testRepository,
         ProblemRepository $problemRepository, ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemFinalRepository,
         ProblemTypeRepository $problemTypeRepository,
@@ -159,7 +159,7 @@ class TestFormControl extends FormControl
         ILogoDragAndDropFactory $logoDragAndDropFactory, IProblemStackFactory $problemStackFactory
     )
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
 
         $this->entityManager = $entityManager;
         $this->testRepository = $testRepository;
@@ -339,7 +339,7 @@ class TestFormControl extends FormControl
         $validateFields['schoolYear'] = new ValidatorArgument($values->schoolYear, 'schoolYear');
         $validateFields['testNumber'] = new ValidatorArgument($values->testNumber, 'intNotNegative');
         $validateFields['testTerm'] = new ValidatorArgument($values->testTerm, 'notEmpty');
-        $this->validationService->validate($form, $validateFields);
+        $this->validator->validate($form, $validateFields);
         $this->redrawErrors();
     }
 

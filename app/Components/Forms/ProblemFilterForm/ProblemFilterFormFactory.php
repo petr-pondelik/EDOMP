@@ -12,7 +12,7 @@ namespace App\Components\Forms\ProblemFilterForm;
 use App\Components\Forms\FormFactory;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\SubCategoryRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 
 /**
  * Class ProblemFilterFormFactory
@@ -32,17 +32,17 @@ class ProblemFilterFormFactory extends FormFactory
 
     /**
      * ProblemFilterFormFactory constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param SubCategoryRepository $subCategoryRepository
      * @param DifficultyRepository $difficultyRepository
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         SubCategoryRepository $subCategoryRepository, DifficultyRepository $difficultyRepository
     )
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->subCategoryRepository = $subCategoryRepository;
         $this->difficultyRepository = $difficultyRepository;
     }
@@ -54,7 +54,7 @@ class ProblemFilterFormFactory extends FormFactory
     public function create(int $categoryId): ProblemFilterFormControl
     {
         return new ProblemFilterFormControl(
-            $this->validationService, $this->subCategoryRepository, $this->difficultyRepository, $categoryId
+            $this->validator, $this->subCategoryRepository, $this->difficultyRepository, $categoryId
         );
     }
 }

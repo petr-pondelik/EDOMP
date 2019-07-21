@@ -22,7 +22,7 @@ use App\Model\Functionality\SuperGroupFunctionality;
 use App\Model\Repository\SuperGroupRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\ComponentModel\IComponent;
 
 /**
@@ -52,9 +52,9 @@ class SuperGroupPresenter extends AdminPresenter
     protected $superGroupFormFactory;
 
     /**
-     * @var ValidationService
+     * @var Validator
      */
-    protected $validationService;
+    protected $validator;
 
     /**
      * SuperGroupPresenter constructor.
@@ -67,7 +67,7 @@ class SuperGroupPresenter extends AdminPresenter
      * @param SuperGroupFunctionality $superGroupFunctionality
      * @param SuperGroupGridFactory $superGroupGridFactory
      * @param SuperGroupFormFactory $superGroupFormFactory
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
@@ -76,7 +76,7 @@ class SuperGroupPresenter extends AdminPresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         SuperGroupRepository $superGroupRepository, SuperGroupFunctionality $superGroupFunctionality,
         SuperGroupGridFactory $superGroupGridFactory, SuperGroupFormFactory $superGroupFormFactory,
-        ValidationService $validationService,
+        Validator $validator,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
@@ -85,7 +85,7 @@ class SuperGroupPresenter extends AdminPresenter
         $this->superGroupFunctionality = $superGroupFunctionality;
         $this->superGroupGridFactory = $superGroupGridFactory;
         $this->superGroupFormFactory = $superGroupFormFactory;
-        $this->validationService = $validationService;
+        $this->validator = $validator;
     }
 
     /**

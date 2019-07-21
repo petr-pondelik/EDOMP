@@ -12,7 +12,7 @@ namespace App\Components\Forms\ProblemFilterForm;
 use App\Components\Forms\FormControl;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\SubCategoryRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -39,19 +39,19 @@ class ProblemFilterFormControl extends FormControl
 
     /**
      * ProblemFilterFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param SubCategoryRepository $subCategoryRepository
      * @param DifficultyRepository $difficultyRepository
      * @param int $categoryId
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         SubCategoryRepository $subCategoryRepository, DifficultyRepository $difficultyRepository,
         int $categoryId
     )
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->subCategoryRepository = $subCategoryRepository;
         $this->difficultyRepository = $difficultyRepository;
         $this->categoryId = $categoryId;

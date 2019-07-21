@@ -17,7 +17,7 @@ use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Services\MathService;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -61,7 +61,7 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
 
     /**
      * ArithmeticSeqTemplateFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param BaseFunctionality $functionality
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
@@ -73,7 +73,7 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
      */
     public function __construct
     (
-        ValidationService $validationService, BaseFunctionality $functionality, DifficultyRepository $difficultyRepository,
+        Validator $validator, BaseFunctionality $functionality, DifficultyRepository $difficultyRepository,
         ProblemTypeRepository $problemTypeRepository, SubCategoryRepository $subCategoryRepository,
         ProblemConditionRepository $problemConditionRepository, MathService $mathService,
         ConstHelper $constHelper, bool $edit = false
@@ -81,7 +81,7 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
     {
         parent::__construct
         (
-            $validationService, $functionality, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
+            $validator, $functionality, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
             $problemConditionRepository, $mathService, $constHelper, $edit
         );
         $this->typeId = $this->constHelper::ARITHMETIC_SEQ;

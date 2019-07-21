@@ -10,7 +10,7 @@ namespace App\Components\Forms\SuperGroupForm;
 
 use App\Components\Forms\FormFactory;
 use App\Model\Functionality\SuperGroupFunctionality;
-use App\Services\ValidationService;
+use App\Services\Validator;
 
 /**
  * Class SuperGroupFormFactory
@@ -20,12 +20,12 @@ class SuperGroupFormFactory extends FormFactory
 {
     /**
      * SuperGroupFormFactory constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param SuperGroupFunctionality $superGroupFunctionality
      */
-    public function __construct(ValidationService $validationService, SuperGroupFunctionality $superGroupFunctionality)
+    public function __construct(Validator $validator, SuperGroupFunctionality $superGroupFunctionality)
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->functionality = $superGroupFunctionality;
     }
 
@@ -35,6 +35,6 @@ class SuperGroupFormFactory extends FormFactory
      */
     public function create(bool $edit = false): SuperGroupFormControl
     {
-        return new SuperGroupFormControl($this->validationService, $this->functionality, $edit);
+        return new SuperGroupFormControl($this->validator, $this->functionality, $edit);
     }
 }

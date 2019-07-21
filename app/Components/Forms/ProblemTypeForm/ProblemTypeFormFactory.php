@@ -11,7 +11,7 @@ namespace App\Components\Forms\ProblemTypeForm;
 
 use App\Components\Forms\FormFactory;
 use App\Model\Functionality\ProblemTypeFunctionality;
-use App\Services\ValidationService;
+use App\Services\Validator;
 
 /**
  * Class ProblemTypeFormFactory
@@ -21,12 +21,12 @@ class ProblemTypeFormFactory extends FormFactory
 {
     /**
      * ProblemTypeFormFactory constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param ProblemTypeFunctionality $problemTypeFunctionality
      */
-    public function __construct(ValidationService $validationService, ProblemTypeFunctionality $problemTypeFunctionality)
+    public function __construct(Validator $validator, ProblemTypeFunctionality $problemTypeFunctionality)
     {
-        parent::__construct($validationService);
+        parent::__construct($validator);
         $this->functionality = $problemTypeFunctionality;
     }
 
@@ -36,6 +36,6 @@ class ProblemTypeFormFactory extends FormFactory
      */
     public function create(bool $edit = false): ProblemTypeFormControl
     {
-        return new ProblemTypeFormControl($this->validationService, $this->functionality, $edit);
+        return new ProblemTypeFormControl($this->validator, $this->functionality, $edit);
     }
 }

@@ -10,8 +10,11 @@
         <div n:snippet="usernameErrorSnippet" class="col-12">
             {var $form = $control['form']}
             <div n:if="$form->hasErrors()" class="mt-2">
-                <p n:foreach="$form['username']->errors as $error" class="alert alert-danger border-0">
+                <p n:foreach="$form['username']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                     {$error}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </p>
             </div>
         </div>
@@ -27,8 +30,11 @@
         <div n:snippet="passwordErrorSnippet" class="col-12">
             {var $form = $control['form']}
             <div n:if="$form->hasErrors()" class="mt-2">
-                <p n:foreach="$form['password']->errors as $error" class="alert alert-danger border-0">
+                <p n:foreach="$form['password']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                     {$error}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </p>
             </div>
         </div>
@@ -41,8 +47,11 @@
         <div n:snippet="signInErrorSnippet" class="col-12">
             {var $form = $control['form']}
             <div n:if="$form->hasErrors()" class="mt-4">
-                <p n:foreach="$form['signIn']->errors as $error" class="alert alert-danger border-0">
+                <p n:foreach="$form['signIn']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                     {$error}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </p>
             </div>
         </div>
@@ -51,7 +60,7 @@
         </div>
         {snippet flashesSnippet}
             <div class="col-12 mt-3">
-                <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} alert-dismissible fade show border-0">
+                <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} alert-dismissible fade show border-0" role="alert">
                     {$flash->message}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>

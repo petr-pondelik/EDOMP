@@ -13,7 +13,7 @@ use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\GroupFunctionality;
 use App\Model\Repository\SuperGroupRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -31,19 +31,19 @@ class GroupFormControl extends EntityFormControl
 
     /**
      * GroupFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupRepository $superGroupRepository
      * @param bool $edit
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         GroupFunctionality $groupFunctionality, SuperGroupRepository $superGroupRepository,
         bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit);
+        parent::__construct($validator, $edit);
         $this->functionality = $groupFunctionality;
         $this->superGroupRepository = $superGroupRepository;
     }
@@ -77,7 +77,7 @@ class GroupFormControl extends EntityFormControl
         $values = $form->values;
         $validateFields['label'] = new ValidatorArgument($values->label, 'stringNotEmpty');
         $validateFields['superGroup'] = new ValidatorArgument($values->superGroup, 'notEmpty');
-        $this->validationService->validate($form, $validateFields);
+        $this->validator->validate($form, $validateFields);
         $this->redrawErrors();
     }
 

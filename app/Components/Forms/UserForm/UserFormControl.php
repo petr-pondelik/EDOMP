@@ -14,7 +14,7 @@ use App\Components\Forms\EntityFormControl;
 use App\Model\Functionality\UserFunctionality;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\RoleRepository;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -37,7 +37,7 @@ class UserFormControl extends EntityFormControl
 
     /**
      * UserFormControl constructor.
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param UserFunctionality $userFunctionality
      * @param GroupRepository $groupRepository
      * @param RoleRepository $roleRepository
@@ -45,13 +45,13 @@ class UserFormControl extends EntityFormControl
      */
     public function __construct
     (
-        ValidationService $validationService,
+        Validator $validator,
         UserFunctionality $userFunctionality,
         GroupRepository $groupRepository, RoleRepository $roleRepository,
         bool $edit = false
     )
     {
-        parent::__construct($validationService, $edit);
+        parent::__construct($validator, $edit);
         $this->functionality = $userFunctionality;
         $this->groupRepository = $groupRepository;
         $this->roleRepository = $roleRepository;
@@ -144,7 +144,7 @@ class UserFormControl extends EntityFormControl
 //            'validation' => 'arrayNotEmpty'
 //        ]);
 
-        $this->validationService->validate($form, $validateFields);
+        $this->validator->validate($form, $validateFields);
 
         $this->redrawErrors();
     }

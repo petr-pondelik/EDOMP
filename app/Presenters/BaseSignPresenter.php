@@ -14,7 +14,7 @@ use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Components\Forms\SignForm\SignFormFactory;
 use App\Services\Authenticator;
-use App\Services\ValidationService;
+use App\Services\Validator;
 
 /**
  * Class BaseSignPresenter
@@ -28,9 +28,9 @@ abstract class BaseSignPresenter extends BasePresenter
     protected $authenticator;
 
     /**
-     * @var ValidationService
+     * @var Validator
      */
-    protected $validationService;
+    protected $validator;
 
     /**
      * @var SignFormFactory
@@ -48,20 +48,20 @@ abstract class BaseSignPresenter extends BasePresenter
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param SignFormFactory $signFormFactory
      */
     public function __construct
     (
         Authenticator $authenticator,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        ValidationService $validationService,
+        Validator $validator,
         SignFormFactory $signFormFactory
     )
     {
         parent::__construct($headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->authenticator = $authenticator;
-        $this->validationService = $validationService;
+        $this->validator = $validator;
         $this->signFormFactory = $signFormFactory;
     }
 

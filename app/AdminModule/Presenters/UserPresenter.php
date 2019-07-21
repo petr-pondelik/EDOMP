@@ -21,7 +21,7 @@ use App\Model\Functionality\UserFunctionality;
 use App\Model\Repository\UserRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
-use App\Services\ValidationService;
+use App\Services\Validator;
 use Nette\ComponentModel\IComponent;
 use Ublaboo\DataGrid\DataGrid;
 
@@ -42,9 +42,9 @@ class UserPresenter extends AdminPresenter
     protected $userFunctionality;
 
     /**
-     * @var ValidationService
+     * @var Validator
      */
-    protected $validationService;
+    protected $validator;
 
     /**
      * @var UserGridFactory
@@ -65,7 +65,7 @@ class UserPresenter extends AdminPresenter
      * @param FlashesTranslator $flashesTranslator
      * @param UserRepository $userRepository
      * @param UserFunctionality $userFunctionality
-     * @param ValidationService $validationService
+     * @param Validator $validator
      * @param UserGridFactory $userGridFactory
      * @param UserFormFactory $userFormFactory
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
@@ -75,7 +75,7 @@ class UserPresenter extends AdminPresenter
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         UserRepository $userRepository, UserFunctionality $userFunctionality,
-        ValidationService $validationService,
+        Validator $validator,
         UserGridFactory $userGridFactory, UserFormFactory $userFormFactory,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
@@ -83,7 +83,7 @@ class UserPresenter extends AdminPresenter
         parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->userRepository = $userRepository;
         $this->userFunctionality = $userFunctionality;
-        $this->validationService = $validationService;
+        $this->validator = $validator;
         $this->userGridFactory = $userGridFactory;
         $this->userFormFactory = $userFormFactory;
     }
