@@ -293,7 +293,7 @@ class TestPresenter extends AdminPresenter
         $control =  $this->testFormFactory->create();
         $control->onSuccess[] = function (){
             $this->informUser(new UserInformArgs('create'));
-            //$this->redirect('default');
+            $this->redirect('default');
         };
         $control->onError[] = function ($e){
             $this->informUser(new UserInformArgs('create', true, 'error', $e, false, 'testCreateForm'));
