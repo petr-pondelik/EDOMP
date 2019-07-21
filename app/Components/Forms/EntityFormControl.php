@@ -42,11 +42,11 @@ abstract class EntityFormControl extends FormControl
         $form = parent::createComponentForm();
 
         if ($this->edit) {
-            $form->addInteger("id", "ID")
-                ->setHtmlAttribute("class", "form-control")
+            $form->addInteger('id', 'ID')
+                ->setHtmlAttribute('class', 'form-control')
                 ->setDisabled();
 
-            $form->addHidden("id_hidden");
+            $form->addHidden('idHidden');
 
             $form->onSuccess[] = [$this, 'handleEditFormSuccess'];
         }

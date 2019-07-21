@@ -125,7 +125,7 @@ class LogoPresenter extends AdminPresenter
     public function setDefaults(IComponent $form, Logo $record): void
     {
         $form["id"]->setDefaultValue($record->getId());
-        $form["id_hidden"]->setDefaultValue($record->getId());
+        $form["idHidden"]->setDefaultValue($record->getId());
         $form["label"]->setDefaultValue($record->getLabel());
         $form["logo"]->setDefaultValue($record->getId());
     }

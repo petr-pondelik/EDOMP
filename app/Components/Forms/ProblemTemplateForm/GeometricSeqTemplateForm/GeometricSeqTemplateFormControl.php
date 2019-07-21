@@ -41,10 +41,22 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
      * @var array
      */
     protected $baseItems = [
-        'variable',
-        'subCategory',
-        'difficulty',
-        'firstN'
+        [
+            'field' => 'variable',
+            'validation' => 'variable'
+        ],
+        [
+            'field' => 'subCategory',
+            'validation' => 'notEmpty'
+        ],
+        [
+            'field' => 'difficulty',
+            'validation' => 'notEmpty'
+        ],
+        [
+            'field' => 'firstN',
+            'validation' => 'notEmptyPositive'
+        ]
     ];
 
     /**

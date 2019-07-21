@@ -136,7 +136,7 @@ class LogoFormControl extends EntityFormControl
             if($values->edit_logo && $values->logo){
                 $this->fileService->finalStore($values->logo);
             }
-            $this->functionality->update($values->id_hidden, ArrayHash::from([
+            $this->functionality->update($values->idHidden, ArrayHash::from([
                 'label' => $values->label
             ]));
             $this->onSuccess();

@@ -40,16 +40,28 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
      * @var array
      */
     protected $baseItems = [
-        'variable',
-        'subCategory',
-        'difficulty'
+        [
+            'field' => 'variable',
+            'validation' => 'variable'
+        ],
+        [
+            'field' => 'subCategory',
+            'validation' => 'notEmpty'
+        ],
+        [
+            'field' => 'difficulty',
+            'validation' => 'notEmpty'
+        ]
     ];
 
     /**
      * @var array
      */
     protected $baseItemsCondition = [
-        'variable'
+        [
+            'field' => 'variable',
+            'validation' => 'variable'
+        ]
     ];
 
     /**

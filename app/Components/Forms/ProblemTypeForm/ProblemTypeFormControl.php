@@ -92,7 +92,7 @@ class ProblemTypeFormControl extends EntityFormControl
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
         try {
-            $this->functionality->update($values->id_hidden, $values);
+            $this->functionality->update($values->idHidden, $values);
             $this->onSuccess();
         } catch (\Exception $e) {
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.

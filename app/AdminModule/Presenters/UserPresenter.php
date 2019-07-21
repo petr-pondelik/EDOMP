@@ -92,12 +92,12 @@ class UserPresenter extends AdminPresenter
      * @param int $id
      * @throws \Nette\Application\AbortException
      */
-    public function actionEdit(int $id)
+    public function actionEdit(int $id): void
     {
         $record = $this->userRepository->find($id);
-        if($this->user->isInRole("teacher") && !$this->authorizator->isUserAllowed($this->user->identity, $record)){
-            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
-            $this->redirect("Homepage:default");
+        if($this->user->isInRole('teacher') && !$this->authorizator->isUserAllowed($this->user->identity, $record)){
+            $this->flashMessage('Nedostatečná přístupová práva.', 'danger');
+            $this->redirect('Homepage:default');
         }
         $form = $this['userEditForm']['form'];
         if(!$form->isSubmitted()){
@@ -114,10 +114,10 @@ class UserPresenter extends AdminPresenter
     public function setDefaults(IComponent $form, User $user): void
     {
         $form['id']->setDefaultValue($user->getId());
-        $form['id_hidden']->setDefaultValue($user->getId());
+        $form['idHidden']->setDefaultValue($user->getId());
         $form['username']->setDefaultValue($user->getUsername());
-        $form['first_name']->setDefaultValue($user->getFirstName());
-        $form['last_name']->setDefaultValue($user->getLastName());
+        $form['firstName']->setDefaultValue($user->getFirstName());
+        $form['lastName']->setDefaultValue($user->getLastName());
         $form['role']->setDefaultValue($user->getRole()->getId());
         $form['groups']->setDefaultValue($user->getGroupsId());
     }

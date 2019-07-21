@@ -98,7 +98,7 @@ class SuperGroupFormControl extends EntityFormControl
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
-            $this->functionality->update($values->id_hidden, ArrayHash::from([
+            $this->functionality->update($values->idHidden, ArrayHash::from([
                 'label' => $values->label
             ]));
             $this->onSuccess();

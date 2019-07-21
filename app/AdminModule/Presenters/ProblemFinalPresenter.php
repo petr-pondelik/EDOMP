@@ -119,7 +119,7 @@ class ProblemFinalPresenter extends AdminPresenter
     private function setDefaults(IComponent $form, ProblemFinal $record): void
     {
         $form['id']->setDefaultValue($record->getId());
-        $form['id_hidden']->setDefaultValue($record->getId());
+        $form['idHidden']->setDefaultValue($record->getId());
         $form['is_generatable_hidden']->setDefaultValue($record->isGenerated());
         $form['textBefore']->setDefaultValue($record->getTextBefore());
         $form['textAfter']->setDefaultValue($record->getTextAfter());

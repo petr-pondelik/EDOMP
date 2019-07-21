@@ -113,7 +113,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     protected function setDefaults(IComponent $form, ProblemTemplate $record): void
     {
         $form['id']->setDefaultValue($record->getId());
-        $form['id_hidden']->setDefaultValue($record->getId());
+        $form['idHidden']->setDefaultValue($record->getId());
         $form['subCategory']->setDefaultValue($record->getSubCategory()->getId());
         $form['textBefore']->setDefaultValue($record->getTextBefore());
         $form['body']->setDefaultValue($record->getBody());

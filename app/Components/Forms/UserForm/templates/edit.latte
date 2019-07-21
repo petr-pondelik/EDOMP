@@ -17,7 +17,7 @@
             {input id}
         </div>
 
-        {input id_hidden}
+        {input idHidden}
 
         <div class="form-group">
             {label username}
@@ -33,18 +33,18 @@
         </div>
 
         <div class="form-group">
-            {label first_name}
-            {input first_name}
+            {label firstName}
+            {input firstName}
         </div>
 
         <div class="form-group">
-            {label last_name}
-            {input last_name}
+            {label lastName}
+            {input lastName}
         </div>
 
         <div class="form-group">
-            {label change_password}
-            {input change_password, "id" => "change-password-switch"}
+            {label changePassword}
+            {input changePassword, "id" => "change-password-switch"}
         </div>
 
         <div id="change-password-wrapper">
@@ -55,12 +55,12 @@
             </div>
 
             <div class="form-group">
-                {label password_confirm}
-                {input password_confirm}
+                {label passwordConfirm}
+                {input passwordConfirm}
                 {snippet passwordConfirmErrorSnippet}
                     {var $form = $control['form']}
                     <div n:if="$form->hasErrors()" class="mt-2">
-                        <p n:foreach="$form['password_confirm']->errors as $error" class="alert alert-danger border-0">
+                        <p n:foreach="$form['passwordConfirm']->errors as $error" class="alert alert-danger border-0">
                             {$error}
                         </p>
                     </div>

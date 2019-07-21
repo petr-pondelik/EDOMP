@@ -115,7 +115,7 @@ class SuperGroupPresenter extends AdminPresenter
     private function setDefaults(IComponent $form, SuperGroup $record): void
     {
         $form["id"]->setDefaultValue($record->getId());
-        $form["id_hidden"]->setDefaultValue($record->getId());
+        $form["idHidden"]->setDefaultValue($record->getId());
         $form["label"]->setDefaultValue($record->getLabel());
     }
 
