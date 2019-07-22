@@ -1,0 +1,9 @@
+parameters:
+    newtonApiHost: localhost:3000/
+
+doctrine:
+	user: root
+	password:
+	dbname: edomp
+	metadata:
+		App: %appDir%

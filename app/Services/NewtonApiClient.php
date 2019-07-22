@@ -29,7 +29,7 @@ class NewtonApiClient
      * @const string
      */
     // Devel
-    protected const NEWTON_API_URL = 'localhost:3000/';
+//    protected const NEWTON_API_URL = 'localhost:3000/';
     // Production
 //    protected const NEWTON_API_URL = 'https://edomp-newton-api.herokuapp.com/';
 
@@ -44,6 +44,11 @@ class NewtonApiClient
     protected const ZEROES = 'zeroes/';
 
     /**
+     * @var string
+     */
+    protected $newtonApiHost;
+
+    /**
      * @var Client
      */
     protected $client;
@@ -55,11 +60,13 @@ class NewtonApiClient
 
     /**
      * GuzzleHttpClient constructor.
+     * @param string $newtonApiHost
      * @param StringsHelper $stringsHelper
      */
-    public function __construct(StringsHelper $stringsHelper)
+    public function __construct(string $newtonApiHost, StringsHelper $stringsHelper)
     {
         $this->client = new Client();
+        $this->newtonApiHost = $newtonApiHost;
         $this->stringsHelper = $stringsHelper;
     }
 
@@ -77,10 +84,10 @@ class NewtonApiClient
         $expression = $this->stringsHelper::newtonFormat($expression);
         bdump($expression);
         try {
-            $res = $this->client->request('GET', self::NEWTON_API_URL . self::SIMPLIFY . $expression);
+            $res = $this->client->request('GET', $this->newtonApiHost . self::SIMPLIFY . $expression);
         } catch (RequestException $e){
             if($e instanceof ConnectException){
-                throw new NewtonApiUnreachableException(sprintf('NewtonAPI na adrese %s je nedostupné.', self::NEWTON_API_URL));
+                throw new NewtonApiUnreachableException(sprintf('NewtonAPI na adrese %s je nedostupné.', $this->newtonApiHost));
             }
             if($e instanceof ClientException){
                 throw new NewtonApiRequestException('Nevalidní požadavek na NewtonAPI.');
@@ -104,7 +111,7 @@ class NewtonApiClient
      */
     public function zeroes(string $expression)
     {
-        $res = $this->client->request('GET', self::NEWTON_API_URL . self::ZEROES . $expression);
+        $res = $this->client->request('GET', $this->newtonApiHost . self::ZEROES . $expression);
         return json_decode($res->getBody())->result;
     }
 
@@ -115,7 +122,7 @@ class NewtonApiClient
     public function ping(): bool
     {
         try{
-            $this->client->request('GET', self::NEWTON_API_URL);
+            $this->client->request('GET', $this->newtonApiHost);
         } catch (RequestException $e){
             return false;
         }

@@ -31,7 +31,10 @@ $configurator->createRobotLoader()
     ->addDirectory(__DIR__ . '/../tests')
 	->register();
 
+require __DIR__ . '/environment.php';
+
 $configurator->addConfig(__DIR__ . '/Config/config.neon');
+$configurator->addConfig(__DIR__ . '/Config/config.' . ENVIRONMENT . '.neon');
 $configurator->addConfig(__DIR__ . '/Config/config.local.neon');
 
 $configurator->addParameters([

@@ -1,0 +1,11 @@
+parameters:
+    newtonApiHost: https://edomp-newton-api.herokuapp.com/
+
+# Endora
+doctrine:
+    user: wiedzmin
+    password: rok!1929.PLZ
+    host: innodb.endora.cz
+    dbname: edomp
+    metadata:
+        App: %appDir%

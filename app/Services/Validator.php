@@ -210,9 +210,9 @@ class Validator
 
             'body' => function ($data) {
                 if (isset($data->variable)) {
-                    return $this->validateBody($data->body, $data->bodyType, $data->variable);
+                    return $this->validateBody($data->body, $data->bodyType, $data->variable, $data->problemType ?? null);
                 }
-                return $this->validateBody($data->body, $data->bodyType);
+                return $this->validateBody($data->body, $data->bodyType, $data->problemType ?? null);
             },
 
             'variable' => static function ($filledVal) {
@@ -450,6 +450,7 @@ class Validator
      * @param string $body
      * @param int $type
      * @param string|null $variable
+     * @param int|null $problemType
      * @return int
      * @throws InvalidParameterException
      * @throws \App\Exceptions\NewtonApiException
@@ -457,7 +458,7 @@ class Validator
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    private function validateBody(string $body, int $type, string $variable = null): int
+    private function validateBody(string $body, int $type, string $variable = null, int $problemType = null): int
     {
         if (empty($body)) {
             return 0;
@@ -474,7 +475,13 @@ class Validator
             //Validation over the parameters
             $this->validateParameters($parsed);
 
-            $split = $this->stringsHelper::splitByParameters($parsed);
+            // If the problem is sequence, look for the variable only in the right side of the equation
+            if(in_array($problemType, $this->constHelper::SEQUENCES, true)){
+                $split = $this->stringsHelper::splitByParameters(Strings::after($parsed, '='));
+            }
+            else{
+                $split = $this->stringsHelper::splitByParameters($parsed);
+            }
 
             if (empty($variable) || !$this->stringsHelper::containsVariable($split, $variable)) {
                 return 2;

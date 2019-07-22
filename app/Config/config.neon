@@ -193,7 +193,7 @@ services:
 	factory.section.help.modal: App\Components\SectionHelpModal\ISectionHelpModalFactory
 
 	#Services
-	service.newtopapi.client: App\Services\NewtonApiClient
+	service.newtopapi.client: App\Services\NewtonApiClient(%newtonApiHost%)
 	service.validation: App\Services\Validator
 	service.math: App\Services\MathService
 	service.generator: App\Services\GeneratorService

@@ -112,6 +112,7 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
         return ArrayHash::from([
             'body' => $values->body,
             'variable' => $values->variable,
+            'problemType' => $this->typeId,
             'bodyType' => $this->constHelper::BODY_TEMPLATE
         ]);
     }

@@ -3,7 +3,7 @@
 
 <h3 class="mt-4">Formát šablon</h3>
 <p>Šablony jsou zadávány ve formě jazyka LaTeX, jenž je rozšířený o možnost zadání generovatelných parametrů ve formě nepárového XML elementu.</p>
-<p>Jazyk LaTeX slouží pro strukturování a vizualizaci úloh, parametry tvoří z úlohy šablonu.</p>
+<p>Jazyk LaTeX slouží pro strukturování a vizualizaci úloh, parametry tvoří z úlohy šablonu. Šablony musí být obaleny LaTeX značkami pro matematický mód, a to z důvodu správného zobrazení úloh ve studentské části sbírky a ve vygenerovaných testech.</p>
 <p class="mt-5"><strong>Formát parametru:</strong></p>
 <p class="text-center">&lt;par min=&quot;<strong>D</strong>&quot; max=&quot;<strong>D</strong>&quot;/></p>
 <dl class="d-flex">
@@ -19,3 +19,47 @@
     <li>uvedení parametrů v rámci zadání úlohy</li>
     <li>případná volba podmínek šablony (pro vytvoření šablony je pak nutné ověřit jejich splnitelnost)</li>
 </ol>
+
+<h3 class="mt-4 mb-3">Podpora jazyka LaTeX</h3>
+<table class="table table-striped text-center tex2jax_ignore">
+    <tr>
+        <th scope="col">Značka</th>
+        <th scope="col">Zápisy</th>
+    </tr>
+    <tr>
+        <td>inline matematický mód</td>
+        <td>&#92;&#40; &#92;&#41;, &#36; &#36;, \begin&#123;math&#125; \end&#123;math&#125;</td>
+    </tr>
+    <tr>
+        <td>display metematický mód</td>
+        <td>\[ \], $$ $$, \begin&#123;equation&#125; \end&#123;equation&#125;</td>
+    </tr>
+    <tr>
+        <td>zlomek</td>
+        <td>\frac&#123;výraz&#125;&#123;výraz&#125;</td>
+    </tr>
+    <tr>
+        <td>horní index</td>
+        <td>^&#123;výraz&#125;</td>
+    </tr>
+    <tr>
+        <td>dolní index</td>
+        <td>_&#123;výraz&#125;</td>
+    </tr>
+    <tr>
+        <td>kulaté závorky</td>
+        <td>\big(, \Big(, \bigg(, \Bigg(\big), \Big), \bigg(, \Bigg)</td>
+    </tr>
+    <tr>
+        <td>hranaté závorky</td>
+        <td>\big[, \Big[, \bigg[, \Bigg[\big], \Big], \bigg], \Bigg]</td>
+    </tr>
+    <tr>
+        <td>složené závorky</td>
+        <td>\big&#123;, \Big&#123;, \bigg&#123;, \Bigg&#123; \big&#125;, \Big&#125;, \bigg&#125;, \Bigg&#125;</td>
+    </tr>
+    <tr>
+        <td>ostré závorky</td>
+        <td>\big \langle, \Big \langle \bigg \langle, \Bigg \langle \big \rangle, \Big \rangle \bigg \rangle, \Bigg \rangle</td>
+    </tr>
+</table>
