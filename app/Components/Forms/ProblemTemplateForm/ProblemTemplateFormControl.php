@@ -206,6 +206,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      */
     public function handleFormValidate(Form $form): void
     {
+        bdump('HANDLE FORM VALIDATE');
+
         $values = $form->getValues();
 
         // VALIDATE BASE ITEMS

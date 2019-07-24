@@ -28,14 +28,6 @@ class NewtonApiClient
     /**
      * @const string
      */
-    // Devel
-//    protected const NEWTON_API_URL = 'localhost:3000/';
-    // Production
-//    protected const NEWTON_API_URL = 'https://edomp-newton-api.herokuapp.com/';
-
-    /**
-     * @const string
-     */
     protected const SIMPLIFY = 'simplify/';
 
     /**
@@ -80,7 +72,8 @@ class NewtonApiClient
      */
     public function simplify(string $expression)
     {
-//        var_dump('SIMPLIFY');
+        bdump('SIMPLIFY');
+        bdump($expression);
         $expression = $this->stringsHelper::newtonFormat($expression);
         bdump($expression);
         try {

@@ -15,6 +15,7 @@ use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
 use App\Model\Entity\ProblemFinal;
 use App\Model\Repository\ProblemFinalRepository;
+use jlawrence\eos\Parser;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 use NXP\MathExecutor;
@@ -56,6 +57,11 @@ class MathService
     protected $problemFinalRepository;
 
     /**
+     * @var Parser
+     */
+    protected $parser;
+
+    /**
      * @var ConstHelper
      */
     protected $constHelper;
@@ -82,16 +88,19 @@ class MathService
      * @param ConstHelper $constHelper
      * @param StringsHelper $stringsHelper
      * @param LatexHelper $latexHelper
+     * @param Parser $parser
      */
     public function __construct
     (
         NewtonApiClient $newtonApiClient,
         ProblemFinalRepository $problemFinalRepository,
-        ConstHelper $constHelper, StringsHelper $stringsHelper, LatexHelper $latexHelper
+        ConstHelper $constHelper, StringsHelper $stringsHelper, LatexHelper $latexHelper,
+        Parser $parser
     )
     {
         $this->newtonApiClient = $newtonApiClient;
         $this->problemFinalRepository = $problemFinalRepository;
+        $this->parser = $parser;
         $this->constHelper = $constHelper;
         $this->stringsHelper = $stringsHelper;
         $this->latexHelper = $latexHelper;
@@ -128,7 +137,9 @@ class MathService
         if($aExp === ''){
             return '1';
         }
-        return $this->stringsHelper::trim($aExp, $this->stringsHelper::BRACKETS_SIMPLE);
+        bdump('A EXPRESSION');
+        bdump($aExp);
+        return $aExp;
     }
 
     /**
@@ -180,7 +191,9 @@ class MathService
                 return '0';
             }
         }
+        bdump($cExp);
         $cExp = $this->newtonApiClient->simplify($cExp);
+        bdump($cExp);
         return $this->stringsHelper::wrap($cExp);
     }
 
@@ -204,8 +217,7 @@ class MathService
      */
     public function evaluateExpression(string $expression)
     {
-        $executor = new MathExecutor();
-        return $executor->execute($this->stringsHelper::nxpFormat($expression));
+        return $this->parser::solve($expression);
     }
 
     /**

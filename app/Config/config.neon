@@ -202,6 +202,7 @@ services:
 	service.test.generator: App\Services\TestGeneratorService
 	service.authenticator: App\Services\Authenticator
 	service.authorizator: App\Services\Authorizator
+	service.eos.parser: jlawrence\eos\Parser
 
 	#Managers
 	manager.entity.constraint: App\Model\Manager\ConstraintEntityManager

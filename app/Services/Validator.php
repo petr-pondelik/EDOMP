@@ -563,7 +563,10 @@ class Validator
         }
 
         // Match string against the linear expression regexp
+        bdump($this->stringsHelper::getLinearEquationRegExp($variable));
+        bdump($standardized);
         $matches = Strings::match($standardized, '~' . $this->stringsHelper::getLinearEquationRegExp($variable) . '~');
+        bdump($matches);
 
         // Check if the whole expression was matched
         return $matches[0] === $standardized;
@@ -638,7 +641,6 @@ class Validator
     {
         bdump('VALIDATE ARITHMETIC SEQUENCE');
         $final = $this->newtonApiClient->simplify($final);
-        $final = $this->stringsHelper::nxpFormat($final, $variable);
 
         $a1 = $this->stringsHelper::passValues($final, [$variable => 1]);
         $a2 = $this->stringsHelper::passValues($final, [$variable => 2]);

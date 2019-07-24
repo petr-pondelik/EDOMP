@@ -25,6 +25,9 @@ class StringsHelper
     // Match parameter
     public const RE_PARAMETER = '(p(\d)+)';
 
+    // Match logarithm
+    public const RE_LOGARITHM = '(log\d+|log\([\d\+\-\*\/]+\))';
+
     // Match number, parameter or fraction with numbers and parameters
     public const RE_NUM_PAR_FRAC = '([\dp\+\-\*\(\)]+\/[\dp\+\-\*\(\)]+|[\dp\+\-\*\(\)]+|)';
 
@@ -60,12 +63,17 @@ class StringsHelper
      */
     public static function getLinearEquationRegExp(string $variable): string
     {
+        // Enable all basic equation symbols, logarithm sequence and equation variable
         return '('
             . self::RE_EQUATION_SYMBOLS
+            . '|'
+            . self::RE_LOGARITHM
             . ')*'
             . $variable
             . '('
             . self::RE_EQUATION_SYMBOLS
+            . '|'
+            . self::RE_LOGARITHM
             . ')*';
     }
 
@@ -77,10 +85,14 @@ class StringsHelper
     {
         return '('
             . self::RE_EQUATION_SYMBOLS
+            . '|'
+            . self::RE_LOGARITHM
             . ')*'
             . $variable . '\^2'
             . '('
             . '([\dp' . $variable . '\+\-\*\(\)\/\^])'
+            . '|'
+            . self::RE_LOGARITHM
             . ')*';
     }
 
@@ -211,24 +223,6 @@ class StringsHelper
     public static function newtonFractions(string $expression): string
     {
         return Strings::replace($expression, '~(\/)~', '(over)');
-    }
-
-    /**
-     * @param string $expression
-     * @param string|null $variable
-     * @return string
-     */
-    public static function nxpFormat(string $expression, string $variable = null): string
-    {
-        $expression = Strings::replace($expression, '~(\d)(\s)(p)~', '$1*$3');
-        $expression = Strings::replace($expression, '~(\d)(\s)(\d)~', '$1*$3');
-        $expression = Strings::replace($expression, '~(\d)(\s)(\(\s*)~', '$1*$3');
-        $expression = Strings::replace($expression, '~(\s*\))(\s)(\d)~', '$1*$3');
-        if($variable !== null){
-            $expression = Strings::replace($expression, '~(\d)(\s)(' . $variable . ')~', '$1*$3');
-            $expression = Strings::replace($expression, '~(' . $variable . ')(\s)(\d)~', '$1*$3');
-        }
-        return $expression;
     }
 
     /**

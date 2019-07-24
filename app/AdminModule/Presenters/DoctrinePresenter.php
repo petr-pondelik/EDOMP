@@ -48,6 +48,7 @@ use App\Presenters\BasePresenter;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use App\Services\Validator;
+use jlawrence\eos\Parser;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
@@ -122,6 +123,11 @@ class DoctrinePresenter extends AdminPresenter
     protected $testRepository;
 
     /**
+     * @var Parser
+     */
+    protected $parser;
+
+    /**
      * DoctrinePresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
@@ -154,7 +160,8 @@ class DoctrinePresenter extends AdminPresenter
         LatexHelper $latexHelper, StringsHelper $stringsHelper, TestVariantFunctionality $testVariantFunctionality,
         TestFunctionality $testFunctionality,
         TestRepository $testRepository,
-        ISectionHelpModalFactory $sectionHelpModalFactory
+        ISectionHelpModalFactory $sectionHelpModalFactory,
+        Parser $parser
     )
     {
         parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
@@ -170,6 +177,7 @@ class DoctrinePresenter extends AdminPresenter
         $this->testVariantFunctionality = $testVariantFunctionality;
         $this->testFunctionality = $testFunctionality;
         $this->testRepository = $testRepository;
+        $this->parser = $parser;
     }
 
     /**
@@ -177,6 +185,9 @@ class DoctrinePresenter extends AdminPresenter
      */
     public function actionDefault()
     {
+        bdump($this->parser::solve('5+4(1+2)+3+ln(e)'));
+        bdump($this->parser::solve('0^2 - 4 * 1/2 log(3) * (1/2 0 - 1/5 log(100))'));
+
 //        $test = $this->testFunctionality->create(ArrayHash::from([
 //            'logo_id' => 1,
 //            'term' => '1. pol.',

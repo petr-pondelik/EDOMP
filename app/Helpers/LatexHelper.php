@@ -395,6 +395,16 @@ class LatexHelper
      * @param string $latex
      * @return string
      */
+    public static function parseLogarithm(string $latex): string
+    {
+        bdump(Strings::match($latex, '~(\\\log(\d+|\([\d\+\-\*\/]+\)))~'));
+        return Strings::replace($latex, '~(\\\log(\d+|\([\d\+\-\*\/]+\)))~', 'log($2)');
+    }
+
+    /**
+     * @param string $latex
+     * @return string
+     */
     public static function trim(string $latex): string
     {
         $res = $latex;
@@ -412,21 +422,6 @@ class LatexHelper
 
     /**
      * @param string $latex
-     * @return string
-     */
-    public static function parseLatex(string $latex): string
-    {
-        $res = self::trim($latex);
-        $res = self::parseParentheses($res);
-        $res = self::parseFractions($res);
-        $res = self::parseSubscripts($res);
-        $res = self::parseSuperscripts($res);
-        bdump($res);
-        return $res;
-    }
-
-    /**
-     * @param string $latex
      * @return bool
      */
     public static function latexWrapped(string $latex): bool
@@ -439,5 +434,20 @@ class LatexHelper
             }
         }
         return false;
+    }
+
+    /**
+     * @param string $latex
+     * @return string
+     */
+    public static function parseLatex(string $latex): string
+    {
+        $res = self::trim($latex);
+        $res = self::parseParentheses($res);
+        $res = self::parseLogarithm($res);
+        $res = self::parseFractions($res);
+        $res = self::parseSubscripts($res);
+        $res = self::parseSuperscripts($res);
+        return $res;
     }
 }
