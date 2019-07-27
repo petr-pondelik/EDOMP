@@ -47,7 +47,7 @@ import './js/test-create-problems-stack';
  */
 
 
-//Import Font Awesome styles
+// //Import Font Awesome styles
 import '@fortawesome/fontawesome-free/css/all.css';
 
 

@@ -8,7 +8,7 @@ composer.lock
 package-lock.json
 
 data/
-www/dist/
+www/assets/
 www/data_public/
 
 node_modules/

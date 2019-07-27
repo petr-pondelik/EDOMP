@@ -1,5 +1,5 @@
 parameters:
-    imagesPath: 'assets/images/'
+    imagesPath: 'resources/images/'
     testMaxProblems: 20
 
 extensions:
@@ -11,7 +11,7 @@ extensions:
     doctrine: Kdyby\Doctrine\DI\OrmExtension
     assetMacro: Webrouse\AssetMacro\DI\Extension
     visualPaginator: IPub\VisualPaginator\DI\VisualPaginatorExtension
-
+    webpack: Oops\WebpackNetteAdapter\DI\WebpackExtension(%debugMode%)
 application:
 	errorPresenter: Error
 	mapping:
@@ -24,6 +24,15 @@ session:
 tracy:
     maxLength: 2000
     maxDepth: 5
+
+webpack:
+	build:
+		directory: %wwwDir%/dist
+		publicPath: /dist/
+	manifest:
+	    name: manifest.json
+	devServer:
+	    url: http://localhost:8080
 
 services:
 	router: App\RouterFactory::createRouter
