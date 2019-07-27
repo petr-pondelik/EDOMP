@@ -97,6 +97,8 @@ class ProblemFinalFunctionality extends BaseFunctionality
      */
     public function create(ArrayHash $data, array $conditions = null, bool $flush = true): ?Object
     {
+        bdump($data);
+
         $problem = new ProblemFinal();
         $problem->setTextBefore($data->textBefore);
         $problem->setBody($data->body);

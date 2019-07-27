@@ -11,6 +11,7 @@ namespace App\Services;
 
 use App\Helpers\ConstHelper;
 use App\Helpers\StringsHelper;
+use jlawrence\eos\Parser;
 use Nette\NotSupportedException;
 use Nette\Utils\ArrayHash;
 
@@ -21,9 +22,9 @@ use Nette\Utils\ArrayHash;
 class ConditionService
 {
     /**
-     * @var MathService
+     * @var Parser
      */
-    protected $mathService;
+    protected $parser;
 
     /**
      * @var StringsHelper
@@ -47,13 +48,13 @@ class ConditionService
 
     /**
      * ConditionService constructor.
-     * @param MathService $mathService
+     * @param Parser $parser
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      */
-    public function __construct(MathService $mathService, StringsHelper $stringsHelper, ConstHelper $constHelper)
+    public function __construct(Parser $parser, StringsHelper $stringsHelper, ConstHelper $constHelper)
     {
-        $this->mathService = $mathService;
+        $this->parser = $parser;
         $this->stringsHelper = $stringsHelper;
         $this->constHelper = $constHelper;
 
@@ -230,7 +231,7 @@ class ConditionService
                 $final = $this->stringsHelper::passValues($expression, [
                     'p0' =>  $i
                 ]);
-                if( $this->validationFunctions[$typeAccessor][$accessor]($this->mathService->evaluateExpression($final)) ){
+                if( $this->validationFunctions[$typeAccessor][$accessor]($this->parser::solve($final)) ){
                     $matches[$matchesCnt++] = [
                         'p0' => $i
                     ];
@@ -245,7 +246,7 @@ class ConditionService
                         'p0' => $i,
                         'p1' => $j
                     ]);
-                    if( $this->validationFunctions[$typeAccessor][$accessor]($this->mathService->evaluateExpression($final)) ){
+                    if( $this->validationFunctions[$typeAccessor][$accessor]($this->parser::solve($final)) ){
                         $matches[$matchesCnt++] = [
                             'p0' => $i,
                             'p1' => $j
@@ -264,7 +265,7 @@ class ConditionService
                             'p1' => $j,
                             'p2' => $k
                         ]);
-                        if( $this->validationFunctions[$typeAccessor][$accessor]($this->mathService->evaluateExpression($final)) ){
+                        if( $this->validationFunctions[$typeAccessor][$accessor]($this->parser::solve($final)) ){
                             $matches[$matchesCnt++] = [
                                 'p0' => $i,
                                 'p1' => $j,
@@ -287,7 +288,7 @@ class ConditionService
                                 'p2' => $k,
                                 'p3' => $l
                             ]);
-                            if( $this->validationFunctions[$typeAccessor][$accessor]($this->mathService->evaluateExpression($final)) ){
+                            if( $this->validationFunctions[$typeAccessor][$accessor]($this->parser::solve($final)) ){
                                 $matches[$matchesCnt++] = [
                                     'p0' => $i,
                                     'p1' => $j,
@@ -314,7 +315,7 @@ class ConditionService
                                     'p3' => $l,
                                     'p4' => $m,
                                 ]);
-                                if( $this->validationFunctions[$typeAccessor][$accessor]($this->mathService->evaluateExpression($final)) ){
+                                if( $this->validationFunctions[$typeAccessor][$accessor]($this->parser::solve($final)) ){
                                     $matches[$matchesCnt++] = [
                                         'p0' => $i,
                                         'p1' => $j,
@@ -345,7 +346,7 @@ class ConditionService
                                         'p4' => $m,
                                         'p5' => $n
                                     ]);
-                                    if( $this->validationFunctions[$typeAccessor][$accessor]($this->mathService->evaluateExpression($final)) ){
+                                    if( $this->validationFunctions[$typeAccessor][$accessor]($this->parser::solve($final)) ){
                                         $matches[$matchesCnt++] = [
                                             'p0' => $i,
                                             'p1' => $j,

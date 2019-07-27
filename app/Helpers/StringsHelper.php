@@ -18,23 +18,6 @@ use Nette\Utils\Strings;
  */
 class StringsHelper
 {
-
-    // Match operator or whitespace
-    public const RE_OPERATOR_WS = '(\+|\-|)';
-
-    // Match parameter
-    public const RE_PARAMETER = '(p(\d)+)';
-
-    // Match logarithm
-    public const RE_LOGARITHM = '(log\d+|log\([\d\+\-\*\/]+\))';
-
-    // Match number, parameter or fraction with numbers and parameters
-    public const RE_NUM_PAR_FRAC = '([\dp\+\-\*\(\)]+\/[\dp\+\-\*\(\)]+|[\dp\+\-\*\(\)]+|)';
-
-    // Match symbols allowed in standardized equation
-    public const RE_EQUATION_SYMBOLS = '[\dp\+\-\*\(\)\/\^]';
-
-
     public const LATEX_INLINE = 'latexInline';
     public const BRACKETS_SIMPLE = 'bracketsSimple';
     public const ADDITION = 'addition';
@@ -56,45 +39,6 @@ class StringsHelper
         'addition' => '+',
         'subtraction' => '-'
     ];
-
-    /**
-     * @param string $variable
-     * @return string
-     */
-    public static function getLinearEquationRegExp(string $variable): string
-    {
-        // Enable all basic equation symbols, logarithm sequence and equation variable
-        return '('
-            . self::RE_EQUATION_SYMBOLS
-            . '|'
-            . self::RE_LOGARITHM
-            . ')*'
-            . $variable
-            . '('
-            . self::RE_EQUATION_SYMBOLS
-            . '|'
-            . self::RE_LOGARITHM
-            . ')*';
-    }
-
-    /**
-     * @param string $variable
-     * @return string
-     */
-    public static function getQuadraticEquationRegExp(string $variable): string
-    {
-        return '('
-            . self::RE_EQUATION_SYMBOLS
-            . '|'
-            . self::RE_LOGARITHM
-            . ')*'
-            . $variable . '\^2'
-            . '('
-            . '([\dp' . $variable . '\+\-\*\(\)\/\^])'
-            . '|'
-            . self::RE_LOGARITHM
-            . ')*';
-    }
 
     /**
      * @param string $expression
@@ -170,9 +114,9 @@ class StringsHelper
 
     /**
      * @param string $expression
-     * @return false|string
+     * @return string
      */
-    public static function trimOperators(string $expression)
+    public static function trimOperators(string $expression): string
     {
         $expression = self::trim($expression, self::ADDITION);
         $expression = self::trim($expression, self::SUBTRACTION);
@@ -182,9 +126,9 @@ class StringsHelper
     /**
      * @param string $expression
      * @param string $type
-     * @return false|string
+     * @return string
      */
-    public static function trim(string $expression, $type = self::BRACKETS_SIMPLE)
+    public static function trim(string $expression, $type = self::BRACKETS_SIMPLE): string
     {
         $res = Strings::trim($expression);
         if(Strings::startsWith($res, self::PREFIXES[$type])){
@@ -204,25 +148,6 @@ class StringsHelper
     public static function wrap(string $expression, $wrapper = self::BRACKETS_SIMPLE): string
     {
         return self::PREFIXES[$wrapper] . $expression . self::SUFFIXES[$wrapper];
-    }
-
-    /**
-     * @param string $expression
-     * @return string
-     */
-    public static function newtonFormat(string $expression): string
-    {
-        $expression = self::newtonFractions($expression);
-        return $expression;
-    }
-
-    /**
-     * @param string $expression
-     * @return string
-     */
-    public static function newtonFractions(string $expression): string
-    {
-        return Strings::replace($expression, '~(\/)~', '(over)');
     }
 
     /**
@@ -344,7 +269,7 @@ class StringsHelper
                     $parametrized[$splitKey] = $splitItem;
                 }
                 else{
-                    $parametrized[$splitKey] = 'p'.$parametersCnt++;
+                    $parametrized[$splitKey] = 'p' . $parametersCnt++;
                 }
             }
         }
@@ -372,15 +297,14 @@ class StringsHelper
         $split[2] = self::trimOperators($split[2]);
         $split[2] = self::negateOperators($split[2]);
 
-        //Check if variable multiplier exists
+        // Check if variable multiplier exists
         if($split[0]){
-            $rightSide = '(' . $rightOp . $split[2] .')' . ' / ' . $split[0];
+            $rightSide = sprintf('(%s%s)/(%s)', $rightOp, $split[2], $split[0]);
         }
         else{
-            $rightSide = '(' . $rightOp . $split[2] .')';
+            $rightSide =  sprintf('(%s%s)', $rightOp, $split[2]);
         }
 
-        $rightSide = self::nxpFormat($rightSide);
         return $rightSide;
     }
 
@@ -425,7 +349,6 @@ class StringsHelper
     public static function isSequence(string $expression, string $variable): bool
     {
         bdump('IS SEQUENCE');
-        bdump($expression);
         if(!Strings::match($expression, '~^\s*\w' . $variable . '\s*=~')){
             return false;
         }

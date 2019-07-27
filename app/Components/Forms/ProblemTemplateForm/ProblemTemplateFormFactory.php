@@ -15,6 +15,7 @@ use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
+use App\Plugins\ProblemPlugin;
 use App\Services\MathService;
 use App\Services\Validator;
 

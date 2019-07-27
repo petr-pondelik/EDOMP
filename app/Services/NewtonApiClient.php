@@ -12,6 +12,7 @@ use App\Exceptions\NewtonApiException;
 use App\Exceptions\NewtonApiRequestException;
 use App\Exceptions\NewtonApiSyntaxException;
 use App\Exceptions\NewtonApiUnreachableException;
+use App\Helpers\NewtonParser;
 use App\Helpers\StringsHelper;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
@@ -46,20 +47,20 @@ class NewtonApiClient
     protected $client;
 
     /**
-     * @var StringsHelper
+     * @var NewtonParser
      */
-    protected $stringsHelper;
+    protected $newtonParser;
 
     /**
      * GuzzleHttpClient constructor.
      * @param string $newtonApiHost
-     * @param StringsHelper $stringsHelper
+     * @param NewtonParser $newtonParser
      */
-    public function __construct(string $newtonApiHost, StringsHelper $stringsHelper)
+    public function __construct(string $newtonApiHost, NewtonParser $newtonParser)
     {
         $this->client = new Client();
         $this->newtonApiHost = $newtonApiHost;
-        $this->stringsHelper = $stringsHelper;
+        $this->newtonParser = $newtonParser;
     }
 
     /**
@@ -73,9 +74,7 @@ class NewtonApiClient
     public function simplify(string $expression)
     {
         bdump('SIMPLIFY');
-        bdump($expression);
-        $expression = $this->stringsHelper::newtonFormat($expression);
-        bdump($expression);
+        $expression = $this->newtonParser::newtonFormat($expression);
         try {
             $res = $this->client->request('GET', $this->newtonApiHost . self::SIMPLIFY . $expression);
         } catch (RequestException $e){

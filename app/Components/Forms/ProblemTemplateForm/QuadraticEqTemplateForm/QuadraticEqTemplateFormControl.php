@@ -134,7 +134,7 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
     public function standardize(ArrayHash $values)
     {
         try{
-            $standardized = $this->mathService->standardizeEquation($values->body);
+            $standardized = $this->mathService->standardizeQuadraticEquation($values->body);
         } catch (\Exception $e){
             $this['form']['body']->addError($e->getMessage());
             return null;

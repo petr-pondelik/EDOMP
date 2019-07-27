@@ -29,7 +29,7 @@
 
         <div class="d-flex justify-content-center align-items-center flex-wrap px-3 px-lg-4 py-4 border">
             <ul id="problem-stack-{$id}" class="problem-stack m-0 list-unstyled">
-                <li n:foreach="$problems as $problem" class="col-12 d-inline-block mt-3 hover-pointer" data-problem-key="{$id}" data-problem-id="{$problem->getId()}">
+                <li n:foreach="$problems as $problem" class="col-12 d-inline-block mt-3 hover-pointer" id="problem" data-problem-key="{$id}" data-problem-id="{$problem->getId()}">
                     <div class="card card-shadow border-light">
                         <div class="d-flex align-items-center card-header py-0 problem-card-header">
                             {$problem->getProblemType()->getLabel()}

@@ -20,7 +20,7 @@ application:
 session:
 	expiration: 14 days
 
-# Set tracy max lenght for text dumps
+# Set tracy max lenght and depth for dumps
 tracy:
     maxLength: 2000
     maxDepth: 5
@@ -28,7 +28,7 @@ tracy:
 services:
 	router: App\RouterFactory::createRouter
 
-	#Repositories
+	# Repositories
 	repository.user:
 	    class: App\Model\Repository\UserRepository
 	    tags:
@@ -139,7 +139,7 @@ services:
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\TemplateJsonData
 
-	#Functionalities
+	# Functionalities
 	functionality.user: App\Model\Functionality\UserFunctionality
 	functionality.problem.final: App\Model\Functionality\ProblemFinalFunctionality
 	functionality.category: App\Model\Functionality\CategoryFunctionality
@@ -158,7 +158,7 @@ services:
 	functionality.test.variant: App\Model\Functionality\TestVariantFunctionality
 	functionality.template.jsondata: App\Model\Functionality\TemplateJsonDataFunctionality
 
-	#Factories
+	# Factories
 	factory.header.bar: App\Components\HeaderBar\HeaderBarFactory
 	factory.side.bar: App\Components\SideBar\SideBarFactory
 	factory.grid.user: App\Components\DataGrids\UserGridFactory
@@ -192,7 +192,7 @@ services:
 	factory.problem.stack: App\Components\ProblemStack\IProblemStackFactory
 	factory.section.help.modal: App\Components\SectionHelpModal\ISectionHelpModalFactory
 
-	#Services
+	# Services
 	service.newtopapi.client: App\Services\NewtonApiClient(%newtonApiHost%)
 	service.validation: App\Services\Validator
 	service.math: App\Services\MathService
@@ -204,13 +204,20 @@ services:
 	service.authorizator: App\Services\Authorizator
 	service.eos.parser: jlawrence\eos\Parser
 
-	#Managers
+	# Managers
 	manager.entity.constraint: App\Model\Manager\ConstraintEntityManager
 	manager.homepage.statistics: App\Model\Manager\HomepageStatisticsManager
 
-	#Helpers
+	# Helpers
 	helper.const: App\Helpers\ConstHelper
 	helper.strings: App\Helpers\StringsHelper
 	helper.latex: App\Helpers\LatexHelper
+	helper.parser.newton: App\Helpers\NewtonParser
 	helper.formatter: App\Helpers\FormatterHelper
 	helper.flashes.translator: App\Helpers\FlashesTranslator
+
+	# Plugins
+	plugin.template.equation.linear: App\Plugins\LinearEquationPlugin
+	plugin.template.equation.quadratic: App\Plugins\QuadraticEquationPlugin
+	plugin.template.sequence.arithmetic: App\Plugins\ArithmeticSequencePlugin
+	plugin.template.sequence.geometric: App\Plugins\GeometricSequencePlugin

@@ -8,6 +8,8 @@
 
 namespace App\Services;
 
+use App\Arguments\EquationValidateArgument;
+use App\Arguments\SequenceValidateArgument;
 use App\Exceptions\InvalidParameterException;
 use App\Exceptions\NewtonApiSyntaxException;
 use App\Exceptions\ProblemTemplateFormatException;
@@ -16,12 +18,14 @@ use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
 use App\Model\Functionality\TemplateJsonDataFunctionality;
 use App\Model\Repository\UserRepository;
+use App\Plugins\ArithmeticSequencePlugin;
+use App\Plugins\GeometricSequencePlugin;
+use App\Plugins\LinearEquationPlugin;
+use App\Plugins\QuadraticEquationPlugin;
 use Nette\Application\UI\Form;
 use Nette\NotSupportedException;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\Json;
 use Nette\Utils\Strings;
-use NXP\Exception\MathExecutorException;
 
 /**
  * Class Validator
@@ -80,6 +84,26 @@ class Validator
     protected $validationMessages;
 
     /**
+     * @var LinearEquationPlugin
+     */
+    protected $linearEquationPlugin;
+
+    /**
+     * @var QuadraticEquationPlugin
+     */
+    protected $quadraticEquationPlugin;
+
+    /**
+     * @var ArithmeticSequencePlugin
+     */
+    protected $arithmeticSequencePlugin;
+
+    /**
+     * @var GeometricSequencePlugin
+     */
+    protected $geometricSequencePlugin;
+
+    /**
      * Validator constructor.
      * @param NewtonApiClient $newtonApiClient
      * @param MathService $mathService
@@ -89,13 +113,21 @@ class Validator
      * @param ConstHelper $constHelper
      * @param StringsHelper $stringsHelper
      * @param LatexHelper $latexHelper
+     * @param LinearEquationPlugin $linearEquationPlugin
+     * @param QuadraticEquationPlugin $quadraticEquationPlugin
+     * @param ArithmeticSequencePlugin $arithmeticSequencePlugin
+     * @param GeometricSequencePlugin $geometricSequencePlugin
      */
     public function __construct
     (
         NewtonApiClient $newtonApiClient,
         MathService $mathService, ConditionService $conditionService,
         UserRepository $userRepository, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        ConstHelper $constHelper, StringsHelper $stringsHelper, LatexHelper $latexHelper
+        ConstHelper $constHelper, StringsHelper $stringsHelper, LatexHelper $latexHelper,
+        LinearEquationPlugin $linearEquationPlugin,
+        QuadraticEquationPlugin $quadraticEquationPlugin,
+        ArithmeticSequencePlugin $arithmeticSequencePlugin,
+        GeometricSequencePlugin $geometricSequencePlugin
     )
     {
         $this->newtonApiClient = $newtonApiClient;
@@ -106,6 +138,10 @@ class Validator
         $this->constHelper = $constHelper;
         $this->stringsHelper = $stringsHelper;
         $this->latexHelper = $latexHelper;
+        $this->linearEquationPlugin = $linearEquationPlugin;
+        $this->quadraticEquationPlugin = $quadraticEquationPlugin;
+        $this->arithmeticSequencePlugin = $arithmeticSequencePlugin;
+        $this->geometricSequencePlugin = $geometricSequencePlugin;
 
         $this->validationMapping = [
 
@@ -236,41 +272,41 @@ class Validator
                 return -1;
             },
 
-            'type_' . $this->constHelper::LINEAR_EQ => function ($filledVal) {
-                if (empty($filledVal)) {
+            'type_' . $this->constHelper::LINEAR_EQ => function ($data) {
+                if (empty($data)) {
                     return 0;
                 }
-                if (!$this->validateEquation($filledVal->standardized, $filledVal->variable, $this->constHelper::LINEAR_EQ)) {
+                if (!$this->validateLinearEquation(new EquationValidateArgument($data))) {
                     return 1;
                 }
                 return -1;
             },
 
-            'type_' . $this->constHelper::QUADRATIC_EQ => function ($filledVal) {
-                if (empty($filledVal)) {
+            'type_' . $this->constHelper::QUADRATIC_EQ => function ($data) {
+                if (empty($data)) {
                     return 0;
                 }
-                if (!$this->validateEquation($filledVal->standardized, $filledVal->variable, $this->constHelper::QUADRATIC_EQ)) {
+                if (!$this->validateQuadraticEquation(new EquationValidateArgument($data))) {
                     return 1;
                 }
                 return -1;
             },
 
-            'type_' . $this->constHelper::ARITHMETIC_SEQ => function ($filledVal) {
-                if (empty($filledVal)) {
+            'type_' . $this->constHelper::ARITHMETIC_SEQ => function ($data) {
+                if (empty($data)) {
                     return 0;
                 }
-                if (!$this->validateSequence($filledVal->body, $filledVal->standardized, $filledVal->variable, $this->constHelper::ARITHMETIC_SEQ)) {
+                if(!$this->validateArithmeticSequence(new SequenceValidateArgument($data))){
                     return 1;
                 }
                 return -1;
             },
 
-            'type_' . $this->constHelper::GEOMETRIC_SEQ => function ($filledVal) {
-                if (empty($filledVal)) {
+            'type_' . $this->constHelper::GEOMETRIC_SEQ => function ($data) {
+                if (empty($data)) {
                     return 0;
                 }
-                if (!$this->validateSequence($filledVal->body, $filledVal->standardized, $filledVal->variable, $this->constHelper::GEOMETRIC_SEQ)) {
+                if (!$this->validateGeometricSequence(new SequenceValidateArgument($data))) {
                     return 1;
                 }
                 return -1;
@@ -460,6 +496,8 @@ class Validator
      */
     private function validateBody(string $body, int $type, string $variable = null, int $problemType = null): int
     {
+        bdump('VALIDATE BODY');
+
         if (empty($body)) {
             return 0;
         }
@@ -470,14 +508,17 @@ class Validator
                 return 1;
             }
 
+            bdump($body);
             $parsed = $this->latexHelper::parseLatex($body);
+            bdump($parsed);
 
             //Validation over the parameters
             $this->validateParameters($parsed);
 
-            // If the problem is sequence, look for the variable only in the right side of the equation
+            // If the problem is sequence
             if(in_array($problemType, $this->constHelper::SEQUENCES, true)){
-                $split = $this->stringsHelper::splitByParameters(Strings::after($parsed, '='));
+                $split = $this->stringsHelper::splitByParameters($parsed);
+                $parsed = Strings::after($parsed, '=');
             }
             else{
                 $split = $this->stringsHelper::splitByParameters($parsed);
@@ -488,6 +529,8 @@ class Validator
             }
 
             $parametrized = $this->stringsHelper::getParametrized($parsed);
+
+            bdump($parametrized->expression);
 
             try {
                 $this->newtonApiClient->simplify($parametrized->expression);
@@ -529,151 +572,48 @@ class Validator
     }
 
     /**
-     * @param string $standardized
-     * @param string $variable
-     * @param int $eqType
+     * @param EquationValidateArgument $argument
      * @return bool
      */
-    public function validateEquation(string $standardized, string $variable, int $eqType): bool
+    public function validateLinearEquation(EquationValidateArgument $argument): bool
     {
-        switch ($eqType) {
-            case $this->constHelper::LINEAR_EQ:
-                return $this->validateLinearEquation($standardized, $variable);
-            case $this->constHelper::QUADRATIC_EQ:
-                return $this->validateQuadraticEquation($standardized, $variable);
-        }
-        return false;
+        return $this->linearEquationPlugin->validate($argument);
     }
 
     /**
-     * @param string $standardized
-     * @param string $variable
+     * @param EquationValidateArgument $argument
      * @return bool
      */
-    public function validateLinearEquation(string $standardized, string $variable): bool
+    public function validateQuadraticEquation(EquationValidateArgument $argument): bool
     {
-        bdump('VALIDATE LINEAR EQUATION');
-
-        // Remove all the spaces
-        $standardized = $this->stringsHelper::removeWhiteSpaces($standardized);
-
-        // Trivial fail case
-        if (Strings::match($standardized, '~' . $variable . '\^' . '~')) {
-            return false;
-        }
-
-        // Match string against the linear expression regexp
-        bdump($this->stringsHelper::getLinearEquationRegExp($variable));
-        bdump($standardized);
-        $matches = Strings::match($standardized, '~' . $this->stringsHelper::getLinearEquationRegExp($variable) . '~');
-        bdump($matches);
-
-        // Check if the whole expression was matched
-        return $matches[0] === $standardized;
+        return $this->quadraticEquationPlugin->validate($argument);
     }
 
     /**
-     * @param string $standardized
-     * @param string $variable
-     * @return bool
-     */
-    public function validateQuadraticEquation(string $standardized, string $variable): bool
-    {
-        bdump('VALIDATE QUADRATIC EQUATION');
-
-        // Remove all the spaces
-        $standardized = $this->stringsHelper::removeWhiteSpaces($standardized);
-
-        // Match string against the quadratic expression regexp
-        $matches = Strings::match($standardized, '~' . $this->stringsHelper::getQuadraticEquationRegExp($variable) . '~');
-
-        // Check if the whole expression was matched
-        return $matches[0] === $standardized;
-    }
-
-    /**
-     * @param string $expression
-     * @param string $standardized
-     * @param string $variable
-     * @param int $seqType
+     * @param SequenceValidateArgument $argument
      * @return bool
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function validateSequence(string $expression, string $standardized, string $variable, int $seqType): bool
+    public function validateArithmeticSequence(SequenceValidateArgument $argument): bool
     {
-        bdump('VALIDATE SEQUENCE');
-
-        if (!$this->stringsHelper::isSequence($this->latexHelper::parseLatex($expression), $variable)) {
-            return false;
-        }
-
-        $params = [];
-        $parametersInfo = $this->stringsHelper::extractParametersInfo($expression);
-        for ($i = 0; $i < $parametersInfo->count; $i++) {
-            $params['p' . $i] = ($i + 2);
-        }
-
-        $final = $this->stringsHelper::passValues($standardized, $params);
-
-        switch ($seqType) {
-            case $this->constHelper::ARITHMETIC_SEQ:
-                return $this->validateArithmeticSequence($final, $variable);
-            case $this->constHelper::GEOMETRIC_SEQ:
-                return $this->validateGeometricSequence($final, $variable);
-        }
-
-        return false;
+        bdump('TEST');
+        return $this->arithmeticSequencePlugin->validate($argument);
     }
 
     /**
-     * @param string $final
-     * @param string $variable
+     * @param SequenceValidateArgument $argument
      * @return bool
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function validateArithmeticSequence(string $final, string $variable): bool
+    public function validateGeometricSequence(SequenceValidateArgument $argument): bool
     {
-        bdump('VALIDATE ARITHMETIC SEQUENCE');
-        $final = $this->newtonApiClient->simplify($final);
-
-        $a1 = $this->stringsHelper::passValues($final, [$variable => 1]);
-        $a2 = $this->stringsHelper::passValues($final, [$variable => 2]);
-        $a3 = $this->stringsHelper::passValues($final, [$variable => 3]);
-
-        $diff1 = $this->mathService->evaluateExpression('(' . $a2 . ')' . ' - ' . '(' . $a1 . ')');
-        $diff2 = $this->mathService->evaluateExpression('(' . $a3 . ')' . ' - ' . '(' . $a2 . ')');
-
-        return round($diff1, 2) === round($diff2, 2);
-    }
-
-    /**
-     * @param string $expression
-     * @param string $variable
-     * @return bool
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function validateGeometricSequence(string $expression, string $variable): bool
-    {
-        $expression = $this->newtonApiClient->simplify($expression);
-        $expression = $this->stringsHelper::nxpFormat($expression, $variable);
-
-        $a1 = $this->stringsHelper::passValues($expression, [$variable => 1]);
-        $a2 = $this->stringsHelper::passValues($expression, [$variable => 2]);
-        $a3 = $this->stringsHelper::passValues($expression, [$variable => 3]);
-
-        $quot1 = $this->mathService->evaluateExpression('(' . $a2 . ')' . '/' . '(' . $a1 . ')');
-        $quot2 = $this->mathService->evaluateExpression('(' . $a3 . ')' . '/' . '(' . $a2 . ')');
-
-        return round($quot1, 2) === round($quot2, 2);
+        return $this->geometricSequencePlugin->validate($argument);
     }
 
     /**
@@ -686,36 +626,9 @@ class Validator
      * @throws \Nette\Utils\JsonException
      * @throws ProblemTemplateFormatException
      */
-    public function validateResultCond
-    (
-        int $accessor, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null
-    ): bool
+    public function validateResultCond(int $accessor, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null): bool
     {
-        $variableExp = $this->stringsHelper::getLinearVariableExpresion($standardized, $variable);
-
-        try {
-            $matches = $this->conditionService->findConditionsMatches([
-                $this->constHelper::RESULT => [
-                    $accessor => [
-                        'parametersInfo' => $parametersInfo,
-                        'variableExp' => $variableExp
-                    ]
-                ]
-            ]);
-        } catch (MathExecutorException $e) {
-            throw new ProblemTemplateFormatException('Zadán chybný formát šablony.');
-        }
-
-        if (!$matches) {
-            return false;
-        }
-
-        $jsonData = Json::encode($matches);
-        $this->templateJsonDataFunctionality->create(ArrayHash::from([
-            'jsonData' => $jsonData
-        ]), $problemId);
-
-        return true;
+        return $this->linearEquationPlugin->validateResultCond($accessor, $standardized, $variable, $parametersInfo, $problemId);
     }
 
     /**
@@ -731,32 +644,9 @@ class Validator
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Nette\Utils\JsonException
      */
-    private function validateDiscriminantCond
-    (
-        int $accessor, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null
-    ): bool
+    private function validateDiscriminantCond(int $accessor, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null): bool
     {
-        $discriminantExp = $this->mathService->getDiscriminantExpression($standardized, $variable);
-
-        $matches = $this->conditionService->findConditionsMatches([
-            $this->constHelper::DISCRIMINANT => [
-                $accessor => [
-                    'parametersInfo' => $parametersInfo,
-                    'discriminantExp' => $discriminantExp
-                ]
-            ]
-        ]);
-
-        if (!$matches) {
-            return false;
-        }
-
-        $jsonData = Json::encode($matches);
-        $this->templateJsonDataFunctionality->create(ArrayHash::from([
-            'jsonData' => $jsonData
-        ]), $problemId);
-
-        return true;
+        return $this->quadraticEquationPlugin->validateDiscriminantCond($accessor, $standardized, $variable, $parametersInfo, $problemId);
     }
 
     /**
@@ -835,5 +725,4 @@ class Validator
 
         return $form;
     }
-
 }

@@ -125,7 +125,7 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
     public function standardize(ArrayHash $values)
     {
         try{
-            $standardized = $this->mathService->standardizeSequence($values->body);
+            $standardized = $this->mathService->standardizeGeometricSequence($values->body);
         } catch (\Exception $e){
             $this['form']['body']->addError($e->getMessage());
             return null;

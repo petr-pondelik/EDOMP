@@ -309,7 +309,7 @@ class TestGeneratorService
                 $finalData['body'] = $generatedFinal;
                 $finalData['textAfter'] = $problem->getTextAfter();
                 $finalData['difficulty'] = $problem->getDifficulty()->getId();
-                $finalData['problemFinalType'] = $problem->getProblemType()->getId();
+                $finalData['problemType'] = $problem->getProblemType()->getId();
                 $finalData['subCategory'] = $problem->getSubCategory()->getId();
                 $finalData['problem_template_id'] = $problem->getId();
                 $finalData['is_generated'] = true;

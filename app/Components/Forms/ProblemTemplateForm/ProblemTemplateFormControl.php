@@ -220,12 +220,14 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         // STANDARDIZE THE INPUT
         if(!($standardized = $this->standardize($values))){
             $this->redrawErrors();
+            bdump('TEST');
             return;
         }
 
         // VALIDATE TYPE
         if(!$this->validateType($values, $standardized)){
             $this->redrawErrors();
+            bdump('VALIDATE TYPE ERROR');
             return;
         }
 
@@ -397,11 +399,11 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     }
 
     /**
-     * @param bool $submited
+     * @param bool $submitted
      */
-    public function redrawErrors(bool $submited = true): void
+    public function redrawErrors(bool $submitted = true): void
     {
-        parent::redrawErrors($submited);
+        parent::redrawErrors($submitted);
         $this->redrawControl('conditionsErrorSnippet');
         $this->redrawControl('flashesSnippet');
         $this->redrawControl('submitErrorSnippet');

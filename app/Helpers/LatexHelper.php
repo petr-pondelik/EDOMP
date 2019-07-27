@@ -397,7 +397,6 @@ class LatexHelper
      */
     public static function parseLogarithm(string $latex): string
     {
-        bdump(Strings::match($latex, '~(\\\log(\d+|\([\d\+\-\*\/]+\)))~'));
         return Strings::replace($latex, '~(\\\log(\d+|\([\d\+\-\*\/]+\)))~', 'log($2)');
     }
 
@@ -442,12 +441,14 @@ class LatexHelper
      */
     public static function parseLatex(string $latex): string
     {
+        bdump('PARSE LATEX');
         $res = self::trim($latex);
         $res = self::parseParentheses($res);
         $res = self::parseLogarithm($res);
-        $res = self::parseFractions($res);
         $res = self::parseSubscripts($res);
         $res = self::parseSuperscripts($res);
+        $res = self::parseFractions($res);
+        bdump($res);
         return $res;
     }
 }
