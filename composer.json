@@ -27,7 +27,6 @@
 		"guzzlehttp/guzzle": "^6.3",
 		"ext-zip": "^1.15",
 		"phospr/fraction": "^1.2",
-		"nxp/math-executor": "^0.7.2",
 		"ipub/visual-paginator": "@dev",
 		"kdyby/doctrine": "^4.0@dev",
 		"kdyby/events": "^3.1",
