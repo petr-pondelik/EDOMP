@@ -1,7 +1,5 @@
 <?php
 
-use Tracy\Debugger;
-
 require __DIR__ . '/../vendor/autoload.php';
 
 // DIRECTORY_SEPARATOR is PHP constant holding system dir. separator (\ for Win and / for Linux)

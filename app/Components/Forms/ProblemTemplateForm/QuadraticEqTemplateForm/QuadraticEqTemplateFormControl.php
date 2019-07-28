@@ -27,11 +27,6 @@ use Nette\Utils\ArrayHash;
 class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
 {
     /**
-     * @var string
-     */
-    protected $type = 'QuadraticEqTemplateForm';
-
-    /**
      * @var int
      */
     protected $typeId;

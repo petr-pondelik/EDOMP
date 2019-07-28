@@ -1,17 +1,10 @@
 parameters:
     newtonApiHost: localhost:3000/
 
-doctrine:
-	user: root
-	password:
-	dbname: edomp
-	metadata:
-		App: %appDir%
-
 webpack:
 	build:
-		directory: %wwwDir%/dist
-		publicPath: /dist/
+		directory: %wwwDir%/assets/dist
+		publicPath: /assets/dist/
 	manifest:
 	    name: manifest.json
 	devServer:

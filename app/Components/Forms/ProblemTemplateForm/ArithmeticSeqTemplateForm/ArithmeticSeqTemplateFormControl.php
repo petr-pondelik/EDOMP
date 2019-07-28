@@ -28,11 +28,6 @@ use Nette\Utils\ArrayHash;
 class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
 {
     /**
-     * @var string
-     */
-    protected $type = 'ArithmeticSeqTemplateForm';
-
-    /**
      * @var int
      */
     protected $typeId;

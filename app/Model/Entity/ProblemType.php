@@ -53,6 +53,14 @@ class ProblemType extends BaseEntity
      */
     protected $conditionTypes;
 
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     *
+     * @var string
+     */
+    protected $stringKey;
+
     /**
      * ProblemType constructor.
      * @throws \Exception

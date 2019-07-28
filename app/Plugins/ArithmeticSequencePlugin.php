@@ -41,13 +41,13 @@ class ArithmeticSequencePlugin extends SequencePlugin
         for ($i = 0; $i < $parametersInfo->count; $i++) {
             $params['p' . $i] = ($i + 2);
         }
+//
+//        $final = $this->stringsHelper::passValues($data->standardized, $params);
+//
+//        bdump('VALIDATE ARITHMETIC SEQUENCE');
+//        $final = $this->newtonApiClient->simplify($final);
 
-        $final = $this->stringsHelper::passValues($data->standardized, $params);
-
-        bdump('VALIDATE ARITHMETIC SEQUENCE');
-        $final = $this->newtonApiClient->simplify($final);
-
-        bdump($final);
+        bdump($data->standardized);
 
         $a1 = $this->stringsHelper::passValues($final, [$data->variable => 1]);
         $a2 = $this->stringsHelper::passValues($final, [$data->variable => 2]);

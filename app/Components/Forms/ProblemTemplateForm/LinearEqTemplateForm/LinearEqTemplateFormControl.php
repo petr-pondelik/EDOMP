@@ -28,16 +28,6 @@ use Nette\Utils\ArrayHash;
 class LinearEqTemplateFormControl extends ProblemTemplateFormControl
 {
     /**
-     * @var string
-     */
-    protected $type = 'LinearEqTemplateForm';
-
-    /**
-     * @var int
-     */
-    protected $typeId;
-
-    /**
      * @var array
      */
     protected $baseItems = [
@@ -90,7 +80,7 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
             $validator, $functionality, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
             $problemConditionRepository, $mathService, $constHelper, $edit
         );
-        $this->typeId = $this->constHelper::LINEAR_EQ;
+        $this->problemType = $this->problemTypeRepository->find($this->constHelper::LINEAR_EQ);
     }
 
     /**

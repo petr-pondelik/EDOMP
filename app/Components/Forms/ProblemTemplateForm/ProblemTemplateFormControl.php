@@ -14,6 +14,7 @@ use App\Components\Forms\EntityFormControl;
 use App\Exceptions\NewtonApiException;
 use App\Exceptions\ProblemTemplateFormatException;
 use App\Helpers\ConstHelper;
+use App\Model\Entity\ProblemType;
 use App\Model\Functionality\BaseFunctionality;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
@@ -62,14 +63,9 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     protected $constHelper;
 
     /**
-     * @var string
+     * @var ProblemType
      */
-    protected $type;
-
-    /**
-     * @var int
-     */
-    protected $typeId;
+    protected $problemType;
 
     /**
      * @var array
@@ -159,6 +155,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         $form->addHidden('conditions_valid')
             ->setDefaultValue(1)
             ->setHtmlId('conditions_valid');
+
+        bdump($this->typeId);
 
         return $form;
     }
@@ -391,10 +389,10 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         }
 
         if($this->edit){
-            $this->template->render(__DIR__ . '/' . $this->type . '/templates/edit.latte');
+            $this->template->render(__DIR__ . '/' . $this->problemType . '/templates/edit.latte');
         }
         else{
-            $this->template->render(__DIR__ . '/' . $this->type . '/templates/create.latte');
+            $this->template->render(__DIR__ . '/' . $this->problemType . '/templates/create.latte');
         }
     }
 

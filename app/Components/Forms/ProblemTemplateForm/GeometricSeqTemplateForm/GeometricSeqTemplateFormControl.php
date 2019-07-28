@@ -28,11 +28,6 @@ use Nette\Utils\ArrayHash;
 class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
 {
     /**
-     * @var string
-     */
-    protected $type = 'GeometricSeqTemplateForm';
-
-    /**
      * @var int
      */
     protected $typeId;
