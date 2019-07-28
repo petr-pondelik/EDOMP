@@ -41,6 +41,7 @@ abstract class SequencePlugin extends ProblemPlugin
     public function standardize(string $expression): string
     {
         bdump('STANDARDIZE SEQUENCE');
+        bdump($expression);
         $expression = $this->latexHelper::parseLatex($expression);
         $parametrized = $this->stringsHelper::getParametrized($expression);
         $sides = $this->stringsHelper::getEquationSides($parametrized->expression);
@@ -78,10 +79,12 @@ abstract class SequencePlugin extends ProblemPlugin
         $firstN = $problem->getFirstN();
         $res = [];
 
-        $sides->right = Strings::replace($sides->right, '~(\d)(' . $variable . ')~', '$1*$2');
-        $sides->right = Strings::replace($sides->right, '~(\d)(' . $variable . ')~', '$1*$2');
-        $sides->right = Strings::replace($sides->right, '~(\d)\s*(' . $variable . ')~', '$1*$2');
-        $sides->right = Strings::replace($sides->right, '~(\s*\))(' . $variable . ')~', '$1*$2');
+//        $sides->right = Strings::replace($sides->right, '~(\d)(' . $variable . ')~', '$1*$2');
+//        $sides->right = Strings::replace($sides->right, '~(\d)(' . $variable . ')~', '$1*$2');
+//        $sides->right = Strings::replace($sides->right, '~(\d)\s*(' . $variable . ')~', '$1*$2');
+//        $sides->right = Strings::replace($sides->right, '~(\s*\))(' . $variable . ')~', '$1*$2');
+
+        $sides->right = $this->stringsHelper::fillMultipliers($sides->right, $variable);
 
         bdump($sides->right);
 

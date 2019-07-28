@@ -13,6 +13,7 @@ use App\Helpers\ConstHelper;
 use App\Model\Functionality\BaseFunctionality;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
+use App\Model\Repository\ProblemConditionTypeRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Plugins\ProblemPlugin;
@@ -41,6 +42,11 @@ abstract class ProblemTemplateFormFactory extends FormFactory
     protected $subCategoryRepository;
 
     /**
+     * @var ProblemConditionTypeRepository
+     */
+    protected $problemConditionTypeRepository;
+
+    /**
      * @var ProblemConditionRepository
      */
     protected $problemConditionRepository;
@@ -61,6 +67,7 @@ abstract class ProblemTemplateFormFactory extends FormFactory
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param SubCategoryRepository $subCategoryRepository
+     * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param MathService $mathService
      * @param ConstHelper $constHelper
@@ -69,7 +76,8 @@ abstract class ProblemTemplateFormFactory extends FormFactory
     (
         Validator $validator,
         DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
-        SubCategoryRepository $subCategoryRepository, ProblemConditionRepository $problemConditionRepository,
+        SubCategoryRepository $subCategoryRepository,
+        ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
         MathService $mathService, ConstHelper $constHelper
     )
     {
@@ -77,6 +85,7 @@ abstract class ProblemTemplateFormFactory extends FormFactory
         $this->difficultyRepository = $difficultyRepository;
         $this->problemTypeRepository = $problemTypeRepository;
         $this->subCategoryRepository = $subCategoryRepository;
+        $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->mathService = $mathService;
         $this->constHelper = $constHelper;

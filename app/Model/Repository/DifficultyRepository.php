@@ -8,8 +8,6 @@
 
 namespace App\Model\Repository;
 
-use App\Model\Entity\Difficulty;
-
 /**
  * Class DifficultyRepository
  * @package App\Model\Repository

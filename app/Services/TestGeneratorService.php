@@ -185,14 +185,14 @@ class TestGeneratorService
             'test' => $test
         ]));
 
-        //Array of chosen final problems IDs
+        // Array of chosen final problems IDs
         $usedFinals = [];
 
         for($i = 0; $i < $data->problems_cnt; $i++){
             $problemTemplate = null;
             $selectedProblems = $data['problem_' . $i];
 
-            //In the case of random choice
+            // In the case of random choice
             if(!$selectedProblems){
 
                 // Get all problems that match filters

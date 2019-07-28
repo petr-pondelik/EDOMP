@@ -12,6 +12,7 @@ use App\Model\Entity\QuadraticEqTempl;
 use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
+use App\Model\Repository\ProblemConditionTypeRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\QuadraticEqTemplRepository;
 use App\Model\Repository\SubCategoryRepository;
@@ -32,6 +33,7 @@ class QuadraticEqTemplFunctionality extends BaseFunctionality
      * @param ConstraintEntityManager $entityManager
      * @param QuadraticEqTemplRepository $repository
      * @param ProblemTypeRepository $problemTypeRepository
+     * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param DifficultyRepository $difficultyRepository
      * @param SubCategoryRepository $subCategoryRepository
@@ -41,13 +43,15 @@ class QuadraticEqTemplFunctionality extends BaseFunctionality
     (
         ConstraintEntityManager $entityManager,
         QuadraticEqTemplRepository $repository,
-        ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
+        ProblemTypeRepository $problemTypeRepository,
+        ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
         TemplateJsonDataRepository $templateJsonDataRepository
     )
     {
         parent::__construct($entityManager);
         $this->problemTypeRepository = $problemTypeRepository;
+        $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->difficultyRepository = $difficultyRepository;
         $this->subCategoryRepository = $subCategoryRepository;

@@ -349,9 +349,26 @@ class StringsHelper
     public static function isSequence(string $expression, string $variable): bool
     {
         bdump('IS SEQUENCE');
+        bdump($expression);
         if(!Strings::match($expression, '~^\s*\w' . $variable . '\s*=~')){
             return false;
         }
         return true;
+    }
+
+    /**
+     * @param string $expression
+     * @param string $variable
+     * @return string
+     */
+    public static function fillMultipliers(string $expression, string $variable): string
+    {
+        $expression = Strings::replace($expression, '~(\d)(' . $variable . ')~', '$1*$2');
+        $expression = Strings::replace($expression, '~(\d)(' . $variable . ')~', '$1*$2');
+        $expression = Strings::replace($expression, '~(\d)\s*(' . $variable . ')~', '$1*$2');
+        $expression = Strings::replace($expression, '~(\d)\s*(p\d+)~', '$1*$2');
+        $expression = Strings::replace($expression, '~(\))\s*(p\d+)~', '$1*$2');
+        $expression = Strings::replace($expression, '~(\d)\s+(\d)~', '$1*$2');
+        return Strings::replace($expression, '~(\s*\))(' . $variable . ')~', '$1*$2');
     }
 }

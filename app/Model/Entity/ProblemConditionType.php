@@ -50,6 +50,17 @@ class ProblemConditionType extends BaseEntity
     protected $problemTypes;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Assert\Type(
+     *     type="bool",
+     *     message="IsValidation must be {{ type }}."
+     * )
+     *
+     * @var bool
+     */
+    protected $isValidation = false;
+
+    /**
      * ProblemConditionType constructor.
      * @throws \Exception
      */

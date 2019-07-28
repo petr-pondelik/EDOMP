@@ -508,29 +508,18 @@ class Validator
                 return 1;
             }
 
-            bdump($body);
             $parsed = $this->latexHelper::parseLatex($body);
-            bdump($parsed);
 
             //Validation over the parameters
             $this->validateParameters($parsed);
 
-            // If the problem is sequence
-            if(in_array($problemType, $this->constHelper::SEQUENCES, true)){
-                $split = $this->stringsHelper::splitByParameters($parsed);
-                $parsed = Strings::after($parsed, '=');
-            }
-            else{
-                $split = $this->stringsHelper::splitByParameters($parsed);
-            }
+            $split = $this->stringsHelper::splitByParameters($parsed);
 
             if (empty($variable) || !$this->stringsHelper::containsVariable($split, $variable)) {
                 return 2;
             }
 
             $parametrized = $this->stringsHelper::getParametrized($parsed);
-
-            bdump($parametrized->expression);
 
             try {
                 $this->newtonApiClient->simplify($parametrized->expression);
@@ -592,14 +581,12 @@ class Validator
     /**
      * @param SequenceValidateArgument $argument
      * @return bool
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws ProblemTemplateFormatException
+     * @throws \App\Exceptions\EntityException
+     * @throws \Nette\Utils\JsonException
      */
     public function validateArithmeticSequence(SequenceValidateArgument $argument): bool
     {
-        bdump('TEST');
         return $this->arithmeticSequencePlugin->validate($argument);
     }
 

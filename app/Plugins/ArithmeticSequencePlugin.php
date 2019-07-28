@@ -9,8 +9,10 @@
 namespace App\Plugins;
 
 use App\Arguments\SequenceValidateArgument;
+use App\Exceptions\ProblemTemplateFormatException;
 use App\Model\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Json;
 
 /**
  * Class ArithmeticSequencePlugin
@@ -21,10 +23,9 @@ class ArithmeticSequencePlugin extends SequencePlugin
     /**
      * @param SequenceValidateArgument $data
      * @return bool
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws ProblemTemplateFormatException
+     * @throws \App\Exceptions\EntityException
+     * @throws \Nette\Utils\JsonException
      */
     public function validate(SequenceValidateArgument $data): bool
     {
@@ -32,31 +33,40 @@ class ArithmeticSequencePlugin extends SequencePlugin
             return false;
         }
 
-        $params = [];
+        bdump('VALIDATE ARITHMETIC SEQUENCE');
+
         $parametersInfo = $this->stringsHelper::extractParametersInfo($data->expression);
+//        $standardized = $this->newtonApiClient->simplify($data->standardized);
 
-        // TODO: LET THE CONDITION SERVICE FIND MATCHING PARAMETERS --> IF THERE IS NONE, SEQUENCE ISN'T ARITHMETIC
-        // TODO: WILL REQUIRE STORE JSON DATA INTO TEMPLATE JSON DATA --> MAKE FLAG (IS_VALIDATION_DATA) AND DURING CREATE, DO MERGE OF VALIDATION AND CONDITION JSON DATA
+        $a1 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 1]), $data->variable);
+        $a2 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 2]), $data->variable);
+        $a3 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 3]), $data->variable);
 
-        for ($i = 0; $i < $parametersInfo->count; $i++) {
-            $params['p' . $i] = ($i + 2);
+        // LET THE CONDITION SERVICE FIND MATCHING PARAMETERS --> IF THERE IS NONE, SEQUENCE ISN'T ARITHMETIC
+        // REQUIRE STORE JSON DATA INTO TEMPLATE JSON DATA --> FLAG (IS_VALIDATION_DATA) --> DURING TEMPLATE CREATE, MERGE VALIDATION AND CONDITION JSON DATA
+        try{
+            $matches = $this->conditionService->findConditionsMatches([
+                $this->constHelper::DIFFERENCE_VALIDATION => [
+                    $this->constHelper::DIFFERENCE_EXISTS => [
+                        'parametersInfo' => $parametersInfo,
+                        'data' => Json::encode([$a1, $a2, $a3])
+                    ]
+                ]
+            ]);
+        } catch (\Exception $e){
+            throw new ProblemTemplateFormatException('Zadán chybný formát šablony.');
         }
-//
-//        $final = $this->stringsHelper::passValues($data->standardized, $params);
-//
-//        bdump('VALIDATE ARITHMETIC SEQUENCE');
-//        $final = $this->newtonApiClient->simplify($final);
 
-        bdump($data->standardized);
+        if(!$matches){
+            return false;
+        }
 
-        $a1 = $this->stringsHelper::passValues($final, [$data->variable => 1]);
-        $a2 = $this->stringsHelper::passValues($final, [$data->variable => 2]);
-        $a3 = $this->stringsHelper::passValues($final, [$data->variable => 3]);
+        $matchesJson = Json::encode($matches);
+        $this->templateJsonDataFunctionality->create(ArrayHash::from([
+            'jsonData' => $matchesJson
+        ]), null, true);
 
-        $diff1 = $this->parser::solve('(' . $a2 . ')' . ' - ' . '(' . $a1 . ')');
-        $diff2 = $this->parser::solve('(' . $a3 . ')' . ' - ' . '(' . $a2 . ')');
-
-        return round($diff1, 2) === round($diff2, 2);
+        return true;
     }
 
     /**

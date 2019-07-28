@@ -11,11 +11,13 @@ namespace App\Model\Traits;
 use App\Model\Entity\ProblemTemplate;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
+use App\Model\Repository\ProblemConditionTypeRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Json;
 
 /**
  * Trait ProblemTemplateFunctionalityTrait
@@ -27,6 +29,11 @@ trait ProblemTemplateFunctionalityTrait
      * @var ProblemTypeRepository
      */
     protected $problemTypeRepository;
+
+    /**
+     * @var ProblemConditionTypeRepository
+     */
+    protected $problemConditionTypeRepository;
 
     /**
      * @var ProblemConditionRepository
@@ -90,14 +97,37 @@ trait ProblemTemplateFunctionalityTrait
                 $templateId = $this->repository->getSequenceVal();
             }
 
-            $templJsonData = null;
+            $templateJsonData = null;
 
-            if($jsonDataObj = $this->templateJsonDataRepository->findOneBy(['templateId' => $templateId])){
-                $templJsonData = $jsonDataObj->getJsonData();
+            if($templateJson = $this->templateJsonDataRepository->findOneBy(['templateId' => $templateId])){
+
+//                TODO: Make merge of all template recorded JSONs
+
+//                foreach ($templateJsons as $json){
+//                    $jsonArr = Json::decode($json->getJsonData(), Json::FORCE_ARRAY);
+////                    bdump($jsonArr);
+//                    if(!$templateJsonData){
+//                        $templateJsonData = $jsonArr;
+//                    }
+//                    else{
+//                        bdump($templateJsonData);
+//                        bdump($jsonArr);
+//                        foreach ($templateJsonData as $item){
+//                            if($jsonArr[0] !== $item){
+//                                array_shift($jsonArr);
+//                            }
+//                        }
+//                        bdump($jsonArr);
+//                        $templateJsonData = array_intersect($templateJsonData, $jsonArr);
+//                    }
+//                }
+//                bdump($templateJsonData);
+                $templateJsonData = $templateJson->getJsonData();
+
             }
 
-            if($attached->hasCondition){
-                $templ->setMatches($templJsonData);
+            if($attached->hasCondition || $templateJson->isValidation()){
+                $templ->setMatches($templateJsonData);
             }
             else{
                 $templ->setMatches(null);
@@ -130,12 +160,9 @@ trait ProblemTemplateFunctionalityTrait
     protected function attachConditions($templ, ArrayHash $data): ArrayHash
     {
         $hasCondition = false;
-
-        $type = $this->problemTypeRepository->find($data->type);
-        $problemCondTypes = $type->getConditionTypes()->getValues();
+        $problemCondTypes = $this->problemConditionTypeRepository->findNonValidation($data->type);
 
         foreach ($problemCondTypes as $problemCondType){
-
             //Get ConditionType ID
             $condTypeId = $problemCondType->getId();
 
@@ -153,7 +180,6 @@ trait ProblemTemplateFunctionalityTrait
             ]);
 
             $templ->addCondition($condition);
-
         }
 
         return ArrayHash::from([

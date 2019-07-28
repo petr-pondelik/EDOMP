@@ -14,10 +14,12 @@ use App\Components\Forms\EntityFormControl;
 use App\Exceptions\NewtonApiException;
 use App\Exceptions\ProblemTemplateFormatException;
 use App\Helpers\ConstHelper;
+use App\Model\Entity\ProblemConditionType;
 use App\Model\Entity\ProblemType;
 use App\Model\Functionality\BaseFunctionality;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
+use App\Model\Repository\ProblemConditionTypeRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Services\MathService;
@@ -48,6 +50,11 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     protected $subCategoryRepository;
 
     /**
+     * @var ProblemConditionTypeRepository
+     */
+    protected $problemConditionTypeRepository;
+
+    /**
      * @var ProblemConditionRepository
      */
     protected $problemConditionRepository;
@@ -63,9 +70,19 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     protected $constHelper;
 
     /**
+     * @var int
+     */
+    protected $problemTypeId;
+
+    /**
      * @var ProblemType
      */
     protected $problemType;
+
+    /**
+     * @var ProblemConditionType[]
+     */
+    protected $conditionTypes;
 
     /**
      * @var array
@@ -84,6 +101,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param SubCategoryRepository $subCategoryRepository
+     * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param MathService $mathService
      * @param ConstHelper $constHelper
@@ -94,7 +112,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         Validator $validator,
         BaseFunctionality $functionality,
         DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
-        SubCategoryRepository $subCategoryRepository, ProblemConditionRepository $problemConditionRepository,
+        SubCategoryRepository $subCategoryRepository,
+        ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
         MathService $mathService, ConstHelper $constHelper,
         bool $edit = false
     )
@@ -104,9 +123,21 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         $this->difficultyRepository = $difficultyRepository;
         $this->problemTypeRepository = $problemTypeRepository;
         $this->subCategoryRepository = $subCategoryRepository;
+        $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->mathService = $mathService;
         $this->constHelper = $constHelper;
+    }
+
+    /**
+     * @param int $problemTypeId
+     */
+    public function attachEntities(int $problemTypeId): void
+    {
+        $this->problemType = $this->problemTypeRepository->find($problemTypeId);
+
+        // Get condition types for user interaction by problemType ID
+        $this->conditionTypes = $this->problemConditionTypeRepository->findNonValidation($this->problemType->getId());
     }
 
     /**
@@ -121,6 +152,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         $subcategories = $this->subCategoryRepository->findAssoc([], 'id');
 
         $form->addHidden('type');
+        $form['type']->setDefaultValue($this->problemType->getId());
 
         $form->addSelect('subCategory', 'Podkategorie *', $subcategories)
             ->setPrompt('Zvolte podkategorii')
@@ -156,7 +188,12 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
             ->setDefaultValue(1)
             ->setHtmlId('conditions_valid');
 
-        bdump($this->typeId);
+        // Attach corresponding ProblemTypeConditions
+        foreach ($this->conditionTypes as $conditionType){
+            $form->addSelect('condition_' . $conditionType->getId(), $conditionType->getLabel(), $conditionType->getProblemConditions()->getValues())
+                ->setHtmlAttribute('class', 'form-control condition')
+                ->setHtmlId('condition-' . $conditionType->getId());
+        }
 
         return $form;
     }
@@ -216,7 +253,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         }
 
         // STANDARDIZE THE INPUT
-        if(!($standardized = $this->standardize($values))){
+        $standardized = $this->standardize($values);
+        if($standardized === null){
             $this->redrawErrors();
             bdump('TEST');
             return;
@@ -254,7 +292,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         }
 
         // STANDARDIZE THE INPUT
-        if(!($standardized = $this->standardize($values))){
+        $standardized = $this->standardize($values);
+        if($standardized === null){
             $this->redrawErrors(false);
             return;
         }
@@ -381,18 +420,12 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      */
     public function render(): void
     {
-        $types = $this->problemTypeRepository->findAssoc([], 'id');
-        $this->template->problemTypes = $types;
-        $this->template->condByProblemTypes = [];
-        foreach ($types as $key => $type){
-            $this->template->condByProblemTypes[$key] = $type->getConditionTypes()->getValues();
-        }
-
+        $this->template->conditionTypes = $this->conditionTypes;
         if($this->edit){
-            $this->template->render(__DIR__ . '/' . $this->problemType . '/templates/edit.latte');
+            $this->template->render(__DIR__ . '/' . $this->problemType->getFormName() . '/templates/edit.latte');
         }
         else{
-            $this->template->render(__DIR__ . '/' . $this->problemType . '/templates/create.latte');
+            $this->template->render(__DIR__ . '/' . $this->problemType->getFormName() . '/templates/create.latte');
         }
     }
 

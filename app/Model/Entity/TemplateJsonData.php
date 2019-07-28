@@ -22,7 +22,7 @@ class TemplateJsonData extends BaseEntity
     /**
      * @var string
      */
-    protected $toStringAttr = "jsonData";
+    protected $toStringAttr = 'jsonData';
 
     /**
      * @ORM\Column(type="json", nullable=true)
@@ -41,12 +41,23 @@ class TemplateJsonData extends BaseEntity
      * )
      * @Assert\Type(
      *     type="int",
-     *     message="TamplateId must be {{ type }}."
+     *     message="TemplateId must be {{ type }}."
      * )
      *
      * @var int
      */
     protected $templateId;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Assert\Type(
+     *     type="bool",
+     *     message="IsValidation must be {{ type }}."
+     * )
+     *
+     * @var bool
+     */
+    protected $isValidation;
 
     /**
      * @return string
@@ -78,5 +89,21 @@ class TemplateJsonData extends BaseEntity
     public function setTemplateId(int $templateId): void
     {
         $this->templateId = $templateId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValidation(): bool
+    {
+        return $this->isValidation;
+    }
+
+    /**
+     * @param bool $isValidation
+     */
+    public function setIsValidation(bool $isValidation): void
+    {
+        $this->isValidation = $isValidation;
     }
 }

@@ -13,6 +13,7 @@ use App\Model\Manager\ConstraintEntityManager;
 use App\Model\Repository\ArithmeticSeqTemplRepository;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
+use App\Model\Repository\ProblemConditionTypeRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Model\Repository\TemplateJsonDataRepository;
@@ -25,7 +26,6 @@ use Nette\Utils\ArrayHash;
  */
 class ArithmeticSeqTemplFunctionality extends BaseFunctionality
 {
-
     use ProblemTemplateFunctionalityTrait;
 
     /**
@@ -33,6 +33,7 @@ class ArithmeticSeqTemplFunctionality extends BaseFunctionality
      * @param ConstraintEntityManager $entityManager
      * @param ArithmeticSeqTemplRepository $repository
      * @param ProblemTypeRepository $problemTypeRepository
+     * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param DifficultyRepository $difficultyRepository
      * @param SubCategoryRepository $subCategoryRepository
@@ -42,13 +43,15 @@ class ArithmeticSeqTemplFunctionality extends BaseFunctionality
     (
         ConstraintEntityManager $entityManager,
         ArithmeticSeqTemplRepository $repository,
-        ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
+        ProblemTypeRepository $problemTypeRepository,
+        ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
         TemplateJsonDataRepository $templateJsonDataRepository
     )
     {
         parent::__construct($entityManager);
         $this->problemTypeRepository = $problemTypeRepository;
+        $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->difficultyRepository = $difficultyRepository;
         $this->subCategoryRepository = $subCategoryRepository;

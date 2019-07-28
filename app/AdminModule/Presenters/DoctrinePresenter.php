@@ -188,6 +188,8 @@ class DoctrinePresenter extends AdminPresenter
         bdump($this->parser::solve('5+4(1+2)+3+ln(e)'));
         bdump($this->parser::solve('0^2 - 4 * 1/2 log(3) * (1/2 0 - 1/5 log(100))'));
 
+        bdump($this->parser::solve('2^(1 - 2) * 3^(-1 + 2)'));
+
 //        $test = $this->testFunctionality->create(ArrayHash::from([
 //            'logo_id' => 1,
 //            'term' => '1. pol.',

@@ -27,7 +27,8 @@ class LinearEqTemplateFormFactory extends ProblemTemplateFormFactory
     {
         return new LinearEqTemplateFormControl(
             $this->validator, $functionality, $this->difficultyRepository, $this->problemTypeRepository,
-            $this->subCategoryRepository, $this->problemConditionRepository, $this->mathService, $this->constHelper, $edit
+            $this->subCategoryRepository, $this->problemConditionTypeRepository, $this->problemConditionRepository,
+            $this->mathService, $this->constHelper, $edit
         );
     }
 }

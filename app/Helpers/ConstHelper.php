@@ -35,6 +35,14 @@ class ConstHelper
     public const DISCRIMINANT_INTEGER = 4;
     public const DISCRIMINANT_POSITIVE_SQUARE = 5;
 
+    // Difference validation conditions constants
+    public const DIFFERENCE_VALIDATION = 3;
+    public const DIFFERENCE_EXISTS = 0;
+
+    // Quotient validation conditions constants
+    public const QUOTIENT_VALIDATION = 4;
+    public const QUOTIENT_EXISTS = 0;
+
     // Types constants
     public const LINEAR_EQ = 1;
     public const QUADRATIC_EQ = 2;

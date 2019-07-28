@@ -39,6 +39,13 @@ class ProblemCondition extends BaseEntity
     protected $accessor;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     *
+     * @var string|null
+     */
+    protected $validationFunction;
+
+    /**
      * @ORM\ManyToOne(targetEntity="ProblemConditionType", inversedBy="problemConditions", cascade={"persist", "merge"})
      * @Assert\NotBlank(
      *     message="ProblemConditionType can't be blank."
@@ -109,5 +116,21 @@ class ProblemCondition extends BaseEntity
     public function setProblemConditionType(ProblemConditionType $problemConditionType): void
     {
         $this->problemConditionType = $problemConditionType;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getValidationFunction(): ?string
+    {
+        return $this->validationFunction;
+    }
+
+    /**
+     * @param string|null $validationFunction
+     */
+    public function setValidationFunction(?string $validationFunction): void
+    {
+        $this->validationFunction = $validationFunction;
     }
 }

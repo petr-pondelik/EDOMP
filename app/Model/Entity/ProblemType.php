@@ -53,13 +53,12 @@ class ProblemType extends BaseEntity
      */
     protected $conditionTypes;
 
-
     /**
      * @ORM\Column(type="string", nullable=true)
      *
-     * @var string
+     * @var string|null
      */
-    protected $stringKey;
+    protected $formName;
 
     /**
      * ProblemType constructor.
@@ -119,5 +118,21 @@ class ProblemType extends BaseEntity
     public function setIsGeneratable(bool $isGeneratable): void
     {
         $this->isGeneratable = $isGeneratable;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFormName(): ?string
+    {
+        return $this->formName;
+    }
+
+    /**
+     * @param string|null $formName
+     */
+    public function setFormName(string $formName = null): void
+    {
+        $this->formName = $formName;
     }
 }

@@ -212,7 +212,7 @@ class QuadraticEquationPlugin extends EquationPlugin
             $this->constHelper::DISCRIMINANT => [
                 $accessor => [
                     'parametersInfo' => $parametersInfo,
-                    'discriminantExp' => $discriminantExp
+                    'data' => $discriminantExp
                 ]
             ]
         ]);

@@ -14,6 +14,7 @@ use App\Helpers\ConstHelper;
 use App\Model\Functionality\BaseFunctionality;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
+use App\Model\Repository\ProblemConditionTypeRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Services\MathService;
@@ -62,6 +63,7 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param SubCategoryRepository $subCategoryRepository
+     * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param MathService $mathService
      * @param ConstHelper $constHelper
@@ -71,37 +73,16 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
     (
         Validator $validator, BaseFunctionality $functionality, DifficultyRepository $difficultyRepository,
         ProblemTypeRepository $problemTypeRepository, SubCategoryRepository $subCategoryRepository,
-        ProblemConditionRepository $problemConditionRepository, MathService $mathService,
-        ConstHelper $constHelper, bool $edit = false
+        ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
+        MathService $mathService, ConstHelper $constHelper, bool $edit = false
     )
     {
         parent::__construct
         (
             $validator, $functionality, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
-            $problemConditionRepository, $mathService, $constHelper, $edit
+            $problemConditionTypeRepository, $problemConditionRepository, $mathService, $constHelper, $edit
         );
-        $this->problemType = $this->problemTypeRepository->find($this->constHelper::LINEAR_EQ);
-    }
-
-    /**
-     * @return Form
-     * @throws \Exception
-     */
-    public function createComponentForm(): Form
-    {
-        $form = parent::createComponentForm();
-
-        $resultConditions = $this->problemConditionRepository->findAssoc([
-            'problemConditionType.id' => $this->constHelper::RESULT
-        ], 'accessor');
-
-        $form->addSelect('condition_' . $this->constHelper::RESULT, 'Podmínka výsledku', $resultConditions)
-            ->setHtmlAttribute('class', 'form-control condition')
-            ->setHtmlId('condition-' . $this->constHelper::RESULT);
-
-        $form['type']->setDefaultValue($this->typeId);
-
-        return $form;
+        $this->attachEntities($this->constHelper::LINEAR_EQ);
     }
 
     /**

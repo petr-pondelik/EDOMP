@@ -14,6 +14,7 @@ use App\Helpers\ConstHelper;
 use App\Model\Functionality\BaseFunctionality;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
+use App\Model\Repository\ProblemConditionTypeRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Services\MathService;
@@ -61,6 +62,7 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param SubCategoryRepository $subCategoryRepository
+     * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param MathService $mathService
      * @param ConstHelper $constHelper
@@ -70,16 +72,16 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
     (
         Validator $validator, BaseFunctionality $functionality, DifficultyRepository $difficultyRepository,
         ProblemTypeRepository $problemTypeRepository, SubCategoryRepository $subCategoryRepository,
-        ProblemConditionRepository $problemConditionRepository, MathService $mathService,
-        ConstHelper $constHelper, bool $edit = false
+        ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
+        MathService $mathService, ConstHelper $constHelper, bool $edit = false
     )
     {
         parent::__construct
         (
             $validator, $functionality, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
-            $problemConditionRepository, $mathService, $constHelper, $edit
+            $problemConditionTypeRepository, $problemConditionRepository, $mathService, $constHelper, $edit
         );
-        $this->typeId = $this->constHelper::ARITHMETIC_SEQ;
+        $this->attachEntities($this->constHelper::ARITHMETIC_SEQ);
     }
 
     /**
@@ -94,8 +96,6 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte počet zkoumaných prvních členů.')
             ->setHtmlId('first-n');
-
-        $form['type']->setDefaultValue($this->typeId);
 
         return $form;
     }

@@ -9,8 +9,10 @@
 namespace App\Plugins;
 
 use App\Arguments\SequenceValidateArgument;
+use App\Exceptions\ProblemTemplateFormatException;
 use App\Model\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Json;
 
 /**
  * Class GeometricSequencePlugin
@@ -18,13 +20,12 @@ use Nette\Utils\ArrayHash;
  */
 class GeometricSequencePlugin extends SequencePlugin
 {
+
     /**
      * @param SequenceValidateArgument $data
      * @return bool
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \App\Exceptions\EntityException
+     * @throws \Nette\Utils\JsonException
      */
     public function validate(SequenceValidateArgument $data): bool
     {
@@ -32,36 +33,49 @@ class GeometricSequencePlugin extends SequencePlugin
             return false;
         }
 
-        $params = [];
+        bdump('VALIDATE GEOMETRIC SEQUENCE');
+
         $parametersInfo = $this->stringsHelper::extractParametersInfo($data->expression);
+
         // $$ q_n = \frac{n - <par min="1" max="1"/>}{n} $$
         // What if q_1 = 0???
-        for ($i = 0; $i < $parametersInfo->count; $i++) {
-            $params['p' . $i] = ($i + 2);
-        }
 
         bdump($data->standardized);
 
-        $final = $this->stringsHelper::passValues($data->standardized, $params);
+        $q1 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 1]), $data->variable);
+        $q2 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 2]), $data->variable);
+        $q3 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 3]), $data->variable);
 
-        bdump('VALIDATE GEOMETRIC SEQUENCE');
+        bdump($q1);
+        bdump($q2);
+        bdump($q3);
 
-        $final = $this->newtonApiClient->simplify($final);
-        bdump($final);
+//        try{
+            $matches = $this->conditionService->findConditionsMatches([
+                $this->constHelper::QUOTIENT_VALIDATION => [
+                    $this->constHelper::QUOTIENT_EXISTS => [
+                        'parametersInfo' => $parametersInfo,
+                        'data' => Json::encode([$q1, $q2, $q3])
+                    ]
+                ]
+            ]);
+//        } catch (\Exception $e){
+//
+//            throw new $e;
+//
+////            throw new ProblemTemplateFormatException('Zadán chybný formát šablony.');
+//        }
 
-        bdump('TEST');
+        if(!$matches){
+            return false;
+        }
 
-        $a1 = $this->stringsHelper::passValues($final, [$data->variable => 1]);
-        $a2 = $this->stringsHelper::passValues($final, [$data->variable => 2]);
-        $a3 = $this->stringsHelper::passValues($final, [$data->variable => 3]);
+        $matchesJson = Json::encode($matches);
+        $this->templateJsonDataFunctionality->create(ArrayHash::from([
+            'jsonData' => $matchesJson
+        ]), null, true);
 
-        bdump($this->parser::solve($a1));
-        bdump($this->parser::solve($a2));
-
-        $quot1 = $this->parser::solve('(' . $this->parser::solve($a2) . ')' . '/' . '(' . $this->parser::solve($a1) . ')');
-        $quot2 = $this->parser::solve('(' . $this->parser::solve($a3) . ')' . '/' . '(' . $this->parser::solve($a2) . ')');
-
-        return round($quot1, 2) === round($quot2, 2);
+        return true;
     }
 
     /**

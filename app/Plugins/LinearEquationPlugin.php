@@ -107,7 +107,7 @@ class LinearEquationPlugin extends EquationPlugin
                 $this->constHelper::RESULT => [
                     $accessor => [
                         'parametersInfo' => $parametersInfo,
-                        'variableExp' => $variableExp
+                        'data' => $variableExp
                     ]
                 ]
             ]);

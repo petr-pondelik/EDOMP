@@ -200,7 +200,7 @@ class GeneratorService
 
         if($matchesJson){
             // Generate params matching the conditions
-            $matchesArr = Json::decode($matchesJson, Json::FORCE_ARRAY);
+            $matchesArr = Json::decode($matchesJsons, Json::FORCE_ARRAY);
             $matchesCnt = count($matchesArr);
             $params = $matchesArr[$this->generateInteger(0, $matchesCnt - 1)];
         }
