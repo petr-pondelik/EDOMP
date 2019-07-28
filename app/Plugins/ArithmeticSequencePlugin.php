@@ -34,6 +34,10 @@ class ArithmeticSequencePlugin extends SequencePlugin
 
         $params = [];
         $parametersInfo = $this->stringsHelper::extractParametersInfo($data->expression);
+
+        // TODO: LET THE CONDITION SERVICE FIND MATCHING PARAMETERS --> IF THERE IS NONE, SEQUENCE ISN'T ARITHMETIC
+        // TODO: WILL REQUIRE STORE JSON DATA INTO TEMPLATE JSON DATA --> MAKE FLAG (IS_VALIDATION_DATA) AND DURING CREATE, DO MERGE OF VALIDATION AND CONDITION JSON DATA
+
         for ($i = 0; $i < $parametersInfo->count; $i++) {
             $params['p' . $i] = ($i + 2);
         }

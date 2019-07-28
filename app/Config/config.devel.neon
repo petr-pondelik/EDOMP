@@ -7,3 +7,12 @@ doctrine:
 	dbname: edomp
 	metadata:
 		App: %appDir%
+
+webpack:
+	build:
+		directory: %wwwDir%/dist
+		publicPath: /dist/
+	manifest:
+	    name: manifest.json
+	devServer:
+	    url: http://localhost:8080
