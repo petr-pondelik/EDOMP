@@ -4,6 +4,7 @@ const merge = require('webpack-merge');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const webpackConfig = require('./webpack.config');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const ROOT_DIR = path.resolve(__dirname, './../');
 const WWW_DIR = path.resolve(ROOT_DIR, 'www');
@@ -22,6 +23,6 @@ module.exports = merge(webpackConfig, {
         minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
     },
     plugins: [
-        new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.optimize.OccurrenceOrderPlugin()
     ].filter(Boolean),
 });

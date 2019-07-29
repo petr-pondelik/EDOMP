@@ -2,10 +2,6 @@
     JS MODULES
  */
 
-
-// Import jQuery modules
-// import 'jquery';
-
 // Import jQuery UI modules
 import 'jquery-ui-dist/jquery-ui';
 
@@ -47,7 +43,7 @@ import './js/test-create-problems-stack';
  */
 
 
-// //Import Font Awesome styles
+// Import Font Awesome styles
 import '@fortawesome/fontawesome-free/css/all.css';
 
 
@@ -74,9 +70,9 @@ import './scss/main.scss';
 //TODO: SCRIPTS NOW WORKING WITH ONE CONDITION TYPE FOR EACH PROTOTYPE (VALIDATION) -> NEED TO BE GENERALIZED
 //TODO: CREATE SCRIPT FILE FOR EACH LOGICAL SECTION AND INCLUDE IT HERE
 
-$(document).ready(() => {
-    $(document).find('#createModal .type-wrapper').hide();
-});
+// $(document).ready(() => {
+//     $(document).find('#createModal .type-wrapper').hide();
+// });
 
 //Admin section: Handle controls toggle for create and edit
 $(document).ready(() => {

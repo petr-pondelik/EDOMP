@@ -11,7 +11,7 @@ const ROOT_DIR = path.resolve(__dirname, './../');
 
 module.exports = {
     entry: {
-        app: path.resolve(ROOT_DIR, 'resources', 'app', 'app.jsx')
+        app: path.resolve(ROOT_DIR, 'resources', 'app', 'app.jsx'),
     },
     resolve: {
         modules: [
@@ -83,7 +83,17 @@ module.exports = {
         ]
     },
     optimization: {
-        runtimeChunk: false
+        runtimeChunk: false,
+        splitChunks: {
+            cacheGroups: {
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    enforce: true,
+                    chunks: 'all'
+                }
+            }
+        }
     },
     plugins: [
         // clean dist folder
@@ -96,8 +106,8 @@ module.exports = {
         new webpack.ProvidePlugin({
             Nette: 'nette-forms',
             'window.Nette': 'nette-forms',
-            $: 'jquery',
-            jQuery: 'jquery',
+            // $: 'jquery',
+            // jQuery: 'jquery',
             'window.jQuery': 'jquery',
             'window.FilePond': 'filepond',
             'FilePond': 'filepond',
