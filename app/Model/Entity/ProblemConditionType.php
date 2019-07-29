@@ -118,4 +118,20 @@ class ProblemConditionType extends BaseEntity
     {
         $this->prompt = $prompt;
     }
+
+    /**
+     * @return bool
+     */
+    public function isValidation(): bool
+    {
+        return $this->isValidation;
+    }
+
+    /**
+     * @param bool $isValidation
+     */
+    public function setIsValidation(bool $isValidation): void
+    {
+        $this->isValidation = $isValidation;
+    }
 }

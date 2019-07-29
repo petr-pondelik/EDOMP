@@ -22,6 +22,6 @@ module.exports = merge(webpackConfig, {
         minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
     },
     plugins: [
-        // new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.optimize.OccurrenceOrderPlugin(),
     ].filter(Boolean),
 });
