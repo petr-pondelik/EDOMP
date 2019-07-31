@@ -9,12 +9,3 @@ doctrine:
     dbname: edomp
     metadata:
         App: %appDir%
-
-webpack:
-	build:
-		directory: %wwwDir%/assets/dist
-		publicPath: /assets/dist/
-	manifest:
-	    name: manifest.json
-	devServer:
-	    enabled: false

@@ -17,14 +17,5 @@ module.exports = merge(webpackConfig, {
         headers: {
             'Access-Control-Allow-Origin': '*',
         }
-    },
-    output: {
-        path: DIST_DIR,
-        filename: '[name].[hash].js',
-        chunkFilename: '[name].[hash].js',
-    },
-    plugins: [
-        new webpack.NamedModulesPlugin(),
-        new webpack.HotModuleReplacementPlugin(),
-    ]
+    }
 });
