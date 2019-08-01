@@ -1,0 +1,12 @@
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (1, 1, 0, '2019-04-27 11:49:59', 'Bez omezení', null);
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (2, 1, 1, '2019-04-27 11:49:59', 'Kladný', 'positive');
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (3, 1, 2, '2019-04-27 11:49:59', 'Nulový', 'zero');
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (4, 1, 3, '2019-04-27 11:49:59', 'Záporný', 'negative');
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (5, 2, 0, '2019-04-27 11:49:59', 'Bez omezení', null);
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (6, 2, 1, '2019-04-27 11:49:59', 'Kladný', 'positive');
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (7, 2, 2, '2019-04-27 11:49:59', 'Nulový', 'zero');
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (8, 2, 3, '2019-04-27 11:49:59', 'Záporný', 'negative');
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (9, 2, 4, '2019-04-27 11:49:59', 'Celočíselný', 'integer');
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (10, 2, 5, '2019-04-27 11:49:59', 'Kladný a odmocnitelný', 'positiveSquare');
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (11, 3, 0, '2019-07-28 07:46:49', 'Existuje', 'differenceExists');
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (12, 4, 0, '2019-07-28 07:46:55', 'Existuje', 'quotientExists');

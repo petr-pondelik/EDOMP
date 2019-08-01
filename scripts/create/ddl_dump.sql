@@ -31,11 +31,12 @@ create table logo
 
 create table problem_condition_type
 (
-  id      int auto_increment
+  id            int auto_increment
     primary key,
-  prompt  varchar(255) null,
-  created datetime     not null,
-  label   varchar(255) not null
+  prompt        varchar(255) null,
+  created       datetime     not null,
+  label         varchar(255) not null,
+  is_validation tinyint(1)   null
 )
   collate = utf8_unicode_ci;
 
@@ -47,6 +48,7 @@ create table problem_condition
   accessor                  int          not null,
   created                   datetime     not null,
   label                     varchar(255) not null,
+  validation_function       varchar(255) null,
   constraint FK_22A086E4FF45F437
     foreign key (problem_condition_type_id) references problem_condition_type (id)
 )
@@ -61,7 +63,8 @@ create table problem_type
     primary key,
   is_generatable tinyint(1)   null,
   created        datetime     not null,
-  label          varchar(255) not null
+  label          varchar(255) not null,
+  form_name      varchar(255) null
 )
   collate = utf8_unicode_ci;
 
@@ -243,11 +246,12 @@ create index IDX_BCE3F79812469DE2
 
 create table template_json_data
 (
-  id          int auto_increment
+  id            int auto_increment
     primary key,
-  json_data   longtext null comment '(DC2Type:json)',
-  template_id int      not null,
-  created     datetime not null
+  json_data     longtext   null comment '(DC2Type:json)',
+  template_id   int        not null,
+  created       datetime   not null,
+  is_validation tinyint(1) null
 )
   collate = utf8_unicode_ci;
 
@@ -452,5 +456,3 @@ create index IDX_77C8B220A76ED395
 
 create index IDX_77C8B220FE54D947
   on user_group_rel (group_id);
-
-

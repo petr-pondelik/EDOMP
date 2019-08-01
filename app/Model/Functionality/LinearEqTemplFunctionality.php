@@ -69,7 +69,6 @@ class LinearEqTemplFunctionality extends BaseFunctionality
     {
         $entity = new LinearEqTempl();
         $entity = $this->setBaseValues($entity, $data);
-        return null;
         $entity->setVariable($data->variable);
         $this->em->persist($entity);
         $this->em->flush();

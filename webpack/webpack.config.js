@@ -100,14 +100,14 @@ module.exports = {
         new WebpackCleanupPlugin(),
         new ManifestPlugin(),
         new MiniCssExtractPlugin({
-            filename: '[name].[hash].css',
-            chunkFilename: '[id].[hash].css',
+            filename: '[name].[contenthash].css',
+            chunkFilename: '[name].[contenthash].css',
         }),
         new webpack.ProvidePlugin({
             Nette: 'nette-forms',
             'window.Nette': 'nette-forms',
-            // $: 'jquery',
-            // jQuery: 'jquery',
+            $: 'jquery',
+            jQuery: 'jquery',
             'window.jQuery': 'jquery',
             'window.FilePond': 'filepond',
             'FilePond': 'filepond',
