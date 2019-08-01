@@ -163,10 +163,7 @@ class ProblemFinalFormControl extends EntityFormControl
         // First validate problem body, if it's not generatable problem
         if(!$values->is_generatable_hidden){
             $validateFields['problemType'] = new ValidatorArgument($values->problemType, 'notEmpty', 'problemType');
-            $validateFields['body'] = new ValidatorArgument([
-                'body' => $values->body,
-                'bodyType' => $this->constHelper::BODY_FINAL
-            ], 'body');
+            $validateFields['body'] = new ValidatorArgument($values->body, 'notEmpty');
         }
         $validateFields['difficulty'] = new ValidatorArgument($values->difficulty, 'notEmpty', 'difficulty');
         $validateFields['subCategory'] = new ValidatorArgument($values->subCategory, 'notEmpty', 'subCategory');

@@ -20,16 +20,16 @@ use Nette\Utils\Json;
  */
 class GeometricSequencePlugin extends SequencePlugin
 {
-
     /**
      * @param SequenceValidateArgument $data
      * @return bool
+     * @throws ProblemTemplateFormatException
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      */
-    public function validate(SequenceValidateArgument $data): bool
+    public function validateType(SequenceValidateArgument $data): bool
     {
-        if(!parent::validate($data)){
+        if(!parent::validateType($data)){
             return false;
         }
 
@@ -40,17 +40,13 @@ class GeometricSequencePlugin extends SequencePlugin
         // $$ q_n = \frac{n - <par min="1" max="1"/>}{n} $$
         // What if q_1 = 0???
 
-        bdump($data->standardized);
-
         $q1 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 1]), $data->variable);
         $q2 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 2]), $data->variable);
         $q3 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 3]), $data->variable);
 
-        bdump($q1);
-        bdump($q2);
-        bdump($q3);
+        bdump([$q1, $q2, $q3]);
 
-//        try{
+        try{
             $matches = $this->conditionService->findConditionsMatches([
                 $this->constHelper::QUOTIENT_VALIDATION => [
                     $this->constHelper::QUOTIENT_EXISTS => [
@@ -59,12 +55,9 @@ class GeometricSequencePlugin extends SequencePlugin
                     ]
                 ]
             ]);
-//        } catch (\Exception $e){
-//
-//            throw new $e;
-//
-////            throw new ProblemTemplateFormatException('Zadán chybný formát šablony.');
-//        }
+        } catch (\Exception $e){
+            throw new ProblemTemplateFormatException('Zadán chybný formát šablony.');
+        }
 
         if(!$matches){
             return false;

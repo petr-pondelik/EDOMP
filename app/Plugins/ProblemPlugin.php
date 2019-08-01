@@ -8,7 +8,9 @@
 
 namespace App\Plugins;
 
+use App\Arguments\BodyArgument;
 use App\Arguments\ProblemValidateArgument;
+use App\Exceptions\InvalidParameterException;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
@@ -18,6 +20,7 @@ use App\Services\ConditionService;
 use App\Services\NewtonApiClient;
 use jlawrence\eos\Parser;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Strings;
 
 /**
  * Class ProblemPlugin
@@ -113,17 +116,38 @@ abstract class ProblemPlugin
     }
 
     /**
+     * @param string $expression
+     * @throws InvalidParameterException
+     */
+    protected function validateParameters(string $expression): void
+    {
+        $split = $this->stringsHelper::splitByParameters($expression, true);
+
+        if (count($split) <= 1) {
+            throw new InvalidParameterException('Zadaná šablona neobsahuje parametr.');
+        }
+
+        foreach ($split as $part) {
+            if ($part !== '' && Strings::startsWith($part, '<par')) {
+                if (!Strings::match($part, '~<par min="[0-9]+" max="[0-9]+"/>~')) {
+                    throw new InvalidParameterException('Zadaná šablona obsahuje nevalidní parametr.');
+                } else {
+                    $min = $this->stringsHelper::extractParAttr($part, 'min');
+                    $max = $this->stringsHelper::extractParAttr($part, 'max');
+                    if ($min > $max) {
+                        throw new InvalidParameterException('Neplatný interval parametru.');
+                    }
+                }
+            }
+        }
+
+    }
+
+    /**
      * @param string $variable
      * @return mixed
      */
     abstract public static function getRegExp(string $variable): string;
-
-//    /**
-//     * @param ProblemValidateArgument $data
-//     * @return bool
-//     */
-//    // TODO: Make Argument classes for validate method (by inheritance and general argument type)
-//    abstract public function validate(ProblemValidateArgument $data): bool;
 
     /**
      * @param string $expression
@@ -136,4 +160,10 @@ abstract class ProblemPlugin
      * @return ArrayHash
      */
     abstract public function evaluate(ProblemFinal $problem): ArrayHash;
+
+    /**
+     * @param BodyArgument $argument
+     * @return int
+     */
+    abstract public function validateBody(BodyArgument $argument): int;
 }

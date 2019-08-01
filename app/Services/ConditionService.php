@@ -107,17 +107,21 @@ class ConditionService
                 $values = Json::decode($values);
                 $diff1 = $this->parser::solve('(' . $values[1] . ')' . ' - ' . '(' . $values[0] . ')');
                 $diff2 = $this->parser::solve('(' . $values[2] . ')' . ' - ' . '(' . $values[1] . ')');
-                return round($diff1, 2) === round($diff2, 2);
+                return round($diff1, 5) === round($diff2, 5);
             },
 
             'quotientExists' => function ($values) {
-                // TODO: If the sequence starts with 0, it fails --> check $values[0] to zero value --> if $values[1] isn't zero too, than return false
                 $values = Json::decode($values);
                 $values[0] = $this->parser::solve($values[0]);
                 $values[1] = $this->parser::solve($values[1]);
+                $values[2] = $this->parser::solve($values[2]);
+                // If the sequence contains 0 --> check all values for zero value --> if all values aren't zero, return false
+                if($values[0] === 0 || $values[1] === 0 || $values[2] === 0){
+                    return !($values[0] !== 0 || $values[1] !== 0 || $values[2] !== 0);
+                }
                 $quot1 = $this->parser::solve('(' . $values[1] . ')' . '/' . '(' . $values[0] . ')');
                 $quot2 = $this->parser::solve('(' . $values[2] . ')' . '/' . '(' . $values[1] . ')');
-                return round($quot1, 2) === round($quot2, 2);
+                return round($quot1, 5) === round($quot2, 5);
             }
 
         ];

@@ -205,6 +205,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      */
     public function validateBaseItems(ArrayHash $values, bool $conditions = false): bool
     {
+        $validateFields = [];
         if(!$conditions){
             foreach ($this->baseItems as $item){
                 $validateFields[$item['field']] = new ValidatorArgument($values[$item['field']], $item['validation']);
@@ -215,7 +216,6 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
                 $validateFields[$item['field']] = new ValidatorArgument($values[$item['field']], $item['validation']);
             }
         }
-        $validateFields['body'] = new ValidatorArgument($this->collectBodyValidationData($values), 'body');
 
         try{
             $form = $this->validator->validate($this['form'], $validateFields);
@@ -248,6 +248,13 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         // VALIDATE BASE ITEMS
         if(!$this->validateBaseItems($values)){
             bdump('RETURN');
+            $this->redrawErrors();
+            return;
+        }
+
+        // VALIDATE BODY
+        if(!$this->validateBody($values)){
+            bdump('VALIDATE BODY');
             $this->redrawErrors();
             return;
         }
@@ -298,6 +305,9 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
             return;
         }
 
+        // VALIDATE BODY
+
+
         // VALIDATE TYPE
         if(!$this->validateType($values, $standardized)){
             $this->redrawErrors(false);
@@ -317,6 +327,30 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         $this->flashMessage('Podmínka je splnitelná.', 'success');
         $this->redrawControl('flashesSnippet');
         $this->presenter->payload->result = true;
+    }
+
+    /**
+     * @param ArrayHash $values
+     * @return bool
+     */
+    public function validateBody(ArrayHash $values): bool
+    {
+        $validateFields['body'] = new ValidatorArgument($this->collectBodyValidationData($values), 'body_' . $values->type);
+
+        try{
+            $form = $this->validator->validate($this['form'], $validateFields);
+        } catch (\Exception $e){
+            $this['form']['body']->addError($e->getMessage());
+            $this->redrawErrors();
+            return false;
+        }
+
+        if($form->hasErrors()){
+            $this->redrawErrors();
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -448,7 +482,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
     /**
      * @param ArrayHash $values
-     * @return ArrayHash
+     * @return array
      */
-    abstract public function collectBodyValidationData(ArrayHash $values): ArrayHash;
+    abstract public function collectBodyValidationData(ArrayHash $values): array;
 }

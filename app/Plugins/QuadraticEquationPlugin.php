@@ -129,7 +129,7 @@ class QuadraticEquationPlugin extends EquationPlugin
      * @param EquationValidateArgument $data
      * @return bool
      */
-    public function validate(EquationValidateArgument $data): bool
+    public function validateType(EquationValidateArgument $data): bool
     {
         bdump('VALIDATE QUADRATIC EQUATION');
 
@@ -198,6 +198,7 @@ class QuadraticEquationPlugin extends EquationPlugin
      * @param ArrayHash $parametersInfo
      * @param null $problemId
      * @return bool
+     * @throws \App\Exceptions\EntityException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException

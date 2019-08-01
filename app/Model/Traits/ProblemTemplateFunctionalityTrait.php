@@ -126,7 +126,9 @@ trait ProblemTemplateFunctionalityTrait
 
             }
 
-            if($attached->hasCondition || $templateJson->isValidation()){
+            bdump($templateJson);
+
+            if( $attached->hasCondition || ( $templateJson && $templateJson->isValidation()) ){
                 $templ->setMatches($templateJsonData);
             }
             else{

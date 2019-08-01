@@ -45,7 +45,7 @@ class LinearEquationPlugin extends EquationPlugin
      * @param EquationValidateArgument $data
      * @return bool
      */
-    public function validate(EquationValidateArgument $data): bool
+    public function validateType(EquationValidateArgument $data): bool
     {
         bdump('VALIDATE LINEAR EQUATION');
 
@@ -96,6 +96,7 @@ class LinearEquationPlugin extends EquationPlugin
      * @param null $problemId
      * @return bool
      * @throws ProblemTemplateFormatException
+     * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      */
     public function validateResultCond(int $accessor, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null): bool

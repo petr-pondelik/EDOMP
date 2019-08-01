@@ -27,16 +27,15 @@ class ArithmeticSequencePlugin extends SequencePlugin
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      */
-    public function validate(SequenceValidateArgument $data): bool
+    public function validateType(SequenceValidateArgument $data): bool
     {
-        if(!parent::validate($data)){
+        if(!parent::validateType($data)){
             return false;
         }
 
         bdump('VALIDATE ARITHMETIC SEQUENCE');
 
         $parametersInfo = $this->stringsHelper::extractParametersInfo($data->expression);
-//        $standardized = $this->newtonApiClient->simplify($data->standardized);
 
         $a1 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 1]), $data->variable);
         $a2 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 2]), $data->variable);

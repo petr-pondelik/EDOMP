@@ -8,10 +8,11 @@
 
 namespace App\Plugins;
 
+use App\Arguments\BodyArgument;
 use App\Arguments\SequenceValidateArgument;
+use App\Exceptions\NewtonApiSyntaxException;
 use App\Model\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\Strings;
 
 /**
  * Class SequencePlugin
@@ -41,12 +42,10 @@ abstract class SequencePlugin extends ProblemPlugin
     public function standardize(string $expression): string
     {
         bdump('STANDARDIZE SEQUENCE');
-        bdump($expression);
         $expression = $this->latexHelper::parseLatex($expression);
         $parametrized = $this->stringsHelper::getParametrized($expression);
         $sides = $this->stringsHelper::getEquationSides($parametrized->expression);
         $expression = $this->newtonApiClient->simplify($sides->right);
-        bdump($expression);
         return $expression;
     }
 
@@ -54,7 +53,7 @@ abstract class SequencePlugin extends ProblemPlugin
      * @param SequenceValidateArgument $data
      * @return bool
      */
-    public function validate(SequenceValidateArgument $data): bool
+    public function validateType(SequenceValidateArgument $data): bool
     {
         bdump('VALIDATE SEQUENCE');
         if (!$this->stringsHelper::isSequence($this->latexHelper::parseLatex($data->expression), $data->variable)) {
@@ -79,19 +78,9 @@ abstract class SequencePlugin extends ProblemPlugin
         $firstN = $problem->getFirstN();
         $res = [];
 
-//        $sides->right = Strings::replace($sides->right, '~(\d)(' . $variable . ')~', '$1*$2');
-//        $sides->right = Strings::replace($sides->right, '~(\d)(' . $variable . ')~', '$1*$2');
-//        $sides->right = Strings::replace($sides->right, '~(\d)\s*(' . $variable . ')~', '$1*$2');
-//        $sides->right = Strings::replace($sides->right, '~(\s*\))(' . $variable . ')~', '$1*$2');
-
         $sides->right = $this->stringsHelper::fillMultipliers($sides->right, $variable);
 
-        bdump($sides->right);
-
         for($i = 1; $i <= $firstN; $i++){
-            bdump($this->stringsHelper::passValues($sides->right, [
-                $variable => $i
-            ]));
             $res[$seqName . '_{' . $i . '}'] = $this->parser::solve(
                 $this->stringsHelper::passValues($sides->right, [
                     $variable => $i
@@ -103,5 +92,39 @@ abstract class SequencePlugin extends ProblemPlugin
             'seqName' => $seqName,
             'res' => $res
         ]);
+    }
+
+    /**
+     * @param BodyArgument $argument
+     * @return int
+     * @throws \App\Exceptions\InvalidParameterException
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function validateBody(BodyArgument $argument): int
+    {
+        if(!$this->latexHelper::latexWrapped($argument->body)){
+            return 1;
+        }
+        $parsed = $this->latexHelper::parseLatex($argument->body);
+
+        $this->validateParameters($argument->body);
+        $split = $this->stringsHelper::splitByParameters($parsed);
+
+        if (empty($argument->variable) || !$this->stringsHelper::containsVariable($split, $argument->variable)) {
+            return 2;
+        }
+
+        $parametrized = $this->stringsHelper::getParametrized($parsed);
+
+        try {
+            $this->newtonApiClient->simplify($parametrized->expression);
+        } catch (NewtonApiSyntaxException $e) {
+            return 3;
+        }
+
+        return -1;
     }
 }

@@ -101,16 +101,14 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
 
     /**
      * @param ArrayHash $values
-     * @return ArrayHash
+     * @return array
      */
-    public function collectBodyValidationData(ArrayHash $values): ArrayHash
+    public function collectBodyValidationData(ArrayHash $values): array
     {
-        return ArrayHash::from([
+        return [
             'body' => $values->body,
             'variable' => $values->variable,
-            'problemType' => $this->typeId,
-            'bodyType' => $this->constHelper::BODY_TEMPLATE
-        ]);
+        ];
     }
 
     /**

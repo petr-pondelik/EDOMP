@@ -8,6 +8,9 @@
 
 namespace App\Plugins;
 
+use App\Arguments\BodyArgument;
+use App\Exceptions\NewtonApiSyntaxException;
+
 /**
  * Class EquationPlugin
  * @package App\Plugins
@@ -34,5 +37,39 @@ abstract class EquationPlugin extends ProblemPlugin
         $expression = $this->newtonApiClient->simplify($expression);
         bdump($expression);
         return $expression;
+    }
+
+    /**
+     * @param BodyArgument $argument
+     * @return int
+     * @throws \App\Exceptions\InvalidParameterException
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function validateBody(BodyArgument $argument): int
+    {
+        if(!$this->latexHelper::latexWrapped($argument->body)){
+            return 1;
+        }
+        $parsed = $this->latexHelper::parseLatex($argument->body);
+
+        $this->validateParameters($argument->body);
+        $split = $this->stringsHelper::splitByParameters($parsed);
+
+        if (empty($argument->variable) || !$this->stringsHelper::containsVariable($split, $argument->variable)) {
+            return 2;
+        }
+
+        $parametrized = $this->stringsHelper::getParametrized($parsed);
+
+        try {
+            $this->newtonApiClient->simplify($parametrized->expression);
+        } catch (NewtonApiSyntaxException $e) {
+            return 3;
+        }
+
+        return -1;
     }
 }
