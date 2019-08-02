@@ -1,11 +1,18 @@
-parameters:
-    newtonApiHost: localhost:3000/
-
-webpack:
-	build:
-		directory: %wwwDir%/assets/dist
-		publicPath: /assets/dist/
-	manifest:
-	    name: manifest.json
-	devServer:
-	    url: http://localhost:8080
+#parameters:
+#    newtonApiHost: localhost:3000/
+#
+#webpack:
+#	build:
+#		directory: %wwwDir%/assets/dist
+#		publicPath: /assets/dist/
+#	manifest:
+#	    name: manifest.json
+#	devServer:
+#	    url: http://localhost:8080
+#
+#doctrine:
+#    user: root
+#    password:
+#    dbname: edomp
+#    metadata:
+#        App: %appDir%

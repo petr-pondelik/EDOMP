@@ -57,6 +57,11 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
     ];
 
     /**
+     * @var string
+     */
+    protected $formName = 'LinearEqTemplateForm';
+
+    /**
      * LinearEqTemplateFormControl constructor.
      * @param Validator $validator
      * @param BaseFunctionality $functionality

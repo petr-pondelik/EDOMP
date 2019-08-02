@@ -141,8 +141,9 @@ class ConditionService
                         $accessor
                     );
                 };
+                bdump($problemCondition);
                 if ($validationFunction = $problemCondition->getValidationFunction()) {
-                    $this->validationMapping[$problemConditionTypeID][$accessor] = $this->validationFunctions[$validationFunction];
+                    $this->validationMapping[$problemConditionTypeID][$accessor] = $this->validationFunctions[$validationFunction->getLabel()];
                 }
             }
         }
@@ -188,6 +189,9 @@ class ConditionService
                 $final = $this->stringsHelper::passValues($data, [
                     'p0' => $i
                 ]);
+                bdump($typeAccessor);
+                bdump($accessor);
+                bdump($this->validationMapping);
                 if ($this->validationMapping[$typeAccessor][$accessor]($final)) {
                     $matches[$matchesCnt++] = [
                         'p0' => $i

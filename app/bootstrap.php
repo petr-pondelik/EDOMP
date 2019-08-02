@@ -42,9 +42,7 @@ else{
 
 // Load configurations based on environment
 $configurator->addConfig(__DIR__ . '/Config/config.neon');
-if(ENVIRONMENT === 'devel'){
-    $configurator->addConfig(__DIR__ . '/Config/config.local.neon');
-}
+$configurator->addConfig(__DIR__ . '/Config/config.local.neon');
 $configurator->addConfig(__DIR__ . '/Config/config.' . ENVIRONMENT . '.neon');
 
 $configurator->addParameters([

@@ -10,7 +10,6 @@ namespace App\Model\Entity;
 
 use App\Model\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -29,9 +28,9 @@ class Difficulty extends BaseEntity
     protected $toStringAttr = 'label';
 
     /**
-     * @ORM\OneToMany(targetEntity="ProblemFinal", mappedBy="difficulty", cascade={"persist", "merge"})
+     * @ORM\OneToMany(targetEntity="ProblemFinal", mappedBy="difficulty", cascade={"all"})
      *
-     * @var Collection
+     * @var ArrayCollection
      */
     protected $problems;
 
@@ -46,9 +45,9 @@ class Difficulty extends BaseEntity
     }
 
     /**
-     * @return Collection|null
+     * @return ArrayCollection|null
      */
-    public function getProblems(): ?Collection
+    public function getProblems(): ?ArrayCollection
     {
         return $this->problems;
     }

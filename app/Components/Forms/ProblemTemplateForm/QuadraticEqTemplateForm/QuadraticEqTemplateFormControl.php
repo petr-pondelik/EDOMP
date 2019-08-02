@@ -55,6 +55,11 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
     ];
 
     /**
+     * @var string
+     */
+    protected $formName = 'QuadraticEqTemplateForm';
+
+    /**
      * QuadraticEqTemplateFormControl constructor.
      * @param Validator $validator
      * @param BaseFunctionality $functionality

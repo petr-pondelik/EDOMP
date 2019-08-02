@@ -39,9 +39,12 @@ class ProblemCondition extends BaseEntity
     protected $accessor;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\ManyToOne(targetEntity="ValidationFunction", inversedBy="problemConditions", cascade={"persist", "merge"})
+     * @Assert\NotBlank(
+     *     message="ValidationFunction can't be blank."
+     * )
      *
-     * @var string|null
+     * @var ValidationFunction|null
      */
     protected $validationFunction;
 
@@ -119,17 +122,17 @@ class ProblemCondition extends BaseEntity
     }
 
     /**
-     * @return string|null
+     * @return ValidationFunction|null
      */
-    public function getValidationFunction(): ?string
+    public function getValidationFunction(): ?ValidationFunction
     {
         return $this->validationFunction;
     }
 
     /**
-     * @param string|null $validationFunction
+     * @param ValidationFunction|null $validationFunction
      */
-    public function setValidationFunction(?string $validationFunction): void
+    public function setValidationFunction(?ValidationFunction $validationFunction): void
     {
         $this->validationFunction = $validationFunction;
     }

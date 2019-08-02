@@ -95,6 +95,11 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     protected $baseItemsCondition;
 
     /**
+     * @var string
+     */
+    protected $formName;
+
+    /**
      * ProblemTemplateFormControl constructor.
      * @param Validator $validator
      * @param BaseFunctionality $functionality
@@ -135,7 +140,6 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     public function attachEntities(int $problemTypeId): void
     {
         $this->problemType = $this->problemTypeRepository->find($problemTypeId);
-
         // Get condition types for user interaction by problemType ID
         $this->conditionTypes = $this->problemConditionTypeRepository->findNonValidation($this->problemType->getId());
     }
@@ -456,10 +460,10 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     {
         $this->template->conditionTypes = $this->conditionTypes;
         if($this->edit){
-            $this->template->render(__DIR__ . '/' . $this->problemType->getFormName() . '/templates/edit.latte');
+            $this->template->render(__DIR__ . '/' . $this->formName . '/templates/edit.latte');
         }
         else{
-            $this->template->render(__DIR__ . '/' . $this->problemType->getFormName() . '/templates/create.latte');
+            $this->template->render(__DIR__ . '/' . $this->formName . '/templates/create.latte');
         }
     }
 

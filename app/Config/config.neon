@@ -139,6 +139,11 @@ services:
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Entity\TemplateJsonData
 
+	repository.validation.function:
+	    class: App\Model\Repository\ValidationFunctionRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Entity\ValidationFunction
+
 	# Functionalities
 	functionality.user: App\Model\Functionality\UserFunctionality
 	functionality.problem.final: App\Model\Functionality\ProblemFinalFunctionality

@@ -29,11 +29,6 @@ use Nette\Utils\ArrayHash;
 class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
 {
     /**
-     * @var int
-     */
-    protected $typeId;
-
-    /**
      * @var array
      */
     protected $baseItems = [
@@ -54,6 +49,11 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
             'validation' => 'notEmptyPositive'
         ]
     ];
+
+    /**
+     * @var string
+     */
+    protected $formName = 'ArithmeticSeqTemplateForm';
 
     /**
      * ArithmeticSeqTemplateFormControl constructor.
