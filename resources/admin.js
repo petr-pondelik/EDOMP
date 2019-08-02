@@ -1,5 +1,5 @@
-/*
-    JS MODULES
+/**
+ * JS MODULES
  */
 
 // Import jQuery UI modules
@@ -14,7 +14,6 @@ import '@fortawesome/fontawesome-free';
 // Import Bootstrap modules
 import 'bootstrap';
 import 'bootstrap-select';
-import 'bootstrap-datepicker';
 
 // Import Nette Forms module
 import 'nette-forms';
@@ -38,34 +37,32 @@ import './js/test-create-filters';
 import './js/test-create-logos-droppable';
 import './js/test-create-problems-stack';
 
-/*
-    STYLE ASSETS
- */
 
+/**
+ * STYLES MODULES
+ */
 
 // Import Font Awesome styles
 import '@fortawesome/fontawesome-free/css/all.css';
 
-
-//Import Bootstrap styles
+// Import Bootstrap styles
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-select/dist/css/bootstrap-select.min.css';
 import 'bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone.css';
 
-
-//Import Ublaboo Datagrid styles
+// Import Ublaboo Datagrid styles
 import 'ublaboo-datagrid/assets/dist/datagrid.css';
 import 'ublaboo-datagrid/assets/dist/datagrid-spinners.css';
 
-//Import File Pond styles
+// Import File Pond styles
 import 'filepond/dist/filepond.min.css';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
 
-
-//Import custom styles
+// Import custom styles
 import './css/sidemenu.css';
-
 import './scss/main.scss';
+
+
 
 //TODO: SCRIPTS NOW WORKING WITH ONE CONDITION TYPE FOR EACH PROTOTYPE (VALIDATION) -> NEED TO BE GENERALIZED
 //TODO: CREATE SCRIPT FILE FOR EACH LOGICAL SECTION AND INCLUDE IT HERE
@@ -241,7 +238,7 @@ $(document).ready(() => {
     });
 });
 
-//Handle card heading chevrons toggle
+// Handle card heading chevrons toggle
 $(document).ready(() => {
 
     $(document).on('click', '.heading-test-logo, .heading-filters', (e) => {
@@ -265,21 +262,21 @@ $(document).ready(() => {
 
 });
 
-//Handle Logo Edit section file selection
+// Handle Logo Edit section file selection
 $(document).ready(() => {
     $(document).on("change", "#edit-logo", (e) => {
         $(document).find("#logo-file-wrapper").toggleClass("d-none");
     });
 });
 
-//Handle show result button
+// Handle show result button
 $(document).ready(() => {
     $(document).on("click", "#result-switch", () => {
         $(document).find("#result-wrapper").toggle();
     })
 });
 
-//Handle change password inputs for user update
+// Handle change password inputs for user update
 $(document).ready(() => {
     $(document).on("click", "#change-password-switch", () => {
         $(document).find("#change-password-wrapper").fadeToggle();

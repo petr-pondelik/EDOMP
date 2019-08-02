@@ -11,7 +11,8 @@ const ROOT_DIR = path.resolve(__dirname, './../');
 
 module.exports = {
     entry: {
-        app: path.resolve(ROOT_DIR, 'resources', 'app', 'app.jsx'),
+        front: path.resolve(ROOT_DIR, 'resources', 'front.js'),
+        admin: path.resolve(ROOT_DIR, 'resources', 'admin.js')
     },
     resolve: {
         modules: [
@@ -19,21 +20,6 @@ module.exports = {
         ],
         extensions: ['.js', '.jsx', '.css', '.scss']
     },
-    // output: {
-    //     path: DIST_DIR,
-    //     filename: '[name].[hash].js',
-    //     chunkFilename: '[name].[hash].js'
-    // },
-    // mode: 'development',
-    // devtool: 'source-map',
-    // devServer: {
-    //     inline: false,
-    //     contentBase: WWW_DIR,
-    //     port: 8080,
-    //     headers: {
-    //         'Access-Control-Allow-Origin': '*',
-    //     }
-    // },
     module: {
         rules: [
             // css
@@ -106,6 +92,7 @@ module.exports = {
         new webpack.ProvidePlugin({
             Nette: 'nette-forms',
             'window.Nette': 'nette-forms',
+            '$.nette.ajax': 'nette.ajax.js',
             $: 'jquery',
             jQuery: 'jquery',
             'window.jQuery': 'jquery',
