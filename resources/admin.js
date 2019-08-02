@@ -33,9 +33,6 @@ import './js/filepond.config';
 
 // Import custom modules
 import './js/sidemenu';
-import './js/test-create-filters';
-import './js/test-create-logos-droppable';
-import './js/test-create-problems-stack';
 
 
 /**
@@ -238,42 +235,11 @@ $(document).ready(() => {
     });
 });
 
-// Handle card heading chevrons toggle
-$(document).ready(() => {
-
-    $(document).on('click', '.heading-test-logo, .heading-filters', (e) => {
-        $(e.target).children().toggleClass('d-none');
-    });
-
-    $(document).find('.logo-img').click((e) => {
-
-        let logoId = e.target.dataset.logoId;
-        let logoLabel = e.target.dataset.logoLabel;
-
-        $(document).find('#test-logo-label').val(logoLabel);
-        $(document).find('#test-logo-id').val(logoId);
-
-        $(document).find('.heading-logo').removeClass('active');
-
-        $(document).find('.accordion .fa-chevron-down').removeClass('d-none');
-        $(document).find('.accordion .fa-chevron-up').addClass('d-none');
-
-    });
-
-});
-
 // Handle Logo Edit section file selection
 $(document).ready(() => {
     $(document).on("change", "#edit-logo", (e) => {
         $(document).find("#logo-file-wrapper").toggleClass("d-none");
     });
-});
-
-// Handle show result button
-$(document).ready(() => {
-    $(document).on("click", "#result-switch", () => {
-        $(document).find("#result-wrapper").toggle();
-    })
 });
 
 // Handle change password inputs for user update

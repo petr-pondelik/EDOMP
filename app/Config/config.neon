@@ -12,6 +12,7 @@ extensions:
     assetMacro: Webrouse\AssetMacro\DI\Extension
     visualPaginator: IPub\VisualPaginator\DI\VisualPaginatorExtension
     webpack: Oops\WebpackNetteAdapter\DI\WebpackExtension(%debugMode%)
+    ajaxHistory: VojtechDobes\NetteAjax\HistoryExtension
 application:
 	errorPresenter: Error
 	mapping:

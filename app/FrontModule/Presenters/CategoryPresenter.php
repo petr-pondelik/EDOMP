@@ -48,6 +48,11 @@ class CategoryPresenter extends FrontPresenter
     /**
      * @persistent
      */
+    public $page;
+
+    /**
+     * @persistent
+     */
     public $id;
 
     /**
