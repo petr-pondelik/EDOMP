@@ -104,11 +104,13 @@
 
                 {foreach $condByProblemTypes[$typeKey] as $condKey => $cond}
                     {dump $cond}
-                    {var $id = $cond->getId()}
-                    <div class="form-group cond-wrapper" id="cond-wrapper-{$id}">
-                        {label condition_$id}
-                        {input condition_$id, "data-key" => $id, "data-static" => "true"}
-                    </div>
+                    {if !$cond->isValidation()}
+                        {var $id = $cond->getId()}
+                        <div class="form-group cond-wrapper" id="cond-wrapper-{$id}">
+                            {label condition_$id}
+                            {input condition_$id, "data-key" => $id, "data-static" => "true"}
+                        </div>
+                    {/if}
                 {/foreach}
 
             </div>

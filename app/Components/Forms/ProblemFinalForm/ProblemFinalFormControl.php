@@ -15,6 +15,7 @@ use App\Helpers\ConstHelper;
 use App\Model\Functionality\ProblemFinalFunctionality;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
+use App\Model\Repository\ProblemConditionTypeRepository;
 use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Services\Validator;
@@ -44,6 +45,11 @@ class ProblemFinalFormControl extends EntityFormControl
     protected $subCategoryRepository;
 
     /**
+     * @var ProblemConditionTypeRepository
+     */
+    protected $problemConditionTypeRepository;
+
+    /**
      * @var ProblemConditionRepository
      */
     protected $problemConditionRepository;
@@ -60,6 +66,7 @@ class ProblemFinalFormControl extends EntityFormControl
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param SubCategoryRepository $subCategoryRepository
+     * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param ConstHelper $constHelper
      * @param bool $edit
@@ -69,7 +76,8 @@ class ProblemFinalFormControl extends EntityFormControl
         Validator $validator,
         ProblemFinalFunctionality $problemFinalFunctionality,
         DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
-        SubCategoryRepository $subCategoryRepository, ProblemConditionRepository $problemConditionRepository,
+        SubCategoryRepository $subCategoryRepository,
+        ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
         ConstHelper $constHelper,
         bool $edit = false
     )
@@ -79,6 +87,7 @@ class ProblemFinalFormControl extends EntityFormControl
         $this->difficultyRepository = $difficultyRepository;
         $this->problemTypeRepository = $problemTypeRepository;
         $this->subCategoryRepository = $subCategoryRepository;
+        $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->constHelper = $constHelper;
     }
@@ -95,13 +104,8 @@ class ProblemFinalFormControl extends EntityFormControl
         $types = $this->problemTypeRepository->findAssoc([], 'id');
         $subcategories = $this->subCategoryRepository->findAssoc([], 'id');
 
-        $resultConditions = $this->problemConditionRepository->findAssoc([
-            'problemConditionType.id' => $this->constHelper::RESULT
-        ], 'accessor');
-
-        $discriminantConditions = $this->problemConditionRepository->findAssoc([
-            'problemConditionType.id' => $this->constHelper::DISCRIMINANT
-        ], 'accessor');
+        // Find only non-validation problem condition types
+        $conditionTypes = $this->problemConditionTypeRepository->findAssoc(['isValidation' => false], 'id');
 
         $form->addHidden('is_generatable_hidden');
 
@@ -143,13 +147,11 @@ class ProblemFinalFormControl extends EntityFormControl
             ->setHtmlAttribute('class', 'form-control');
 
         // Conditions
-        $form->addSelect('condition_' . $this->constHelper::RESULT, 'Podmínka výsledku', $resultConditions)
-            ->setHtmlAttribute('class', 'form-control condition')
-            ->setHtmlId('condition-' . $this->constHelper::RESULT);
-
-        $form->addSelect('condition_' . $this->constHelper::DISCRIMINANT, 'Podmínka diskriminantu', $discriminantConditions)
-            ->setHtmlAttribute('class', 'form-control condition')
-            ->setHtmlId('condition-' . $this->constHelper::DISCRIMINANT);
+        foreach ($conditionTypes as $conditionType){
+            $form->addSelect('condition_' . $conditionType->getId(), $conditionType->getLabel(), $conditionType->getProblemConditions()->getValues())
+                ->setHtmlAttribute('class', 'form-control condition')
+                ->setHtmlId('condition-' . $conditionType->getId());
+        }
 
         return $form;
     }

@@ -35,7 +35,7 @@ class ProblemConditionType extends BaseEntity
      *     message="Label must be {{ type }}."
      * )
      *
-     * @var string
+     * @var string|null
      */
     protected $prompt;
 
@@ -104,22 +104,6 @@ class ProblemConditionType extends BaseEntity
     }
 
     /**
-     * @return string
-     */
-    public function getPrompt(): string
-    {
-        return $this->prompt;
-    }
-
-    /**
-     * @param string $prompt
-     */
-    public function setPrompt(string $prompt): void
-    {
-        $this->prompt = $prompt;
-    }
-
-    /**
      * @return bool
      */
     public function isValidation(): bool
@@ -133,5 +117,21 @@ class ProblemConditionType extends BaseEntity
     public function setIsValidation(bool $isValidation): void
     {
         $this->isValidation = $isValidation;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPrompt(): ?string
+    {
+        return $this->prompt;
+    }
+
+    /**
+     * @param string|null $prompt
+     */
+    public function setPrompt(?string $prompt): void
+    {
+        $this->prompt = $prompt;
     }
 }

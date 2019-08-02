@@ -82,7 +82,6 @@
                 <div class="form-group type-wrapper" id="type-wrapper-{$typeKey}">
 
                     {foreach $condByProblemTypes[$typeKey] as $condKey => $cond}
-                        {dump $cond}
                         {if !$cond->isValidation()}
                             {var $id = $cond->getId()}
                             <div class="form-group cond-wrapper" id="cond-wrapper-{$id}">

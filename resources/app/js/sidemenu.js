@@ -1,14 +1,11 @@
-//Sidemenu toggle control
+// Side-menu control JS module
 
-$(document).on('click', '#sidebar-collapse, #sidebar-close', () => {
-    $('#header-bar').toggleClass('full-width');
-    $('#sidebar, #content').toggleClass('active');
-    $('.collapse.in').toggleClass('in');
-});
+(($, jQuery) => {
 
-//Sidemenu items Click Wave effect
-$(document).ready( () => {
-        jQuery("#jquery-accordion-menu").jqueryAccordionMenu();
+    $(document).ready(() => {
+
+        // Side-menu items click Wave effect control
+        $("#jquery-accordion-menu").jqueryAccordionMenu();
         jQuery(".colors a").click(() => {
             if($(this).attr("class") !="default"){
                 $("#jquery-accordion-menu").removeClass();
@@ -18,8 +15,19 @@ $(document).ready( () => {
                 $("#jquery-accordion-menu").addClass("jquery-accordion-menu");
             }
         });
-});
 
+        // Side-menu toggle
+        $(document).on('click', '#sidebar-collapse, #sidebar-close', () => {
+            $('#header-bar').toggleClass('full-width');
+            $('#sidebar, #content').toggleClass('active');
+            $('.collapse.in').toggleClass('in');
+        });
+
+    });
+
+})($, jQuery);
+
+// Side-menu items click Wave effect function
 eval(function(p,a,c,k,e,d){
     e=function(c){
         return c

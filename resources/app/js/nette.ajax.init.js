@@ -1,4 +1,7 @@
-$(() => {
-    $.nette.init();
-    $(document).find('.no-ajax').netteAjaxOff();
-});
+(($) => {
+    $(document).ready(() => {
+        console.log('NETTE AJAX INIT');
+        $.nette.init();
+        $(document).find('.no-ajax').netteAjaxOff();
+    });
+})($);
