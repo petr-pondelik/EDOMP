@@ -40,23 +40,6 @@ create table problem_condition_type
 )
   collate = utf8_unicode_ci;
 
-create table problem_condition
-(
-  id                        int auto_increment
-    primary key,
-  problem_condition_type_id int          null,
-  accessor                  int          not null,
-  created                   datetime     not null,
-  label                     varchar(255) not null,
-  validation_function       varchar(255) null,
-  constraint FK_22A086E4FF45F437
-    foreign key (problem_condition_type_id) references problem_condition_type (id)
-)
-  collate = utf8_unicode_ci;
-
-create index IDX_22A086E4FF45F437
-  on problem_condition (problem_condition_type_id);
-
 create table problem_type
 (
   id             int auto_increment
@@ -178,26 +161,6 @@ create index IDX_D7E7CCC8F7BFE87C
 
 create index IDX_D7E7CCC8FCFA9DAE
   on problem (difficulty_id);
-
-create table problem_condition_problem_rel
-(
-  problem_id           int not null,
-  problem_condition_id int not null,
-  primary key (problem_id, problem_condition_id),
-  constraint FK_1430909773A5214B
-    foreign key (problem_condition_id) references problem_condition (id)
-      on delete cascade,
-  constraint FK_14309097A0DCED86
-    foreign key (problem_id) references problem (id)
-      on delete cascade
-)
-  collate = utf8_unicode_ci;
-
-create index IDX_1430909773A5214B
-  on problem_condition_problem_rel (problem_condition_id);
-
-create index IDX_14309097A0DCED86
-  on problem_condition_problem_rel (problem_id);
 
 create table problem_template
 (
@@ -456,3 +419,56 @@ create index IDX_77C8B220A76ED395
 
 create index IDX_77C8B220FE54D947
   on user_group_rel (group_id);
+
+create table validation_function
+(
+  id      int auto_increment
+    primary key,
+  created datetime     not null,
+  label   varchar(255) not null
+)
+  collate = utf8_unicode_ci;
+
+create table problem_condition
+(
+  id                        int auto_increment
+    primary key,
+  problem_condition_type_id int          null,
+  accessor                  int          not null,
+  created                   datetime     not null,
+  label                     varchar(255) not null,
+  validation_function_id    int          null,
+  constraint FK_22A086E4CFFB0E2D
+    foreign key (validation_function_id) references validation_function (id),
+  constraint FK_22A086E4FF45F437
+    foreign key (problem_condition_type_id) references problem_condition_type (id)
+)
+  collate = utf8_unicode_ci;
+
+create index IDX_22A086E4CFFB0E2D
+  on problem_condition (validation_function_id);
+
+create index IDX_22A086E4FF45F437
+  on problem_condition (problem_condition_type_id);
+
+create table problem_condition_problem_rel
+(
+  problem_id           int not null,
+  problem_condition_id int not null,
+  primary key (problem_id, problem_condition_id),
+  constraint FK_1430909773A5214B
+    foreign key (problem_condition_id) references problem_condition (id)
+      on delete cascade,
+  constraint FK_14309097A0DCED86
+    foreign key (problem_id) references problem (id)
+      on delete cascade
+)
+  collate = utf8_unicode_ci;
+
+create index IDX_1430909773A5214B
+  on problem_condition_problem_rel (problem_condition_id);
+
+create index IDX_14309097A0DCED86
+  on problem_condition_problem_rel (problem_id);
+
+

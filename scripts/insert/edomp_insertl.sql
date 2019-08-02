@@ -20,18 +20,26 @@ INSERT INTO edomp.group_category_rel (group_id, category_id) VALUES (30, 2);
 INSERT INTO edomp.group_category_rel (group_id, category_id) VALUES (31, 2);
 INSERT INTO edomp.group_category_rel (group_id, category_id) VALUES (32, 2);
 
-INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (1, 1, 0, '2019-04-27 11:49:59', 'Bez omezení', null);
-INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (2, 1, 1, '2019-04-27 11:49:59', 'Kladný', 'positive');
-INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (3, 1, 2, '2019-04-27 11:49:59', 'Nulový', 'zero');
-INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (4, 1, 3, '2019-04-27 11:49:59', 'Záporný', 'negative');
-INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (5, 2, 0, '2019-04-27 11:49:59', 'Bez omezení', null);
-INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (6, 2, 1, '2019-04-27 11:49:59', 'Kladný', 'positive');
-INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (7, 2, 2, '2019-04-27 11:49:59', 'Nulový', 'zero');
-INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (8, 2, 3, '2019-04-27 11:49:59', 'Záporný', 'negative');
-INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (9, 2, 4, '2019-04-27 11:49:59', 'Celočíselný', 'integer');
-INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (10, 2, 5, '2019-04-27 11:49:59', 'Kladný a odmocnitelný', 'positiveSquare');
-INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (11, 3, 0, '2019-07-28 07:46:49', 'Existuje', 'differenceExists');
-INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function) VALUES (12, 4, 0, '2019-07-28 07:46:55', 'Existuje', 'quotientExists');
+INSERT INTO edomp.validation_function (id, created, label) VALUES (1, '2019-08-02 15:10:20', 'positive');
+INSERT INTO edomp.validation_function (id, created, label) VALUES (2, '2019-08-02 15:10:20', 'zero');
+INSERT INTO edomp.validation_function (id, created, label) VALUES (3, '2019-08-02 15:10:20', 'negative');
+INSERT INTO edomp.validation_function (id, created, label) VALUES (4, '2019-08-02 15:10:20', 'integer');
+INSERT INTO edomp.validation_function (id, created, label) VALUES (5, '2019-08-02 15:10:20', 'positiveSquare');
+INSERT INTO edomp.validation_function (id, created, label) VALUES (6, '2019-08-02 15:10:20', 'differenceExists');
+INSERT INTO edomp.validation_function (id, created, label) VALUES (7, '2019-08-02 15:10:20', 'quotientExists');
+
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function_id) VALUES (1, 1, 0, '2019-04-27 11:49:59', 'Bez omezení', null);
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function_id) VALUES (2, 1, 1, '2019-04-27 11:49:59', 'Kladný', 1);
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function_id) VALUES (3, 1, 2, '2019-04-27 11:49:59', 'Nulový', 2);
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function_id) VALUES (4, 1, 3, '2019-04-27 11:49:59', 'Záporný', 3);
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function_id) VALUES (5, 2, 0, '2019-04-27 11:49:59', 'Bez omezení', null);
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function_id) VALUES (6, 2, 1, '2019-04-27 11:49:59', 'Kladný', 1);
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function_id) VALUES (7, 2, 2, '2019-04-27 11:49:59', 'Nulový', 2);
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function_id) VALUES (8, 2, 3, '2019-04-27 11:49:59', 'Záporný', 3);
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function_id) VALUES (9, 2, 4, '2019-04-27 11:49:59', 'Celočíselný', 4);
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function_id) VALUES (10, 2, 5, '2019-04-27 11:49:59', 'Kladný a odmocnitelný', 5);
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function_id) VALUES (11, 3, 0, '2019-07-28 07:46:49', 'Existuje', 6);
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, validation_function_id) VALUES (12, 4, 0, '2019-07-28 07:46:55', 'Existuje', 7);
 
 INSERT INTO edomp.problem_condition_type (id, prompt, created, label, is_validation) VALUES (1, 'Zvolte podmínky výsledku', '2019-04-27 11:42:36', 'Podmínka výsledku', 0);
 INSERT INTO edomp.problem_condition_type (id, prompt, created, label, is_validation) VALUES (2, 'Zvolte podmínky diskriminantu', '2019-04-27 11:42:58', 'Podmínka diskriminantu', 0);
