@@ -8,7 +8,7 @@
 
 namespace App\Helpers;
 
-use App\Exceptions\StringFormatException;
+use App\Exceptions\EquationException;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 
@@ -216,11 +216,12 @@ class StringsHelper
      * @param string $expression
      * @param bool $validate
      * @return ArrayHash
+     * @throws EquationException
      */
     public static function getEquationSides(string $expression, bool $validate = true): ArrayHash
     {
         if($validate && !self::isEquation($expression)){
-                throw new StringFormatException('Zadaný výraz není rovnicí.');
+                throw new EquationException('Zadaný výraz validní rovnicí.');
         }
         $sides = Strings::split($expression, '~=~');
         return ArrayHash::from([
@@ -331,7 +332,8 @@ class StringsHelper
      */
     public static function isEquation(string $expression): bool
     {
-        $split = Strings::split($expression, '~ = ~');
+//        $split = Strings::split($expression, '~ = ~');
+        $split = Strings::split($expression, '~=~');
         if(count($split) !== 2 || Strings::match($split[0], '~^\s*$~') || Strings::match($split[1], '~^\s*$~')){
             return false;
         }

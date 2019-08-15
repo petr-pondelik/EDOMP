@@ -34,6 +34,11 @@ import './js/filepond.config';
 // Import custom modules
 import './js/sidemenu';
 
+import './js/test-create-filters';
+
+import './js/test-create-logos-droppable';
+import './js/test-create-problems-stack';
+
 
 /**
  * STYLES MODULES

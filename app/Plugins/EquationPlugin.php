@@ -20,6 +20,7 @@ abstract class EquationPlugin extends ProblemPlugin
     /**
      * @param string $expression
      * @return string
+     * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException

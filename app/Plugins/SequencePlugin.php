@@ -34,6 +34,7 @@ abstract class SequencePlugin extends ProblemPlugin
     /**
      * @param string $expression
      * @return string
+     * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException
@@ -65,6 +66,7 @@ abstract class SequencePlugin extends ProblemPlugin
     /**
      * @param ProblemFinal $problem
      * @return ArrayHash
+     * @throws \App\Exceptions\EquationException
      */
     public function evaluate(ProblemFinal $problem): ArrayHash
     {

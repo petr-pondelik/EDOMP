@@ -10,6 +10,7 @@ namespace ProblemTemplateForm\GeometricSeqTemplateForm;
 
 
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormControl;
+use App\Exceptions\EquationException;
 use App\Helpers\ConstHelper;
 use App\Model\Functionality\BaseFunctionality;
 use App\Model\Repository\DifficultyRepository;
@@ -91,6 +92,9 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
     {
         $form = parent::createComponentForm();
 
+        // Set variable caption for sequence
+        $form['variable']->caption = 'Index *';
+
         $form->addInteger('firstN', 'Počet prvních členů *')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte počet zkoumaných prvních členů.')
@@ -120,9 +124,11 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
     {
         try{
             $standardized = $this->mathService->standardizeGeometricSequence($values->body);
+        } catch (EquationException $e){
+            $this['form']['body']->addError('Zadaný výraz není validním předpisem posloupnosti.');
+            return null;
         } catch (\Exception $e){
             $this['form']['body']->addError($e->getMessage());
-            return null;
         }
         return $standardized;
     }

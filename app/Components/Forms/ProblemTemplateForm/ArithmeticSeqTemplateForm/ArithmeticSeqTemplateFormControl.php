@@ -10,6 +10,7 @@ namespace App\Components\Forms\ProblemTemplateForm\ArithmeticSeqTemplateForm;
 
 
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormControl;
+use App\Exceptions\EquationException;
 use App\Helpers\ConstHelper;
 use App\Model\Functionality\BaseFunctionality;
 use App\Model\Repository\DifficultyRepository;
@@ -92,6 +93,9 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
     {
         $form = parent::createComponentForm();
 
+        // Set variable caption for sequence
+        $form['variable']->caption = 'Index *';
+
         $form->addInteger('firstN', 'Počet prvních členů *')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte počet zkoumaných prvních členů.')
@@ -115,15 +119,21 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
     /**
      * @param ArrayHash $values
      * @return mixed|string|null
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function standardize(ArrayHash $values)
     {
+        $standardized = '';
         try{
             $standardized = $this->mathService->standardizeArithmeticSequence($values->body);
+        } catch (EquationException $e){
+            $this['form']['body']->addError('Zadaný výraz není validním předpisem posloupnosti.');
+            return null;
         } catch (\Exception $e){
             $this['form']['body']->addError($e->getMessage());
-            return null;
         }
         return $standardized;
     }
