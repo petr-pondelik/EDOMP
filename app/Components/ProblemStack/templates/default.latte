@@ -32,7 +32,7 @@
                 <li n:foreach="$problems as $problem" class="col-12 d-inline-block mt-3 hover-pointer" id="problem" data-problem-key="{$id}" data-problem-id="{$problem->getId()}">
                     <div class="card card-shadow border-light">
                         <div class="d-flex align-items-center card-header py-0 problem-card-header">
-                            {$problem->getProblemType()->getLabel()}
+                            {$problem->getSubcategory()->getLabel()}
                         </div>
                         <div class="card-body py-3">
                             {$problem->getBody()}

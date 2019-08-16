@@ -12,7 +12,7 @@ namespace App\Components\Forms\ProblemTemplateForm;
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Exceptions\NewtonApiException;
-use App\Exceptions\ProblemTemplateFormatException;
+use App\Exceptions\ProblemTemplateException;
 use App\Helpers\ConstHelper;
 use App\Model\Entity\ProblemConditionType;
 use App\Model\Entity\ProblemType;
@@ -309,9 +309,6 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
             return;
         }
 
-        // VALIDATE BODY
-
-
         // VALIDATE TYPE
         if(!$this->validateType($values, $standardized)){
             $this->redrawErrors(false);
@@ -407,7 +404,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         // Validate template condition
         try{
             $form = $this->validator->conditionValidate($this['form'], $validationFields, $problemId ?? null);
-        } catch (ProblemTemplateFormatException $e){
+        } catch (ProblemTemplateException $e){
             $this['form']['body']->addError($e->getMessage());
             return false;
         }

@@ -185,10 +185,24 @@ class DoctrinePresenter extends AdminPresenter
      */
     public function actionDefault()
     {
-        bdump($this->parser::solve('5+4(1+2)+3+ln(e)'));
-        bdump($this->parser::solve('0^2 - 4 * 1/2 log(3) * (1/2 0 - 1/5 log(100))'));
+        $templateJsons = $this->templateJsonDataRepository->findBy(['templateId' => 418]);
 
-        bdump($this->parser::solve('2^(1 - 2) * 3^(-1 + 2)'));
+        $firstJson = Json::decode($templateJsons[0]->getJsonData(), true);
+        bdump($firstJson);
+
+        $secondJson = Json::decode($templateJsons[1]->getJsonData(), true);
+        bdump($secondJson);
+
+        $intersect = array_uintersect($firstJson, $secondJson, static function($first, $second) {
+            return strcmp(serialize($first), serialize($second));
+        });
+
+        bdump($intersect);
+
+//        bdump($this->parser::solve('5+4(1+2)+3+ln(e)'));
+//        bdump($this->parser::solve('0^2 - 4 * 1/2 log(3) * (1/2 0 - 1/5 log(100))'));
+//
+//        bdump($this->parser::solve('2^(1 - 2) * 3^(-1 + 2)'));
 
 //        $test = $this->testFunctionality->create(ArrayHash::from([
 //            'logo_id' => 1,

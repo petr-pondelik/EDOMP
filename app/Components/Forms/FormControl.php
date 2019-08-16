@@ -80,6 +80,7 @@ abstract class FormControl extends Control
     {
         $form = $this['form'];
         $values = $form->getValues();
+        bdump($form->getErrors());
         bdump($values);
         if($submited){
             if($form->isSubmitted()){

@@ -94,11 +94,8 @@ abstract class Problem extends BaseEntity
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Entity\ProblemType", cascade={"persist", "merge"})
-     * @Assert\NotBlank(
-     *     message="ProblemType can't be blank."
-     * )
      *
-     * @var ProblemType
+     * @var ProblemType|null
      */
     protected $problemType;
 
@@ -207,17 +204,17 @@ abstract class Problem extends BaseEntity
     }
 
     /**
-     * @return ProblemType
+     * @return ProblemType|null
      */
-    public function getProblemType(): ProblemType
+    public function getProblemType(): ?ProblemType
     {
         return $this->problemType;
     }
 
     /**
-     * @param ProblemType $problemType
+     * @param ProblemType|null $problemType
      */
-    public function setProblemType(ProblemType $problemType): void
+    public function setProblemType(?ProblemType $problemType): void
     {
         $this->problemType = $problemType;
     }

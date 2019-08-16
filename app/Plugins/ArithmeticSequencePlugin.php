@@ -9,7 +9,7 @@
 namespace App\Plugins;
 
 use App\Arguments\SequenceValidateArgument;
-use App\Exceptions\ProblemTemplateFormatException;
+use App\Exceptions\ProblemTemplateException;
 use App\Model\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
@@ -23,7 +23,7 @@ class ArithmeticSequencePlugin extends SequencePlugin
     /**
      * @param SequenceValidateArgument $data
      * @return bool
-     * @throws ProblemTemplateFormatException
+     * @throws ProblemTemplateException
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      */
@@ -53,7 +53,7 @@ class ArithmeticSequencePlugin extends SequencePlugin
                 ]
             ]);
         } catch (\Exception $e){
-            throw new ProblemTemplateFormatException('Zadán chybný formát šablony.');
+            throw new ProblemTemplateException('Zadán chybný formát šablony.');
         }
 
         if(!$matches){
@@ -71,6 +71,7 @@ class ArithmeticSequencePlugin extends SequencePlugin
     /**
      * @param ProblemFinal $problem
      * @return ArrayHash
+     * @throws \App\Exceptions\EquationException
      */
     public function evaluate(ProblemFinal $problem): ArrayHash
     {

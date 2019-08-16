@@ -264,6 +264,7 @@ class StringsHelper
         $expressionSplit = self::splitByParameters($expression);
         $parametrized = [];
         $parametersCnt = 0;
+
         foreach ($expressionSplit as $splitKey => $splitItem){
             if($splitItem !== ''){
                 if(!Strings::match($splitItem, '~(<par.*\/>)~')){
@@ -274,8 +275,16 @@ class StringsHelper
                 }
             }
         }
+
+
+        // Merge exploded expression
+        $parametrized = implode($parametrized);
+
+        // Fill spaces between parameters and variables
+        $parametrized = Strings::replace($parametrized, '~(p[0-9])([a-zA-Z])~', '$1 $2');
+
         return ArrayHash::from([
-            'expression' => join($parametrized),
+            'expression' => $parametrized,
             'parametersCnt' => $parametersCnt
         ]);
     }

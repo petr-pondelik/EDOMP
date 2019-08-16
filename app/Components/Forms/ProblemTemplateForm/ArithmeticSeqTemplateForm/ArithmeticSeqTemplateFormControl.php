@@ -119,9 +119,6 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
     /**
      * @param ArrayHash $values
      * @return mixed|string|null
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function standardize(ArrayHash $values)

@@ -68,8 +68,6 @@ class ProblemStackControl extends Control
      */
     public function setProblems(array $problems, array $selectedProblems): void
     {
-        bdump($problems);
-        bdump($selectedProblems);
         $this->problems = $this->filterStackBySelected($problems, $selectedProblems);
         $this->selectedProblems = $selectedProblems;
     }

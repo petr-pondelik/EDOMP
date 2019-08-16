@@ -146,6 +146,7 @@ class QuadraticEquationPlugin extends EquationPlugin
     /**
      * @param ProblemFinal $problem
      * @return ArrayHash
+     * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException

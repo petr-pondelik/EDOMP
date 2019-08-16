@@ -141,6 +141,7 @@ class MathService
     /**
      * @param string $expression
      * @return string
+     * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException
@@ -167,6 +168,7 @@ class MathService
     /**
      * @param string $expression
      * @return string
+     * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException
@@ -180,6 +182,7 @@ class MathService
     /**
      * @param ProblemFinal $problem
      * @return ArrayHash
+     * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException
@@ -193,6 +196,7 @@ class MathService
     /**
      * @param string $expression
      * @return string
+     * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException
@@ -215,6 +219,7 @@ class MathService
     /**
      * @param string $expression
      * @return string
+     * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException

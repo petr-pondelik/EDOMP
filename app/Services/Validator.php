@@ -306,6 +306,7 @@ class Validator
                 if (empty($data)) {
                     return 0;
                 }
+                bdump($data);
                 if(!$this->linearEquationPlugin->validateType(new EquationValidateArgument($data))){
                     return 1;
                 }

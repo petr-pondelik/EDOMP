@@ -97,8 +97,6 @@ class ProblemFinalFunctionality extends BaseFunctionality
      */
     public function create(ArrayHash $data, array $conditions = null, bool $flush = true): ?Object
     {
-        bdump($data);
-
         $problem = new ProblemFinal();
         $problem->setTextBefore($data->textBefore);
         $problem->setBody($data->body);
@@ -120,7 +118,10 @@ class ProblemFinalFunctionality extends BaseFunctionality
             $problem->setCreated($data->created);
         }
 
-        $problem->setProblemType($this->problemTypeRepository->find($data->problemType));
+        if(isset($data->problemType)){
+            $problem->setProblemType($this->problemTypeRepository->find($data->problemType));
+        }
+
         $problem->setDifficulty($this->difficultyRepository->find($data->difficulty));
         $problem->setSubCategory($this->subCategoryRepository->find($data->subCategory));
 
@@ -184,7 +185,7 @@ class ProblemFinalFunctionality extends BaseFunctionality
             $problem->setDifficulty($this->difficultyRepository->find($data->difficulty));
         }
 
-        if($updateConditions && $data->problemType){
+        if($updateConditions && isset($data->problemType)){
             $problem->setConditions(new ArrayCollection());
             $this->attachConditions($problem, $data);
         }
@@ -202,24 +203,26 @@ class ProblemFinalFunctionality extends BaseFunctionality
      */
     public function attachConditions(ProblemFinal $problem, ArrayHash $data): ProblemFinal
     {
-        $type = $this->problemTypeRepository->find($data->problemType);
-        $problemCondTypes = $type->getConditionTypes()->getValues();
+        if(isset($data->problemType)){
+            $type = $this->problemTypeRepository->find($data->problemType);
+            $problemCondTypes = $type->getConditionTypes()->getValues();
 
-        foreach ($problemCondTypes as $problemCondType){
+            foreach ($problemCondTypes as $problemCondType){
 
-            //Get ConditionType ID
-            $condTypeId = $problemCondType->getId();
+                //Get ConditionType ID
+                $condTypeId = $problemCondType->getId();
 
-            //Get ConditionType value from created problem
-            $condTypeVal = $data->{'condition_' . $condTypeId};
+                //Get ConditionType value from created problem
+                $condTypeVal = $data->{'condition_' . $condTypeId};
 
-            $condition = $this->problemConditionRepository->findOneBy([
-                'problemConditionType.id' => $condTypeId,
-                'accessor' => $condTypeVal
-            ]);
+                $condition = $this->problemConditionRepository->findOneBy([
+                    'problemConditionType.id' => $condTypeId,
+                    'accessor' => $condTypeVal
+                ]);
 
-            $problem->addCondition($condition);
+                $problem->addCondition($condition);
 
+            }
         }
 
         return $problem;

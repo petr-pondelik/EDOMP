@@ -9,7 +9,7 @@
 namespace App\Plugins;
 
 use App\Arguments\EquationValidateArgument;
-use App\Exceptions\ProblemTemplateFormatException;
+use App\Exceptions\ProblemTemplateException;
 use App\Model\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
@@ -44,6 +44,9 @@ class LinearEquationPlugin extends EquationPlugin
     /**
      * @param EquationValidateArgument $data
      * @return bool
+     * @throws ProblemTemplateException
+     * @throws \Nette\Utils\JsonException
+     * @throws \App\Exceptions\EntityException
      */
     public function validateType(EquationValidateArgument $data): bool
     {
@@ -57,6 +60,31 @@ class LinearEquationPlugin extends EquationPlugin
             return false;
         }
 
+        $parametersInfo = $this->stringsHelper::extractParametersInfo($data->expression);
+
+        try{
+            $matches = $this->conditionService->findConditionsMatches([
+                $this->constHelper::EXPRESSION_VALIDATION => [
+                    $this->constHelper::EXPRESSION_VALID => [
+                        'parametersInfo' => $parametersInfo,
+                        'data' => $this->stringsHelper::getLinearVariableExpresion($data->standardized, $data->variable)
+                    ]
+                ]
+            ]);
+        } catch (\Exception $e){
+            throw new ProblemTemplateException('Zadán chybný formát šablony.');
+        }
+
+        if(!$matches){
+//            return false;
+            throw new ProblemTemplateException('Neexistuje ');
+        }
+
+        $matchesJson = Json::encode($matches);
+        $this->templateJsonDataFunctionality->create(ArrayHash::from([
+            'jsonData' => $matchesJson
+        ]), null, true);
+
         // Match string against the linear expression regexp
         $matches = Strings::match($standardized, '~' . self::getRegExp($data->variable) . '~');
 
@@ -67,6 +95,7 @@ class LinearEquationPlugin extends EquationPlugin
     /**
      * @param ProblemFinal $problem
      * @return ArrayHash
+     * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException
@@ -95,7 +124,7 @@ class LinearEquationPlugin extends EquationPlugin
      * @param ArrayHash $parametersInfo
      * @param null $problemId
      * @return bool
-     * @throws ProblemTemplateFormatException
+     * @throws ProblemTemplateException
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      */
@@ -113,7 +142,9 @@ class LinearEquationPlugin extends EquationPlugin
                 ]
             ]);
         } catch (\Exception $e) {
-            throw new ProblemTemplateFormatException('Zadán chybný formát šablony.');
+            bdump($e);
+            bdump($e->getMessage());
+            throw new ProblemTemplateException('Zadán chybný formát šablony.');
         }
 
         if (!$matches) {

@@ -56,11 +56,24 @@ trait ProblemTemplateFunctionalityTrait
     protected $templateJsonDataRepository;
 
     /**
+     * @param array $firstArr
+     * @param array $secondArr
+     * @return array
+     */
+    public function intersectJsonDataArrays(array $firstArr, array $secondArr): array
+    {
+        return array_uintersect($firstArr, $secondArr, static function($first, $second) {
+            return strcmp(serialize($first), serialize($second));
+        });
+    }
+
+    /**
      * @param $templ
      * @param ArrayHash $data
      * @param int|null $templateId
      * @param bool $fromDataGrid
      * @return ProblemTemplate
+     * @throws \Nette\Utils\JsonException
      */
     public function setBaseValues($templ, ArrayHash $data, int $templateId = null, bool $fromDataGrid = false): ProblemTemplate
     {
@@ -97,43 +110,24 @@ trait ProblemTemplateFunctionalityTrait
                 $templateId = $this->repository->getSequenceVal();
             }
 
-            $templateJsonData = null;
+            $templateJsonData = [];
 
-            if($templateJson = $this->templateJsonDataRepository->findOneBy(['templateId' => $templateId])){
-
-//                TODO: Make merge of all template recorded JSONs
-
-//                foreach ($templateJsons as $json){
-//                    $jsonArr = Json::decode($json->getJsonData(), Json::FORCE_ARRAY);
-////                    bdump($jsonArr);
-//                    if(!$templateJsonData){
-//                        $templateJsonData = $jsonArr;
-//                    }
-//                    else{
-//                        bdump($templateJsonData);
-//                        bdump($jsonArr);
-//                        foreach ($templateJsonData as $item){
-//                            if($jsonArr[0] !== $item){
-//                                array_shift($jsonArr);
-//                            }
-//                        }
-//                        bdump($jsonArr);
-//                        $templateJsonData = array_intersect($templateJsonData, $jsonArr);
-//                    }
-//                }
-//                bdump($templateJsonData);
-                $templateJsonData = $templateJson->getJsonData();
-
+            if($templateJsons = $this->templateJsonDataRepository->findBy(['templateId' => $templateId])){
+                $templateJsonData = Json::decode($templateJsons[0]->getJsonData());
+                unset($templateJsonData[0]);
+                // Make merge of all template recorded JSONs
+                foreach ($templateJsons as $json){
+                    $arr = Json::decode($json->getJsonData());
+                    $templateJsonData = $this->intersectJsonDataArrays($templateJsonData, $arr);
+                }
             }
 
-            bdump($templateJson);
+            // Reindex array key to start from 0 (array_values) and encode data to JSON string
+            if($templateJsonData){
+                $templateJsonData = Json::encode(array_values($templateJsonData));
+            }
 
-            if( $attached->hasCondition || ( $templateJson && $templateJson->isValidation()) ){
-                $templ->setMatches($templateJsonData);
-            }
-            else{
-                $templ->setMatches(null);
-            }
+            $templ->setMatches($templateJsonData);
         }
 
         return $templ;
@@ -144,6 +138,7 @@ trait ProblemTemplateFunctionalityTrait
      * @param ArrayHash $data
      * @param bool $fromDataGrid
      * @return Object|null
+     * @throws \Nette\Utils\JsonException
      */
     public function baseUpdate(int $id, ArrayHash $data, bool $fromDataGrid = false): ?Object
     {

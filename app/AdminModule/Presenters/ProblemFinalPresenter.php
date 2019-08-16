@@ -130,11 +130,9 @@ class ProblemFinalPresenter extends AdminPresenter
 
         if($record->isGenerated()){
             $form['body']->setDisabled();
-            $form['problemType']->setDisabled();
         }
 
         $form['body']->setDefaultValue($record->getBody());
-        $form['problemType']->setDefaultValue($record->getProblemType()->getId());
 
         foreach($conditions as $condition){
             $form['condition_' . $condition->getProblemConditionType()->getId()]->setValue($condition->getAccessor());

@@ -43,6 +43,10 @@ class ConstHelper
     public const QUOTIENT_VALIDATION = 4;
     public const QUOTIENT_EXISTS = 0;
 
+    // Expression conditions
+    public const EXPRESSION_VALIDATION = 5;
+    public const EXPRESSION_VALID = 0;
+
     // Types constants
     public const LINEAR_EQ = 1;
     public const QUADRATIC_EQ = 2;

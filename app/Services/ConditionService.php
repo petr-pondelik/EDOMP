@@ -78,50 +78,87 @@ class ConditionService
         $this->validationFunctions = [
 
             'positive' => function ($value) {
-                return $this->parser::solve($value) > 0;
+                try{
+                    return $this->parser::solve($value) > 0;
+                } catch (\Exception $e){
+                    return false;
+                }
             },
 
             'zero' => function ($value) {
-                return (int) $this->parser::solve($value) === 0;
+                try{
+                    return $this->parser::solve($value) === 0;
+                } catch (\Exception $e){
+                    return false;
+                }
             },
 
             'negative' => function ($value) {
-                return $this->parser::solve($value) < 0;
+                try{
+                    return $this->parser::solve($value) < 0;
+                } catch (\Exception $e){
+                    return false;
+                }
             },
 
             'integer' => function ($value) {
-                return is_int($this->parser::solve($value));
+                try{
+                    return is_int($this->parser::solve($value));
+                } catch (\Exception $e){
+                    return false;
+                }
             },
 
             'positiveSquare' => function ($value) {
-                $value = $this->parser::solve($value);
-                if ($value <= 0) {
+                try{
+                    $value = $this->parser::solve($value);
+                    if ($value <= 0) {
+                        return false;
+                    }
+                    $squareRoot = sqrt($value);
+                    $squareRootInt = (int)$squareRoot;
+                    return $squareRootInt == $squareRoot;
+                } catch (\Exception $e){
                     return false;
                 }
-                $squareRoot = sqrt($value);
-                $squareRootInt = (int)$squareRoot;
-                return $squareRootInt == $squareRoot;
             },
 
             'differenceExists' => function ($values) {
-                $values = Json::decode($values);
-                $diff1 = $this->parser::solve('(' . $values[1] . ')' . ' - ' . '(' . $values[0] . ')');
-                $diff2 = $this->parser::solve('(' . $values[2] . ')' . ' - ' . '(' . $values[1] . ')');
-                return round($diff1, 5) === round($diff2, 5);
+                try{
+                    $values = Json::decode($values);
+                    $diff1 = $this->parser::solve('(' . $values[1] . ')' . ' - ' . '(' . $values[0] . ')');
+                    $diff2 = $this->parser::solve('(' . $values[2] . ')' . ' - ' . '(' . $values[1] . ')');
+                    return round($diff1, 5) === round($diff2, 5);
+                } catch (\Exception $e){
+                    return false;
+                }
             },
 
             'quotientExists' => function ($values) {
-                $values = Json::decode($values);
-                $values[0] = $this->parser::solve($values[0]);
-                $values[1] = $this->parser::solve($values[1]);
-                $values[2] = $this->parser::solve($values[2]);
-                // If the sequence contains 0 --> check all values for zero value --> if all values aren't zero, return false
-                if($values[0] === 0 || $values[1] === 0 || $values[2] === 0){
-                    return !($values[0] !== 0 || $values[1] !== 0 || $values[2] !== 0);
+                try{
+                    $values = Json::decode($values);
+                    $values[0] = $this->parser::solve($values[0]);
+                    $values[1] = $this->parser::solve($values[1]);
+                    $values[2] = $this->parser::solve($values[2]);
+                    // If the sequence contains 0 --> check all values for zero value --> if all values aren't zero, return false
+                    if($values[0] === 0 || $values[1] === 0 || $values[2] === 0){
+                        return !($values[0] !== 0 || $values[1] !== 0 || $values[2] !== 0);
+                    }
+                    $quot1 = $this->parser::solve('(' . $values[1] . ')' . '/' . '(' . $values[0] . ')');
+                    $quot2 = $this->parser::solve('(' . $values[2] . ')' . '/' . '(' . $values[1] . ')');
+                    return round($quot1, 5) === round($quot2, 5);
+                } catch (\Exception $e){
+                    return false;
                 }
-                $quot1 = $this->parser::solve('(' . $values[1] . ')' . '/' . '(' . $values[0] . ')');
-                $quot2 = $this->parser::solve('(' . $values[2] . ')' . '/' . '(' . $values[1] . ')');
-                return round($quot1, 5) === round($quot2, 5);
+            },
+
+            'expressionValid' => function ($values) {
+                try{
+                    $this->parser::solve($values);
+                } catch (\Exception $e){
+                    return false;
+                }
+                return true;
             }
 
         ];
@@ -141,7 +178,6 @@ class ConditionService
                         $accessor
                     );
                 };
-                bdump($problemCondition);
                 if ($validationFunction = $problemCondition->getValidationFunction()) {
                     $this->validationMapping[$problemConditionTypeID][$accessor] = $this->validationFunctions[$validationFunction->getLabel()];
                 }
@@ -189,9 +225,6 @@ class ConditionService
                 $final = $this->stringsHelper::passValues($data, [
                     'p0' => $i
                 ]);
-                bdump($typeAccessor);
-                bdump($accessor);
-                bdump($this->validationMapping);
                 if ($this->validationMapping[$typeAccessor][$accessor]($final)) {
                     $matches[$matchesCnt++] = [
                         'p0' => $i
@@ -206,6 +239,7 @@ class ConditionService
                         'p0' => $i,
                         'p1' => $j
                     ]);
+                    bdump($final);
                     if ($this->validationMapping[$typeAccessor][$accessor]($final)) {
                         $matches[$matchesCnt++] = [
                             'p0' => $i,

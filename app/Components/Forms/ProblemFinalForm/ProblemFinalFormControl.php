@@ -101,18 +101,12 @@ class ProblemFinalFormControl extends EntityFormControl
         $form = parent::createComponentForm();
 
         $difficulties = $this->difficultyRepository->findAssoc([], 'id');
-        $types = $this->problemTypeRepository->findAssoc([], 'id');
         $subcategories = $this->subCategoryRepository->findAssoc([], 'id');
 
         // Find only non-validation problem condition types
         $conditionTypes = $this->problemConditionTypeRepository->findAssoc(['isValidation' => false], 'id');
 
         $form->addHidden('is_generatable_hidden');
-
-        $form->addSelect('problemType', 'Typ *', $types)
-            ->setPrompt('Zvolte typ úlohy')
-            ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlId('type');
 
         $form->addSelect('subCategory', 'Podkategorie *', $subcategories)
             ->setPrompt('Zvolte podkategorii')
@@ -146,13 +140,6 @@ class ProblemFinalFormControl extends EntityFormControl
             ->setHtmlAttribute('placeholder', 'Výsledek úlohy.')
             ->setHtmlAttribute('class', 'form-control');
 
-        // Conditions
-        foreach ($conditionTypes as $conditionType){
-            $form->addSelect('condition_' . $conditionType->getId(), $conditionType->getLabel(), $conditionType->getProblemConditions()->getValues())
-                ->setHtmlAttribute('class', 'form-control condition')
-                ->setHtmlId('condition-' . $conditionType->getId());
-        }
-
         return $form;
     }
 
@@ -164,7 +151,6 @@ class ProblemFinalFormControl extends EntityFormControl
         $values = $form->getValues();
         // First validate problem body, if it's not generatable problem
         if(!$values->is_generatable_hidden){
-            $validateFields['problemType'] = new ValidatorArgument($values->problemType, 'notEmpty', 'problemType');
             $validateFields['body'] = new ValidatorArgument($values->body, 'notEmpty');
         }
         $validateFields['difficulty'] = new ValidatorArgument($values->difficulty, 'notEmpty', 'difficulty');
@@ -213,12 +199,6 @@ class ProblemFinalFormControl extends EntityFormControl
      */
     public function render(): void
     {
-        $types = $this->problemTypeRepository->findAssoc([], 'id');
-        $this->template->problemTypes = $types;
-        $this->template->condByProblemTypes = [];
-        foreach ($types as $key => $type){
-            $this->template->condByProblemTypes[$key] = $type->getConditionTypes()->getValues();
-        }
         if ($this->edit){
             $this->template->render(__DIR__ . '/templates/edit.latte');
         }

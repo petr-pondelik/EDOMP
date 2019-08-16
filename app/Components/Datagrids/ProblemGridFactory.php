@@ -117,16 +117,11 @@ class ProblemGridFactory extends BaseGrid
                 0 => "<i class='fa fa-times text-danger'></i>",
                 1 => "<i class='fa fa-check text-success'></i>"
             ]);
+
         $grid->addFilterMultiSelect('isGenerated', '', [
             0 => 'Ne',
             1 => 'Ano'
         ]);
-
-        $grid->addColumnNumber('problemType', 'Typ')
-            ->setSortable('er.id')
-            ->addAttributes(['class' => 'text-center'])
-            ->setReplacement($typeOptions);
-        $grid->addFilterMultiSelect('problemType', '', $typeOptions);
 
         $grid->addColumnStatus('subCategory', 'Téma', 'subCategory.id')
             ->setSortable('er.id')

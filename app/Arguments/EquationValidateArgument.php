@@ -19,6 +19,11 @@ class EquationValidateArgument extends ProblemValidateArgument
     /**
      * @var string
      */
+    public $expression;
+
+    /**
+     * @var string
+     */
     public $standardized;
 
     /**
@@ -32,6 +37,7 @@ class EquationValidateArgument extends ProblemValidateArgument
      */
     public function __construct(ArrayHash $data)
     {
+        $this->expression = $data->body;
         $this->standardized = $data->standardized;
         $this->variable = $data->variable;
     }

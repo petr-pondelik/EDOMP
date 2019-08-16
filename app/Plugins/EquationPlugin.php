@@ -31,6 +31,7 @@ abstract class EquationPlugin extends ProblemPlugin
         bdump('STANDARDIZE EQUATION');
         $expression = $this->latexHelper::parseLatex($expression);
         $parameterized = $this->stringsHelper::getParametrized($expression);
+        bdump($parameterized);
         $sides = $this->stringsHelper::getEquationSides($parameterized->expression);
         $sides->left = $this->newtonApiClient->simplify($sides->left);
         $sides->right = $this->newtonApiClient->simplify($sides->right);
