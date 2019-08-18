@@ -9,6 +9,7 @@
 namespace App\Plugins;
 
 use App\Arguments\EquationValidateArgument;
+use App\Exceptions\ProblemTemplateException;
 use App\Model\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
@@ -128,6 +129,9 @@ class QuadraticEquationPlugin extends EquationPlugin
     /**
      * @param EquationValidateArgument $data
      * @return bool
+     * @throws ProblemTemplateException
+     * @throws \App\Exceptions\EntityException
+     * @throws \Nette\Utils\JsonException
      */
     public function validateType(EquationValidateArgument $data): bool
     {
@@ -135,6 +139,31 @@ class QuadraticEquationPlugin extends EquationPlugin
 
         // Remove all the spaces
         $standardized = $this->stringsHelper::removeWhiteSpaces($data->standardized);
+
+        $parametersInfo = $this->stringsHelper::extractParametersInfo($data->expression);
+
+        try{
+            $matches = $this->conditionService->findConditionsMatches([
+                $this->constHelper::QUADRATIC_EQUATION_VALIDATION => [
+                    $this->constHelper::IS_QUADRATIC_EQUATION => [
+                        'parametersInfo' => $parametersInfo,
+                        'data' => $data->standardized
+                    ]
+                ]
+            ]);
+        } catch (\Exception $e){
+            throw new ProblemTemplateException('Zadán chybný formát šablony.');
+        }
+
+        if(!$matches){
+            // TODO: Handle when there are no parameters matches in validation !!!!
+            return false;
+        }
+
+        $matchesJson = Json::encode($matches);
+        $this->templateJsonDataFunctionality->create(ArrayHash::from([
+            'jsonData' => $matchesJson
+        ]), null, true);
 
         // Match string against the quadratic expression regexp
         $matches = Strings::match($standardized, '~' . self::getRegExp($data->variable) . '~');
@@ -208,6 +237,7 @@ class QuadraticEquationPlugin extends EquationPlugin
      */
     public function validateDiscriminantCond(int $accessor, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null): bool
     {
+        bdump($standardized);
         $discriminantExp = $this->getDiscriminantExpression($standardized, $variable);
 
         $matches = $this->conditionService->findConditionsMatches([

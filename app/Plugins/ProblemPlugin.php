@@ -121,15 +121,17 @@ abstract class ProblemPlugin
      */
     protected function validateParameters(string $expression): void
     {
-        $split = $this->stringsHelper::splitByParameters($expression, true);
+        $split = $this->stringsHelper::splitByParameterBase($expression);
 
-        if (count($split) <= 1) {
+        if(!Strings::match($expression,'~\<par.*\>~')) {
             throw new InvalidParameterException('Zadaná šablona neobsahuje parametr.');
         }
 
         foreach ($split as $part) {
+            bdump($part);
             if ($part !== '' && Strings::startsWith($part, '<par')) {
-                if (!Strings::match($part, '~<par min="[0-9]+" max="[0-9]+"/>~')) {
+                bdump(Strings::match($part, '~<par min=\"[0-9]+\" max=\"[0-9]+\"/>~'));
+                if (!Strings::match($part, '~<par min=\"[0-9]+\" max=\"[0-9]+\"/>~')) {
                     throw new InvalidParameterException('Zadaná šablona obsahuje nevalidní parametr.');
                 } else {
                     $min = $this->stringsHelper::extractParAttr($part, 'min');

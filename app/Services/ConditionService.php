@@ -16,6 +16,7 @@ use jlawrence\eos\Parser;
 use Nette\NotSupportedException;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
+use Nette\Utils\Strings;
 
 /**
  * Class ConditionService
@@ -159,6 +160,12 @@ class ConditionService
                     return false;
                 }
                 return true;
+            },
+
+            'isQuadraticEquation' => static function ($values) {
+                $quadraticCoefficient = Strings::trim(Strings::before($values, 'x^2'));
+                bdump($quadraticCoefficient !== '0');
+                return $quadraticCoefficient !== '0';
             }
 
         ];
@@ -358,6 +365,8 @@ class ConditionService
         if (!$res) {
             return null;
         }
+
+        bdump($matches);
 
         return $matches;
     }

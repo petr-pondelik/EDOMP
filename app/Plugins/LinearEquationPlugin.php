@@ -77,6 +77,7 @@ class LinearEquationPlugin extends EquationPlugin
 
         if(!$matches){
 //            return false;
+            // TODO: Handle when there are no parameters matches in validation !!!!
             throw new ProblemTemplateException('Neexistuje ');
         }
 

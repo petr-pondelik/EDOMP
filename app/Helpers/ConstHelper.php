@@ -47,6 +47,10 @@ class ConstHelper
     public const EXPRESSION_VALIDATION = 5;
     public const EXPRESSION_VALID = 0;
 
+    // Quadratic Equation conditions
+    public const QUADRATIC_EQUATION_VALIDATION = 6;
+    public const IS_QUADRATIC_EQUATION = 0;
+
     // Types constants
     public const LINEAR_EQ = 1;
     public const QUADRATIC_EQ = 2;

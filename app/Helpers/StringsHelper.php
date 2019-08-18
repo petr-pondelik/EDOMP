@@ -42,6 +42,15 @@ class StringsHelper
 
     /**
      * @param string $expression
+     * @return array
+     */
+    public static function splitByParameterBase(string $expression): array
+    {
+        return Strings::split($expression, '~(\<par.*\>)~');
+    }
+
+    /**
+     * @param string $expression
      * @param bool $validation
      * @return array
      */
