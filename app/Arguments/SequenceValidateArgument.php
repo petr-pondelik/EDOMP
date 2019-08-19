@@ -37,6 +37,7 @@ class SequenceValidateArgument extends ProblemValidateArgument
      */
     public function __construct(ArrayHash $data)
     {
+        parent::__construct($data);
         $this->expression = $data->body;
         $this->standardized = $data->standardized;
         $this->variable = $data->variable;

@@ -200,7 +200,7 @@ services:
 
 	# Services
 	service.newtopapi.client: App\Services\NewtonApiClient(%newtonApiHost%)
-	service.validation: App\Services\Validator
+	service.validator: App\Services\Validator
 	service.math: App\Services\MathService
 	service.generator: App\Services\GeneratorService
 	service.condition: App\Services\ConditionService
@@ -209,6 +209,7 @@ services:
 	service.authenticator: App\Services\Authenticator
 	service.authorizator: App\Services\Authorizator
 	service.eos.parser: jlawrence\eos\Parser
+	service.wrapper.eos.parser: App\Services\EosParserWrapper
 
 	# Managers
 	manager.entity.constraint: App\Model\Manager\ConstraintEntityManager

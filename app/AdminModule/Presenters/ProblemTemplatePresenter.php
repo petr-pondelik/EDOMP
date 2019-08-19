@@ -246,8 +246,10 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     public function createComponentProblemTemplateCreateForm(): ProblemTemplateFormControl
     {
         $control = $this->problemTemplateFormFactory->create($this->functionality);
-        $control->onSuccess[] = function (){
+        $control->onSuccess[] = function () {
             $this['templateGrid']->reload();
+            $this['problemTemplateCreateForm']->restoreDefaults();
+            $this->redrawControl('problemTemplateCreateFormSnippet');
             $this->informUser(new UserInformArgs('create', true, 'success', null, true));
         };
         $control->onError[] = function ($e){
@@ -262,7 +264,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     public function createComponentProblemTemplateEditForm(): ProblemTemplateFormControl
     {
         $control = $this->problemTemplateFormFactory->create($this->functionality, true);
-        $control->onSuccess[] = function (){
+        $control->onSuccess[] = function () {
             $this->informUser(new UserInformArgs('edit', true, 'success', null, true));
             $this->redirect('default');
         };

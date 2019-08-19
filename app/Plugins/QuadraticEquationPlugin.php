@@ -163,7 +163,7 @@ class QuadraticEquationPlugin extends EquationPlugin
         $matchesJson = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $matchesJson
-        ]), null, true);
+        ]), $data->templateId, true);
 
         // Match string against the quadratic expression regexp
         $matches = Strings::match($standardized, '~' . self::getRegExp($data->variable) . '~');

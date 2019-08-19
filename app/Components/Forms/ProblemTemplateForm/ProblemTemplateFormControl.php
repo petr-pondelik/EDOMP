@@ -26,6 +26,8 @@ use App\Services\MathService;
 use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
+use Nette\Forms\Controls\SelectBox;
+use Nette\Forms\Controls\TextBase;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -144,6 +146,17 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         $this->conditionTypes = $this->problemConditionTypeRepository->findNonValidation($this->problemType->getId());
     }
 
+    public function restoreDefaults(): void
+    {
+        $formComponents = $this['form']->getComponents();
+
+        foreach ($formComponents as $key => $formComponent){
+            if($formComponent instanceof TextBase || $formComponent instanceof SelectBox){
+                $formComponent->setValue(null);
+            }
+        }
+    }
+
     /**
      * @return Form
      * @throws \Exception
@@ -249,6 +262,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
         $values = $form->getValues();
 
+        bdump($values);
+
         // VALIDATE BASE ITEMS
         if(!$this->validateBaseItems($values)){
             bdump('RETURN');
@@ -265,6 +280,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
         // STANDARDIZE THE INPUT
         $standardized = $this->standardize($values);
+        bdump('STANDARDIZED');
+        bdump($standardized);
         if($standardized === null){
             $this->redrawErrors();
             bdump('TEST');
@@ -298,6 +315,13 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
         // VALIDATE BASE ITEMS
         if(!$this->validateBaseItems($values, true)){
+            $this->redrawErrors(false);
+            return;
+        }
+
+        // VALIDATE BODY
+        if(!$this->validateBody($values)){
+            bdump('VALIDATE BODY');
             $this->redrawErrors(false);
             return;
         }
@@ -361,8 +385,11 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      */
     public function validateType(ArrayHash $values, $standardized): bool
     {
+        bdump('VALIDATE TYPE');
+        bdump($values);
         // Validate if the entered problem corresponds to the selected type
         $validateFields['type'] = new ValidatorArgument([
+            'templateId' => $values->idHidden ?? null,
             'body' => $values->body,
             'standardized' => $standardized,
             'variable' => $values->variable
@@ -455,6 +482,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      */
     public function render(): void
     {
+        bdump('RENDER');
         $this->template->conditionTypes = $this->conditionTypes;
         if($this->edit){
             $this->template->render(__DIR__ . '/' . $this->formName . '/templates/edit.latte');

@@ -61,13 +61,22 @@ class LinearEquationPlugin extends EquationPlugin
         }
 
         $parametersInfo = $this->stringsHelper::extractParametersInfo($data->expression);
+        $linearVariableExpression = $this->stringsHelper::getLinearVariableExpresion($data->standardized, $data->variable);
+
+        // Match string against the linear expression regexp
+        $matches = Strings::match($standardized, '~' . self::getRegExp($data->variable) . '~');
+
+        // Check if the whole expression was matched
+        if($matches[0] !== $standardized){
+            return false;
+        }
 
         try{
             $matches = $this->conditionService->findConditionsMatches([
                 $this->constHelper::EXPRESSION_VALIDATION => [
                     $this->constHelper::EXPRESSION_VALID => [
                         'parametersInfo' => $parametersInfo,
-                        'data' => $this->stringsHelper::getLinearVariableExpresion($data->standardized, $data->variable)
+                        'data' => $linearVariableExpression
                     ]
                 ]
             ]);
@@ -84,13 +93,9 @@ class LinearEquationPlugin extends EquationPlugin
         $matchesJson = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $matchesJson
-        ]), null, true);
+        ]), $data->templateId, true);
 
-        // Match string against the linear expression regexp
-        $matches = Strings::match($standardized, '~' . self::getRegExp($data->variable) . '~');
-
-        // Check if the whole expression was matched
-        return $matches[0] === $standardized;
+        return true;
     }
 
     /**

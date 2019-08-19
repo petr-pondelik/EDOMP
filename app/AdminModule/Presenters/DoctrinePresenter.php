@@ -53,6 +53,7 @@ use Kdyby\Doctrine\EntityManager;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
 use Nette\Utils\Json;
+use Nette\Utils\Strings;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DoctrinePresenter extends AdminPresenter
@@ -185,19 +186,23 @@ class DoctrinePresenter extends AdminPresenter
      */
     public function actionDefault()
     {
-        $templateJsons = $this->templateJsonDataRepository->findBy(['templateId' => 418]);
+        bdump(Strings::match('8 2 1', '~(\d)\s(\d)~'));
+        bdump(Strings::replace(Strings::replace('8 2 1', '~(\d)\s(\d)~', '$1*$2'), '~$1*$2~'));
+//        bdump($this->parser::solve('(-1/4*0 + 3/8*-5 -5)/((3/8 + 3/8*-5 - -4))'));
 
-        $firstJson = Json::decode($templateJsons[0]->getJsonData(), true);
-        bdump($firstJson);
-
-        $secondJson = Json::decode($templateJsons[1]->getJsonData(), true);
-        bdump($secondJson);
-
-        $intersect = array_uintersect($firstJson, $secondJson, static function($first, $second) {
-            return strcmp(serialize($first), serialize($second));
-        });
-
-        bdump($intersect);
+//        $templateJsons = $this->templateJsonDataRepository->findBy(['templateId' => 418]);
+//
+//        $firstJson = Json::decode($templateJsons[0]->getJsonData(), true);
+//        bdump($firstJson);
+//
+//        $secondJson = Json::decode($templateJsons[1]->getJsonData(), true);
+//        bdump($secondJson);
+//
+//        $intersect = array_uintersect($firstJson, $secondJson, static function($first, $second) {
+//            return strcmp(serialize($first), serialize($second));
+//        });
+//
+//        bdump($intersect);
 
 //        bdump($this->parser::solve('5+4(1+2)+3+ln(e)'));
 //        bdump($this->parser::solve('0^2 - 4 * 1/2 log(3) * (1/2 0 - 1/5 log(100))'));

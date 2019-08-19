@@ -40,40 +40,61 @@ class StringsHelper
         'subtraction' => '-'
     ];
 
+    protected const PARAMETER_ATTR_CONTENT_REG = '\-?[0-9a-zA-Z\*\-\+\/\^\"\'\>\<]*';
+
     /**
      * @param string $expression
      * @return array
      */
     public static function splitByParameterBase(string $expression): array
     {
-        return Strings::split($expression, '~(\<par.*\>)~');
+        $regExp = '~'
+                . '(<par\s*>)|'
+                . '(<par\s*/?>)|'
+
+                . sprintf("(<par\s*min=\"%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
+                . sprintf("(<par\s*min='%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
+                . sprintf("(<par\s*min='%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
+                . sprintf("(<par\s*min=\"%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
+
+                . sprintf("(<par\s*max=\"%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
+                . sprintf("(<par\s*max='%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
+                . sprintf("(<par\s*max='%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
+                . sprintf("(<par\s*max=\"%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
+
+                . sprintf("(<par\s*min=\"%s'\s*max='%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
+                . sprintf("(<par\s*min='%s\"\s*max='%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
+                . sprintf("(<par\s*min='%s'\s*max=\"%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
+                . sprintf("(<par\s*min='%s'\s*max='%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
+
+                . sprintf("(<par\s*min=\"%s\"\s*max=\"%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
+                . sprintf("(<par\s*min='%s'\s*max='%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
+                . sprintf("(<par\s*min='%s'\s*max=\"%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
+                . sprintf("(<par\s*min=\"%s\"\s*max='%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
+                . sprintf("(<par\s*min=\"%s'\s*max='%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
+                . sprintf("(<par\s*min='%s\"\s*max=\"%s'\s*/?>)", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
+
+            . '~';
+
+        bdump($regExp);
+
+        return Strings::split($expression, $regExp);
     }
 
     /**
      * @param string $expression
-     * @param bool $validation
      * @return array
      */
-    public static function splitByParameters(string $expression, bool $validation = false): array
+    public static function splitByParameters(string $expression): array
     {
-        //Explode string by parameter marks and preserve the marks
+        // Explode string by parameter marks and preserve the marks
 
-        /*SPLIT REGULAR EXPRESSION:
-            ( <par\s*\/> ) |
-            ( <par\s*type="[a-z]*"\s*\/> ) |
-            ( <par\s*type="[a-z]*"\s*min="[0-9]*"\s*\/> ) |
-            ( <par\s*type="[a-z]*"\s*max="[0-9]*"\/> ) |
-            ( <par\s*type="[a-z]*"\s*min="[0-9]*"\s*max="[0-9]*"\/> ) |
-            ( <par\s*min="[0-9]*"\s*\/> ) |
-            ( <par\s*max="[0-9]*"\s*\/> ) |
-            ( <par\s*min="[0-9]*"\s*max="[0-9]*"\s*\/> )
-        */
+        /*
+         * SPLIT REGULAR EXPRESSION:
+         * ( <par\s*min="\-[0-9]+"\s*max="\-[0-9]+"\s*\/> )
+         * */
 
-        if(!$validation){
-            return Strings::split($expression,'~(<par\s*min="[0-9]+"\s*max="[0-9]+"\s*\/>)~');
-        }
-
-        return Strings::split($expression,'~(<par\s*\/>)|(<par\s*type="[a-z]*"\s*\/>)|(<par\s*type="[a-z]*"\s*min="[0-9]*"\s*\/>)|(<par\s*type="[a-z]*"\s*max="[0-9]*"\/>)|(<par\s*type="[a-z]*"\s*min="[0-9]*"\s*max="[0-9]*"\/>)|(<par\s*min="[0-9]*"\s*\/>)|(<par\s*max="[0-9]*"\s*\/>)|(<par\s*min="[0-9]*"\s*max="[0-9]*"\s*\/>)~');
+        return Strings::split($expression,'~(<par\s*min="\-?[0-9]+"\s*max="\-?[0-9]+"\s*\/>)~');
     }
 
     /**
@@ -230,7 +251,7 @@ class StringsHelper
     public static function getEquationSides(string $expression, bool $validate = true): ArrayHash
     {
         if($validate && !self::isEquation($expression)){
-                throw new EquationException('Zadaný výraz validní rovnicí.');
+                throw new EquationException('Zadaný výraz není validní rovnicí.');
         }
         $sides = Strings::split($expression, '~=~');
         return ArrayHash::from([
@@ -261,6 +282,16 @@ class StringsHelper
         foreach($values as $parameter => $value){
             $expression = Strings::replace($expression, '~' . $parameter . '~', $value);
         }
+        return self::standardizeOperators($expression);
+    }
+
+    /**
+     * @param string $expression
+     * @return string
+     */
+    public static function standardizeOperators(string $expression): string
+    {
+        $expression = Strings::replace($expression, '~--~', '');
         return $expression;
     }
 
@@ -305,24 +336,41 @@ class StringsHelper
      */
     public static function getLinearVariableExpresion(string $expression, string $variable): string
     {
+        bdump('GET LINEAR VARIABLE EXPRESSION');
+        bdump($expression);
+
         $split = Strings::split($expression, '~(' . $variable . ')~');
+
+//        if($split)
+
         if(!$split[2]){
             return '0';
         }
+
         $rightOp = '';
         if(self::firstOperator($split[2]) === self::IS_ADDITION){
             $rightOp = '-';
         }
+
         $split[2] = self::trimOperators($split[2]);
         $split[2] = self::negateOperators($split[2]);
+
+        bdump($split);
+
+        foreach ($split as $key => $item){
+            $split[$key] = Strings::trim($item);
+        }
 
         // Check if variable multiplier exists
         if($split[0]){
             $rightSide = sprintf('(%s%s)/(%s)', $rightOp, $split[2], $split[0]);
         }
         else{
-            $rightSide =  sprintf('(%s%s)', $rightOp, $split[2]);
+            bdump('ZERO MULTIPLIER');
+            $rightSide = sprintf('(%s%s)', $rightOp, $split[2]);
         }
+
+        bdump($rightSide);
 
         return $rightSide;
     }
@@ -350,7 +398,6 @@ class StringsHelper
      */
     public static function isEquation(string $expression): bool
     {
-//        $split = Strings::split($expression, '~ = ~');
         $split = Strings::split($expression, '~=~');
         if(count($split) !== 2 || Strings::match($split[0], '~^\s*$~') || Strings::match($split[1], '~^\s*$~')){
             return false;
@@ -381,14 +428,23 @@ class StringsHelper
      * @param string $variable
      * @return string
      */
-    public static function fillMultipliers(string $expression, string $variable): string
+    public static function fillMultipliers(string $expression, string $variable = null): string
     {
-        $expression = Strings::replace($expression, '~(\d)(' . $variable . ')~', '$1*$2');
-        $expression = Strings::replace($expression, '~(\d)(' . $variable . ')~', '$1*$2');
-        $expression = Strings::replace($expression, '~(\d)\s*(' . $variable . ')~', '$1*$2');
-        $expression = Strings::replace($expression, '~(\d)\s*(p\d+)~', '$1*$2');
+        if($variable){
+            $expression = Strings::replace($expression, '~(\d)(' . $variable . ')~', '$1*$2');
+            $expression = Strings::replace($expression, '~(\d)(' . $variable . ')~', '$1*$2');
+            $expression = Strings::replace($expression, '~(\d)\s*(' . $variable . ')~', '$1*$2');
+            $expression = Strings::replace($expression, '~(\s*\))(' . $variable . ')~', '$1*$2');
+        }
+
+        $expression = Strings::replace($expression, '~(\-?\d)\s*(p\d+)~', '$1*$2');
         $expression = Strings::replace($expression, '~(\))\s*(p\d+)~', '$1*$2');
-        $expression = Strings::replace($expression, '~(\d)\s+(\d)~', '$1*$2');
-        return Strings::replace($expression, '~(\s*\))(' . $variable . ')~', '$1*$2');
+        $expression = Strings::replace($expression, '~(\-?\d)\s+(\-?\d)~', '$1*$2');
+        $expression = Strings::replace($expression, '~(\-?\d)\*(\-?\d)\s+(\-?\d)~', '$1*$2*$3');
+
+//        $expression = Strings::replace($expression, '~(\d)\s+(\-\d)~', '$1*$2');
+//        $expression = Strings::replace($expression, '~(\-\d)\s+(\-\d)~', '$1*$2');
+
+        return $expression;
     }
 }

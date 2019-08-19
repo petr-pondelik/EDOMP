@@ -37,16 +37,6 @@ class Validator
     protected $newtonApiClient;
 
     /**
-     * @var MathService
-     */
-    protected $mathService;
-
-    /**
-     * @var ConditionService
-     */
-    protected $conditionService;
-
-    /**
      * @var UserRepository
      */
     protected $userRepository;
@@ -114,8 +104,6 @@ class Validator
     /**
      * Validator constructor.
      * @param NewtonApiClient $newtonApiClient
-     * @param MathService $mathService
-     * @param ConditionService $conditionService
      * @param UserRepository $userRepository
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param ConstHelper $constHelper
@@ -129,7 +117,6 @@ class Validator
     public function __construct
     (
         NewtonApiClient $newtonApiClient,
-        MathService $mathService, ConditionService $conditionService,
         UserRepository $userRepository, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
         ConstHelper $constHelper, StringsHelper $stringsHelper, LatexHelper $latexHelper,
         LinearEquationPlugin $linearEquationPlugin,
@@ -139,8 +126,6 @@ class Validator
     )
     {
         $this->newtonApiClient = $newtonApiClient;
-        $this->mathService = $mathService;
-        $this->conditionService = $conditionService;
         $this->userRepository = $userRepository;
         $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
         $this->constHelper = $constHelper;

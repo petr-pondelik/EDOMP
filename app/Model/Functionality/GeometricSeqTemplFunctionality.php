@@ -39,6 +39,7 @@ class GeometricSeqTemplFunctionality extends BaseFunctionality
      * @param DifficultyRepository $difficultyRepository
      * @param SubCategoryRepository $subCategoryRepository
      * @param TemplateJsonDataRepository $templateJsonDataRepository
+     * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      */
     public function __construct
     (
@@ -47,7 +48,7 @@ class GeometricSeqTemplFunctionality extends BaseFunctionality
         ProblemTypeRepository $problemTypeRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
-        TemplateJsonDataRepository $templateJsonDataRepository
+        TemplateJsonDataRepository $templateJsonDataRepository, TemplateJsonDataFunctionality $templateJsonDataFunctionality
     )
     {
         parent::__construct($entityManager);
@@ -57,6 +58,7 @@ class GeometricSeqTemplFunctionality extends BaseFunctionality
         $this->difficultyRepository = $difficultyRepository;
         $this->subCategoryRepository = $subCategoryRepository;
         $this->templateJsonDataRepository = $templateJsonDataRepository;
+        $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
         $this->repository = $repository;
     }
 

@@ -26,7 +26,6 @@ use Nette\Utils\ArrayHash;
  */
 class LinearEqTemplFunctionality extends BaseFunctionality
 {
-
     use ProblemTemplateFunctionalityTrait;
 
     /**
@@ -39,6 +38,7 @@ class LinearEqTemplFunctionality extends BaseFunctionality
      * @param DifficultyRepository $difficultyRepository
      * @param SubCategoryRepository $subCategoryRepository
      * @param TemplateJsonDataRepository $templateJsonDataRepository
+     * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      */
     public function __construct
     (
@@ -47,7 +47,7 @@ class LinearEqTemplFunctionality extends BaseFunctionality
         ProblemTypeRepository $problemTypeRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
-        TemplateJsonDataRepository $templateJsonDataRepository
+        TemplateJsonDataRepository $templateJsonDataRepository, TemplateJsonDataFunctionality $templateJsonDataFunctionality
     )
     {
         parent::__construct($entityManager);
@@ -57,6 +57,7 @@ class LinearEqTemplFunctionality extends BaseFunctionality
         $this->difficultyRepository = $difficultyRepository;
         $this->subCategoryRepository = $subCategoryRepository;
         $this->templateJsonDataRepository = $templateJsonDataRepository;
+        $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
         $this->repository = $repository;
     }
 
@@ -84,14 +85,14 @@ class LinearEqTemplFunctionality extends BaseFunctionality
      */
     public function update(int $id, ArrayHash $data, bool $fromDataGrid = false): Object
     {
-        bdump($data);
+        bdump('UPDATE');
+        bdump($id);
         $entity = $this->baseUpdate($id, $data, $fromDataGrid);
         if(!empty($data->variable)){
             $entity->setVariable($data->variable);
         }
         $this->em->persist($entity);
         $this->em->flush();
-        bdump($entity);
         return $entity;
     }
 }

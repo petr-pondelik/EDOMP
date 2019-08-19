@@ -52,6 +52,7 @@ abstract class EquationPlugin extends ProblemPlugin
      */
     public function validateBody(BodyArgument $argument): int
     {
+        bdump('VALIDATE BODY');
         if(!$this->latexHelper::latexWrapped($argument->body)){
             return 1;
         }

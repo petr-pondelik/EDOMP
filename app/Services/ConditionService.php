@@ -25,9 +25,9 @@ use Nette\Utils\Strings;
 class ConditionService
 {
     /**
-     * @var Parser
+     * @var EosParserWrapper
      */
-    protected $parser;
+    protected $eosParserWrapper;
 
     /**
      * @var ProblemConditionTypeRepository
@@ -61,18 +61,18 @@ class ConditionService
 
     /**
      * ConditionService constructor.
-     * @param Parser $parser
+     * @param EosParserWrapper $eosParserWrapper
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      */
     public function __construct
     (
-        Parser $parser, ProblemConditionTypeRepository $problemConditionTypeRepository,
+        EosParserWrapper $eosParserWrapper, ProblemConditionTypeRepository $problemConditionTypeRepository,
         StringsHelper $stringsHelper, ConstHelper $constHelper
     )
     {
-        $this->parser = $parser;
+        $this->eosParserWrapper = $eosParserWrapper;
         $this->stringsHelper = $stringsHelper;
         $this->constHelper = $constHelper;
 
@@ -80,7 +80,7 @@ class ConditionService
 
             'positive' => function ($value) {
                 try{
-                    return $this->parser::solve($value) > 0;
+                    return $this->eosParserWrapper->evaluateExpression($value) > 0;
                 } catch (\Exception $e){
                     return false;
                 }
@@ -88,15 +88,16 @@ class ConditionService
 
             'zero' => function ($value) {
                 try{
-                    return $this->parser::solve($value) === 0;
+                    return $this->eosParserWrapper->evaluateExpression($value) === 0;
                 } catch (\Exception $e){
                     return false;
                 }
             },
 
             'negative' => function ($value) {
+                bdump($value);
                 try{
-                    return $this->parser::solve($value) < 0;
+                    return $this->eosParserWrapper->evaluateExpression($value) < 0;
                 } catch (\Exception $e){
                     return false;
                 }
@@ -104,7 +105,7 @@ class ConditionService
 
             'integer' => function ($value) {
                 try{
-                    return is_int($this->parser::solve($value));
+                    return is_int($this->eosParserWrapper->evaluateExpression($value));
                 } catch (\Exception $e){
                     return false;
                 }
@@ -112,7 +113,7 @@ class ConditionService
 
             'positiveSquare' => function ($value) {
                 try{
-                    $value = $this->parser::solve($value);
+                    $value = $this->eosParserWrapper->evaluateExpression($value);
                     if ($value <= 0) {
                         return false;
                     }
@@ -127,8 +128,8 @@ class ConditionService
             'differenceExists' => function ($values) {
                 try{
                     $values = Json::decode($values);
-                    $diff1 = $this->parser::solve('(' . $values[1] . ')' . ' - ' . '(' . $values[0] . ')');
-                    $diff2 = $this->parser::solve('(' . $values[2] . ')' . ' - ' . '(' . $values[1] . ')');
+                    $diff1 = $this->eosParserWrapper->evaluateExpression('(' . $values[1] . ')' . ' - ' . '(' . $values[0] . ')');
+                    $diff2 = $this->eosParserWrapper->evaluateExpression('(' . $values[2] . ')' . ' - ' . '(' . $values[1] . ')');
                     return round($diff1, 5) === round($diff2, 5);
                 } catch (\Exception $e){
                     return false;
@@ -138,24 +139,26 @@ class ConditionService
             'quotientExists' => function ($values) {
                 try{
                     $values = Json::decode($values);
-                    $values[0] = $this->parser::solve($values[0]);
-                    $values[1] = $this->parser::solve($values[1]);
-                    $values[2] = $this->parser::solve($values[2]);
+                    $values[0] = $this->eosParserWrapper->evaluateExpression($values[0]);
+                    $values[1] = $this->eosParserWrapper->evaluateExpression($values[1]);
+                    $values[2] = $this->eosParserWrapper->evaluateExpression($values[2]);
                     // If the sequence contains 0 --> check all values for zero value --> if all values aren't zero, return false
                     if($values[0] === 0 || $values[1] === 0 || $values[2] === 0){
                         return !($values[0] !== 0 || $values[1] !== 0 || $values[2] !== 0);
                     }
-                    $quot1 = $this->parser::solve('(' . $values[1] . ')' . '/' . '(' . $values[0] . ')');
-                    $quot2 = $this->parser::solve('(' . $values[2] . ')' . '/' . '(' . $values[1] . ')');
+                    $quot1 = $this->eosParserWrapper->evaluateExpression('(' . $values[1] . ')' . '/' . '(' . $values[0] . ')');
+                    $quot2 = $this->eosParserWrapper->evaluateExpression('(' . $values[2] . ')' . '/' . '(' . $values[1] . ')');
                     return round($quot1, 5) === round($quot2, 5);
                 } catch (\Exception $e){
                     return false;
                 }
             },
 
-            'expressionValid' => function ($values) {
+            'expressionValid' => function ($data) {
+//                $data = $this->stringsHelper::fillMultipliers($data, null);
                 try{
-                    $this->parser::solve($values);
+                    $this->eosParserWrapper->evaluateExpression($data);
+//                    $this->parser::solve($data->data);
                 } catch (\Exception $e){
                     return false;
                 }
@@ -177,10 +180,10 @@ class ConditionService
             $problemConditionTypeID = $problemConditionType->getId();
             foreach ($problemConditionType->getProblemConditions()->getValues() as $problemCondition) {
                 $accessor = $problemCondition->getAccessor();
-                $this->conditionsMatches[$problemConditionTypeID][$accessor] = function ($values) use ($problemConditionTypeID, $accessor) {
+                $this->conditionsMatches[$problemConditionTypeID][$accessor] = function ($data) use ($problemConditionTypeID, $accessor) {
                     return $this->findMatches(
-                        $values['parametersInfo'],
-                        $values['data'],
+                        $data['parametersInfo'],
+                        $data['data'],
                         $problemConditionTypeID,
                         $accessor
                     );
@@ -223,6 +226,9 @@ class ConditionService
      */
     private function findMatches(ArrayHash $parametersInfo, $data, int $typeAccessor, int $accessor): ?array
     {
+        bdump('FIND MATCHES');
+        bdump($data);
+        bdump($parametersInfo);
         $matches = [];
         $matchesCnt = 0;
         $res = false;
@@ -246,7 +252,6 @@ class ConditionService
                         'p0' => $i,
                         'p1' => $j
                     ]);
-                    bdump($final);
                     if ($this->validationMapping[$typeAccessor][$accessor]($final)) {
                         $matches[$matchesCnt++] = [
                             'p0' => $i,

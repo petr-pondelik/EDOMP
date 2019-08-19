@@ -34,6 +34,7 @@ class ArithmeticSequencePlugin extends SequencePlugin
         }
 
         bdump('VALIDATE ARITHMETIC SEQUENCE');
+        bdump($data);
 
         $parametersInfo = $this->stringsHelper::extractParametersInfo($data->expression);
 
@@ -63,7 +64,7 @@ class ArithmeticSequencePlugin extends SequencePlugin
         $matchesJson = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $matchesJson
-        ]), null, true);
+        ]), $data->templateId, true);
 
         return true;
     }

@@ -75,6 +75,7 @@ class NewtonApiClient
     {
         bdump('SIMPLIFY');
         $expression = $this->newtonParser::newtonFormat($expression);
+        bdump($expression);
         try {
             $res = $this->client->request('GET', $this->newtonApiHost . self::SIMPLIFY . $expression);
         } catch (RequestException $e){

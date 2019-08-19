@@ -82,4 +82,19 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
     {
         return null;
     }
+
+    /**
+     * @param int $templateId
+     * @return bool
+     * @throws \Exception
+     */
+    public function deleteByTemplate(int $templateId): bool
+    {
+        $toBeDeleted = $this->repository->findBy(['templateId' => $templateId]);
+        foreach ($toBeDeleted as $item) {
+            $this->em->remove($item);
+        }
+        $this->em->flush();
+        return true;
+    }
 }

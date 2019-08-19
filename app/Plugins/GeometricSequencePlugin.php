@@ -66,7 +66,7 @@ class GeometricSequencePlugin extends SequencePlugin
         $matchesJson = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $matchesJson
-        ]), null, true);
+        ]), $data->templateId, true);
 
         return true;
     }
@@ -74,6 +74,7 @@ class GeometricSequencePlugin extends SequencePlugin
     /**
      * @param ProblemFinal $problem
      * @return ArrayHash
+     * @throws \App\Exceptions\EquationException
      */
     public function evaluate(ProblemFinal $problem): ArrayHash
     {

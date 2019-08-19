@@ -126,7 +126,7 @@ class ProblemFinalPresenter extends AdminPresenter
         $form['result']->setDefaultValue($record->getResult());
         $form['difficulty']->setDefaultValue($record->getDifficulty()->getId());
         $form['subCategory']->setDefaultValue($record->getSubCategory()->getId());
-        $conditions = $record->getConditions()->getValues();
+//        $conditions = $record->getConditions()->getValues();
 
         if($record->isGenerated()){
             $form['body']->setDisabled();
@@ -134,9 +134,9 @@ class ProblemFinalPresenter extends AdminPresenter
 
         $form['body']->setDefaultValue($record->getBody());
 
-        foreach($conditions as $condition){
-            $form['condition_' . $condition->getProblemConditionType()->getId()]->setValue($condition->getAccessor());
-        }
+//        foreach($conditions as $condition){
+//            $form['condition_' . $condition->getProblemConditionType()->getId()]->setValue($condition->getAccessor());
+//        }
     }
 
     /**

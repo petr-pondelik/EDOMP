@@ -157,3 +157,7 @@ ALTER TABLE prototype_json_data DROP INDEX condition_problem_unique;
 
 -   Timeout - parameters complexity threshhold
 -   Database longtext max length - threshhold
+
+### Newton API restrictions
+
+-   Variable can't be "e" --> it's parsed as exp() function !!!

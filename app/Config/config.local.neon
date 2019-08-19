@@ -1,6 +1,15 @@
 parameters:
     newtonApiHost: localhost:3000/
 
+#webpack:
+#	build:
+#		directory: %wwwDir%/assets/dist
+#		publicPath: /assets/dist/
+#	manifest:
+#	    name: manifest.json
+#	devServer:
+#	    url: http://localhost:8080
+
 webpack:
 	build:
 		directory: %wwwDir%/assets/dist
@@ -8,7 +17,7 @@ webpack:
 	manifest:
 	    name: manifest.json
 	devServer:
-	    url: http://localhost:8080
+	    enabled: false
 
 doctrine:
 	user: root

@@ -9,6 +9,7 @@
 namespace App\Model\Traits;
 
 use App\Model\Entity\ProblemTemplate;
+use App\Model\Functionality\TemplateJsonDataFunctionality;
 use App\Model\Repository\DifficultyRepository;
 use App\Model\Repository\ProblemConditionRepository;
 use App\Model\Repository\ProblemConditionTypeRepository;
@@ -56,6 +57,11 @@ trait ProblemTemplateFunctionalityTrait
     protected $templateJsonDataRepository;
 
     /**
+     * @var TemplateJsonDataFunctionality
+     */
+    protected $templateJsonDataFunctionality;
+
+    /**
      * @param array $firstArr
      * @param array $secondArr
      * @return array
@@ -77,6 +83,8 @@ trait ProblemTemplateFunctionalityTrait
      */
     public function setBaseValues($templ, ArrayHash $data, int $templateId = null, bool $fromDataGrid = false): ProblemTemplate
     {
+        bdump('SET BASE VALUES');
+
         if(isset($data->textBefore)){
             $templ->setTextBefore($data->textBefore);
         }
@@ -110,11 +118,14 @@ trait ProblemTemplateFunctionalityTrait
                 $templateId = $this->repository->getSequenceVal();
             }
 
+            bdump($templateId);
+
             $templateJsonData = [];
 
             if($templateJsons = $this->templateJsonDataRepository->findBy(['templateId' => $templateId])){
                 $templateJsonData = Json::decode($templateJsons[0]->getJsonData());
-                unset($templateJsonData[0]);
+                // Unset picked template JSON
+                unset($templateJsons[0]);
                 // Make merge of all template recorded JSONs
                 foreach ($templateJsons as $json){
                     $arr = Json::decode($json->getJsonData());
@@ -128,6 +139,9 @@ trait ProblemTemplateFunctionalityTrait
             }
 
             $templ->setMatches($templateJsonData);
+
+            // Comment this for testing purposes
+            $this->templateJsonDataFunctionality->deleteByTemplate($templateId);
         }
 
         return $templ;

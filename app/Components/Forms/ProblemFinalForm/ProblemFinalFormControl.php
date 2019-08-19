@@ -104,7 +104,7 @@ class ProblemFinalFormControl extends EntityFormControl
         $subcategories = $this->subCategoryRepository->findAssoc([], 'id');
 
         // Find only non-validation problem condition types
-        $conditionTypes = $this->problemConditionTypeRepository->findAssoc(['isValidation' => false], 'id');
+//        $conditionTypes = $this->problemConditionTypeRepository->findAssoc(['isValidation' => false], 'id');
 
         $form->addHidden('is_generatable_hidden');
 
