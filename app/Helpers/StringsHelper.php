@@ -131,6 +131,9 @@ class StringsHelper
      */
     public static function firstOperator(string $expression): int
     {
+        if(!Strings::startsWith($expression, '+') && !Strings::startsWith($expression, '-')){
+            return self::IS_ADDITION;
+        }
         $addInx = Strings::indexOf($expression, '+');
         $subInx = Strings::indexOf($expression, '-');
         if(!$addInx){
@@ -140,6 +143,19 @@ class StringsHelper
             return self::IS_ADDITION;
         }
         return $addInx < $subInx ? self::IS_ADDITION : self::IS_SUBTRACTION;
+    }
+
+    /**
+     * @param string $expression
+     * @return int
+     */
+    public static function startOperator(string $expression): int
+    {
+        $expression = Strings::trim($expression);
+        if(!Strings::startsWith($expression, '+') && !Strings::startsWith($expression, '-')){
+            return self::IS_ADDITION;
+        }
+        return self::firstOperator($expression);
     }
 
     /**
@@ -341,8 +357,6 @@ class StringsHelper
 
         $split = Strings::split($expression, '~(' . $variable . ')~');
 
-//        if($split)
-
         if(!$split[2]){
             return '0';
         }
@@ -352,27 +366,42 @@ class StringsHelper
             $rightOp = '-';
         }
 
-        $split[2] = self::trimOperators($split[2]);
-        $split[2] = self::negateOperators($split[2]);
-
-        bdump($split);
-
         foreach ($split as $key => $item){
             $split[$key] = Strings::trim($item);
         }
 
-        // Check if variable multiplier exists
-        if($split[0]){
-            $rightSide = sprintf('(%s%s)/(%s)', $rightOp, $split[2], $split[0]);
+        bdump($split);
+
+        // Check for expr. x / expr. format
+        if(Strings::startsWith($split[2], '/')) {
+
+            bdump('FRACTION FORMAT');
+            $mult = $split[0] === '' ? '1' : $split[0];
+            $mult = Strings::trim($mult) === '-' ? '-1' : $mult;
+            $divNeg = Strings::trim(Strings::after($split[2], '/'));
+            $divNeg = self::negateOperators($divNeg);
+            $rightSide = sprintf('(%s%s)/(%s)', $rightOp, $divNeg, $mult);
+
         }
         else{
-            bdump('ZERO MULTIPLIER');
-            $rightSide = sprintf('(%s%s)', $rightOp, $split[2]);
+
+            $split[2] = self::trimOperators($split[2]);
+            $split[2] = self::negateOperators($split[2]);
+
+            // Check if variable multiplier exists
+            if($split[0]){
+                $rightSide = sprintf('(%s%s)/(%s)', $rightOp, $split[2], $split[0]);
+            }
+            else{
+                bdump('ZERO MULTIPLIER');
+                $rightSide = sprintf('(%s%s)', $rightOp, $split[2]);
+            }
+
         }
 
         bdump($rightSide);
 
-        return $rightSide;
+        return self::fillMultipliers($rightSide);
     }
 
     /**
@@ -437,13 +466,11 @@ class StringsHelper
             $expression = Strings::replace($expression, '~(\s*\))(' . $variable . ')~', '$1*$2');
         }
 
-        $expression = Strings::replace($expression, '~(\-?\d)\s*(p\d+)~', '$1*$2');
+        $expression = Strings::replace($expression, '~(\-?p?\d+)\s+(-?p?\d+)~', '$1*$2');
         $expression = Strings::replace($expression, '~(\))\s*(p\d+)~', '$1*$2');
-        $expression = Strings::replace($expression, '~(\-?\d)\s+(\-?\d)~', '$1*$2');
-        $expression = Strings::replace($expression, '~(\-?\d)\*(\-?\d)\s+(\-?\d)~', '$1*$2*$3');
-
-//        $expression = Strings::replace($expression, '~(\d)\s+(\-\d)~', '$1*$2');
-//        $expression = Strings::replace($expression, '~(\-\d)\s+(\-\d)~', '$1*$2');
+//        $expression = Strings::replace($expression, '~(\-?\d)\s+(\-?\d)~', '$1*$2');
+        $expression = Strings::replace($expression, '~(\-?p?\d+)\*(\-?p?\d+)\s+(\-?p?\d+)~', '$1*$2*$3');
+//        $expression = Strings::replace($expression, '~(\-?\d)\*(\-?\d)\s+(\-?\d)~', '$1*$2*$3');
 
         return $expression;
     }

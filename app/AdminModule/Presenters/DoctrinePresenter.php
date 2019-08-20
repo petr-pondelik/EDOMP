@@ -186,9 +186,8 @@ class DoctrinePresenter extends AdminPresenter
      */
     public function actionDefault()
     {
-        bdump(Strings::match('8 2 1', '~(\d)\s(\d)~'));
-        bdump(Strings::replace(Strings::replace('8 2 1', '~(\d)\s(\d)~', '$1*$2'), '~$1*$2~'));
-//        bdump($this->parser::solve('(-1/4*0 + 3/8*-5 -5)/((3/8 + 3/8*-5 - -4))'));
+        bdump($this->stringsHelper::fillMultipliers('(1/15 p1 p2 - 1 3/ p2)/((5 / 2 p0 - 2 / p0 p2))'));
+        bdump($this->stringsHelper::firstOperator('p1 + p2'));
 
 //        $templateJsons = $this->templateJsonDataRepository->findBy(['templateId' => 418]);
 //

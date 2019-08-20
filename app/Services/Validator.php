@@ -266,13 +266,16 @@ class Validator
                 return $this->geometricSequencePlugin->validateBody(new BodyArgument($data));
             },
 
-            'variable' => static function ($filledVal) {
-                if (empty($filledVal)) {
+            'variable' => static function ($value) {
+                if (empty($value)) {
                     return 0;
                 }
-                $matches = Strings::match($filledVal, '~^[a-z]$~');
-                if (!$matches || strlen($filledVal) !== 1 || count($matches) !== 1) {
+                $matches = Strings::match($value, '~^[a-z]$~');
+                if (!$matches || strlen($value) !== 1 || count($matches) !== 1) {
                     return 1;
+                }
+                if($value === 'e'){
+                    return 2;
                 }
                 return -1;
             },
@@ -421,7 +424,8 @@ class Validator
 
             'variable' => [
                 0 => 'Zadejte prosím neznámou.',
-                1 => 'Zadejte prosím právě jedno malé písmo abecedy.'
+                1 => 'Zadejte prosím právě jedno malé písmo abecedy.',
+                2 => 'Proměnná nesmí být symbol e.'
             ],
 
             'firstN' => [

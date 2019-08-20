@@ -80,7 +80,10 @@ class ConditionService
 
             'positive' => function ($value) {
                 try{
-                    return $this->eosParserWrapper->evaluateExpression($value) > 0;
+                    $res = $this->eosParserWrapper->evaluateExpression($value);
+                    bdump($res);
+                    return $res > 0;
+//                    return $this->eosParserWrapper->evaluateExpression($value) > 0;
                 } catch (\Exception $e){
                     return false;
                 }
@@ -95,9 +98,11 @@ class ConditionService
             },
 
             'negative' => function ($value) {
-                bdump($value);
                 try{
-                    return $this->eosParserWrapper->evaluateExpression($value) < 0;
+                    $res = $this->eosParserWrapper->evaluateExpression($value);
+                    bdump($res);
+                    return $res < 0;
+//                    return $this->eosParserWrapper->evaluateExpression($value) < 0;
                 } catch (\Exception $e){
                     return false;
                 }

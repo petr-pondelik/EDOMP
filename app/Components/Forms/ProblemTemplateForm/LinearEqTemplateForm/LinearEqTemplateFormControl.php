@@ -91,6 +91,26 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
     }
 
     /**
+     * @return Form
+     * @throws \Exception
+     */
+    public function createComponentForm(): Form
+    {
+        $form = parent::createComponentForm();
+
+        $form->addSelect('variable', 'Neznámá *', [
+            'x' => 'x',
+            'y' => 'y',
+            'z' => 'z'
+        ])
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Neznámá šablony.')
+            ->setHtmlId('variable');
+
+        return $form;
+    }
+
+    /**
      * @param ArrayHash $values
      * @return array
      */

@@ -46,8 +46,8 @@ class EosParserWrapper
     public function evaluateExpression(string $expression, string $variable = null): float
     {
         bdump($expression);
-        $expression = $this->stringsHelper::fillMultipliers($expression, $variable);
-        bdump($expression);
+//        $expression = $this->stringsHelper::fillMultipliers($expression, $variable);
+//        bdump($expression);
         return $this->parser::solve($expression);
     }
 }

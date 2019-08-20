@@ -93,8 +93,10 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
     {
         $form = parent::createComponentForm();
 
-        // Set variable caption for sequence
-        $form['variable']->caption = 'Index *';
+        $form->addText('variable', 'Index *')
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Zadejte index šablony posloupnosti.')
+            ->setHtmlId('variable');
 
         $form->addInteger('firstN', 'Počet prvních členů *')
             ->setHtmlAttribute('class', 'form-control')

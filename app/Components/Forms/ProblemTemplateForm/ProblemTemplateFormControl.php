@@ -185,10 +185,10 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
             ->setHtmlAttribute('placeholder','Sem patří samotné zadání úlohy.')
             ->setHtmlId('body');
 
-        $form->addText('variable', 'Neznámá *')
-            ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Neznámá šablony.')
-            ->setHtmlId('variable');
+//        $form->addText('variable', 'Neznámá *')
+//            ->setHtmlAttribute('class', 'form-control')
+//            ->setHtmlAttribute('placeholder', 'Neznámá šablony.')
+//            ->setHtmlId('variable');
 
         $form->addTextArea('textAfter', 'Dodatek zadání')
             ->setHtmlAttribute('class', 'form-control')

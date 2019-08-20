@@ -18,6 +18,7 @@ use App\Model\Repository\ProblemTypeRepository;
 use App\Model\Repository\SubCategoryRepository;
 use App\Services\MathService;
 use App\Services\Validator;
+use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -86,6 +87,26 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
             $problemConditionTypeRepository, $problemConditionRepository, $mathService, $constHelper, $edit
         );
         $this->attachEntities($this->constHelper::QUADRATIC_EQ);
+    }
+
+    /**
+     * @return Form
+     * @throws \Exception
+     */
+    public function createComponentForm(): Form
+    {
+        $form = parent::createComponentForm();
+
+        $form->addSelect('variable', 'Neznámá *', [
+            'x' => 'x',
+            'y' => 'y',
+            'z' => 'z'
+        ])
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Neznámá šablony.')
+            ->setHtmlId('variable');
+
+        return $form;
     }
 
     /**

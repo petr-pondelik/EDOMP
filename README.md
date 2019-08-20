@@ -161,3 +161,5 @@ ALTER TABLE prototype_json_data DROP INDEX condition_problem_unique;
 ### Newton API restrictions
 
 -   Variable can't be "e" --> it's parsed as exp() function !!!
+-   Variable for equations can be only x, y or z (Newton API then formats output into equation standard form)
+    -   Solve by select box with variables x, y and z for equations, for others templates types, leave text input   
