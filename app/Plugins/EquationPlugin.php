@@ -10,6 +10,7 @@ namespace App\Plugins;
 
 use App\Arguments\BodyArgument;
 use App\Exceptions\NewtonApiSyntaxException;
+use Nette\Utils\Strings;
 
 /**
  * Class EquationPlugin
@@ -29,15 +30,23 @@ abstract class EquationPlugin extends ProblemPlugin
     public function standardize(string $expression): string
     {
         bdump('STANDARDIZE EQUATION');
+
         $expression = $this->latexHelper::parseLatex($expression);
         $parameterized = $this->stringsHelper::getParametrized($expression);
-        bdump($parameterized);
+
         $sides = $this->stringsHelper::getEquationSides($parameterized->expression);
-        $sides->left = $this->newtonApiClient->simplify($sides->left);
-        $sides->right = $this->newtonApiClient->simplify($sides->right);
         $expression = $this->stringsHelper::mergeEqSides($sides);
+
         $expression = $this->newtonApiClient->simplify($expression);
+
         bdump($expression);
+
+
+
+        $varDividers = Strings::matchAll($expression, '(\+|\-|)([x\d\sp\^]+)\/\s*(\([\-\+\s\(\)\dx]+\))');
+
+        bdump($varDividers);
+
         return $expression;
     }
 

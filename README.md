@@ -160,6 +160,17 @@ ALTER TABLE prototype_json_data DROP INDEX condition_problem_unique;
 
 ### Newton API restrictions
 
--   Variable can't be "e" --> it's parsed as exp() function !!!
+-   Variable can't be "e" --> it's parsed as exp() function !!!: OK
 -   Variable for equations can be only x, y or z (Newton API then formats output into equation standard form)
-    -   Solve by select box with variables x, y and z for equations, for others templates types, leave text input   
+    -   Solve by select box with variables x, y and z for equations, for others templates types, leave text input: OK
+    
+-   equations in fractions format can't be handled by Newton API --> in needs to be manually multiplied by variable dividers!!!   
+    -   NEEDS TO BE SOLVED!!!
+    -   PROPOSAL
+        -   Simplify expression (in classic way)
+        -   Search for fractions with variable in divider
+        -   If those were found, get all the dividers containing variable
+        -   Find all the fractions dividers: \/\s*(\([x\-\+\s\(\)\d]*\))
+        -   Find all the fractions (with grouped counters and dividers): ([x\d\sp]*)\/\s*(\([\-\+\s\(\)\dx]*\))
+        -   Multiply all the expression members with collected dividers (make fraction divider 1, multiply counter by remaining dividers)
+            -   Torn found variable fractions from expression, process it, then multiply rest of the expression with all the dividers and merge both parts

@@ -130,7 +130,7 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
     public function standardize(ArrayHash $values)
     {
         try{
-            $standardized = $this->mathService->standardizeLinearEquation($values->body);
+            $standardized = $this->mathService->standardizeLinearEquation($values);
         } catch (\Exception $e){
             $this['form']['body']->addError($e->getMessage());
             return null;

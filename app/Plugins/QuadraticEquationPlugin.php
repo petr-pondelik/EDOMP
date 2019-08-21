@@ -72,6 +72,7 @@ class QuadraticEquationPlugin extends EquationPlugin
         $bExp = Strings::after($standardized, $variable . '^2');
         $bExpEnd = Strings::indexOf($bExp, $variable);
         $bExp = Strings::substring($bExp, 0, $bExpEnd + 1);
+        bdump($bExp);
         if($bExp === ' '){
             return '0';
         }
@@ -84,6 +85,7 @@ class QuadraticEquationPlugin extends EquationPlugin
         }
         $bExp = Strings::replace($bExp, '~' . $variable . '~', '');
         $bExp = Strings::trim($bExp);
+        bdump($bExp);
         return $this->stringsHelper::wrap($bExp);
     }
 
@@ -237,8 +239,11 @@ class QuadraticEquationPlugin extends EquationPlugin
      */
     public function validateDiscriminantCond(int $accessor, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null): bool
     {
+        bdump('VALIDATE DISCRIMINANT CONDITION');
         bdump($standardized);
         $discriminantExp = $this->getDiscriminantExpression($standardized, $variable);
+
+        bdump($discriminantExp);
 
         $matches = $this->conditionService->findConditionsMatches([
             $this->constHelper::DISCRIMINANT => [

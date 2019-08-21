@@ -187,7 +187,31 @@ class DoctrinePresenter extends AdminPresenter
     public function actionDefault()
     {
         bdump($this->stringsHelper::fillMultipliers('(1/15 p1 p2 - 1 3/ p2)/((5 / 2 p0 - 2 / p0 p2))'));
-        bdump($this->stringsHelper::firstOperator('p1 + p2'));
+        bdump($this->stringsHelper::firstOperator('(3/8 + 3/8 p0 - p2)'));
+
+        $matches = Strings::matchAll('5 p0 x / ((x - 1) (x + 1)) - 10 p0 / ((x - 1) (x + 1)) - 3 / (x + 4) - 6 / ((x - 3) (x + 6))', '~([x\d\sp]*)\/\s*(\([\-\+\s\(\)\dx]*\))~');
+
+        bdump($matches);
+
+        //-3/5 + 5 p0 x / ((x - 1) (x + 1)) - 10 p0 / ((x - 1) (x + 1)) - p1 x - 6 / ((x - 3) (x + 6))
+
+
+
+        $allVarDividers = [];
+
+        foreach ($matches as $match){
+            $exploded = explode(') (',$this->stringsHelper::trim($match[2]));
+            foreach ($exploded as $item){
+                $itemTrimmed = $this->stringsHelper::trim($item);
+                if(!isset($allVarDividers[$itemTrimmed])){
+                    $allVarDividers[$itemTrimmed] = $itemTrimmed;
+                }
+            }
+        }
+
+        bdump($allVarDividers);
+
+
 
 //        $templateJsons = $this->templateJsonDataRepository->findBy(['templateId' => 418]);
 //

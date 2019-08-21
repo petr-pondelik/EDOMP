@@ -112,8 +112,13 @@ class StringsHelper
      */
     public static function negateOperators(string $expression): string
     {
-        $expessionLen = strlen($expression);
-        for($i = 0; $i < $expessionLen; $i++){
+        $startOp = '';
+        if(self::firstOperator($expression) === '+'){
+            $startOp = '-';
+        }
+        $expression = self::trimOperators($expression);
+        $expressionLen = strlen($expression);
+        for($i = 0; $i < $expressionLen; $i++){
             if($expression[$i] === '+'){
                 $expression[$i] = '-';
                 continue;
@@ -122,27 +127,31 @@ class StringsHelper
                 $expression[$i] = '+';
             }
         }
-        return $expression;
+        return $startOp . $expression;
     }
 
     /**
      * @param string $expression
-     * @return int
+     * @param bool $returnAddition
+     * @return string
      */
-    public static function firstOperator(string $expression): int
+    public static function firstOperator(string $expression, bool $returnAddition = true): string
     {
         if(!Strings::startsWith($expression, '+') && !Strings::startsWith($expression, '-')){
-            return self::IS_ADDITION;
+            return $returnAddition ? '+' : '';
         }
         $addInx = Strings::indexOf($expression, '+');
         $subInx = Strings::indexOf($expression, '-');
-        if(!$addInx){
-            return self::IS_SUBTRACTION;
+        if($addInx === false){
+            return '-';
         }
-        if(!$subInx){
-            return self::IS_ADDITION;
+        if($subInx === false){
+            return $returnAddition ? '+' : '-';
         }
-        return $addInx < $subInx ? self::IS_ADDITION : self::IS_SUBTRACTION;
+        if($addInx < $subInx){
+            return $returnAddition ? '+' : '';
+        }
+        return '-';
     }
 
     /**
@@ -353,7 +362,6 @@ class StringsHelper
     public static function getLinearVariableExpresion(string $expression, string $variable): string
     {
         bdump('GET LINEAR VARIABLE EXPRESSION');
-        bdump($expression);
 
         $split = Strings::split($expression, '~(' . $variable . ')~');
 
@@ -361,45 +369,36 @@ class StringsHelper
             return '0';
         }
 
-        $rightOp = '';
-        if(self::firstOperator($split[2]) === self::IS_ADDITION){
-            $rightOp = '-';
-        }
-
         foreach ($split as $key => $item){
             $split[$key] = Strings::trim($item);
         }
 
-        bdump($split);
-
         // Check for expr. x / expr. format
         if(Strings::startsWith($split[2], '/')) {
-
             bdump('FRACTION FORMAT');
-            $mult = $split[0] === '' ? '1' : $split[0];
-            $mult = Strings::trim($mult) === '-' ? '-1' : $mult;
+
+            $multiplier = $split[0] === '' ? '1' : $split[0];
+            $multiplier = Strings::trim($multiplier) === '-' ? '-1' : $multiplier;
+
             $divNeg = Strings::trim(Strings::after($split[2], '/'));
             $divNeg = self::negateOperators($divNeg);
-            $rightSide = sprintf('(%s%s)/(%s)', $rightOp, $divNeg, $mult);
 
+            $rightSide = sprintf('(%s)/(%s)', $divNeg, $multiplier);
         }
         else{
+            bdump('STANDARD FORMAT');
 
-            $split[2] = self::trimOperators($split[2]);
             $split[2] = self::negateOperators($split[2]);
 
             // Check if variable multiplier exists
             if($split[0]){
-                $rightSide = sprintf('(%s%s)/(%s)', $rightOp, $split[2], $split[0]);
+                $rightSide = sprintf('(%s)/(%s)', $split[2], $split[0]);
             }
             else{
                 bdump('ZERO MULTIPLIER');
-                $rightSide = sprintf('(%s%s)', $rightOp, $split[2]);
+                $rightSide = sprintf('(%s)', $split[2]);
             }
-
         }
-
-        bdump($rightSide);
 
         return self::fillMultipliers($rightSide);
     }

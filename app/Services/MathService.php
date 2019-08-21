@@ -139,7 +139,7 @@ class MathService
     }
 
     /**
-     * @param string $expression
+     * @param ArrayHash $data
      * @return string
      * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
@@ -147,7 +147,7 @@ class MathService
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function standardizeLinearEquation(string $expression): string
+    public function standardizeLinearEquation(ArrayHash $data): string
     {
         return $this->linearEquationPlugin->standardize($expression);
     }
