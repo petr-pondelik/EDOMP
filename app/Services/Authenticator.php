@@ -8,8 +8,8 @@
 
 namespace App\Services;
 
-use App\Model\Repository\CategoryRepository;
-use App\Model\Repository\UserRepository;
+use App\Model\Persistent\Repository\CategoryRepository;
+use App\Model\Persistent\Repository\UserRepository;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
 use Nette\Security\Identity;

@@ -9,11 +9,11 @@
 namespace App\Components\DataGrids;
 
 use App\Helpers\ConstHelper;
-use App\Model\Repository\BaseRepository;
-use App\Model\Repository\DifficultyRepository;
-use App\Model\Repository\ProblemTemplateRepository;
-use App\Model\Repository\ProblemTypeRepository;
-use App\Model\Repository\SubCategoryRepository;
+use App\Model\Persistent\Repository\BaseRepository;
+use App\Model\Persistent\Repository\DifficultyRepository;
+use App\Model\Persistent\Repository\ProblemTemplateRepository;
+use App\Model\Persistent\Repository\ProblemTypeRepository;
+use App\Model\Persistent\Repository\SubCategoryRepository;
 use Ublaboo\DataGrid\DataGrid;
 
 /**

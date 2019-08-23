@@ -9,9 +9,9 @@
 namespace App\Services;
 
 
-use App\Model\Entity\Group;
-use App\Model\Entity\SuperGroup;
-use App\Model\Entity\User;
+use App\Model\Persistent\Entity\Group;
+use App\Model\Persistent\Entity\SuperGroup;
+use App\Model\Persistent\Entity\User;
 use Nette\Security\IAuthorizator;
 use Nette\Security\IIdentity;
 

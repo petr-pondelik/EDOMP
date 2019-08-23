@@ -9,7 +9,7 @@
 namespace App\Components\Forms\SuperGroupForm;
 
 use App\Components\Forms\FormFactory;
-use App\Model\Functionality\SuperGroupFunctionality;
+use App\Model\Persistent\Functionality\SuperGroupFunctionality;
 use App\Services\Validator;
 
 /**

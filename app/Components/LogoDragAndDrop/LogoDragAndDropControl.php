@@ -8,7 +8,7 @@
 
 namespace App\Components\LogoDragAndDrop;
 
-use App\Model\Repository\LogoRepository;
+use App\Model\Persistent\Repository\LogoRepository;
 use Nette\Application\UI\Control;
 
 /**

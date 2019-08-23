@@ -10,8 +10,8 @@ namespace App\Components\Forms\SubCategoryForm;
 
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
-use App\Model\Functionality\SubCategoryFunctionality;
-use App\Model\Repository\CategoryRepository;
+use App\Model\Persistent\Functionality\SubCategoryFunctionality;
+use App\Model\Persistent\Repository\CategoryRepository;
 use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;

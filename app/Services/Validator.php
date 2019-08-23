@@ -14,8 +14,13 @@ use App\Arguments\SequenceValidateArgument;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
-use App\Model\Functionality\TemplateJsonDataFunctionality;
-use App\Model\Repository\UserRepository;
+use App\Model\NonPersistent\ArithmeticSequenceTemplateNP;
+use App\Model\NonPersistent\GeometricSequenceTemplateNP;
+use App\Model\NonPersistent\LinearEquationTemplateNP;
+use App\Model\NonPersistent\ProblemTemplateNP;
+use App\Model\NonPersistent\QuadraticEquationTemplateNP;
+use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
+use App\Model\Persistent\Repository\UserRepository;
 use App\Plugins\ArithmeticSequencePlugin;
 use App\Plugins\GeometricSequencePlugin;
 use App\Plugins\LinearEquationPlugin;
@@ -238,32 +243,34 @@ class Validator
                 return -1;
             },
 
-            'body_' . $this->constHelper::LINEAR_EQ => function ($data) {
-                if(empty($data->body) || empty($data->variable)){
+            'body_' . $this->constHelper::LINEAR_EQ => function (LinearEquationTemplateNP $problemTemplate) {
+                bdump('VALIDATE LINEAR EQUATION BODY VALIDATOR');
+                bdump($problemTemplate);
+                if(empty($problemTemplate->body) || empty($problemTemplate->variable)){
                     return 0;
                 }
-                return $this->linearEquationPlugin->validateBody(new BodyArgument($data));
+                return $this->linearEquationPlugin->validateBody($problemTemplate);
             },
 
-            'body_' . $this->constHelper::QUADRATIC_EQ => function ($data) {
-                if(empty($data->body) || empty($data->variable)){
+            'body_' . $this->constHelper::QUADRATIC_EQ => function (QuadraticEquationTemplateNP $problemTemplate) {
+                if(empty($problemTemplate->body) || empty($problemTemplate->variable)){
                     return 0;
                 }
-                return $this->linearEquationPlugin->validateBody(new BodyArgument($data));
+                return $this->linearEquationPlugin->validateBody($problemTemplate);
             },
 
-            'body_' . $this->constHelper::ARITHMETIC_SEQ => function ($data) {
-                if(empty($data->body) || empty($data->variable)){
+            'body_' . $this->constHelper::ARITHMETIC_SEQ => function (ArithmeticSequenceTemplateNP $problemTemplate) {
+                if(empty($problemTemplate->body) || empty($problemTemplate->variable)){
                     return 0;
                 }
-                return $this->arithmeticSequencePlugin->validateBody(new BodyArgument($data));
+                return $this->arithmeticSequencePlugin->validateBody($problemTemplate);
             },
 
-            'body_' . $this->constHelper::GEOMETRIC_SEQ => function ($data) {
-                if(empty($data->body) || empty($data->variable)){
+            'body_' . $this->constHelper::GEOMETRIC_SEQ => function (GeometricSequenceTemplateNP $problemTemplate) {
+                if(empty($problemTemplate->body) || empty($problemTemplate->variable)){
                     return 0;
                 }
-                return $this->geometricSequencePlugin->validateBody(new BodyArgument($data));
+                return $this->geometricSequencePlugin->validateBody($problemTemplate);
             },
 
             'variable' => static function ($value) {
@@ -290,49 +297,49 @@ class Validator
                 return -1;
             },
 
-            'type_' . $this->constHelper::LINEAR_EQ => function ($data) {
-                if (empty($data)) {
+            'type_' . $this->constHelper::LINEAR_EQ => function (LinearEquationTemplateNP $problemTemplate) {
+                if (!$problemTemplate) {
                     return 0;
                 }
-                bdump($data);
-                if(!$this->linearEquationPlugin->validateType(new EquationValidateArgument($data))){
+                bdump($problemTemplate);
+                if(!$this->linearEquationPlugin->validateType($problemTemplate)){
                     return 1;
                 }
                 return -1;
             },
 
-            'type_' . $this->constHelper::QUADRATIC_EQ => function ($data) {
-                if (empty($data)) {
+            'type_' . $this->constHelper::QUADRATIC_EQ => function (QuadraticEquationTemplateNP $problemTemplate) {
+                if (!$problemTemplate) {
                     return 0;
                 }
-                if (!$this->quadraticEquationPlugin->validateType(new EquationValidateArgument($data))) {
+                if (!$this->quadraticEquationPlugin->validateType($problemTemplate)) {
                     return 1;
                 }
                 return -1;
             },
 
-            'type_' . $this->constHelper::ARITHMETIC_SEQ => function ($data) {
-                if (empty($data)) {
+            'type_' . $this->constHelper::ARITHMETIC_SEQ => function (ArithmeticSequenceTemplateNP $problemTemplate) {
+                if (!$problemTemplate) {
                     return 0;
                 }
-                if(!$this->arithmeticSequencePlugin->validateType(new SequenceValidateArgument($data))){
+                if(!$this->arithmeticSequencePlugin->validateType($problemTemplate)){
                     return 1;
                 }
                 return -1;
             },
 
-            'type_' . $this->constHelper::GEOMETRIC_SEQ => function ($data) {
-                if (empty($data)) {
+            'type_' . $this->constHelper::GEOMETRIC_SEQ => function (GeometricSequenceTemplateNP $problemTemplate) {
+                if (!$problemTemplate) {
                     return 0;
                 }
-                if(!$this->geometricSequencePlugin->validateType(new SequenceValidateArgument($data))){
+                if(!$this->geometricSequencePlugin->validateType($problemTemplate)){
                     return 1;
                 }
                 return -1;
             },
 
-            'condition_' . $this->constHelper::RESULT => function (ArrayHash $filledVal, $problemId = null) {
-                $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal->body);
+            'condition_' . $this->constHelper::RESULT => function (ProblemTemplateNP $data, $problemId = null) {
+                $parametersInfo = $this->stringsHelper::extractParametersInfo($data->body);
                 // Maximal number of parameters exceeded
                 if ($parametersInfo->count > $this->constHelper::PARAMETERS_MAX) {
                     return 2;
@@ -341,15 +348,15 @@ class Validator
                 if ($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX) {
                     return 3;
                 }
-                if (!$this->linearEquationPlugin->validateResultCond($filledVal->accessor, $filledVal->standardized, $filledVal->variable, $parametersInfo, $problemId)) {
+                if (!$this->linearEquationPlugin->validateResultCond($data->accessor, $data->standardized, $data->variable, $parametersInfo, $problemId)) {
                     return 4;
                 }
                 return -1;
             },
 
-            'condition_' . $this->constHelper::DISCRIMINANT => function (ArrayHash $filledVal, $problemId = null) {
+            'condition_' . $this->constHelper::DISCRIMINANT => function (ProblemTemplateNP $data, $problemId = null) {
                 bdump('VALIDATE DISCRIMINANT CONDITION');
-                $parametersInfo = $this->stringsHelper::extractParametersInfo($filledVal->body);
+                $parametersInfo = $this->stringsHelper::extractParametersInfo($data->body);
                 // Maximal number of parameters exceeded
                 if ($parametersInfo->count > $this->constHelper::PARAMETERS_MAX) {
                     return 2;
@@ -358,7 +365,7 @@ class Validator
                 if ($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX) {
                     return 3;
                 }
-                if (!$this->quadraticEquationPlugin->validateDiscriminantCond($filledVal->accessor, $filledVal->standardized, $filledVal->variable, $parametersInfo, $problemId)) {
+                if (!$this->quadraticEquationPlugin->validateDiscriminantCond($data->accessor, $data->standardized, $data->variable, $parametersInfo, $problemId)) {
                     return 4;
                 }
                 return -1;

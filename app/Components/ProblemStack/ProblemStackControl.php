@@ -9,8 +9,8 @@
 namespace App\Components\ProblemStack;
 
 
-use App\Model\Entity\Problem;
-use App\Model\Repository\ProblemRepository;
+use App\Model\Persistent\Entity\Problem;
+use App\Model\Persistent\Repository\ProblemRepository;
 use Nette\Application\UI\Control;
 
 /**

@@ -11,7 +11,7 @@ namespace App\Components\Forms\ProblemTypeForm;
 
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
-use App\Model\Functionality\ProblemTypeFunctionality;
+use App\Model\Persistent\Functionality\ProblemTypeFunctionality;
 use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;

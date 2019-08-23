@@ -10,7 +10,9 @@ namespace App\Plugins;
 
 use App\Arguments\EquationValidateArgument;
 use App\Exceptions\ProblemTemplateException;
-use App\Model\Entity\ProblemFinal;
+use App\Model\NonPersistent\LinearEquationTemplateNP;
+use App\Model\NonPersistent\ProblemTemplateNP;
+use App\Model\Persistent\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
@@ -42,34 +44,37 @@ class LinearEquationPlugin extends EquationPlugin
     }
 
     /**
-     * @param EquationValidateArgument $data
+     * @param LinearEquationTemplateNP $problemTemplate
      * @return bool
      * @throws ProblemTemplateException
-     * @throws \Nette\Utils\JsonException
      * @throws \App\Exceptions\EntityException
+     * @throws \Nette\Utils\JsonException
      */
-    public function validateType(EquationValidateArgument $data): bool
+    public function validateType(LinearEquationTemplateNP $problemTemplate): bool
     {
         bdump('VALIDATE LINEAR EQUATION');
 
         // Remove all the spaces
-        $standardized = $this->stringsHelper::removeWhiteSpaces($data->standardized);
+        $standardized = $this->stringsHelper::removeWhiteSpaces($problemTemplate->standardized);
 
         // Trivial fail case
-        if (Strings::match($standardized, '~' . $data->variable . '\^' . '~')) {
+        if (Strings::match($standardized, '~' . $problemTemplate->variable . '\^' . '~')) {
             return false;
         }
 
-        $parametersInfo = $this->stringsHelper::extractParametersInfo($data->expression);
-        $linearVariableExpression = $this->stringsHelper::getLinearVariableExpresion($data->standardized, $data->variable);
+        $parametersInfo = $this->stringsHelper::extractParametersInfo($problemTemplate->body);
+        $linearVariableExpression = $this->stringsHelper::getLinearVariableExpresion($problemTemplate->standardized, $problemTemplate->variable);
 
         // Match string against the linear expression regexp
-        $matches = Strings::match($standardized, '~' . self::getRegExp($data->variable) . '~');
+        $matches = Strings::match($standardized, '~' . self::getRegExp($problemTemplate->variable) . '~');
 
         // Check if the whole expression was matched
         if($matches[0] !== $standardized){
             return false;
         }
+
+        bdump($parametersInfo);
+        bdump($linearVariableExpression);
 
         try{
             $matches = $this->conditionService->findConditionsMatches([
@@ -93,7 +98,7 @@ class LinearEquationPlugin extends EquationPlugin
         $matchesJson = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $matchesJson
-        ]), $data->templateId, true);
+        ]), $problemTemplate->idHidden, true);
 
         return true;
     }

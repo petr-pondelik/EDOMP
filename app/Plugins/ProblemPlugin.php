@@ -14,8 +14,10 @@ use App\Exceptions\InvalidParameterException;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
-use App\Model\Entity\ProblemFinal;
-use App\Model\Functionality\TemplateJsonDataFunctionality;
+use App\Helpers\VariableDividers;
+use App\Model\NonPersistent\ProblemTemplateNP;
+use App\Model\Persistent\Entity\ProblemFinal;
+use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\Services\ConditionService;
 use App\Services\NewtonApiClient;
 use jlawrence\eos\Parser;
@@ -69,6 +71,11 @@ abstract class ProblemPlugin
     protected $stringsHelper;
 
     /**
+     * @var VariableDividers
+     */
+    protected $variableDividers;
+
+    /**
      * @var ConstHelper
      */
     protected $constHelper;
@@ -85,6 +92,7 @@ abstract class ProblemPlugin
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param LatexHelper $latexHelper
      * @param StringsHelper $stringsHelper
+     * @param VariableDividers $variableDividers
      * @param ConstHelper $constHelper
      * @param Parser $parser
      */
@@ -93,8 +101,8 @@ abstract class ProblemPlugin
         NewtonApiClient $newtonApiClient,
         ConditionService $conditionService,
         TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexHelper $latexHelper, StringsHelper $stringsHelper, ConstHelper $constHelper,
-        Parser $parser
+        LatexHelper $latexHelper, StringsHelper $stringsHelper, VariableDividers $variableDividers,
+        ConstHelper $constHelper, Parser $parser
     )
     {
         $this->newtonApiClient = $newtonApiClient;
@@ -102,6 +110,7 @@ abstract class ProblemPlugin
         $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
         $this->latexHelper = $latexHelper;
         $this->stringsHelper = $stringsHelper;
+        $this->variableDividers = $variableDividers;
         $this->constHelper = $constHelper;
         $this->parser = $parser;
     }
@@ -123,14 +132,12 @@ abstract class ProblemPlugin
     {
         bdump('VALIDATE PARAMETERS');
         $split = $this->stringsHelper::splitByParameterBase($expression);
-        bdump($split);
 
         if(!Strings::match($expression,'~\<par.*\>~')) {
             throw new InvalidParameterException('Zadaná šablona neobsahuje parametr.');
         }
 
         foreach ($split as $part) {
-            bdump($part);
             if ($part !== '' && Strings::startsWith($part, '<par')) {
                 bdump(Strings::match($part, '~<par min=\"\-?[0-9]+\" max=\"\-?[0-9]+\"/>~'));
                 if (!Strings::match($part, '~<par min=\"\-?[0-9]+\" max=\"\-?[0-9]+\"/>~')) {
@@ -155,10 +162,10 @@ abstract class ProblemPlugin
     abstract public static function getRegExp(string $variable): string;
 
     /**
-     * @param string $expression
-     * @return string
+     * @param ProblemTemplateNP $expression
+     * @return ProblemTemplateNP
      */
-    abstract public function standardize(string $expression): string;
+    abstract public function standardize(ProblemTemplateNP $expression): ProblemTemplateNP;
 
     /**
      * @param ProblemFinal $problem
@@ -167,8 +174,8 @@ abstract class ProblemPlugin
     abstract public function evaluate(ProblemFinal $problem): ArrayHash;
 
     /**
-     * @param BodyArgument $argument
+     * @param ProblemTemplateNP $problemTemplate
      * @return int
      */
-    abstract public function validateBody(BodyArgument $argument): int;
+    abstract public function validateBody(ProblemTemplateNP $problemTemplate): int;
 }

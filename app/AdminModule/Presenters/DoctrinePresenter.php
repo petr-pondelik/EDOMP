@@ -16,34 +16,34 @@ use App\Exceptions\EntityException;
 use App\Helpers\FlashesTranslator;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
-use App\Model\Entity\ArithmeticSeqTempl;
-use App\Model\Entity\Category;
-use App\Model\Entity\Difficulty;
-use App\Model\Entity\Group;
-use App\Model\Entity\LinearEqTempl;
-use App\Model\Entity\Logo;
-use App\Model\Entity\ProblemCondition;
-use App\Model\Entity\ProblemConditionType;
-use App\Model\Entity\ProblemFinal;
-use App\Model\Entity\ProblemFinalTestVariantAssociation;
-use App\Model\Entity\ProblemType;
-use App\Model\Entity\QuadraticEqTempl;
-use App\Model\Entity\Role;
-use App\Model\Entity\SubCategory;
-use App\Model\Entity\Test;
-use App\Model\Entity\TestVariant;
-use App\Model\Entity\User;
-use App\Model\Functionality\TestFunctionality;
-use App\Model\Functionality\TestVariantFunctionality;
-use App\Model\Manager\ConstraintEntityManager;
-use App\Model\Repository\CategoryRepository;
-use App\Model\Repository\DifficultyRepository;
-use App\Model\Repository\ProblemFinalRepository;
-use App\Model\Repository\ProblemTemplateRepository;
-use App\Model\Repository\QuadraticEqTemplRepository;
-use App\Model\Repository\SubCategoryRepository;
-use App\Model\Repository\TemplateJsonDataRepository;
-use App\Model\Repository\TestRepository;
+use App\Model\Persistent\Entity\ArithmeticSeqTempl;
+use App\Model\Persistent\Entity\Category;
+use App\Model\Persistent\Entity\Difficulty;
+use App\Model\Persistent\Entity\Group;
+use App\Model\Persistent\Entity\LinearEqTempl;
+use App\Model\Persistent\Entity\Logo;
+use App\Model\Persistent\Entity\ProblemCondition;
+use App\Model\Persistent\Entity\ProblemConditionType;
+use App\Model\Persistent\Entity\ProblemFinal;
+use App\Model\Persistent\Entity\ProblemFinalTestVariantAssociation;
+use App\Model\Persistent\Entity\ProblemType;
+use App\Model\Persistent\Entity\QuadraticEqTempl;
+use App\Model\Persistent\Entity\Role;
+use App\Model\Persistent\Entity\SubCategory;
+use App\Model\Persistent\Entity\Test;
+use App\Model\Persistent\Entity\TestVariant;
+use App\Model\Persistent\Entity\User;
+use App\Model\Persistent\Functionality\TestFunctionality;
+use App\Model\Persistent\Functionality\TestVariantFunctionality;
+use App\Model\Persistent\Manager\ConstraintEntityManager;
+use App\Model\Persistent\Repository\CategoryRepository;
+use App\Model\Persistent\Repository\DifficultyRepository;
+use App\Model\Persistent\Repository\ProblemFinalRepository;
+use App\Model\Persistent\Repository\ProblemTemplateRepository;
+use App\Model\Persistent\Repository\QuadraticEqTemplRepository;
+use App\Model\Persistent\Repository\SubCategoryRepository;
+use App\Model\Persistent\Repository\TemplateJsonDataRepository;
+use App\Model\Persistent\Repository\TestRepository;
 use App\Presenters\BasePresenter;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
@@ -192,6 +192,10 @@ class DoctrinePresenter extends AdminPresenter
         $matches = Strings::matchAll('5 p0 x / ((x - 1) (x + 1)) - 10 p0 / ((x - 1) (x + 1)) - 3 / (x + 4) - 6 / ((x - 3) (x + 6))', '~([x\d\sp]*)\/\s*(\([\-\+\s\(\)\dx]*\))~');
 
         bdump($matches);
+
+        bdump($this->stringsHelper::fillMultipliers('-p1 x^5 + (-3/5 - 3 p1) x^4 + (-9/5 + 5 p0 + 19 p1) x^3 + (27/5 + 5 p0 + 3 p1) x^2 + (9/5 - 120 p0 - 18 p1) x - 24/5 + 180 p0'));
+
+        bdump($this->parser::solve('(-3/5 - 3*0)'));
 
         //-3/5 + 5 p0 x / ((x - 1) (x + 1)) - 10 p0 / ((x - 1) (x + 1)) - p1 x - 6 / ((x - 3) (x + 6))
 

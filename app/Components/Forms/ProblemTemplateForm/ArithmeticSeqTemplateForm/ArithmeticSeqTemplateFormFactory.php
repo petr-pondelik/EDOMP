@@ -9,7 +9,7 @@
 namespace App\Components\Forms\ProblemTemplateForm\ArithmeticSeqTemplateForm;
 
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
-use App\Model\Functionality\BaseFunctionality;
+use App\Model\Persistent\Functionality\BaseFunctionality;
 
 /**
  * Class ArithmeticSeqTemplateFormFactory

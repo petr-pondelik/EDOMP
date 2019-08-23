@@ -8,7 +8,7 @@
 
 namespace App\Components\Forms;
 
-use App\Model\Functionality\BaseFunctionality;
+use App\Model\Persistent\Functionality\BaseFunctionality;
 use App\Services\Validator;
 
 /**

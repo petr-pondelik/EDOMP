@@ -11,7 +11,8 @@ namespace App\Plugins;
 use App\Arguments\BodyArgument;
 use App\Arguments\SequenceValidateArgument;
 use App\Exceptions\NewtonApiSyntaxException;
-use App\Model\Entity\ProblemFinal;
+use App\Model\NonPersistent\ProblemTemplateNP;
+use App\Model\Persistent\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -32,32 +33,33 @@ abstract class SequencePlugin extends ProblemPlugin
     }
 
     /**
-     * @param string $expression
-     * @return string
+     * @param ProblemTemplateNP $problemTemplate
+     * @return ProblemTemplateNP
      * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function standardize(string $expression): string
+    public function standardize(ProblemTemplateNP $problemTemplate): ProblemTemplateNP
     {
         bdump('STANDARDIZE SEQUENCE');
-        $expression = $this->latexHelper::parseLatex($expression);
+        $expression = $this->latexHelper::parseLatex($problemTemplate);
         $parametrized = $this->stringsHelper::getParametrized($expression);
         $sides = $this->stringsHelper::getEquationSides($parametrized->expression);
         $expression = $this->newtonApiClient->simplify($sides->right);
-        return $expression;
+        $problemTemplate->standardized = $expression;
+        return $problemTemplate;
     }
 
     /**
-     * @param SequenceValidateArgument $data
+     * @param ProblemTemplateNP $problemTemplate
      * @return bool
      */
-    public function validateType(SequenceValidateArgument $data): bool
+    public function validateType(ProblemTemplateNP $problemTemplate): bool
     {
         bdump('VALIDATE SEQUENCE');
-        if (!$this->stringsHelper::isSequence($this->latexHelper::parseLatex($data->expression), $data->variable)) {
+        if (!$this->stringsHelper::isSequence($this->latexHelper::parseLatex($problemTemplate->expression), $problemTemplate->variable)) {
             return false;
         }
         return true;
@@ -97,7 +99,7 @@ abstract class SequencePlugin extends ProblemPlugin
     }
 
     /**
-     * @param BodyArgument $argument
+     * @param ProblemTemplateNP $problemTemplate
      * @return int
      * @throws \App\Exceptions\InvalidParameterException
      * @throws \App\Exceptions\NewtonApiException
@@ -105,17 +107,17 @@ abstract class SequencePlugin extends ProblemPlugin
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function validateBody(BodyArgument $argument): int
+    public function validateBody(ProblemTemplateNP $problemTemplate): int
     {
-        if(!$this->latexHelper::latexWrapped($argument->body)){
+        if(!$this->latexHelper::latexWrapped($problemTemplate->body)){
             return 1;
         }
-        $parsed = $this->latexHelper::parseLatex($argument->body);
+        $parsed = $this->latexHelper::parseLatex($problemTemplate->body);
 
-        $this->validateParameters($argument->body);
+        $this->validateParameters($problemTemplate->body);
         $split = $this->stringsHelper::splitByParameters($parsed);
 
-        if (empty($argument->variable) || !$this->stringsHelper::containsVariable($split, $argument->variable)) {
+        if (empty($problemTemplate->variable) || !$this->stringsHelper::containsVariable($split, $problemTemplate->variable)) {
             return 2;
         }
 

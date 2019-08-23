@@ -11,13 +11,13 @@ namespace App\Components\Forms\ProblemFinalForm;
 
 use App\Components\Forms\FormFactory;
 use App\Helpers\ConstHelper;
-use App\Model\Functionality\ProblemFinalFunctionality;
-use App\Model\Functionality\ProblemFunctionality;
-use App\Model\Repository\DifficultyRepository;
-use App\Model\Repository\ProblemConditionRepository;
-use App\Model\Repository\ProblemConditionTypeRepository;
-use App\Model\Repository\ProblemTypeRepository;
-use App\Model\Repository\SubCategoryRepository;
+use App\Model\Persistent\Functionality\ProblemFinalFunctionality;
+use App\Model\Persistent\Functionality\ProblemFunctionality;
+use App\Model\Persistent\Repository\DifficultyRepository;
+use App\Model\Persistent\Repository\ProblemConditionRepository;
+use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
+use App\Model\Persistent\Repository\ProblemTypeRepository;
+use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Services\Validator;
 
 /**

@@ -11,8 +11,8 @@ namespace App\Components\Forms\GroupForm;
 
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
-use App\Model\Functionality\GroupFunctionality;
-use App\Model\Repository\SuperGroupRepository;
+use App\Model\Persistent\Functionality\GroupFunctionality;
+use App\Model\Persistent\Repository\SuperGroupRepository;
 use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;

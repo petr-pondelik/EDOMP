@@ -12,12 +12,14 @@ namespace App\Components\Forms\ProblemTemplateForm\ArithmeticSeqTemplateForm;
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormControl;
 use App\Exceptions\EquationException;
 use App\Helpers\ConstHelper;
-use App\Model\Functionality\BaseFunctionality;
-use App\Model\Repository\DifficultyRepository;
-use App\Model\Repository\ProblemConditionRepository;
-use App\Model\Repository\ProblemConditionTypeRepository;
-use App\Model\Repository\ProblemTypeRepository;
-use App\Model\Repository\SubCategoryRepository;
+use App\Model\NonPersistent\ArithmeticSequenceTemplateNP;
+use App\Model\NonPersistent\ProblemTemplateNP;
+use App\Model\Persistent\Functionality\BaseFunctionality;
+use App\Model\Persistent\Repository\DifficultyRepository;
+use App\Model\Persistent\Repository\ProblemConditionRepository;
+use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
+use App\Model\Persistent\Repository\ProblemTypeRepository;
+use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Services\MathService;
 use App\Services\Validator;
 use Nette\Application\UI\Form;
@@ -108,32 +110,28 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
 
     /**
      * @param ArrayHash $values
-     * @return array
+     * @return ArithmeticSequenceTemplateNP|mixed
      */
-    public function collectBodyValidationData(ArrayHash $values): array
+    protected function createNonPersistentEntity(ArrayHash $values): ArithmeticSequenceTemplateNP
     {
-        return [
-            'body' => $values->body,
-            'variable' => $values->variable,
-        ];
+        return new ArithmeticSequenceTemplateNP($values);
     }
 
     /**
-     * @param ArrayHash $values
-     * @return mixed|string|null
+     * @param ProblemTemplateNP $problemTemplate
+     * @return ProblemTemplateNP|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function standardize(ArrayHash $values)
+    public function standardize(ProblemTemplateNP $problemTemplate): ?ProblemTemplateNP
     {
-        $standardized = '';
         try{
-            $standardized = $this->mathService->standardizeArithmeticSequence($values->body);
+            $problemTemplate = $this->mathService->standardizeArithmeticSequence($problemTemplate);
         } catch (EquationException $e){
             $this['form']['body']->addError('Zadaný výraz není validním předpisem posloupnosti.');
             return null;
         } catch (\Exception $e){
             $this['form']['body']->addError($e->getMessage());
         }
-        return $standardized;
+        return $problemTemplate;
     }
 }

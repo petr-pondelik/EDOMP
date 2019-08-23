@@ -11,7 +11,7 @@ namespace App\Services;
 
 use App\Helpers\ConstHelper;
 use App\Helpers\StringsHelper;
-use App\Model\Repository\ProblemConditionTypeRepository;
+use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use jlawrence\eos\Parser;
 use Nette\NotSupportedException;
 use Nette\Utils\ArrayHash;
@@ -24,6 +24,8 @@ use Nette\Utils\Strings;
  */
 class ConditionService
 {
+    protected const RE_VAR_COEFFICIENT = '~(\([\dp\+\-\*\(\)\/\^\s]+|\d+\)?)\s(x\^\d)~';
+
     /**
      * @var EosParserWrapper
      */
@@ -81,7 +83,6 @@ class ConditionService
             'positive' => function ($value) {
                 try{
                     $res = $this->eosParserWrapper->evaluateExpression($value);
-                    bdump($res);
                     return $res > 0;
 //                    return $this->eosParserWrapper->evaluateExpression($value) > 0;
                 } catch (\Exception $e){
@@ -100,7 +101,6 @@ class ConditionService
             'negative' => function ($value) {
                 try{
                     $res = $this->eosParserWrapper->evaluateExpression($value);
-                    bdump($res);
                     return $res < 0;
 //                    return $this->eosParserWrapper->evaluateExpression($value) < 0;
                 } catch (\Exception $e){
@@ -110,7 +110,9 @@ class ConditionService
 
             'integer' => function ($value) {
                 try{
-                    return is_int($this->eosParserWrapper->evaluateExpression($value));
+                    $res = $this->eosParserWrapper->evaluateExpression($value);
+                    $resInt = (int) $res;
+                    return $res == $resInt;
                 } catch (\Exception $e){
                     return false;
                 }
@@ -170,10 +172,18 @@ class ConditionService
                 return true;
             },
 
-            'isQuadraticEquation' => static function ($values) {
-                $quadraticCoefficient = Strings::trim(Strings::before($values, 'x^2'));
-                bdump($quadraticCoefficient !== '0');
-                return $quadraticCoefficient !== '0';
+            'isQuadraticEquation' => function ($data) {
+                $varCoefficients = Strings::matchAll($data, self::RE_VAR_COEFFICIENT);
+                foreach ($varCoefficients as $varCoefficient){
+                    $coefficientRes = $this->eosParserWrapper->evaluateExpression($varCoefficient[1]);
+                    if($coefficientRes === 0.0 && $varCoefficient[2] === 'x^2'){
+                        return false;
+                    }
+                    if($coefficientRes !== 0.0 && $varCoefficient[2] !== 'x^2'){
+                        return false;
+                    }
+                }
+                return true;
             }
 
         ];
@@ -243,6 +253,7 @@ class ConditionService
                 $final = $this->stringsHelper::passValues($data, [
                     'p0' => $i
                 ]);
+                bdump($final);
                 if ($this->validationMapping[$typeAccessor][$accessor]($final)) {
                     $matches[$matchesCnt++] = [
                         'p0' => $i
@@ -257,6 +268,7 @@ class ConditionService
                         'p0' => $i,
                         'p1' => $j
                     ]);
+                    bdump($final);
                     if ($this->validationMapping[$typeAccessor][$accessor]($final)) {
                         $matches[$matchesCnt++] = [
                             'p0' => $i,
@@ -275,6 +287,7 @@ class ConditionService
                             'p1' => $j,
                             'p2' => $k
                         ]);
+                        bdump($final);
                         if ($this->validationMapping[$typeAccessor][$accessor]($final)) {
                             $matches[$matchesCnt++] = [
                                 'p0' => $i,
@@ -297,6 +310,7 @@ class ConditionService
                                 'p2' => $k,
                                 'p3' => $l
                             ]);
+                            bdump($final);
                             if ($this->validationMapping[$typeAccessor][$accessor]($final)) {
                                 $matches[$matchesCnt++] = [
                                     'p0' => $i,
@@ -323,6 +337,7 @@ class ConditionService
                                     'p3' => $l,
                                     'p4' => $m,
                                 ]);
+                                bdump($final);
                                 if ($this->validationMapping[$typeAccessor][$accessor]($final)) {
                                     $matches[$matchesCnt++] = [
                                         'p0' => $i,
@@ -353,6 +368,7 @@ class ConditionService
                                         'p4' => $m,
                                         'p5' => $n
                                     ]);
+                                    bdump($final);
                                     if ($this->validationMapping[$typeAccessor][$accessor]($final)) {
                                         $matches[$matchesCnt++] = [
                                             'p0' => $i,

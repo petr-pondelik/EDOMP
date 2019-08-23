@@ -8,8 +8,8 @@
 
 namespace App\Components\DataGrids;
 
-use App\Model\Repository\GroupRepository;
-use App\Model\Repository\TestRepository;
+use App\Model\Persistent\Repository\GroupRepository;
+use App\Model\Persistent\Repository\TestRepository;
 use Ublaboo\DataGrid\DataGrid;
 
 /**

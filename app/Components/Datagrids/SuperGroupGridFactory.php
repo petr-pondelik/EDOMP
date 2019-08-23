@@ -9,7 +9,7 @@
 namespace App\Components\DataGrids;
 
 use App\Helpers\ConstHelper;
-use App\Model\Repository\SuperGroupRepository;
+use App\Model\Persistent\Repository\SuperGroupRepository;
 use Ublaboo\DataGrid\DataGrid;
 
 /**

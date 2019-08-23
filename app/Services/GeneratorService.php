@@ -10,8 +10,8 @@ namespace App\Services;
 
 use App\Helpers\ConstHelper;
 use App\Helpers\StringsHelper;
-use App\Model\Entity\ProblemTemplate;
-use App\Model\Repository\ProblemTemplateRepository;
+use App\Model\Persistent\Entity\ProblemTemplate;
+use App\Model\Persistent\Repository\ProblemTemplateRepository;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
 

@@ -16,9 +16,6 @@ use Nette\Utils\ArrayHash;
  */
 class ValidatorArgument
 {
-    /**
-     * @var ArrayHash
-     */
     public $data;
 
     /**

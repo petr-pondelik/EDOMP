@@ -31,138 +31,138 @@ services:
 
 	# Repositories
 	repository.user:
-	    class: App\Model\Repository\UserRepository
+	    class: App\Model\Persistent\Repository\UserRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\User
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\User
 
 	repository.role:
-	    class: App\Model\Repository\RoleRepository
+	    class: App\Model\Persistent\Repository\RoleRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\Role
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\Role
 
 	repository.problem:
-	    class: App\Model\Repository\ProblemRepository
+	    class: App\Model\Persistent\Repository\ProblemRepository
 	    tags:
-	       doctrine.repositoryEntity: App\Model\Entity\Problem
+	       doctrine.repositoryEntity: App\Model\Persistent\Entity\Problem
 
 	repository.problem.final:
-	    class: App\Model\Repository\ProblemFinalRepository
+	    class: App\Model\Persistent\Repository\ProblemFinalRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\ProblemFinal
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemFinal
 
 	repository.problem.template:
-	    class: App\Model\Repository\ProblemTemplateRepository
+	    class: App\Model\Persistent\Repository\ProblemTemplateRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\ProblemTemplate
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemTemplate
 
 	repository.problemtype:
-	    class: App\Model\Repository\ProblemTypeRepository
+	    class: App\Model\Persistent\Repository\ProblemTypeRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\ProblemType
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemType
 
 	repository.difficulty:
-	    class: App\Model\Repository\DifficultyRepository
+	    class: App\Model\Persistent\Repository\DifficultyRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\Difficulty
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\Difficulty
 
 	repository.subcategory:
-	    class: App\Model\Repository\SubCategoryRepository
+	    class: App\Model\Persistent\Repository\SubCategoryRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\SubCategory
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\SubCategory
 
 	repository.category:
-	    class: App\Model\Repository\CategoryRepository
+	    class: App\Model\Persistent\Repository\CategoryRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\Category
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\Category
 
 	repository.condition.type:
-	    class: App\Model\Repository\ProblemConditionTypeRepository
+	    class: App\Model\Persistent\Repository\ProblemConditionTypeRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\ProblemConditionType
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemConditionType
 
 	repository.condition:
-	    class: App\Model\Repository\ProblemConditionRepository
+	    class: App\Model\Persistent\Repository\ProblemConditionRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\ProblemCondition
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemCondition
 
 	repository.template.equation.linear:
-	    class: App\Model\Repository\LinearEqTemplRepository
+	    class: App\Model\Persistent\Repository\LinearEqTemplRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\LinearEqTempl
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\LinearEqTempl
 
 	repository.template.equation.quadratic:
-	    class: App\Model\Repository\QuadraticEqTemplRepository
+	    class: App\Model\Persistent\Repository\QuadraticEqTemplRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\QuadraticEqTempl
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\QuadraticEqTempl
 
 	repository.template.sequence.arithmetic:
-	    class: App\Model\Repository\ArithmeticSeqTemplRepository
+	    class: App\Model\Persistent\Repository\ArithmeticSeqTemplRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\ArithmeticSeqTempl
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ArithmeticSeqTempl
 
 	repository.template.sequence.geometric:
-	    class: App\Model\Repository\GeometricSeqTemplRepository
+	    class: App\Model\Persistent\Repository\GeometricSeqTemplRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\GeometricSeqTempl
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\GeometricSeqTempl
 
 	repository.supergroup:
-	    class: App\Model\Repository\SuperGroupRepository
+	    class: App\Model\Persistent\Repository\SuperGroupRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\SuperGroup
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\SuperGroup
 
 	repository.group:
-	    class: App\Model\Repository\GroupRepository
+	    class: App\Model\Persistent\Repository\GroupRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\Group
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\Group
 
 	repository.logo:
-	    class: App\Model\Repository\LogoRepository
+	    class: App\Model\Persistent\Repository\LogoRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\Logo
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\Logo
 
 	repository.test:
-	    class: App\Model\Repository\TestRepository
+	    class: App\Model\Persistent\Repository\TestRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\Test
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\Test
 
 	repository.test.variant:
-	    class: App\Model\Repository\TestVariantRepository
+	    class: App\Model\Persistent\Repository\TestVariantRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\TestVariant
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\TestVariant
 
 	repository.problem.final.test.variant.association:
-	    class: App\Model\Repository\ProblemFinalTestVariantAssociationRepository
+	    class: App\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\ProblemFinalTestVariantAssociation
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemFinalTestVariantAssociation
 
 	repository.template.jsondata:
-	    class: App\Model\Repository\TemplateJsonDataRepository
+	    class: App\Model\Persistent\Repository\TemplateJsonDataRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\TemplateJsonData
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\TemplateJsonData
 
 	repository.validation.function:
-	    class: App\Model\Repository\ValidationFunctionRepository
+	    class: App\Model\Persistent\Repository\ValidationFunctionRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Entity\ValidationFunction
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ValidationFunction
 
 	# Functionalities
-	functionality.user: App\Model\Functionality\UserFunctionality
-	functionality.problem.final: App\Model\Functionality\ProblemFinalFunctionality
-	functionality.category: App\Model\Functionality\CategoryFunctionality
-	functionality.subcategory: App\Model\Functionality\SubCategoryFunctionality
-	functionality.problem: App\Model\Functionality\ProblemFunctionality
-	functionality.problem.type: App\Model\Functionality\ProblemTypeFunctionality
-	functionality.problem.final.test.variant.association: App\Model\Functionality\ProblemFinalTestVariantAssociationFunctionality
-	functionality.template.equation.linear: App\Model\Functionality\LinearEqTemplFunctionality
-	functionality.template.equation.quadratic: App\Model\Functionality\QuadraticEqTemplFunctionality
-	functionality.template.sequence.arithmetic: App\Model\Functionality\ArithmeticSeqTemplFunctionality
-	functionality.template.sequence.geometric: App\Model\Functionality\GeometricSeqTemplFunctionality
-	functionality.supergroup: App\Model\Functionality\SuperGroupFunctionality
-	functionality.group: App\Model\Functionality\GroupFunctionality
-	functionality.logo: App\Model\Functionality\LogoFunctionality
-	functionality.test: App\Model\Functionality\TestFunctionality
-	functionality.test.variant: App\Model\Functionality\TestVariantFunctionality
-	functionality.template.jsondata: App\Model\Functionality\TemplateJsonDataFunctionality
+	functionality.user: App\Model\Persistent\Functionality\UserFunctionality
+	functionality.problem.final: App\Model\Persistent\Functionality\ProblemFinalFunctionality
+	functionality.category: App\Model\Persistent\Functionality\CategoryFunctionality
+	functionality.subcategory: App\Model\Persistent\Functionality\SubCategoryFunctionality
+	functionality.problem: App\Model\Persistent\Functionality\ProblemFunctionality
+	functionality.problem.type: App\Model\Persistent\Functionality\ProblemTypeFunctionality
+	functionality.problem.final.test.variant.association: App\Model\Persistent\Functionality\ProblemFinalTestVariantAssociationFunctionality
+	functionality.template.equation.linear: App\Model\Persistent\Functionality\LinearEqTemplFunctionality
+	functionality.template.equation.quadratic: App\Model\Persistent\Functionality\QuadraticEqTemplFunctionality
+	functionality.template.sequence.arithmetic: App\Model\Persistent\Functionality\ArithmeticSeqTemplFunctionality
+	functionality.template.sequence.geometric: App\Model\Persistent\Functionality\GeometricSeqTemplFunctionality
+	functionality.supergroup: App\Model\Persistent\Functionality\SuperGroupFunctionality
+	functionality.group: App\Model\Persistent\Functionality\GroupFunctionality
+	functionality.logo: App\Model\Persistent\Functionality\LogoFunctionality
+	functionality.test: App\Model\Persistent\Functionality\TestFunctionality
+	functionality.test.variant: App\Model\Persistent\Functionality\TestVariantFunctionality
+	functionality.template.jsondata: App\Model\Persistent\Functionality\TemplateJsonDataFunctionality
 
 	# Factories
 	factory.header.bar: App\Components\HeaderBar\HeaderBarFactory
@@ -212,8 +212,8 @@ services:
 	service.wrapper.eos.parser: App\Services\EosParserWrapper
 
 	# Managers
-	manager.entity.constraint: App\Model\Manager\ConstraintEntityManager
-	manager.homepage.statistics: App\Model\Manager\HomepageStatisticsManager
+	manager.entity.constraint: App\Model\Persistent\Manager\ConstraintEntityManager
+	manager.homepage.statistics: App\Model\Persistent\Manager\HomepageStatisticsManager
 
 	# Helpers
 	helper.const: App\Helpers\ConstHelper
@@ -222,6 +222,7 @@ services:
 	helper.parser.newton: App\Helpers\NewtonParser
 	helper.formatter: App\Helpers\FormatterHelper
 	helper.flashes.translator: App\Helpers\FlashesTranslator
+	helper.variable.dividers: App\Helpers\VariableDividers
 
 	# Plugins
 	plugin.template.equation.linear: App\Plugins\LinearEquationPlugin

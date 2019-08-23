@@ -9,8 +9,8 @@
 namespace App\Components\Forms\SubCategoryForm;
 
 use App\Components\Forms\FormFactory;
-use App\Model\Functionality\SubCategoryFunctionality;
-use App\Model\Repository\CategoryRepository;
+use App\Model\Persistent\Functionality\SubCategoryFunctionality;
+use App\Model\Persistent\Repository\CategoryRepository;
 use App\Services\Validator;
 
 /**

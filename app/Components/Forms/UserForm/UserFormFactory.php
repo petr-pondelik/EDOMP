@@ -10,9 +10,9 @@ namespace App\Components\Forms\UserForm;
 
 
 use App\Components\Forms\FormFactory;
-use App\Model\Functionality\UserFunctionality;
-use App\Model\Repository\GroupRepository;
-use App\Model\Repository\RoleRepository;
+use App\Model\Persistent\Functionality\UserFunctionality;
+use App\Model\Persistent\Repository\GroupRepository;
+use App\Model\Persistent\Repository\RoleRepository;
 use App\Services\Validator;
 
 /**

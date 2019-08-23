@@ -8,10 +8,10 @@
 
 namespace App\Services;
 
-use App\Model\Entity\Test;
-use App\Model\Functionality\LogoFunctionality;
-use App\Model\Repository\LogoRepository;
-use App\Model\Repository\TestRepository;
+use App\Model\Persistent\Entity\Test;
+use App\Model\Persistent\Functionality\LogoFunctionality;
+use App\Model\Persistent\Repository\LogoRepository;
+use App\Model\Persistent\Repository\TestRepository;
 use Nette\FileNotFoundException;
 use Nette\Http\IRequest;
 use Nette\IOException;

@@ -9,8 +9,8 @@
 namespace App\Components\DataGrids;
 
 use App\Helpers\ConstHelper;
-use App\Model\Repository\GroupRepository;
-use App\Model\Repository\SuperGroupRepository;
+use App\Model\Persistent\Repository\GroupRepository;
+use App\Model\Persistent\Repository\SuperGroupRepository;
 
 /**
  * Class GroupGridFactory

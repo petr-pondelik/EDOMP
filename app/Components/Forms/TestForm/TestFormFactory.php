@@ -9,15 +9,15 @@
 namespace App\Components\Forms\TestForm;
 
 use App\Components\Forms\FormFactory;
-use App\Model\Repository\DifficultyRepository;
-use App\Model\Repository\GroupRepository;
-use App\Model\Repository\LogoRepository;
-use App\Model\Repository\ProblemFinalRepository;
-use App\Model\Repository\ProblemRepository;
-use App\Model\Repository\ProblemTemplateRepository;
-use App\Model\Repository\ProblemTypeRepository;
-use App\Model\Repository\SubCategoryRepository;
-use App\Model\Repository\TestRepository;
+use App\Model\Persistent\Repository\DifficultyRepository;
+use App\Model\Persistent\Repository\GroupRepository;
+use App\Model\Persistent\Repository\LogoRepository;
+use App\Model\Persistent\Repository\ProblemFinalRepository;
+use App\Model\Persistent\Repository\ProblemRepository;
+use App\Model\Persistent\Repository\ProblemTemplateRepository;
+use App\Model\Persistent\Repository\ProblemTypeRepository;
+use App\Model\Persistent\Repository\SubCategoryRepository;
+use App\Model\Persistent\Repository\TestRepository;
 use App\Services\FileService;
 use App\Services\TestGeneratorService;
 use App\Services\Validator;

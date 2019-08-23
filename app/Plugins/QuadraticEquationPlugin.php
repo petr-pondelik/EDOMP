@@ -8,9 +8,9 @@
 
 namespace App\Plugins;
 
-use App\Arguments\EquationValidateArgument;
 use App\Exceptions\ProblemTemplateException;
-use App\Model\Entity\ProblemFinal;
+use App\Model\NonPersistent\QuadraticEquationTemplateNP;
+use App\Model\Persistent\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
@@ -29,6 +29,14 @@ class QuadraticEquationPlugin extends EquationPlugin
     public static function getRegExp(string $variable): string
     {
         return '('
+            . '('
+            . self::RE_EQUATION_SYMBOLS
+            . '|'
+            . self::RE_LOGARITHM
+            . ')*'
+            . $variable . '\^\d'
+            . ')*'
+            . '('
             . self::RE_EQUATION_SYMBOLS
             . '|'
             . self::RE_LOGARITHM
@@ -129,27 +137,37 @@ class QuadraticEquationPlugin extends EquationPlugin
     }
 
     /**
-     * @param EquationValidateArgument $data
+     * @param QuadraticEquationTemplateNP $problemTemplate
      * @return bool
      * @throws ProblemTemplateException
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      */
-    public function validateType(EquationValidateArgument $data): bool
+    public function validateType(QuadraticEquationTemplateNP $problemTemplate): bool
     {
         bdump('VALIDATE QUADRATIC EQUATION');
 
         // Remove all the spaces
-        $standardized = $this->stringsHelper::removeWhiteSpaces($data->standardized);
+        $standardized = $this->stringsHelper::removeWhiteSpaces($problemTemplate->standardized);
 
-        $parametersInfo = $this->stringsHelper::extractParametersInfo($data->expression);
+        $parametersInfo = $this->stringsHelper::extractParametersInfo($problemTemplate->body);
+
+        bdump(self::getRegExp($problemTemplate->variable));
+
+        // Match string against the quadratic expression regexp
+        $matches = Strings::match($standardized, '~' . self::getRegExp($problemTemplate->variable) . '~');
+
+        // Check if the whole expression was matched
+        if($matches[0] !== $standardized){
+            return false;
+        }
 
         try{
             $matches = $this->conditionService->findConditionsMatches([
                 $this->constHelper::QUADRATIC_EQUATION_VALIDATION => [
                     $this->constHelper::IS_QUADRATIC_EQUATION => [
                         'parametersInfo' => $parametersInfo,
-                        'data' => $data->standardized
+                        'data' => $problemTemplate->standardized
                     ]
                 ]
             ]);
@@ -165,13 +183,9 @@ class QuadraticEquationPlugin extends EquationPlugin
         $matchesJson = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $matchesJson
-        ]), $data->templateId, true);
+        ]), $problemTemplate->idHidden, true);
 
-        // Match string against the quadratic expression regexp
-        $matches = Strings::match($standardized, '~' . self::getRegExp($data->variable) . '~');
-
-        // Check if the whole expression was matched
-        return $matches[0] === $standardized;
+        return true;
     }
 
     /**

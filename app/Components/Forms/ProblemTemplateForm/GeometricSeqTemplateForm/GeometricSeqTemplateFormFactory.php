@@ -10,7 +10,7 @@ namespace ProblemTemplateForm\GeometricSeqTemplateForm;
 
 
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
-use App\Model\Functionality\BaseFunctionality;
+use App\Model\Persistent\Functionality\BaseFunctionality;
 
 /**
  * Class GeometricSeqTemplateFormFactory

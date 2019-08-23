@@ -10,12 +10,14 @@ namespace App\Components\Forms\ProblemTemplateForm\QuadraticEqTemplateForm;
 
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormControl;
 use App\Helpers\ConstHelper;
-use App\Model\Functionality\BaseFunctionality;
-use App\Model\Repository\DifficultyRepository;
-use App\Model\Repository\ProblemConditionRepository;
-use App\Model\Repository\ProblemConditionTypeRepository;
-use App\Model\Repository\ProblemTypeRepository;
-use App\Model\Repository\SubCategoryRepository;
+use App\Model\NonPersistent\ProblemTemplateNP;
+use App\Model\NonPersistent\QuadraticEquationTemplateNP;
+use App\Model\Persistent\Functionality\BaseFunctionality;
+use App\Model\Persistent\Repository\DifficultyRepository;
+use App\Model\Persistent\Repository\ProblemConditionRepository;
+use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
+use App\Model\Persistent\Repository\ProblemTypeRepository;
+use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Services\MathService;
 use App\Services\Validator;
 use Nette\Application\UI\Form;
@@ -111,25 +113,22 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
 
     /**
      * @param ArrayHash $values
-     * @return array
+     * @return QuadraticEquationTemplateNP|mixed
      */
-    public function collectBodyValidationData(ArrayHash $values): array
+    protected function createNonPersistentEntity(ArrayHash $values): QuadraticEquationTemplateNP
     {
-        return [
-            'body' => $values->body,
-            'variable' => $values->variable
-        ];
+        return new QuadraticEquationTemplateNP($values);
     }
 
     /**
-     * @param ArrayHash $values
-     * @return mixed|string|null
+     * @param ProblemTemplateNP $problemTemplate
+     * @return ProblemTemplateNP|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function standardize(ArrayHash $values)
+    public function standardize(ProblemTemplateNP $problemTemplate): ?ProblemTemplateNP
     {
         try{
-            $standardized = $this->mathService->standardizeQuadraticEquation($values->body);
+            $standardized = $this->mathService->standardizeQuadraticEquation($problemTemplate);
         } catch (\Exception $e){
             $this['form']['body']->addError($e->getMessage());
             return null;

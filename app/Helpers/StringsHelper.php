@@ -110,6 +110,26 @@ class StringsHelper
      * @param string $expression
      * @return string
      */
+    public static function deduplicateWhiteSpaces(string $expression): string
+    {
+        return Strings::replace($expression, '~\s{2,}~', ' ');
+    }
+
+    /**
+     * @param string $expression
+     * @return string
+     */
+    public static function deduplicateBrackets(string $expression): string
+    {
+        $expression = Strings::replace($expression, '~' . self::PREFIXES['latexInline'] . '{2,}' . '~', self::PREFIXES['bracketsSimple']);
+        $expression = Strings::replace($expression, '~' . self::SUFFIXES['latexInline'] . '{2,}' . '~', self::SUFFIXES['bracketsSimple']);
+        return $expression;
+    }
+
+    /**
+     * @param string $expression
+     * @return string
+     */
     public static function negateOperators(string $expression): string
     {
         $startOp = '';
@@ -245,6 +265,7 @@ class StringsHelper
      */
     public static function extractParametersInfo(string $expression): ArrayHash
     {
+        bdump('EXTRACT PARAMETERS INFO');
         $expressionSplit = self::splitByParameters($expression);
         $parametersMinMax = [];
         $parametersComplexity = 1;
@@ -260,6 +281,7 @@ class StringsHelper
                 $parametersComplexity *= (($max - $min) + 1);
             }
         }
+        bdump($parametersMinMax);
         return ArrayHash::from([
             'count' => $parametersCnt,
             'complexity' => $parametersComplexity,
@@ -465,12 +487,23 @@ class StringsHelper
             $expression = Strings::replace($expression, '~(\s*\))(' . $variable . ')~', '$1*$2');
         }
 
-        $expression = Strings::replace($expression, '~(\-?p?\d+)\s+(-?p?\d+)~', '$1*$2');
+        $expression = Strings::replace($expression, '~(\-?p?\d+)\s+(\-?p?\d+)~', '$1*$2');
         $expression = Strings::replace($expression, '~(\))\s*(p\d+)~', '$1*$2');
-//        $expression = Strings::replace($expression, '~(\-?\d)\s+(\-?\d)~', '$1*$2');
         $expression = Strings::replace($expression, '~(\-?p?\d+)\*(\-?p?\d+)\s+(\-?p?\d+)~', '$1*$2*$3');
 //        $expression = Strings::replace($expression, '~(\-?\d)\*(\-?\d)\s+(\-?\d)~', '$1*$2*$3');
 
         return $expression;
+    }
+
+    /**
+     * @param string $str
+     * @param string $substr
+     * @return string
+     */
+    public static function removeSubstring(string $str, string $substr): string
+    {
+        $before = Strings::before($str, $substr);
+        $after = Strings::after($str, $substr);
+        return self::deduplicateWhiteSpaces($before . $after);
     }
 }

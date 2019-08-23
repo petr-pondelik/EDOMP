@@ -9,13 +9,13 @@
 namespace App\Services;
 
 use App\Exceptions\ProblemFinalCollisionException;
-use App\Model\Entity\Test;
-use App\Model\Functionality\ProblemFinalFunctionality;
-use App\Model\Functionality\TestFunctionality;
-use App\Model\Functionality\TestVariantFunctionality;
-use App\Model\Repository\ProblemConditionTypeRepository;
-use App\Model\Repository\ProblemRepository;
-use App\Model\Repository\TestRepository;
+use App\Model\Persistent\Entity\Test;
+use App\Model\Persistent\Functionality\ProblemFinalFunctionality;
+use App\Model\Persistent\Functionality\TestFunctionality;
+use App\Model\Persistent\Functionality\TestVariantFunctionality;
+use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
+use App\Model\Persistent\Repository\ProblemRepository;
+use App\Model\Persistent\Repository\TestRepository;
 use Nette\Utils\ArrayHash;
 
 /**

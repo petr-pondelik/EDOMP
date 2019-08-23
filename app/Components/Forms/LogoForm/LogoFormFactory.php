@@ -10,7 +10,7 @@ namespace App\Components\Forms\LogoForm;
 
 
 use App\Components\Forms\FormFactory;
-use App\Model\Functionality\LogoFunctionality;
+use App\Model\Persistent\Functionality\LogoFunctionality;
 use App\Services\FileService;
 use App\Services\Validator;
 

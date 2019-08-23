@@ -12,12 +12,14 @@ namespace ProblemTemplateForm\GeometricSeqTemplateForm;
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormControl;
 use App\Exceptions\EquationException;
 use App\Helpers\ConstHelper;
-use App\Model\Functionality\BaseFunctionality;
-use App\Model\Repository\DifficultyRepository;
-use App\Model\Repository\ProblemConditionRepository;
-use App\Model\Repository\ProblemConditionTypeRepository;
-use App\Model\Repository\ProblemTypeRepository;
-use App\Model\Repository\SubCategoryRepository;
+use App\Model\NonPersistent\GeometricSequenceTemplateNP;
+use App\Model\NonPersistent\ProblemTemplateNP;
+use App\Model\Persistent\Functionality\BaseFunctionality;
+use App\Model\Persistent\Repository\DifficultyRepository;
+use App\Model\Persistent\Repository\ProblemConditionRepository;
+use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
+use App\Model\Persistent\Repository\ProblemTypeRepository;
+use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Services\MathService;
 use App\Services\Validator;
 use Nette\Application\UI\Form;
@@ -107,32 +109,29 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
 
     /**
      * @param ArrayHash $values
-     * @return array
+     * @return GeometricSequenceTemplateNP
      */
-    public function collectBodyValidationData(ArrayHash $values): array
+    protected function createNonPersistentEntity(ArrayHash $values): GeometricSequenceTemplateNP
     {
-        return [
-            'body' => $values->body,
-            'variable' => $values->variable,
-        ];
+        return new GeometricSequenceTemplateNP($values);
     }
 
     /**
-     * @param ArrayHash $values
-     * @return mixed|string|null
+     * @param ProblemTemplateNP $problemTemplate
+     * @return ProblemTemplateNP|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function standardize(ArrayHash $values)
+    public function standardize(ProblemTemplateNP $problemTemplate): ?ProblemTemplateNP
     {
         try{
-            $standardized = $this->mathService->standardizeGeometricSequence($values->body);
+            $problemTemplate = $this->mathService->standardizeGeometricSequence($problemTemplate);
         } catch (EquationException $e){
             $this['form']['body']->addError('Zadaný výraz není validním předpisem posloupnosti.');
             return null;
         } catch (\Exception $e){
             $this['form']['body']->addError($e->getMessage());
         }
-        return $standardized;
+        return $problemTemplate;
     }
 
 }

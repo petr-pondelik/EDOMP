@@ -10,9 +10,9 @@ namespace App\Components\Forms\PermissionForm;
 
 
 use App\Components\Forms\FormFactory;
-use App\Model\Functionality\GroupFunctionality;
-use App\Model\Functionality\SuperGroupFunctionality;
-use App\Model\Repository\CategoryRepository;
+use App\Model\Persistent\Functionality\GroupFunctionality;
+use App\Model\Persistent\Functionality\SuperGroupFunctionality;
+use App\Model\Persistent\Repository\CategoryRepository;
 use App\Services\Validator;
 
 /**

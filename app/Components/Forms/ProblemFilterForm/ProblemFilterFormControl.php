@@ -10,8 +10,8 @@ namespace App\Components\Forms\ProblemFilterForm;
 
 
 use App\Components\Forms\FormControl;
-use App\Model\Repository\DifficultyRepository;
-use App\Model\Repository\SubCategoryRepository;
+use App\Model\Persistent\Repository\DifficultyRepository;
+use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;

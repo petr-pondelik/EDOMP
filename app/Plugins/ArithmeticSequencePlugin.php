@@ -8,9 +8,9 @@
 
 namespace App\Plugins;
 
-use App\Arguments\SequenceValidateArgument;
 use App\Exceptions\ProblemTemplateException;
-use App\Model\Entity\ProblemFinal;
+use App\Model\NonPersistent\ProblemTemplateNP;
+use App\Model\Persistent\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 
@@ -21,15 +21,15 @@ use Nette\Utils\Json;
 class ArithmeticSequencePlugin extends SequencePlugin
 {
     /**
-     * @param SequenceValidateArgument $data
+     * @param ProblemTemplateNP $problemTemplate
      * @return bool
      * @throws ProblemTemplateException
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      */
-    public function validateType(SequenceValidateArgument $data): bool
+    public function validateType(ProblemTemplateNP $problemTemplate): bool
     {
-        if(!parent::validateType($data)){
+        if(!parent::validateType($problemTemplate)){
             return false;
         }
 

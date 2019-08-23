@@ -11,10 +11,10 @@ namespace App\Components\Forms\TestStatisticsForm;
 
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\FormControl;
-use App\Model\Entity\Test;
-use App\Model\Functionality\ProblemFunctionality;
-use App\Model\Functionality\ProblemFinalTestVariantAssociationFunctionality;
-use App\Model\Repository\TestRepository;
+use App\Model\Persistent\Entity\Test;
+use App\Model\Persistent\Functionality\ProblemFunctionality;
+use App\Model\Persistent\Functionality\ProblemFinalTestVariantAssociationFunctionality;
+use App\Model\Persistent\Repository\TestRepository;
 use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;

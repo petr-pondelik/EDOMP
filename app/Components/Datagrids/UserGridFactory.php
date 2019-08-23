@@ -9,8 +9,8 @@
 namespace App\Components\DataGrids;
 
 use App\Helpers\ConstHelper;
-use App\Model\Repository\RoleRepository;
-use App\Model\Repository\UserRepository;
+use App\Model\Persistent\Repository\RoleRepository;
+use App\Model\Persistent\Repository\UserRepository;
 
 /**
  * Class UserGridFactory

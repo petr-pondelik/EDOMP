@@ -11,8 +11,9 @@ namespace App\Services;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
-use App\Model\Entity\ProblemFinal;
-use App\Model\Repository\ProblemFinalRepository;
+use App\Model\NonPersistent\ProblemTemplateNP;
+use App\Model\Persistent\Entity\ProblemFinal;
+use App\Model\Persistent\Repository\ProblemFinalRepository;
 use App\Plugins\ArithmeticSequencePlugin;
 use App\Plugins\GeometricSequencePlugin;
 use App\Plugins\LinearEquationPlugin;
@@ -139,17 +140,17 @@ class MathService
     }
 
     /**
-     * @param ArrayHash $data
-     * @return string
+     * @param ProblemTemplateNP $problemTemplate
+     * @return ProblemTemplateNP
      * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function standardizeLinearEquation(ArrayHash $data): string
+    public function standardizeLinearEquation(ProblemTemplateNP $problemTemplate): ProblemTemplateNP
     {
-        return $this->linearEquationPlugin->standardize($expression);
+        return $this->linearEquationPlugin->standardize($problemTemplate);
     }
 
     /**
@@ -167,15 +168,15 @@ class MathService
     }
 
     /**
-     * @param string $expression
-     * @return string
+     * @param ProblemTemplateNP $expression
+     * @return ProblemTemplateNP
      * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function standardizeQuadraticEquation(string $expression): string
+    public function standardizeQuadraticEquation(ProblemTemplateNP $expression): ProblemTemplateNP
     {
         return $this->quadraticEquationPlugin->standardize($expression);
     }
@@ -195,17 +196,17 @@ class MathService
     }
 
     /**
-     * @param string $expression
-     * @return string
+     * @param ProblemTemplateNP $problemTemplate
+     * @return ProblemTemplateNP
      * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function standardizeArithmeticSequence(string $expression): string
+    public function standardizeArithmeticSequence(ProblemTemplateNP $problemTemplate): ProblemTemplateNP
     {
-        return $this->arithmeticSequencePlugin->standardize($expression);
+        return $this->arithmeticSequencePlugin->standardize($problemTemplate);
     }
 
     /**
@@ -219,17 +220,17 @@ class MathService
     }
 
     /**
-     * @param string $expression
-     * @return string
+     * @param ProblemTemplateNP $problemTemplate
+     * @return ProblemTemplateNP
      * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function standardizeGeometricSequence(string $expression): string
+    public function standardizeGeometricSequence(ProblemTemplateNP $problemTemplate): ProblemTemplateNP
     {
-        return $this->geometricSequencePlugin->standardize($expression);
+        return $this->geometricSequencePlugin->standardize($problemTemplate);
     }
 
     /**

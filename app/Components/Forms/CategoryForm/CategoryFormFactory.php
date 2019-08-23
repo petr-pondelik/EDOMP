@@ -9,7 +9,7 @@
 namespace App\Components\Forms\CategoryForm;
 
 use App\Components\Forms\FormFactory;
-use App\Model\Functionality\CategoryFunctionality;
+use App\Model\Persistent\Functionality\CategoryFunctionality;
 use App\Services\Validator;
 
 /**

@@ -11,7 +11,7 @@ namespace App\Components\Forms\LogoForm;
 
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
-use App\Model\Functionality\LogoFunctionality;
+use App\Model\Persistent\Functionality\LogoFunctionality;
 use App\Services\FileService;
 use App\Services\Validator;
 use Nette\Application\AbortException;

@@ -8,8 +8,8 @@
 
 namespace App\Plugins;
 
-use App\Arguments\BodyArgument;
 use App\Exceptions\NewtonApiSyntaxException;
+use App\Model\NonPersistent\ProblemTemplateNP;
 use Nette\Utils\Strings;
 
 /**
@@ -19,39 +19,45 @@ use Nette\Utils\Strings;
 abstract class EquationPlugin extends ProblemPlugin
 {
     /**
-     * @param string $expression
-     * @return string
+     * @param ProblemTemplateNP $problemTemplate
+     * @return ProblemTemplateNP
      * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function standardize(string $expression): string
+    public function standardize(ProblemTemplateNP $problemTemplate): ProblemTemplateNP
     {
         bdump('STANDARDIZE EQUATION');
 
-        $expression = $this->latexHelper::parseLatex($expression);
+        $expression = $this->latexHelper::parseLatex($problemTemplate->body);
         $parameterized = $this->stringsHelper::getParametrized($expression);
-
+        $problemTemplate->expression = $parameterized->expression;
         $sides = $this->stringsHelper::getEquationSides($parameterized->expression);
         $expression = $this->stringsHelper::mergeEqSides($sides);
-
         $expression = $this->newtonApiClient->simplify($expression);
 
-        bdump($expression);
+        $varDividers = Strings::matchAll($expression, '~(\+|\-|)([x\d\sp\^]+)\/\s*(\([\-\+\s\(\)\dx]+\))~');
 
+        if($varDividers){
+            bdump('WITH VAR DIVIDERS');
+            $this->variableDividers->setData($expression, $varDividers);
+            $expression = $this->variableDividers->getMultiplied();
+            bdump($expression);
+            $expression = $this->newtonApiClient->simplify($expression);
+        }
+        else{
+            bdump('WITHOUT VAR DIVIDERS');
+        }
 
+        $problemTemplate->standardized = $this->stringsHelper::fillMultipliers($expression);
 
-        $varDividers = Strings::matchAll($expression, '(\+|\-|)([x\d\sp\^]+)\/\s*(\([\-\+\s\(\)\dx]+\))');
-
-        bdump($varDividers);
-
-        return $expression;
+        return $problemTemplate;
     }
 
     /**
-     * @param BodyArgument $argument
+     * @param ProblemTemplateNP $problemTemplate
      * @return int
      * @throws \App\Exceptions\InvalidParameterException
      * @throws \App\Exceptions\NewtonApiException
@@ -59,18 +65,18 @@ abstract class EquationPlugin extends ProblemPlugin
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function validateBody(BodyArgument $argument): int
+    public function validateBody(ProblemTemplateNP $problemTemplate): int
     {
         bdump('VALIDATE BODY');
-        if(!$this->latexHelper::latexWrapped($argument->body)){
+        if(!$this->latexHelper::latexWrapped($problemTemplate->body)){
             return 1;
         }
-        $parsed = $this->latexHelper::parseLatex($argument->body);
+        $parsed = $this->latexHelper::parseLatex($problemTemplate->body);
 
-        $this->validateParameters($argument->body);
+        $this->validateParameters($problemTemplate->body);
         $split = $this->stringsHelper::splitByParameters($parsed);
 
-        if (empty($argument->variable) || !$this->stringsHelper::containsVariable($split, $argument->variable)) {
+        if (empty($problemTemplate->variable) || !$this->stringsHelper::containsVariable($split, $problemTemplate->variable)) {
             return 2;
         }
 

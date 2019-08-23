@@ -10,7 +10,7 @@ namespace App\Components\Forms\CategoryForm;
 
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
-use App\Model\Functionality\CategoryFunctionality;
+use App\Model\Persistent\Functionality\CategoryFunctionality;
 use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;

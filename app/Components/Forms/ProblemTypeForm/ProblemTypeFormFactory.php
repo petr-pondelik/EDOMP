@@ -10,7 +10,7 @@ namespace App\Components\Forms\ProblemTypeForm;
 
 
 use App\Components\Forms\FormFactory;
-use App\Model\Functionality\ProblemTypeFunctionality;
+use App\Model\Persistent\Functionality\ProblemTypeFunctionality;
 use App\Services\Validator;
 
 /**

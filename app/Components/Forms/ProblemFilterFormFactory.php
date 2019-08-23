@@ -8,8 +8,8 @@
 
 namespace App\Components\Forms;
 
-use App\Model\Managers\DifficultyManager;
-use App\Model\Repository\DifficultyRepository;
+use App\Model\Persistent\Managers\DifficultyManager;
+use App\Model\Persistent\Repository\DifficultyRepository;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\Checkbox;
 use Nette\Utils\ArrayHash;

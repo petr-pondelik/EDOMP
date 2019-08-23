@@ -10,8 +10,8 @@ namespace App\Components\Forms\GroupForm;
 
 
 use App\Components\Forms\FormFactory;
-use App\Model\Functionality\GroupFunctionality;
-use App\Model\Repository\SuperGroupRepository;
+use App\Model\Persistent\Functionality\GroupFunctionality;
+use App\Model\Persistent\Repository\SuperGroupRepository;
 use App\Services\Validator;
 
 /**

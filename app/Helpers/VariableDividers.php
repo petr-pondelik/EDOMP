@@ -8,6 +8,7 @@
 
 namespace App\Helpers;
 
+use App\Services\NewtonApiClient;
 use Nette\Utils\Strings;
 
 /**
@@ -17,14 +18,49 @@ use Nette\Utils\Strings;
 class VariableDividers
 {
     /**
+     * @const int
+     */
+    protected const EXPRESSION = 0;
+
+    /**
+     * @const int
+     */
+    protected const OPERATOR = 1;
+
+    /**
+     * @const int
+     */
+    protected const FACTOR = 2;
+
+    /**
+     * @const int
+     */
+    protected const DIVIDER = 3;
+
+    /**
+     * @var NewtonApiClient
+     */
+    protected $newtonApiClient;
+
+    /**
+     * @var StringsHelper
+     */
+    protected $stringsHelper;
+
+    /**
      * @var string
      */
     protected $expression;
 
     /**
+     * @var string
+     */
+    protected $multiplied;
+
+    /**
      * @var array
      */
-    protected $matches = [];
+    protected $varFractions = [];
 
     /**
      * @var array
@@ -33,27 +69,58 @@ class VariableDividers
 
     /**
      * VariableDividers constructor.
-     * @param string $expression
-     * @param array $matches
+     * @param NewtonApiClient $newtonApiClient
+     * @param StringsHelper $stringsHelper
      */
-    public function __construct(string $expression, array $matches)
+    public function __construct(NewtonApiClient $newtonApiClient, StringsHelper $stringsHelper)
     {
+        $this->newtonApiClient = $newtonApiClient;
+        $this->stringsHelper = $stringsHelper;
+        $this->allVarDividers['coefficient'] = 1;
+    }
+
+    /**
+     * @param string $expression
+     * @param array $varFractions
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiSyntaxException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function setData(string $expression, array $varFractions): void
+    {
+        bdump('VARIABLE DIVIDERS: SET DATA');
+
         $this->expression = $expression;
-        $this->matches = $matches;
-        foreach ($matches as $match){
-            $dividers = $this->getDividerArr($match[2]);
-            foreach ($dividers as $divider){
-                $divider = $this->stringsHelper::trim($divider);
-                $this->addDivider($divider);
+        $this->varFractions = $varFractions;
+
+        foreach ($varFractions as $key => $varFraction){
+            $divider = $this->getDivider($varFraction[self::DIVIDER]);
+            $this->varFractions[$key][self::DIVIDER] = $divider;
+
+            foreach ($divider['factors'] as $factor){
+                $factor = $this->stringsHelper::trim($factor);
+                $this->addDivider($factor);
             }
+
+            $this->raiseCoefficient($divider['coefficient']);
         }
     }
 
     /**
-     * @return array
+     * @param bool $toString
+     * @return array|string
      */
-    public function getAllVarDividers(): array
+    public function getAllVarDividers(bool $toString = false)
     {
+        if($toString){
+            $res = '';
+            foreach ($this->allVarDividers['factors'] as $divider){
+                $res .= $this->stringsHelper::wrap($divider);
+            }
+            return $res;
+        }
         return $this->allVarDividers;
     }
 
@@ -62,17 +129,30 @@ class VariableDividers
      */
     public function getMultiplied(): string
     {
-        foreach ($this->matches as $key => $match){
-            $partialDividers = $this->getDividerArr($match[2], true);
-            $multipliers = '';
-            foreach ($this->allVarDividers as $divider){
-                if(!in_array($divider, $partialDividers, true)){
-                    $multipliers .= $divider;
+        bdump('GET MULTIPLIED');
+
+        $this->multiplied = $this->expression;
+        $varFractionsExpression = '';
+
+        foreach ($this->varFractions as $key => $varFraction){
+            $this->multiplied = $this->stringsHelper::removeSubstring($this->multiplied, $varFraction[self::EXPRESSION]);
+            $partialDivider = $varFraction[self::DIVIDER];
+//            $multipliers = $partialDivider['coefficient'] === '1' ? $this->allVarDividers['coefficient'] : $partialDivider['coefficient'];
+            $multipliers = (int) $this->allVarDividers['coefficient'] / (int) $partialDivider['coefficient'];
+            foreach ($this->allVarDividers['factors'] as $divider){
+                if(!in_array($divider, $partialDivider['factors'], true)){
+                    $multipliers .= $this->stringsHelper::wrap($divider);
                 }
             }
-            $this->expression = Strings::replace($this->expression, $this->matches[$key][0],$this->matches[$key][1] . '*' . $multipliers);
+
+            $varFraction[0] = $varFraction[1] . $varFraction[2] . $multipliers;
+            $varFractionsExpression .= ' ' . $varFraction[0];
         }
-        return $this->expression;
+
+        $this->multiplied = ($this->stringsHelper::removeWhiteSpaces($this->multiplied) ? $this->allVarDividers['coefficient'] . '*' . $this->getAllVarDividers(true) . $this->stringsHelper::wrap($this->multiplied) : '')
+                            . '+ ' . $this->stringsHelper::wrap($varFractionsExpression);
+
+        return $this->multiplied;
     }
 
     /**
@@ -81,18 +161,47 @@ class VariableDividers
     protected function addDivider(string $divider): void
     {
         if(!isset($this->varDividers[$divider])){
-            $this->allVarDividers[$divider] = $divider;
+            $this->allVarDividers['factors'][$divider] = $divider;
         }
     }
 
     /**
-     * @param string $divider
-     * @param bool $trim
-     * @return array
+     * @param int $coefficient
      */
-    protected function getDividerArr(string $divider, bool $trim = false): array
+    protected function raiseCoefficient(int $coefficient): void
     {
-        // TODO: Trim items in loop
-        return explode(') (',$this->stringsHelper::trim($divider));
+        $this->allVarDividers['coefficient'] *= $coefficient;
+    }
+
+    /**
+     * @param string $divider
+     * @return array
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiSyntaxException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    protected function getDivider(string $divider): array
+    {
+        bdump('GET DIVIDER');
+        $res = [];
+
+        $factored = $this->newtonApiClient->factor($divider);
+
+        $coefficient = Strings::trim(Strings::before($factored, '('));
+        $coefficient = $coefficient !== '' ? $coefficient : '1';
+
+        $withoutCoefficient = Strings::after($factored, '(');
+        $withoutCoefficient = $withoutCoefficient ?: $factored;
+
+        $res['coefficient'] = $coefficient;
+        $dividers = explode(') (', $withoutCoefficient);
+
+        foreach ($dividers as $item){
+            $res['factors'][] = $this->stringsHelper::trim($item);
+        }
+
+        return $res;
     }
 }

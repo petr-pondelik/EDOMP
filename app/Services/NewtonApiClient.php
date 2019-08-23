@@ -13,7 +13,6 @@ use App\Exceptions\NewtonApiRequestException;
 use App\Exceptions\NewtonApiSyntaxException;
 use App\Exceptions\NewtonApiUnreachableException;
 use App\Helpers\NewtonParser;
-use App\Helpers\StringsHelper;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
@@ -30,6 +29,11 @@ class NewtonApiClient
      * @const string
      */
     protected const SIMPLIFY = 'simplify/';
+
+    /**
+     * @const string
+     */
+    protected const FACTOR = 'factor/';
 
     /**
      * @const string
@@ -76,6 +80,7 @@ class NewtonApiClient
         bdump('SIMPLIFY');
         $expression = $this->newtonParser::newtonFormat($expression);
         bdump($expression);
+
         try {
             $res = $this->client->request('GET', $this->newtonApiHost . self::SIMPLIFY . $expression);
         } catch (RequestException $e){
@@ -88,7 +93,43 @@ class NewtonApiClient
             throw new NewtonApiException($e->getMessage());
         }
 
-        $res = json_decode($res->getBody())->result;
+        $res = json_decode($res->getBody(), false)->result;
+
+        if(Strings::contains($res, 'Stop')){
+            throw new NewtonApiSyntaxException('Šablona není validní matematický výraz.');
+        }
+
+        return $res;
+    }
+
+    /**
+     * @param string $expression
+     * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @throws NewtonApiException
+     * @throws NewtonApiRequestException
+     * @throws NewtonApiSyntaxException
+     * @throws NewtonApiUnreachableException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function factor(string $expression)
+    {
+        bdump('FACTOR');
+        $expression = $this->newtonParser::newtonFormat($expression);
+        bdump($expression);
+
+        try{
+            $res = $this->client->request('GET', $this->newtonApiHost . self::FACTOR . $expression);
+        } catch (RequestException $e){
+            if($e instanceof ConnectException){
+                throw new NewtonApiUnreachableException(sprintf('NewtonAPI na adrese %s je nedostupné.', $this->newtonApiHost));
+            }
+            if($e instanceof ClientException){
+                throw new NewtonApiRequestException('Nevalidní požadavek na NewtonAPI.');
+            }
+            throw new NewtonApiException($e->getMessage());
+        }
+
+        $res = json_decode($res->getBody(), false)->result;
 
         if(Strings::contains($res, 'Stop')){
             throw new NewtonApiSyntaxException('Šablona není validní matematický výraz.');
@@ -105,7 +146,7 @@ class NewtonApiClient
     public function zeroes(string $expression)
     {
         $res = $this->client->request('GET', $this->newtonApiHost . self::ZEROES . $expression);
-        return json_decode($res->getBody())->result;
+        return json_decode($res->getBody(), false)->result;
     }
 
     /**

@@ -8,7 +8,7 @@
 
 namespace App\Components\DataGrids;
 
-use App\Model\Repository\CategoryRepository;
+use App\Model\Persistent\Repository\CategoryRepository;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
