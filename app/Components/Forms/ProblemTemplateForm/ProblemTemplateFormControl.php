@@ -14,7 +14,9 @@ use App\Components\Forms\EntityFormControl;
 use App\Exceptions\NewtonApiException;
 use App\Exceptions\ProblemTemplateException;
 use App\Helpers\ConstHelper;
-use App\Model\NonPersistent\ProblemTemplateNP;
+use App\Helpers\StringsHelper;
+use App\Model\NonPersistent\Entity\ProblemTemplateNP;
+use App\Model\NonPersistent\Parameter\ParametersData;
 use App\Model\Persistent\Entity\ProblemConditionType;
 use App\Model\Persistent\Entity\ProblemType;
 use App\Model\Persistent\Functionality\BaseFunctionality;
@@ -23,7 +25,7 @@ use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Services\MathService;
+use App\Services\PluginContainer;
 use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
@@ -63,9 +65,14 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     protected $problemConditionRepository;
 
     /**
-     * @var MathService
+     * @var PluginContainer
      */
-    protected $mathService;
+    protected $pluginContainer;
+
+    /**
+     * @var StringsHelper
+     */
+    protected $stringsHelper;
 
     /**
      * @var ConstHelper
@@ -90,12 +97,12 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     /**
      * @var array
      */
-    protected $baseItems;
+    protected $baseValidation;
 
     /**
      * @var array
      */
-    protected $baseItemsCondition;
+    protected $baseConditionValidation;
 
     /**
      * @var string
@@ -111,7 +118,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      * @param SubCategoryRepository $subCategoryRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
-     * @param MathService $mathService
+     * @param PluginContainer $pluginContainer
+     * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param bool $edit
      */
@@ -122,7 +130,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        MathService $mathService, ConstHelper $constHelper,
+        PluginContainer $pluginContainer, StringsHelper $stringsHelper, ConstHelper $constHelper,
         bool $edit = false
     )
     {
@@ -133,7 +141,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         $this->subCategoryRepository = $subCategoryRepository;
         $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
-        $this->mathService = $mathService;
+        $this->pluginContainer = $pluginContainer;
+        $this->stringsHelper = $stringsHelper;
         $this->constHelper = $constHelper;
     }
 
@@ -220,14 +229,14 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     {
         $validateFields = [];
         if(!$conditions){
-            foreach ($this->baseItems as $item){
+            foreach ($this->baseValidation as $item){
                 bdump($item['field']);
-                $validateFields[$item['field']] = new ValidatorArgument($problemTemplate->{$item['field']}, $item['validation']);
+                $validateFields[$item['field']] = new ValidatorArgument($problemTemplate->{$item['getter']}(), $item['validation']);
             }
         }
         else{
-            foreach ($this->baseItemsCondition as $item){
-                $validateFields[$item['field']] = new ValidatorArgument($problemTemplate->{$item['field']}, $item['validation']);
+            foreach ($this->baseConditionValidation as $item){
+                $validateFields[$item['field']] = new ValidatorArgument($problemTemplate->{$item['getter']}(), $item['validation']);
             }
         }
 
@@ -256,34 +265,37 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     public function handleFormValidate(Form $form): void
     {
         bdump('HANDLE FORM VALIDATE');
-        $problemTemplate = $this->createNonPersistentEntity($form->getValues());
+        $data = $this->createNonPersistentEntity($form->getValues());
+        $data->setParametersData(new ParametersData($this->stringsHelper::extractParametersInfo($data->getBody())));
+
+        bdump($data);
 
         // VALIDATE BASE ITEMS
-        if(!$this->validateBaseItems($problemTemplate)){
+        if(!$this->validateBaseItems($data)){
             bdump('RETURN');
             $this->redrawErrors();
             return;
         }
 
         // VALIDATE BODY
-        if(!$this->validateBody($problemTemplate)){
+        if(!$this->validateBody($data)){
             bdump('VALIDATE BODY ERROR');
             $this->redrawErrors();
             return;
         }
 
         // STANDARDIZE THE INPUT
-        $problemTemplate = $this->standardize($problemTemplate);
+        $data = $this->standardize($data);
         bdump('STANDARDIZED');
-        bdump($problemTemplate);
-        if($problemTemplate->standardized === null){
+        bdump($data);
+        if($data === null){
             $this->redrawErrors();
             bdump('TEST');
             return;
         }
 
         // VALIDATE TYPE
-        if(!$this->validateType($problemTemplate)){
+        if(!$this->validateType($data)){
             $this->redrawErrors();
             bdump('VALIDATE TYPE ERROR');
             return;
@@ -299,9 +311,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
     /**
      * @param array $data
-     * @param int $problemId
      */
-    public function handleCondValidation(array $data, int $problemId = null): void
+    public function handleCondValidation(array $data): void
     {
         bdump('HANDLE COND VALIDATION');
         $this->redrawControl('flashesSnippet');
@@ -309,6 +320,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         bdump($data);
 
         $data = $this->createNonPersistentEntity(ArrayHash::from($data));
+        $data->setParametersData(new ParametersData($this->stringsHelper::extractParametersInfo($data->getBody())));
+
         bdump($data);
 
         // VALIDATE BASE ITEMS
@@ -338,7 +351,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         }
 
         // VALIDATE SPECIFIED CONDITION
-        if(!$this->validateCondition($data, $problemId)){
+        if(!$this->validateCondition($data)){
             $this->redrawErrors(false);
             return;
         }
@@ -359,7 +372,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     public function validateBody(ProblemTemplateNP $problemTemplate): bool
     {
         bdump('VALIDATE BODY');
-        $validateFields['body'] = new ValidatorArgument($problemTemplate, 'body_' . $problemTemplate->type);
+        $validateFields['body'] = new ValidatorArgument($problemTemplate, 'body_' . $problemTemplate->getType());
         bdump($validateFields);
 
         try{
@@ -379,16 +392,16 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     }
 
     /**
-     * @param ProblemTemplateNP $problemTemplate
+     * @param ProblemTemplateNP $data
      * @return bool
      */
-    public function validateType(ProblemTemplateNP $problemTemplate): bool
+    public function validateType(ProblemTemplateNP $data): bool
     {
         bdump('VALIDATE TYPE');
-        bdump($problemTemplate);
+        bdump($data);
 
         // Validate if the entered problem corresponds to the selected type
-        $validateFields['type'] = new ValidatorArgument($problemTemplate, 'type_' . $problemTemplate->type, 'body');
+        $validateFields['type'] = new ValidatorArgument($data, 'type_' . $data->getType(), 'body');
 
         try{
             $form = $this->validator->validate($this['form'], $validateFields);
@@ -408,18 +421,17 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
     /**
      * @param ProblemTemplateNP $data
-     * @param int|null $problemId
      * @return bool
      */
-    public function validateCondition(ProblemTemplateNP $data, int $problemId = null): bool
+    public function validateCondition(ProblemTemplateNP $data): bool
     {
-        $validationFields['condition_' . $data->conditionType] = new ValidatorArgument($data,
-            'condition_' . $data->conditionType, 'condition_' . $data->conditionType
+        $validationFields['condition_' . $data->getConditionType()] = new ValidatorArgument(
+            $data, 'condition_' . $data->getConditionType(), 'condition_' . $data->getConditionType()
         );
 
         // Validate template condition
         try{
-            $form = $this->validator->conditionValidate($this['form'], $validationFields, $problemId ?? null);
+            $form = $this->validator->validate($this['form'], $validationFields);
         } catch (ProblemTemplateException $e){
             $this['form']['body']->addError($e->getMessage());
             return false;
@@ -496,7 +508,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      * @param ArrayHash $values
      * @return mixed
      */
-    abstract protected function createNonPersistentEntity(ArrayHash $values);
+    abstract protected function createNonPersistentEntity(ArrayHash $values): ProblemTemplateNP;
 
     /**
      * @param ProblemTemplateNP $problemTemplate

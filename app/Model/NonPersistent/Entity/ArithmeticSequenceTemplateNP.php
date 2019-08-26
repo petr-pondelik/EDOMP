@@ -6,11 +6,11 @@
  * Time: 21:49
  */
 
-namespace App\Model\NonPersistent;
+namespace App\Model\NonPersistent\Entity;
 
 /**
  * Class ArithmeticSequenceTemplate
- * @package App\Model\NonPersistent
+ * @package App\Model\NonPersistent\Entity\Entity
  */
 class ArithmeticSequenceTemplateNP extends ProblemTemplateNP
 {

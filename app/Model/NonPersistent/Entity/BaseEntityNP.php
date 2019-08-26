@@ -6,11 +6,11 @@
  * Time: 19:30
  */
 
-namespace App\Model\NonPersistent;
+namespace App\Model\NonPersistent\Entity;
 
 /**
  * Class BaseEntity
- * @package App\Model\NonPersistent
+ * @package App\Model\NonPersistent\Entity\Entity
  */
 abstract class BaseEntityNP
 {

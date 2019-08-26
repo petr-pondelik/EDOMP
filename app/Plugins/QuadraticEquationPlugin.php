@@ -9,7 +9,7 @@
 namespace App\Plugins;
 
 use App\Exceptions\ProblemTemplateException;
-use App\Model\NonPersistent\QuadraticEquationTemplateNP;
+use App\Model\NonPersistent\Entity\QuadraticEquationTemplateNP;
 use App\Model\Persistent\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
@@ -21,7 +21,6 @@ use Nette\Utils\Strings;
  */
 class QuadraticEquationPlugin extends EquationPlugin
 {
-
     /**
      * @param string $variable
      * @return mixed
@@ -53,16 +52,26 @@ class QuadraticEquationPlugin extends EquationPlugin
      * @param string $expression
      * @param string $variable
      * @return false|string
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function getDiscriminantA(string $expression, string $variable)
     {
+        bdump('GET DISCRIMINANT A');
         $aExp = Strings::before($expression, $variable . '^2');
         if($aExp === ''){
             return '1';
         }
-        bdump('A EXPRESSION');
-        bdump($aExp);
-        return $aExp;
+        if($aExp === '-'){
+            return '(-1)';
+        }
+        if(Strings::contains($aExp, $variable . '^3')){
+            $aExp = Strings::after($aExp, $variable . '^3');
+        }
+        $aExp = $this->newtonApiClient->simplify($aExp);
+        return $this->stringsHelper::wrap($aExp);
     }
 
     /**
@@ -80,7 +89,6 @@ class QuadraticEquationPlugin extends EquationPlugin
         $bExp = Strings::after($standardized, $variable . '^2');
         $bExpEnd = Strings::indexOf($bExp, $variable);
         $bExp = Strings::substring($bExp, 0, $bExpEnd + 1);
-        bdump($bExp);
         if($bExp === ' '){
             return '0';
         }
@@ -109,7 +117,7 @@ class QuadraticEquationPlugin extends EquationPlugin
     protected function getDiscriminantC(string $expression, string $variable)
     {
         bdump('GET DISCRIMINANT C');
-        $cExp = Strings::after($expression, $variable, 2);
+        $cExp = Strings::after($expression, ' ' . $variable . ' ');
         if(!$cExp){
             $cExp = Strings::after($expression, $variable . '^2');
             if($cExp === '' || Strings::contains($cExp, $variable)){
@@ -133,29 +141,26 @@ class QuadraticEquationPlugin extends EquationPlugin
      */
     public function getDiscriminantExpression(string $standardized, string $variable): string
     {
-        return $this->getDiscriminantB($standardized, $variable) . '^2' . ' - 4 * ' . $this->getDiscriminantA($standardized, $variable) . ' * ' . $this->getDiscriminantC($standardized, $variable);
+        return $this->stringsHelper::fillMultipliers($this->getDiscriminantB($standardized, $variable) . '^2' . ' - 4 * ' . $this->getDiscriminantA($standardized, $variable) . ' * ' . $this->getDiscriminantC($standardized, $variable));
     }
 
     /**
-     * @param QuadraticEquationTemplateNP $problemTemplate
+     * @param QuadraticEquationTemplateNP $data
      * @return bool
      * @throws ProblemTemplateException
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      */
-    public function validateType(QuadraticEquationTemplateNP $problemTemplate): bool
+    public function validateType(QuadraticEquationTemplateNP $data): bool
     {
         bdump('VALIDATE QUADRATIC EQUATION');
 
         // Remove all the spaces
-        $standardized = $this->stringsHelper::removeWhiteSpaces($problemTemplate->standardized);
-
-        $parametersInfo = $this->stringsHelper::extractParametersInfo($problemTemplate->body);
-
-        bdump(self::getRegExp($problemTemplate->variable));
+        $standardized = $this->stringsHelper::removeWhiteSpaces($data->getStandardized());
+        bdump(self::getRegExp($data->getVariable()));
 
         // Match string against the quadratic expression regexp
-        $matches = Strings::match($standardized, '~' . self::getRegExp($problemTemplate->variable) . '~');
+        $matches = Strings::match($standardized, '~' . self::getRegExp($data->getVariable()) . '~');
 
         // Check if the whole expression was matched
         if($matches[0] !== $standardized){
@@ -166,12 +171,12 @@ class QuadraticEquationPlugin extends EquationPlugin
             $matches = $this->conditionService->findConditionsMatches([
                 $this->constHelper::QUADRATIC_EQUATION_VALIDATION => [
                     $this->constHelper::IS_QUADRATIC_EQUATION => [
-                        'parametersInfo' => $parametersInfo,
-                        'data' => $problemTemplate->standardized
+                        'data' => $data
                     ]
                 ]
             ]);
         } catch (\Exception $e){
+            bdump($e);
             throw new ProblemTemplateException('Zadán chybný formát šablony.');
         }
 
@@ -180,10 +185,12 @@ class QuadraticEquationPlugin extends EquationPlugin
             return false;
         }
 
+        bdump($matches);
+
         $matchesJson = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $matchesJson
-        ]), $problemTemplate->idHidden, true);
+        ]), $data->getIdHidden(), true);
 
         return true;
     }
@@ -238,11 +245,7 @@ class QuadraticEquationPlugin extends EquationPlugin
     }
 
     /**
-     * @param int $accessor
-     * @param string $standardized
-     * @param string $variable
-     * @param ArrayHash $parametersInfo
-     * @param null $problemId
+     * @param QuadraticEquationTemplateNP $data
      * @return bool
      * @throws \App\Exceptions\EntityException
      * @throws \App\Exceptions\NewtonApiException
@@ -251,19 +254,17 @@ class QuadraticEquationPlugin extends EquationPlugin
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Nette\Utils\JsonException
      */
-    public function validateDiscriminantCond(int $accessor, string $standardized, string $variable, ArrayHash $parametersInfo, $problemId = null): bool
+    public function validateDiscriminantCond(QuadraticEquationTemplateNP $data): bool
     {
         bdump('VALIDATE DISCRIMINANT CONDITION');
-        bdump($standardized);
-        $discriminantExp = $this->getDiscriminantExpression($standardized, $variable);
-
-        bdump($discriminantExp);
+        $discriminant = $this->getDiscriminantExpression($data->getStandardized(), $data->getVariable());
+        $data->setDiscriminant($discriminant);
+        $data->setConditionValidateItem('discriminant');
 
         $matches = $this->conditionService->findConditionsMatches([
             $this->constHelper::DISCRIMINANT => [
-                $accessor => [
-                    'parametersInfo' => $parametersInfo,
-                    'data' => $discriminantExp
+                $data->getConditionAccessor() => [
+                    'data' => $data
                 ]
             ]
         ]);
@@ -275,7 +276,7 @@ class QuadraticEquationPlugin extends EquationPlugin
         $jsonData = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $jsonData
-        ]), $problemId);
+        ]), $data->getIdHidden());
 
         return true;
     }

@@ -9,8 +9,7 @@
 namespace App\Plugins;
 
 use App\Exceptions\NewtonApiSyntaxException;
-use App\Model\NonPersistent\ProblemTemplateNP;
-use Nette\Utils\Strings;
+use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 
 /**
  * Class EquationPlugin
@@ -31,27 +30,22 @@ abstract class EquationPlugin extends ProblemPlugin
     {
         bdump('STANDARDIZE EQUATION');
 
-        $expression = $this->latexHelper::parseLatex($problemTemplate->body);
+        $expression = $this->latexHelper::parseLatex($problemTemplate->getBody());
         $parameterized = $this->stringsHelper::getParametrized($expression);
-        $problemTemplate->expression = $parameterized->expression;
+        $problemTemplate->setExpression($parameterized->expression);
         $sides = $this->stringsHelper::getEquationSides($parameterized->expression);
         $expression = $this->stringsHelper::mergeEqSides($sides);
         $expression = $this->newtonApiClient->simplify($expression);
 
-        $varDividers = Strings::matchAll($expression, '~(\+|\-|)([x\d\sp\^]+)\/\s*(\([\-\+\s\(\)\dx]+\))~');
+        bdump('BEFORE VAR FRACTIONS CHECK');
+        bdump($expression);
 
-        if($varDividers){
-            bdump('WITH VAR DIVIDERS');
-            $this->variableDividers->setData($expression, $varDividers);
-            $expression = $this->variableDividers->getMultiplied();
-            bdump($expression);
-            $expression = $this->newtonApiClient->simplify($expression);
-        }
-        else{
-            bdump('WITHOUT VAR DIVIDERS');
-        }
+        $this->variableDividers->setData($expression, $problemTemplate->getExpression());
+        $expression = $this->variableDividers->getMultiplied();
+        $problemTemplate->setStandardized($this->stringsHelper::fillMultipliers($expression));
+        $problemTemplate->setGlobalDivider($this->variableDividers->getGlobalDivider());
 
-        $problemTemplate->standardized = $this->stringsHelper::fillMultipliers($expression);
+        bdump($problemTemplate);
 
         return $problemTemplate;
     }
@@ -68,15 +62,15 @@ abstract class EquationPlugin extends ProblemPlugin
     public function validateBody(ProblemTemplateNP $problemTemplate): int
     {
         bdump('VALIDATE BODY');
-        if(!$this->latexHelper::latexWrapped($problemTemplate->body)){
+        if(!$this->latexHelper::latexWrapped($problemTemplate->getBody())){
             return 1;
         }
-        $parsed = $this->latexHelper::parseLatex($problemTemplate->body);
+        $parsed = $this->latexHelper::parseLatex($problemTemplate->getBody());
 
-        $this->validateParameters($problemTemplate->body);
+        $this->validateParameters($problemTemplate->getBody());
         $split = $this->stringsHelper::splitByParameters($parsed);
 
-        if (empty($problemTemplate->variable) || !$this->stringsHelper::containsVariable($split, $problemTemplate->variable)) {
+        if (empty($problemTemplate->getVariable()) || !$this->stringsHelper::containsVariable($split, $problemTemplate->getVariable())) {
             return 2;
         }
 

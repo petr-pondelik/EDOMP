@@ -281,6 +281,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
      */
     public function handleCondValidation(array $data, $problemId = null): void
     {
+        bdump($data);
         $form = $problemId ? 'problemTemplateEditForm' : 'problemTemplateCreateForm';
         $this[$form]->handleCondValidation($data, $problemId);
     }

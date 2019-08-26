@@ -174,3 +174,7 @@ ALTER TABLE prototype_json_data DROP INDEX condition_problem_unique;
         -   Find all the fractions (with grouped counters and dividers): ([x\d\sp]*)\/\s*(\([\-\+\s\(\)\dx]*\))
         -   Multiply all the expression members with collected dividers (make fraction divider 1, multiply counter by remaining dividers)
             -   Torn found variable fractions from expression, process it, then multiply rest of the expression with all the dividers and merge both parts
+        
+        
+        Detect zero multiplied bracket:    
+        0\s?(\(([\sx\+\d\(]+\)+))+

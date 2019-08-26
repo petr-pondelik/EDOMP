@@ -14,11 +14,11 @@ use App\Arguments\SequenceValidateArgument;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
-use App\Model\NonPersistent\ArithmeticSequenceTemplateNP;
-use App\Model\NonPersistent\GeometricSequenceTemplateNP;
-use App\Model\NonPersistent\LinearEquationTemplateNP;
-use App\Model\NonPersistent\ProblemTemplateNP;
-use App\Model\NonPersistent\QuadraticEquationTemplateNP;
+use App\Model\NonPersistent\Entity\ArithmeticSequenceTemplateNP;
+use App\Model\NonPersistent\Entity\GeometricSequenceTemplateNP;
+use App\Model\NonPersistent\Entity\LinearEquationTemplateNP;
+use App\Model\NonPersistent\Entity\ProblemTemplateNP;
+use App\Model\NonPersistent\Entity\QuadraticEquationTemplateNP;
 use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\Model\Persistent\Repository\UserRepository;
 use App\Plugins\ArithmeticSequencePlugin;
@@ -246,28 +246,28 @@ class Validator
             'body_' . $this->constHelper::LINEAR_EQ => function (LinearEquationTemplateNP $problemTemplate) {
                 bdump('VALIDATE LINEAR EQUATION BODY VALIDATOR');
                 bdump($problemTemplate);
-                if(empty($problemTemplate->body) || empty($problemTemplate->variable)){
+                if(empty($problemTemplate->getBody()) || empty($problemTemplate->getVariable())){
                     return 0;
                 }
                 return $this->linearEquationPlugin->validateBody($problemTemplate);
             },
 
             'body_' . $this->constHelper::QUADRATIC_EQ => function (QuadraticEquationTemplateNP $problemTemplate) {
-                if(empty($problemTemplate->body) || empty($problemTemplate->variable)){
+                if(empty($problemTemplate->getBody()) || empty($problemTemplate->getVariable())){
                     return 0;
                 }
                 return $this->linearEquationPlugin->validateBody($problemTemplate);
             },
 
             'body_' . $this->constHelper::ARITHMETIC_SEQ => function (ArithmeticSequenceTemplateNP $problemTemplate) {
-                if(empty($problemTemplate->body) || empty($problemTemplate->variable)){
+                if(empty($problemTemplate->getBody()) || empty($problemTemplate->getVariable())){
                     return 0;
                 }
                 return $this->arithmeticSequencePlugin->validateBody($problemTemplate);
             },
 
             'body_' . $this->constHelper::GEOMETRIC_SEQ => function (GeometricSequenceTemplateNP $problemTemplate) {
-                if(empty($problemTemplate->body) || empty($problemTemplate->variable)){
+                if(empty($problemTemplate->getBody()) || empty($problemTemplate->getVariable())){
                     return 0;
                 }
                 return $this->geometricSequencePlugin->validateBody($problemTemplate);
@@ -338,34 +338,33 @@ class Validator
                 return -1;
             },
 
-            'condition_' . $this->constHelper::RESULT => function (ProblemTemplateNP $data, $problemId = null) {
-                $parametersInfo = $this->stringsHelper::extractParametersInfo($data->body);
+            'condition_' . $this->constHelper::RESULT => function (ProblemTemplateNP $data) {
+                bdump('VALIDATE RESULT CONDITION');
                 // Maximal number of parameters exceeded
-                if ($parametersInfo->count > $this->constHelper::PARAMETERS_MAX) {
+                if ($data->getParametersData()->getCount() > $this->constHelper::PARAMETERS_MAX) {
                     return 2;
                 }
                 // Maximal parameters complexity exceeded
-                if ($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX) {
+                if ($data->getParametersData()->getComplexity() > $this->constHelper::COMPLEXITY_MAX) {
                     return 3;
                 }
-                if (!$this->linearEquationPlugin->validateResultCond($data->accessor, $data->standardized, $data->variable, $parametersInfo, $problemId)) {
+                if (!$this->linearEquationPlugin->validateResultCond($data)) {
                     return 4;
                 }
                 return -1;
             },
 
-            'condition_' . $this->constHelper::DISCRIMINANT => function (ProblemTemplateNP $data, $problemId = null) {
+            'condition_' . $this->constHelper::DISCRIMINANT => function (ProblemTemplateNP $data) {
                 bdump('VALIDATE DISCRIMINANT CONDITION');
-                $parametersInfo = $this->stringsHelper::extractParametersInfo($data->body);
                 // Maximal number of parameters exceeded
-                if ($parametersInfo->count > $this->constHelper::PARAMETERS_MAX) {
+                if ($data->getParametersData()->getCount() > $this->constHelper::PARAMETERS_MAX) {
                     return 2;
                 }
                 // Maximal parameters complexity exceeded
-                if ($parametersInfo->complexity > $this->constHelper::COMPLEXITY_MAX) {
+                if ($data->getParametersData()->getComplexity() > $this->constHelper::COMPLEXITY_MAX) {
                     return 3;
                 }
-                if (!$this->quadraticEquationPlugin->validateDiscriminantCond($data->accessor, $data->standardized, $data->variable, $parametersInfo, $problemId)) {
+                if (!$this->quadraticEquationPlugin->validateDiscriminantCond($data)) {
                     return 4;
                 }
                 return -1;
@@ -544,43 +543,42 @@ class Validator
         return $form;
     }
 
-    /**
-     * @param Form $form
-     * @param $fields
-     * @param $problemId
-     * @return Form
-     */
-    public function conditionValidate(Form $form, $fields, $problemId = null): Form
-    {
-        // Based on the problemId presence, it will be decided it to update or to create
-        foreach ((array)$fields as $field => $item) {
-
-            $validationRule = $item->validationRule;
-            $data = $item->data;
-
-            // Check if the validator supports entered validation
-            if (!array_key_exists($validationRule, $this->validationMapping)) {
-                throw new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
-            }
-
-            if (($validationRes = $this->validationMapping[$validationRule]($data, $problemId)) !== -1) { // Zde se liší!
-                if (isset($this->validationMessages[$field][$validationRes])) {
-                    if (isset($item->display)) {
-                        $form[$item->display]->addError($this->validationMessages[$field][$validationRes]);
-                    } else {
-                        $form[$field]->addError($this->validationMessages[$field][$validationRes]);
-                    }
-                } else {
-                    if (isset($item->display)) {
-                        $form[$item->display]->addError($this->validationMessages[$validationRule][$validationRes]);
-                    } else {
-                        $form[$field]->addError($this->validationMessages[$validationRule][$validationRes]);
-                    }
-                }
-            }
-
-        }
-
-        return $form;
-    }
+//    /**
+//     * @param Form $form
+//     * @param $fields
+//     * @return Form
+//     */
+//    public function conditionValidate(Form $form, $fields): Form
+//    {
+//        // Based on the problemId presence, it will be decided it to update or to create
+//        foreach ((array)$fields as $field => $item) {
+//
+//            $validationRule = $item->validationRule;
+//            $data = $item->data;
+//
+//            // Check if the validator supports entered validation
+//            if (!array_key_exists($validationRule, $this->validationMapping)) {
+//                throw new NotSupportedException('Požadavek obsahuje neočekávanou hodnotu.');
+//            }
+//
+//            if (($validationRes = $this->validationMapping[$validationRule]($data)) !== -1) { // Zde se liší!
+//                if (isset($this->validationMessages[$field][$validationRes])) {
+//                    if (isset($item->display)) {
+//                        $form[$item->display]->addError($this->validationMessages[$field][$validationRes]);
+//                    } else {
+//                        $form[$field]->addError($this->validationMessages[$field][$validationRes]);
+//                    }
+//                } else {
+//                    if (isset($item->display)) {
+//                        $form[$item->display]->addError($this->validationMessages[$validationRule][$validationRes]);
+//                    } else {
+//                        $form[$field]->addError($this->validationMessages[$validationRule][$validationRes]);
+//                    }
+//                }
+//            }
+//
+//        }
+//
+//        return $form;
+//    }
 }

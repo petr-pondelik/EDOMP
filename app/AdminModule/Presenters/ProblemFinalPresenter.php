@@ -20,7 +20,7 @@ use App\Model\Persistent\Entity\ProblemFinal;
 use App\Model\Persistent\Functionality\ProblemFinalFunctionality;
 use App\Model\Persistent\Repository\ProblemFinalRepository;
 use App\Services\Authorizator;
-use App\Services\MathService;
+use App\Services\PluginContainer;
 use App\Services\NewtonApiClient;
 use App\Services\Validator;
 use Nette\ComponentModel\IComponent;
@@ -59,9 +59,9 @@ class ProblemFinalPresenter extends AdminPresenter
     protected $validator;
 
     /**
-     * @var MathService
+     * @var PluginContainer
      */
-    protected $mathService;
+    protected $pluginContainer;
 
     /**
      * ProblemFinalPresenter constructor.
@@ -75,7 +75,7 @@ class ProblemFinalPresenter extends AdminPresenter
      * @param ProblemFinalRepository $problemRepository
      * @param ProblemFinalFunctionality $problemFunctionality
      * @param Validator $validator
-     * @param MathService $mathService
+     * @param PluginContainer $pluginContainer
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
@@ -84,7 +84,7 @@ class ProblemFinalPresenter extends AdminPresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ProblemGridFactory $problemGridFactory, ProblemFinalFormFactory $problemFinalFormFactory,
         ProblemFinalRepository $problemRepository, ProblemFinalFunctionality $problemFunctionality,
-        Validator $validator, MathService $mathService,
+        Validator $validator, PluginContainer $pluginContainer,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
@@ -94,7 +94,7 @@ class ProblemFinalPresenter extends AdminPresenter
         $this->problemRepository = $problemRepository;
         $this->problemFunctionality = $problemFunctionality;
         $this->validator = $validator;
-        $this->mathService = $mathService;
+        $this->pluginContainer = $pluginContainer;
     }
 
     /**
@@ -267,7 +267,7 @@ class ProblemFinalPresenter extends AdminPresenter
         $problem = $this->problemRepository->find($id);
         $result = null;
         try{
-            $result = $this->mathService->evaluate[(int) $problem->getProblemType()->getId()]($problem);
+            $result = $this->pluginContainer->evaluate[(int) $problem->getProblemType()->getId()]($problem);
         } catch (\Exception $e){
             $this->informUser(new UserInformArgs('getRes', true, 'error', $e));
             return;

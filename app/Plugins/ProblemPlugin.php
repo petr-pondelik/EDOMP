@@ -15,7 +15,7 @@ use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
 use App\Helpers\VariableDividers;
-use App\Model\NonPersistent\ProblemTemplateNP;
+use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\Persistent\Entity\ProblemFinal;
 use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\Services\ConditionService;

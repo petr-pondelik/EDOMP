@@ -10,7 +10,7 @@ namespace App\Plugins;
 
 use App\Arguments\SequenceValidateArgument;
 use App\Exceptions\ProblemTemplateException;
-use App\Model\NonPersistent\ProblemTemplateNP;
+use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\Persistent\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;

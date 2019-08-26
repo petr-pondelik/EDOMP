@@ -12,7 +12,7 @@ namespace Tests\Model\Services;
 use App\Helpers\ConstHelper;
 use App\Helpers\StringsHelper;
 use App\Services\ConditionService;
-use App\Services\MathService;
+use App\Services\PluginContainer;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 use NXP\MathExecutor;
@@ -61,13 +61,13 @@ class ConditionMatchingServiceTest extends TestCase
         // Instantiate MathExecutor
         $mathExecutor = new MathExecutor();
 
-        // Mock the MathService
-        $this->mathServiceMock = $this->getMockBuilder(MathService::class)
+        // Mock the PluginContainer
+        $this->mathServiceMock = $this->getMockBuilder(PluginContainer::class)
             ->setMethods(['evaluateExpression'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        // Set expected return values for MathService
+        // Set expected return values for PluginContainer
         $this->mathServiceMock->expects($this->any())
             ->method('evaluateExpression')
             ->willReturnCallback(static function ($arg) use ($mathExecutor) {

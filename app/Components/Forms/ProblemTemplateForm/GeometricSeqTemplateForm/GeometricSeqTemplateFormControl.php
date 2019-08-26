@@ -12,15 +12,15 @@ namespace ProblemTemplateForm\GeometricSeqTemplateForm;
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormControl;
 use App\Exceptions\EquationException;
 use App\Helpers\ConstHelper;
-use App\Model\NonPersistent\GeometricSequenceTemplateNP;
-use App\Model\NonPersistent\ProblemTemplateNP;
+use App\Model\NonPersistent\Entity\GeometricSequenceTemplateNP;
+use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\Persistent\Functionality\BaseFunctionality;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Services\MathService;
+use App\Services\PluginContainer;
 use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -67,7 +67,7 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
      * @param SubCategoryRepository $subCategoryRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
-     * @param MathService $mathService
+     * @param PluginContainer $pluginContainer
      * @param ConstHelper $constHelper
      * @param bool $edit
      */
@@ -76,12 +76,12 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
         Validator $validator, BaseFunctionality $functionality, DifficultyRepository $difficultyRepository,
         ProblemTypeRepository $problemTypeRepository, SubCategoryRepository $subCategoryRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        MathService $mathService, ConstHelper $constHelper, bool $edit = false)
+        PluginContainer $pluginContainer, ConstHelper $constHelper, bool $edit = false)
     {
         parent::__construct
         (
             $validator, $functionality, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
-            $problemConditionTypeRepository, $problemConditionRepository, $mathService, $constHelper, $edit
+            $problemConditionTypeRepository, $problemConditionRepository, $pluginContainer, $constHelper, $edit
         );
         $this->attachEntities($this->constHelper::GEOMETRIC_SEQ);
     }
@@ -124,7 +124,7 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
     public function standardize(ProblemTemplateNP $problemTemplate): ?ProblemTemplateNP
     {
         try{
-            $problemTemplate = $this->mathService->standardizeGeometricSequence($problemTemplate);
+            $problemTemplate = $this->pluginContainer->standardizeGeometricSequence($problemTemplate);
         } catch (EquationException $e){
             $this['form']['body']->addError('Zadaný výraz není validním předpisem posloupnosti.');
             return null;

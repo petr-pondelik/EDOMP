@@ -6,11 +6,11 @@
  * Time: 21:50
  */
 
-namespace App\Model\NonPersistent;
+namespace App\Model\NonPersistent\Entity;
 
 /**
  * Class GeometricSequenceTemplate
- * @package App\Model\NonPersistent
+ * @package App\Model\NonPersistent\Entity\Entity
  */
 class GeometricSequenceTemplateNP extends ProblemTemplateNP
 {

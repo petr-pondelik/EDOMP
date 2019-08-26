@@ -11,7 +11,7 @@ namespace App\Plugins;
 use App\Arguments\BodyArgument;
 use App\Arguments\SequenceValidateArgument;
 use App\Exceptions\NewtonApiSyntaxException;
-use App\Model\NonPersistent\ProblemTemplateNP;
+use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\Persistent\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
 

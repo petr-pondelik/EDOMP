@@ -11,15 +11,16 @@ namespace App\Components\Forms\ProblemTemplateForm\LinearEqTemplateForm;
 
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormControl;
 use App\Helpers\ConstHelper;
-use App\Model\NonPersistent\LinearEquationTemplateNP;
-use App\Model\NonPersistent\ProblemTemplateNP;
+use App\Helpers\StringsHelper;
+use App\Model\NonPersistent\Entity\LinearEquationTemplateNP;
+use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\Persistent\Functionality\BaseFunctionality;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Services\MathService;
+use App\Services\PluginContainer;
 use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -33,17 +34,20 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
     /**
      * @var array
      */
-    protected $baseItems = [
+    protected $baseValidation = [
         [
             'field' => 'variable',
+            'getter' => 'getVariable',
             'validation' => 'variable'
         ],
         [
             'field' => 'subCategory',
+            'getter' => 'getSubCategory',
             'validation' => 'notEmpty'
         ],
         [
             'field' => 'difficulty',
+            'getter' => 'getDifficulty',
             'validation' => 'notEmpty'
         ]
     ];
@@ -51,9 +55,10 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
     /**
      * @var array
      */
-    protected $baseItemsCondition = [
+    protected $baseConditionValidation = [
         [
             'field' => 'variable',
+            'getter' => 'getVariable',
             'validation' => 'variable'
         ]
     ];
@@ -72,7 +77,8 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
      * @param SubCategoryRepository $subCategoryRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
-     * @param MathService $mathService
+     * @param PluginContainer $pluginContainer
+     * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param bool $edit
      */
@@ -81,13 +87,13 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
         Validator $validator, BaseFunctionality $functionality, DifficultyRepository $difficultyRepository,
         ProblemTypeRepository $problemTypeRepository, SubCategoryRepository $subCategoryRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        MathService $mathService, ConstHelper $constHelper, bool $edit = false
+        PluginContainer $pluginContainer, StringsHelper $stringsHelper, ConstHelper $constHelper, bool $edit = false
     )
     {
         parent::__construct
         (
             $validator, $functionality, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
-            $problemConditionTypeRepository, $problemConditionRepository, $mathService, $constHelper, $edit
+            $problemConditionTypeRepository, $problemConditionRepository, $pluginContainer, $stringsHelper, $constHelper, $edit
         );
         $this->attachEntities($this->constHelper::LINEAR_EQ);
     }
@@ -114,9 +120,9 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
 
     /**
      * @param ArrayHash $values
-     * @return LinearEquationTemplateNP
+     * @return ProblemTemplateNP
      */
-    protected function createNonPersistentEntity(ArrayHash $values): LinearEquationTemplateNP
+    protected function createNonPersistentEntity(ArrayHash $values): ProblemTemplateNP
     {
         return new LinearEquationTemplateNP($values);
     }
@@ -129,7 +135,7 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
     public function standardize(ProblemTemplateNP $problemTemplate): ?ProblemTemplateNP
     {
         try{
-            $standardized = $this->mathService->standardizeLinearEquation($problemTemplate);
+            $standardized = $this->pluginContainer->standardizeLinearEquation($problemTemplate);
         } catch (\Exception $e){
             $this['form']['body']->addError($e->getMessage());
             return null;

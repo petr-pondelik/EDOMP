@@ -10,15 +10,16 @@ namespace App\Components\Forms\ProblemTemplateForm\QuadraticEqTemplateForm;
 
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormControl;
 use App\Helpers\ConstHelper;
-use App\Model\NonPersistent\ProblemTemplateNP;
-use App\Model\NonPersistent\QuadraticEquationTemplateNP;
+use App\Helpers\StringsHelper;
+use App\Model\NonPersistent\Entity\ProblemTemplateNP;
+use App\Model\NonPersistent\Entity\QuadraticEquationTemplateNP;
 use App\Model\Persistent\Functionality\BaseFunctionality;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Services\MathService;
+use App\Services\PluginContainer;
 use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -32,17 +33,20 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
     /**
      * @var array
      */
-    protected $baseItems = [
+    protected $baseValidation = [
         [
             'field' => 'variable',
+            'getter' => 'getVariable',
             'validation' => 'variable'
         ],
         [
             'field' => 'subCategory',
+            'getter' => 'getSubCategory',
             'validation' => 'notEmpty'
         ],
         [
             'field' => 'difficulty',
+            'getter' => 'getDifficulty',
             'validation' => 'notEmpty'
         ]
     ];
@@ -50,9 +54,10 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
     /**
      * @var array
      */
-    protected $baseItemsCondition = [
+    protected $baseConditionValidation = [
         [
             'field' => 'variable',
+            'getter' => 'getVariable',
             'validation' => 'variable'
         ]
     ];
@@ -71,7 +76,8 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
      * @param SubCategoryRepository $subCategoryRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
-     * @param MathService $mathService
+     * @param PluginContainer $pluginContainer
+     * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param bool $edit
      */
@@ -80,13 +86,13 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
         Validator $validator, BaseFunctionality $functionality, DifficultyRepository $difficultyRepository,
         ProblemTypeRepository $problemTypeRepository, SubCategoryRepository $subCategoryRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        MathService $mathService, ConstHelper $constHelper, bool $edit = false
+        PluginContainer $pluginContainer, StringsHelper $stringsHelper, ConstHelper $constHelper, bool $edit = false
     )
     {
         parent::__construct
         (
             $validator, $functionality, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
-            $problemConditionTypeRepository, $problemConditionRepository, $mathService, $constHelper, $edit
+            $problemConditionTypeRepository, $problemConditionRepository, $pluginContainer, $stringsHelper, $constHelper, $edit
         );
         $this->attachEntities($this->constHelper::QUADRATIC_EQ);
     }
@@ -113,9 +119,9 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
 
     /**
      * @param ArrayHash $values
-     * @return QuadraticEquationTemplateNP|mixed
+     * @return ProblemTemplateNP
      */
-    protected function createNonPersistentEntity(ArrayHash $values): QuadraticEquationTemplateNP
+    protected function createNonPersistentEntity(ArrayHash $values): ProblemTemplateNP
     {
         return new QuadraticEquationTemplateNP($values);
     }
@@ -128,7 +134,7 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
     public function standardize(ProblemTemplateNP $problemTemplate): ?ProblemTemplateNP
     {
         try{
-            $standardized = $this->mathService->standardizeQuadraticEquation($problemTemplate);
+            $standardized = $this->pluginContainer->standardizeQuadraticEquation($problemTemplate);
         } catch (\Exception $e){
             $this['form']['body']->addError($e->getMessage());
             return null;

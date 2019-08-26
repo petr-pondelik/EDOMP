@@ -25,8 +25,9 @@
                 url: url,
                 data: {
                     'data': {
+                        'idHidden': problemId,
                         'conditionType': conditionType,
-                        'accessor': accessor,
+                        'conditionAccessor': accessor,
                         'body': body,
                         'type': problemType,
                         'variable': variable

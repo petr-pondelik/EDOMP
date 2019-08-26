@@ -10,14 +10,14 @@ namespace App\Components\Forms\ProblemTemplateForm;
 
 use App\Components\Forms\FormFactory;
 use App\Helpers\ConstHelper;
+use App\Helpers\StringsHelper;
 use App\Model\Persistent\Functionality\BaseFunctionality;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Plugins\ProblemPlugin;
-use App\Services\MathService;
+use App\Services\PluginContainer;
 use App\Services\Validator;
 
 /**
@@ -52,9 +52,14 @@ abstract class ProblemTemplateFormFactory extends FormFactory
     protected $problemConditionRepository;
 
     /**
-     * @var MathService
+     * @var PluginContainer
      */
-    protected $mathService;
+    protected $pluginContainer;
+
+    /**
+     * @var StringsHelper
+     */
+    protected $stringsHelper;
 
     /**
      * @var ConstHelper
@@ -69,7 +74,8 @@ abstract class ProblemTemplateFormFactory extends FormFactory
      * @param SubCategoryRepository $subCategoryRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
-     * @param MathService $mathService
+     * @param PluginContainer $pluginContainer
+     * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      */
     public function __construct
@@ -78,7 +84,7 @@ abstract class ProblemTemplateFormFactory extends FormFactory
         DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        MathService $mathService, ConstHelper $constHelper
+        PluginContainer $pluginContainer, StringsHelper $stringsHelper, ConstHelper $constHelper
     )
     {
         parent::__construct($validator);
@@ -87,7 +93,8 @@ abstract class ProblemTemplateFormFactory extends FormFactory
         $this->subCategoryRepository = $subCategoryRepository;
         $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
-        $this->mathService = $mathService;
+        $this->pluginContainer = $pluginContainer;
+        $this->stringsHelper = $stringsHelper;
         $this->constHelper = $constHelper;
     }
 

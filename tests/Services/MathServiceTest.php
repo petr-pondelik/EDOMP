@@ -14,7 +14,7 @@ use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
 use App\Model\Entity\ProblemFinal;
 use App\Model\Repository\ProblemFinalRepository;
-use App\Services\MathService;
+use App\Services\PluginContainer;
 use App\Services\NewtonApiClient;
 use Nette\Utils\ArrayHash;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -52,7 +52,7 @@ class MathServiceTest extends TestCase
     protected $latexHelper;
 
     /**
-     * @var MathService
+     * @var PluginContainer
      */
     protected $mathService;
 
@@ -215,7 +215,7 @@ class MathServiceTest extends TestCase
         $this->latexHelper = new LatexHelper();
 
         // Instantiate tested class
-        $this->mathService = new MathService(
+        $this->mathService = new PluginContainer(
             $this->newtonApiClientMock, $this->problemFinalRepositoryMock, $this->constHelper, $this->stringsHelper, $this->latexHelper
         );
     }

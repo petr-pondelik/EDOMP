@@ -9,6 +9,7 @@
 namespace App\Components\Forms\ProblemTemplateForm\LinearEqTemplateForm;
 
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
+use App\Helpers\StringsHelper;
 use App\Model\Persistent\Functionality\BaseFunctionality;
 
 
@@ -28,7 +29,7 @@ class LinearEqTemplateFormFactory extends ProblemTemplateFormFactory
         return new LinearEqTemplateFormControl(
             $this->validator, $functionality, $this->difficultyRepository, $this->problemTypeRepository,
             $this->subCategoryRepository, $this->problemConditionTypeRepository, $this->problemConditionRepository,
-            $this->mathService, $this->constHelper, $edit
+            $this->pluginContainer, $this->stringsHelper, $this->constHelper, $edit
         );
     }
 }
