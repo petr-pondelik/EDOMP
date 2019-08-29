@@ -8,10 +8,8 @@
 
 namespace App\Plugins;
 
-use App\Arguments\EquationValidateArgument;
 use App\Exceptions\ProblemTemplateException;
 use App\Model\NonPersistent\Entity\LinearEquationTemplateNP;
-use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\Persistent\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;

@@ -12,8 +12,13 @@ namespace App\Model\NonPersistent\Entity;
  * Class LinearEquationTemplate
  * @package App\Model\NonPersistent\Entity\Entity
  */
-class LinearEquationTemplateNP extends ProblemTemplateNP
+class LinearEquationTemplateNP extends EquationTemplateNP
 {
+    /**
+     * @var int
+     */
+    protected $rank = 1;
+
     /**
      * @var string|null
      */
@@ -34,5 +39,4 @@ class LinearEquationTemplateNP extends ProblemTemplateNP
     {
         $this->linearVariableExpression = $linearVariableExpression;
     }
-
 }

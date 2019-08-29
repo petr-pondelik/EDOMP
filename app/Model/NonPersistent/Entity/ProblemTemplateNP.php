@@ -9,6 +9,7 @@
 namespace App\Model\NonPersistent\Entity;
 
 use App\Model\NonPersistent\Math\GlobalDivider;
+use App\Model\NonPersistent\Math\VariableFraction;
 use App\Model\NonPersistent\Parameter\ParametersData;
 use App\Model\NonPersistent\Traits\SetValuesTrait;
 use Nette\Utils\ArrayHash;
@@ -87,21 +88,6 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     protected $conditionValidateItem;
 
     /**
-     * @var GlobalDivider
-     */
-    protected $globalDivider;
-
-    /**
-     * @var bool
-     */
-    protected $skipZeroFractions;
-
-    /**
-     * @var ParametersData
-     */
-    protected $parametersData;
-
-    /**
      * LinearEquationTemplate constructor.
      * @param ArrayHash $values
      */
@@ -109,7 +95,6 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     {
         $this->setValues($values);
         $this->conditionValidateItem = 'standardized';
-        $this->skipZeroFractions = false;
     }
 
     /**
@@ -118,17 +103,6 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     public function getConditionValidateData()
     {
         return $this->{$this->conditionValidateItem};
-    }
-
-    /**
-     * @param GlobalDivider $globalDivider
-     */
-    public function setGlobalDivider(GlobalDivider $globalDivider): void
-    {
-        $this->globalDivider = $globalDivider;
-        if($globalDivider->getFactors()){
-            $this->skipZeroFractions = true;
-        }
     }
 
     /**
@@ -337,45 +311,5 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     public function setConditionAccessor(?int $conditionAccessor): void
     {
         $this->conditionAccessor = $conditionAccessor;
-    }
-
-    /**
-     * @return GlobalDivider
-     */
-    public function getGlobalDivider(): GlobalDivider
-    {
-        return $this->globalDivider;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isSkipZeroFractions(): bool
-    {
-        return $this->skipZeroFractions;
-    }
-
-    /**
-     * @param bool $skipZeroFractions
-     */
-    public function setSkipZeroFractions(bool $skipZeroFractions): void
-    {
-        $this->skipZeroFractions = $skipZeroFractions;
-    }
-
-    /**
-     * @return ParametersData
-     */
-    public function getParametersData(): ParametersData
-    {
-        return $this->parametersData;
-    }
-
-    /**
-     * @param ParametersData $parametersData
-     */
-    public function setParametersData(ParametersData $parametersData): void
-    {
-        $this->parametersData = $parametersData;
     }
 }

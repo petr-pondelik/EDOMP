@@ -12,8 +12,13 @@ namespace App\Model\NonPersistent\Entity;
  * Class QuadraticEquationTemplate
  * @package App\Model\NonPersistent\Entity\Entity
  */
-class QuadraticEquationTemplateNP extends ProblemTemplateNP
+class QuadraticEquationTemplateNP extends EquationTemplateNP
 {
+    /**
+     * @var int
+     */
+    protected $rank = 2;
+
     /**
      * @var string|null
      */

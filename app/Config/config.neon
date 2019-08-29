@@ -210,6 +210,7 @@ services:
 	service.authorizator: App\Services\Authorizator
 	service.eos.parser: jlawrence\eos\Parser
 	service.math: App\Services\MathService
+	service.fractions.variable: App\Services\VariableFractionService
 
 	# Managers
 	manager.entity.constraint: App\Model\Persistent\Manager\ConstraintEntityManager
@@ -222,7 +223,6 @@ services:
 	helper.parser.newton: App\Helpers\NewtonParser
 	helper.formatter: App\Helpers\FormatterHelper
 	helper.flashes.translator: App\Helpers\FlashesTranslator
-	helper.variable.dividers: App\Helpers\VariableDividers
 
 	# Plugins
 	plugin.template.equation.linear: App\Plugins\LinearEquationPlugin

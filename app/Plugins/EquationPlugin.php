@@ -17,6 +17,8 @@ use App\Model\NonPersistent\Entity\ProblemTemplateNP;
  */
 abstract class EquationPlugin extends ProblemPlugin
 {
+    protected const RE_VARIABLE_COEFFICIENT = '(\(?([\dp\+\-\*\(\)\/]*)\)*x\^(\d+))';
+
     /**
      * @param ProblemTemplateNP $problemTemplate
      * @return ProblemTemplateNP
@@ -40,13 +42,18 @@ abstract class EquationPlugin extends ProblemPlugin
         bdump('BEFORE VAR FRACTIONS CHECK');
         bdump($expression);
 
-        $this->variableDividers->setData($expression, $problemTemplate->getExpression());
-        $expression = $this->variableDividers->getMultiplied();
-        $problemTemplate->setStandardized($this->stringsHelper::fillMultipliers($expression));
-        $problemTemplate->setGlobalDivider($this->variableDividers->getGlobalDivider());
+        $problemTemplate->setStandardized($expression);
+        $problemTemplate = $this->mathService->multiplyByLCM($problemTemplate);
 
+        bdump($this->mathService->variableFractionService);
+
+//        $this->variableDividers->setData($expression, $problemTemplate->getExpression());
+//        $expression = $this->variableDividers->getMultiplied();
+//        $problemTemplate->setStandardized($this->stringsHelper::fillMultipliers($expression));
+//        $problemTemplate->setGlobalDivider($this->variableDividers->getGlobalDivider());
+
+        bdump('STANDARDIZE RESULT');
         bdump($problemTemplate);
-
         return $problemTemplate;
     }
 

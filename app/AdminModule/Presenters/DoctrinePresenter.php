@@ -199,7 +199,7 @@ class DoctrinePresenter extends AdminPresenter
 
         //-3/5 + 5 p0 x / ((x - 1) (x + 1)) - 10 p0 / ((x - 1) (x + 1)) - p1 x - 6 / ((x - 3) (x + 6))
 
-
+        bdump($this->parser::solve('(- 1 + 5)/((5 + 2) (3*5 - 12*2))'));
 
         $allVarDividers = [];
 

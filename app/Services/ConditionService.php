@@ -108,8 +108,12 @@ class ConditionService
             },
 
             'quadraticEquationType' => static function (QuadraticEquationTemplateNP $data, array $parValuesArr) use ($stringsHelper, $mathService) {
+
+//                bdump('VALIDATE QUADRATIC EQUATION TYPE');
+
                 $final = $stringsHelper::passValues($data->getStandardized(), $parValuesArr);
                 $varCoefficients = Strings::matchAll($final, self::RE_VAR_COEFFICIENT);
+//                bdump($varCoefficients);
 
                 // TODO: VALIDATE COLLECTED CONDITIONS FOR PARAMETERS!!!
 

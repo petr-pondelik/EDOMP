@@ -8,17 +8,16 @@
 
 namespace App\Plugins;
 
-use App\Arguments\BodyArgument;
-use App\Arguments\ProblemValidateArgument;
 use App\Exceptions\InvalidParameterException;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
-use App\Helpers\VariableDividers;
+use App\Services\VariableFractionService;
 use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\Persistent\Entity\ProblemFinal;
 use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\Services\ConditionService;
+use App\Services\MathService;
 use App\Services\NewtonApiClient;
 use jlawrence\eos\Parser;
 use Nette\Utils\ArrayHash;
@@ -51,6 +50,11 @@ abstract class ProblemPlugin
     protected $newtonApiClient;
 
     /**
+     * @var MathService
+     */
+    protected $mathService;
+
+    /**
      * @var ConditionService
      */
     protected $conditionService;
@@ -71,7 +75,7 @@ abstract class ProblemPlugin
     protected $stringsHelper;
 
     /**
-     * @var VariableDividers
+     * @var VariableFractionService
      */
     protected $variableDividers;
 
@@ -88,24 +92,27 @@ abstract class ProblemPlugin
     /**
      * ProblemPlugin constructor.
      * @param NewtonApiClient $newtonApiClient
+     * @param MathService $mathService
      * @param ConditionService $conditionService
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param LatexHelper $latexHelper
      * @param StringsHelper $stringsHelper
-     * @param VariableDividers $variableDividers
+     * @param VariableFractionService $variableDividers
      * @param ConstHelper $constHelper
      * @param Parser $parser
      */
     public function __construct
     (
         NewtonApiClient $newtonApiClient,
+        MathService $mathService,
         ConditionService $conditionService,
         TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexHelper $latexHelper, StringsHelper $stringsHelper, VariableDividers $variableDividers,
+        LatexHelper $latexHelper, StringsHelper $stringsHelper, VariableFractionService $variableDividers,
         ConstHelper $constHelper, Parser $parser
     )
     {
         $this->newtonApiClient = $newtonApiClient;
+        $this->mathService = $mathService;
         $this->conditionService = $conditionService;
         $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
         $this->latexHelper = $latexHelper;

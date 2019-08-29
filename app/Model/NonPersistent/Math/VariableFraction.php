@@ -8,12 +8,18 @@
 
 namespace App\Model\NonPersistent\Math;
 
+use App\Model\NonPersistent\Traits\SetValuesTrait;
+use Nette\Utils\ArrayHash;
+use Nette\Utils\Strings;
+
 /**
  * Class VariableFraction
  * @package App\Model\NonPersistent\Math
  */
 class VariableFraction
 {
+    use SetValuesTrait;
+
     /**
      * @var string
      */
@@ -22,12 +28,12 @@ class VariableFraction
     /**
      * @var string
      */
-    protected $operator;
+    protected $numerator;
 
     /**
      * @var string
      */
-    protected $factor;
+    protected $divider;
 
     /**
      * @var int
@@ -40,15 +46,25 @@ class VariableFraction
     protected $factors;
 
     /**
-     * VariableFraction constructor.
-     * @param array $data
+     * @var bool
      */
-    public function __construct(array $data)
+    protected $parametrized;
+
+    /**
+     * VariableFraction constructor.
+     * @param ArrayHash $data
+     */
+    public function __construct(ArrayHash $data)
     {
-        bdump($data);
-        $this->expression = $data[0];
-        $this->operator = $data[1];
-        $this->factor = $data[2];
+        $this->setValues($data);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasParameters(): bool
+    {
+        return Strings::match($this->numerator, '~p\d+~') || Strings::match($this->divider, '~p\d+~');
     }
 
     /**
@@ -65,22 +81,6 @@ class VariableFraction
     public function setExpression(string $expression): void
     {
         $this->expression = $expression;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOperator(): string
-    {
-        return $this->operator;
-    }
-
-    /**
-     * @param string $operator
-     */
-    public function setOperator(string $operator): void
-    {
-        $this->operator = $operator;
     }
 
     /**
@@ -118,16 +118,48 @@ class VariableFraction
     /**
      * @return string
      */
-    public function getFactor(): string
+    public function getNumerator(): string
     {
-        return $this->factor;
+        return $this->numerator;
     }
 
     /**
-     * @param string $factor
+     * @param string $numerator
      */
-    public function setFactor(string $factor): void
+    public function setNumerator(string $numerator): void
     {
-        $this->factor = $factor;
+        $this->numerator = $numerator;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDivider(): string
+    {
+        return $this->divider;
+    }
+
+    /**
+     * @param string $divider
+     */
+    public function setDivider(string $divider): void
+    {
+        $this->divider = $divider;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isParametrized(): bool
+    {
+        return $this->parametrized;
+    }
+
+    /**
+     * @param bool $parametrized
+     */
+    public function setParametrized(bool $parametrized): void
+    {
+        $this->parametrized = $parametrized;
     }
 }

@@ -8,7 +8,6 @@
 
 namespace App\Model\NonPersistent\Math;
 
-use App\Helpers\StringsHelper;
 use Nette\Utils\Strings;
 
 /**
@@ -18,156 +17,174 @@ use Nette\Utils\Strings;
 class GlobalDivider
 {
     /**
-     * @var StringsHelper
+     * @var string|null
      */
-    protected $stringsHelper;
+    protected $LCMExpression;
 
     /**
      * @var int
      */
-    protected $dividerCoefficient;
+    protected $LCMCoefficient;
 
     /**
-     * @var array|null
+     * @var array
      */
-    protected $dividerFactors;
-
-    /**
-     * @var array|null
-     */
-    protected $factors;
-
-    /**
-     * @var array|null
-     */
-    protected $originalFactors;
+    protected $LCMFactors;
 
     /**
      * GlobalDivider constructor.
-     * @param StringsHelper $stringsHelper
      */
-    public function __construct(StringsHelper $stringsHelper)
+    public function __construct()
     {
-        $this->stringsHelper = $stringsHelper;
-        $this->dividerCoefficient = 1;
+        $this->LCMCoefficient = 1;
+        $this->LCMFactors = [];
     }
 
     /**
      * @param int $coefficient
      */
-    public function raiseDividerCoefficient(int $coefficient): void
+    public function raiseLCMCoefficient(int $coefficient): void
     {
-        $this->dividerCoefficient *= $coefficient;
+        $this->LCMCoefficient *= $coefficient;
     }
 
     /**
      * @param string $factor
      */
-    public function addDividerFactor(string $factor): void
+    public function addLCMFactor(string $factor): void
     {
         if(!isset($this->dividerFactors[$factor])){
-            $factor = $this->stringsHelper::trim($factor);
-            $this->dividerFactors[$factor] = $factor;
+            $this->LCMFactors[$factor] = $factor;
         }
     }
 
     /**
      * @return array|string
      */
-    public function getDividerFactorsString(): string
+    public function getLCMString(): string
     {
-        $res = '';
-        foreach ($this->dividerFactors as $factor){
-            $res .= $this->stringsHelper::wrap($factor);
+        $res = ($this->LCMCoefficient !== 1) ? ($this->LCMCoefficient . ' *') : '';
+        foreach ($this->LCMFactors as $factor){
+            $res .= ' (' . $factor . ')';
         }
-        return $res;
+        return Strings::trim($res);
     }
 
-    /**
-     * @param string $factor
-     */
-    public function addFactor(string $factor): void
-    {
-        bdump('ADD FACTOR');
-        if(!isset($this->factors[$factor]) && Strings::match($factor, '~p\d+~')){
-            $factor = $this->stringsHelper::trim($factor);
-            $this->factors[$factor] = $factor;
-        }
-    }
+//    /**
+//     * @param string $numerator
+//     */
+//    public function addNumerator(string $numerator): void
+//    {
+//        bdump('ADD NUMERATOR');
+//        if(!isset($this->numerators[$numerator]) && Strings::match($numerator, '~p\d+~')){
+//            $this->numerators[$numerator] = $numerator;
+//        }
+//    }
 
     /**
      * @return int
      */
-    public function getDividerCoefficient(): int
+    public function getLCMCoefficient(): int
     {
-        return $this->dividerCoefficient;
+        return $this->LCMCoefficient;
     }
 
     /**
      * @param int $coefficient
      */
-    public function setDividerCoefficient(int $coefficient): void
+    public function setLCMCoefficient(int $coefficient): void
     {
-        $this->dividerCoefficient = $coefficient;
+        $this->LCMCoefficient = $coefficient;
     }
 
     /**
      * @return array|null
      */
-    public function getDividerFactors(): ?array
+    public function getLCMFactors(): ?array
     {
-        return $this->dividerFactors;
+        return $this->LCMFactors;
     }
 
     /**
-     * @param array|null $factors
+     * @param array|null $lcmFactors
      */
-    public function setDividerFactors(?array $factors): void
+    public function setLCMFactors(?array $lcmFactors): void
     {
-        $this->dividerFactors = $factors;
+        $this->LCMFactors = $lcmFactors;
+    }
+
+//    /**
+//     * @return array|null
+//     */
+//    public function getOriginalFactors(): ?array
+//    {
+//        return $this->originalFactors;
+//    }
+//
+//    /**
+//     * @return array|null
+//     */
+//    public function getNumerators(): ?array
+//    {
+//        return $this->numerators;
+//    }
+//
+//    /**
+//     * @param array|null $numerators
+//     */
+//    public function setNumerators(?array $numerators): void
+//    {
+//        $this->numerators = $numerators;
+//    }
+//
+//    /**
+//     * @return array
+//     */
+//    public function getFactoredDividers(): array
+//    {
+//        return $this->factoredDividers;
+//    }
+//
+//    /**
+//     * @param array $factoredDividers
+//     */
+//    public function setFactoredDividers(array $factoredDividers): void
+//    {
+//        $this->factoredDividers = $factoredDividers;
+//    }
+//
+//    /**
+//     * @param string $factoredDivider
+//     */
+//    public function addFactoredDivider(string $factoredDivider): void
+//    {
+//        if(!isset($this->factoredDividers[$factoredDivider])){
+//            $this->factoredDividers[$factoredDivider] = $factoredDivider;
+//        }
+//    }
+//
+//    /**
+//     * @param string $factoredDivider
+//     * @return bool
+//     */
+//    public function hasFactoredDivider(string $factoredDivider): bool
+//    {
+//        return isset($this->factoredDividers[$factoredDivider]);
+//    }
+
+    /**
+     * @return string|null
+     */
+    public function getLCMExpression(): ?string
+    {
+        return $this->LCMExpression;
     }
 
     /**
-     * @return array|null
+     * @param string|null $LCMExpression
      */
-    public function getFactors(): ?array
+    public function setLCMExpression(?string $LCMExpression): void
     {
-        return $this->factors;
-    }
-
-    /**
-     * @param array|null $factors
-     */
-    public function setFactors(?array $factors): void
-    {
-        $this->factors = $factors;
-    }
-
-    /**
-     * @return array|null
-     */
-    public function getOriginalFactors(): ?array
-    {
-        return $this->originalFactors;
-    }
-
-    /**
-     * @param array|null $originalFactors
-     */
-    public function setOriginalFactors(?array $originalFactors): void
-    {
-        bdump('SET ORIGINAL FACTORS');
-        bdump($originalFactors);
-        $factorsCnt = count($originalFactors);
-        foreach ($originalFactors as $originalFactor){
-            $divider = $originalFactor[3];
-            $factor = '';
-            for($i = 0; $i < $factorsCnt; $i++){
-                if($originalFactors[$i][3] === $divider){
-                    $factor .= ($originalFactors[$i][1] . $originalFactors[$i][2]);
-                }
-            }
-            $this->originalFactors[$factor] = $this->stringsHelper::trimOperators($factor);
-        }
+        $this->LCMExpression = $LCMExpression;
     }
 }

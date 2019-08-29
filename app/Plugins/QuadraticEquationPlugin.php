@@ -162,9 +162,25 @@ class QuadraticEquationPlugin extends EquationPlugin
         // Match string against the quadratic expression regexp
         $matches = Strings::match($standardized, '~' . self::getRegExp($data->getVariable()) . '~');
 
+        bdump($matches);
+
         // Check if the whole expression was matched
         if($matches[0] !== $standardized){
             return false;
+        }
+
+        bdump('VARIABLE COEFFICIENTS');
+        $variableCoefficients = Strings::matchAll($standardized, '~' . self::RE_VARIABLE_COEFFICIENT . '~');
+        bdump($variableCoefficients);
+
+        foreach ($variableCoefficients as $variableCoefficient){
+            bdump($variableCoefficient);
+            if($variableCoefficient[3] > 2){
+                if($variableCoefficient[2] === '' || Strings::match($variableCoefficient[2], '~\d+~')){
+                    bdump('FALSE');
+                    return false;
+                }
+            }
         }
 
         try{

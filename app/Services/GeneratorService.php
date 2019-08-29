@@ -107,6 +107,34 @@ class GeneratorService
     }
 
     /**
+     * @param int $min
+     * @param int $max
+     * @param array $without
+     * @return int|null
+     */
+    public function generateIntegerWithout(int $min, int $max, array $without): ?int
+    {
+        bdump('GENERATE INTEGER WITHOUT');
+        bdump($without);
+        bdump([$min, $max]);
+        if(!isset($min, $max)){
+            return null;
+        }
+        $res = null;
+        $used = [];
+        do {
+            $res = $this->generateInteger($min, $max);
+            bdump($res);
+            $used[] = $res;
+            if(count($used) >= ($max - $min + 1)){
+                return null;
+            }
+        } while (in_array($res, $without, true));
+        // TODO: GENERATE VALUE THAT IS NOT PRESENT IN $without array
+        return $res;
+    }
+
+    /**
      * @param $min
      * @param $max
      * @return float|int
