@@ -17,6 +17,11 @@ use Nette\Utils\Strings;
 class LocalDivider
 {
     /**
+     * @var string
+     */
+    protected $expression;
+
+    /**
      * @var int
      */
     protected $coefficient;
@@ -33,9 +38,11 @@ class LocalDivider
 
     /**
      * LocalDivider constructor.
+     * @param string $expression
      */
-    public function __construct()
+    public function __construct(string $expression)
     {
+        $this->expression = $expression;
         $this->coefficient = 1;
         $this->factors = [];
     }
@@ -46,6 +53,15 @@ class LocalDivider
     public function isParametrized(): bool
     {
         return Strings::match($this->factored, '~p\d+~') ? true : false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFactoredWithoutCoefficient(): string
+    {
+        $matchArr = Strings::match($this->factored, '~^\d*\s*(.*)$~');
+        return Strings::trim($matchArr[1]);
     }
 
     /**
@@ -104,5 +120,21 @@ class LocalDivider
     public function setFactored(string $factored): void
     {
         $this->factored = $factored;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExpression(): string
+    {
+        return $this->expression;
+    }
+
+    /**
+     * @param string $expression
+     */
+    public function setExpression(string $expression): void
+    {
+        $this->expression = $expression;
     }
 }

@@ -223,6 +223,7 @@ services:
 	helper.parser.newton: App\Helpers\NewtonParser
 	helper.formatter: App\Helpers\FormatterHelper
 	helper.flashes.translator: App\Helpers\FlashesTranslator
+	helper.regular.expressions: App\Helpers\RegularExpressions
 
 	# Plugins
 	plugin.template.equation.linear: App\Plugins\LinearEquationPlugin

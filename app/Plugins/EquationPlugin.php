@@ -17,8 +17,6 @@ use App\Model\NonPersistent\Entity\ProblemTemplateNP;
  */
 abstract class EquationPlugin extends ProblemPlugin
 {
-    protected const RE_VARIABLE_COEFFICIENT = '(\(?([\dp\+\-\*\(\)\/]*)\)*x\^(\d+))';
-
     /**
      * @param ProblemTemplateNP $problemTemplate
      * @return ProblemTemplateNP
@@ -34,23 +32,18 @@ abstract class EquationPlugin extends ProblemPlugin
 
         $expression = $this->latexHelper::parseLatex($problemTemplate->getBody());
         $parameterized = $this->stringsHelper::getParametrized($expression);
+        bdump($parameterized);
         $problemTemplate->setExpression($parameterized->expression);
         $sides = $this->stringsHelper::getEquationSides($parameterized->expression);
         $expression = $this->stringsHelper::mergeEqSides($sides);
+        bdump($expression);
         $expression = $this->newtonApiClient->simplify($expression);
 
         bdump('BEFORE VAR FRACTIONS CHECK');
         bdump($expression);
 
         $problemTemplate->setStandardized($expression);
-        $problemTemplate = $this->mathService->multiplyByLCM($problemTemplate);
-
-        bdump($this->mathService->variableFractionService);
-
-//        $this->variableDividers->setData($expression, $problemTemplate->getExpression());
-//        $expression = $this->variableDividers->getMultiplied();
-//        $problemTemplate->setStandardized($this->stringsHelper::fillMultipliers($expression));
-//        $problemTemplate->setGlobalDivider($this->variableDividers->getGlobalDivider());
+        $problemTemplate = $this->mathService->processVariableFractions($problemTemplate);
 
         bdump('STANDARDIZE RESULT');
         bdump($problemTemplate);
@@ -60,6 +53,7 @@ abstract class EquationPlugin extends ProblemPlugin
     /**
      * @param ProblemTemplateNP $problemTemplate
      * @return int
+     * @throws \App\Exceptions\EquationException
      * @throws \App\Exceptions\InvalidParameterException
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
@@ -72,6 +66,7 @@ abstract class EquationPlugin extends ProblemPlugin
         if(!$this->latexHelper::latexWrapped($problemTemplate->getBody())){
             return 1;
         }
+
         $parsed = $this->latexHelper::parseLatex($problemTemplate->getBody());
 
         $this->validateParameters($problemTemplate->getBody());
@@ -84,8 +79,10 @@ abstract class EquationPlugin extends ProblemPlugin
         $parametrized = $this->stringsHelper::getParametrized($parsed);
 
         try {
-            $this->newtonApiClient->simplify($parametrized->expression);
+            $expression = $this->stringsHelper::mergeEqSides($this->stringsHelper::getEquationSides($parametrized->expression));
+            $this->newtonApiClient->simplify($expression);
         } catch (NewtonApiSyntaxException $e) {
+            bdump($e);
             return 3;
         }
 

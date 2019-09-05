@@ -27,8 +27,8 @@ abstract class ProblemValidateArgument
      */
     public function __construct(ArrayHash $data)
     {
-        bdump('PROBLEM VALIDATE ARGUMENT CONSTRUCTOR');
-        bdump($data);
+        //bdump('PROBLEM VALIDATE ARGUMENT CONSTRUCTOR');
+        //bdump($data);
         $this->templateId = $data->templateId ?? null;
     }
 }

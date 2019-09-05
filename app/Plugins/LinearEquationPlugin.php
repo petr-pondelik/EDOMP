@@ -22,26 +22,6 @@ use Nette\Utils\Strings;
 class LinearEquationPlugin extends EquationPlugin
 {
     /**
-     * @param string $variable
-     * @return string
-     */
-    public static function getRegExp(string $variable): string
-    {
-        // Enable all basic equation symbols, logarithm sequence and equation variable
-        return '('
-            . self::RE_EQUATION_SYMBOLS
-            . '|'
-            . self::RE_LOGARITHM
-            . ')*'
-            . $variable
-            . '('
-            . self::RE_EQUATION_SYMBOLS
-            . '|'
-            . self::RE_LOGARITHM
-            . ')*';
-    }
-
-    /**
      * @param LinearEquationTemplateNP $data
      * @return bool
      * @throws ProblemTemplateException
@@ -51,8 +31,6 @@ class LinearEquationPlugin extends EquationPlugin
     public function validateType(LinearEquationTemplateNP $data): bool
     {
         bdump('VALIDATE LINEAR EQUATION');
-
-        bdump($data);
 
         // Remove all the spaces
         $standardized = $this->stringsHelper::removeWhiteSpaces($data->getStandardized());
@@ -66,14 +44,14 @@ class LinearEquationPlugin extends EquationPlugin
         $data->setLinearVariableExpression($this->stringsHelper::getLinearVariableExpresion($data->getStandardized(), $data->getVariable()));
 
         // Match string against the linear expression regexp
-        $matches = Strings::match($standardized, '~' . self::getRegExp($data->getVariable()) . '~');
+        $matches = Strings::match($standardized, '~' . $this->regularExpressions::getLinearEquationRE($data->getVariable()) . '~');
 
         // Check if the whole expression was matched
         if($matches[0] !== $standardized){
             return false;
         }
 
-        bdump($data);
+        //bdump($data);
 
         try{
             $matches = $this->conditionService->findConditionsMatches([
@@ -84,6 +62,7 @@ class LinearEquationPlugin extends EquationPlugin
                 ]
             ]);
         } catch (\Exception $e){
+            bdump($e);
             throw new ProblemTemplateException('Zadán chybný formát šablony.');
         }
 
@@ -112,12 +91,12 @@ class LinearEquationPlugin extends EquationPlugin
      */
     public function evaluate(ProblemFinal $problem): ArrayHash
     {
-        bdump('LINEAR EQUATION EVALUATE');
+        //bdump('LINEAR EQUATION EVALUATE');
         $standardized = $this->standardize($problem->getBody());
         $variable = $problem->getVariable();
         $variableExp = $this->stringsHelper::getLinearVariableExpresion($standardized, $variable);
 
-        bdump($variableExp);
+        //bdump($variableExp);
 
         $res = [
             $variable => $this->evaluateExpression($variableExp)
@@ -135,9 +114,13 @@ class LinearEquationPlugin extends EquationPlugin
      */
     public function validateResultCond(LinearEquationTemplateNP $data): bool
     {
+        bdump('VALIDATE RESULT COND');
+
         $variableExp = $this->stringsHelper::getLinearVariableExpresion($data->getStandardized(), $data->getVariable());
         $data->setLinearVariableExpression($variableExp);
         $data->setConditionValidateItem('linearVariableExpression');
+
+        bdump($data);
 
         try {
             $matches = $this->conditionService->findConditionsMatches([

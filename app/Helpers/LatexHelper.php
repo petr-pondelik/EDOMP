@@ -346,8 +346,8 @@ class LatexHelper
      */
     public static function parseFractions(string $latex): string
     {
-        while(Strings::match($latex, '~\\\\frac\{([0-9a-zA-Z" <>\/\=\+\-\*\(\)\^\{\}]*)\}\{([0-9a-zA-Z" <>\/\=\+\-\*\(\)\^\{\}]*)\}~')){
-            $latex = Strings::replace($latex, '~\\\\frac\{([0-9a-zA-Z" <>\/\=\+\-\*\(\)\^\{\}]*)\}\{([0-9a-zA-Z" <>\/\=\+\-\*\(\)\^\{\}]*)\}~', '(($1)/($2))');
+        while(Strings::match($latex, '~\\\\frac\{([\da-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*)\}\s*\{([\da-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*)\}~')){
+            $latex = Strings::replace($latex, '~\\\\frac\{([\da-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*)\}\s*\{([\da-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*)\}~', '(($1)/($2))');
         }
         return $latex;
     }
@@ -441,14 +441,14 @@ class LatexHelper
      */
     public static function parseLatex(string $latex): string
     {
-        bdump('PARSE LATEX');
+        //bdump('PARSE LATEX');
         $res = self::trim($latex);
         $res = self::parseParentheses($res);
         $res = self::parseLogarithm($res);
         $res = self::parseSubscripts($res);
         $res = self::parseSuperscripts($res);
         $res = self::parseFractions($res);
-        bdump($res);
+        //bdump($res);
         return $res;
     }
 }

@@ -36,23 +36,18 @@ class GeometricSequencePlugin extends SequencePlugin
 
         bdump('VALIDATE GEOMETRIC SEQUENCE');
 
-        $parametersInfo = $this->stringsHelper::extractParametersInfo($data->expression);
+        // Get three first members of the sequence
+        $q[] = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->getStandardized(), [$data->getVariable() => 1]), $data->getVariable());
+        $q[] = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->getStandardized(), [$data->getVariable() => 2]), $data->getVariable());
+        $q[] = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->getStandardized(), [$data->getVariable() => 3]), $data->getVariable());
 
-        // $$ q_n = \frac{n - <par min="1" max="1"/>}{n} $$
-        // What if q_1 = 0???
-
-        $q1 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 1]), $data->variable);
-        $q2 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 2]), $data->variable);
-        $q3 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 3]), $data->variable);
-
-        bdump([$q1, $q2, $q3]);
+        $data->setFirstValues($q);
 
         try{
             $matches = $this->conditionService->findConditionsMatches([
                 $this->constHelper::QUOTIENT_VALIDATION => [
                     $this->constHelper::QUOTIENT_EXISTS => [
-                        'parametersInfo' => $parametersInfo,
-                        'data' => Json::encode([$q1, $q2, $q3])
+                        'data' => $data
                     ]
                 ]
             ]);
@@ -67,7 +62,7 @@ class GeometricSequencePlugin extends SequencePlugin
         $matchesJson = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $matchesJson
-        ]), $data->templateId, true);
+        ]), $data->getIdHidden(), true);
 
         return true;
     }

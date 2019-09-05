@@ -8,12 +8,14 @@
 
 namespace App\Services;
 
+use App\Helpers\RegularExpressions;
 use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\Entity\EquationTemplateNP;
 use App\Model\NonPersistent\Math\GlobalDivider;
 use App\Model\NonPersistent\Math\LocalDivider;
+use App\Model\NonPersistent\Math\NonDegradeCondition;
+use App\Model\NonPersistent\Math\Numerator;
 use App\Model\NonPersistent\Math\VariableFraction;
-use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 
 /**
@@ -30,22 +32,12 @@ class VariableFractionService
     /**
      * @const int
      */
-    protected const OPERATOR = 1;
+    protected const NUMERATOR = 1;
 
     /**
      * @const int
      */
-    protected const FACTOR = 2;
-
-    /**
-     * @const int
-     */
-    protected const DIVIDER = 3;
-
-    /**
-     * @const string
-     */
-    protected const RE_VARIABLE_STANDARDIZED_DIVIDER = '~' . '((\+|\-|)[px\d\s\^]+)' . '\/\s*' . '(\([px\-\+\s\(\)\d]+\))' . '~';
+    protected const DIVIDER = 2;
 
     /**
      * @var NewtonApiClient
@@ -58,42 +50,21 @@ class VariableFractionService
     protected $stringsHelper;
 
     /**
-     * @var string
+     * @var RegularExpressions
      */
-    protected $expression;
-
-    /**
-     * @var string
-     */
-    protected $multiplied;
-
-    /**
-     * @var VariableFraction[]
-     */
-    protected $varFractions;
-
-    /**
-     * @var VariableFraction[]
-     */
-    protected $varFractionsParDivider;
-
-    /**
-     * @var GlobalDivider
-     */
-    protected $globalDivider;
+    protected $regularExpressions;
 
     /**
      * VariableFractionService constructor.
      * @param NewtonApiClient $newtonApiClient
      * @param StringsHelper $stringsHelper
+     * @param RegularExpressions $regularExpressions
      */
-    public function __construct(NewtonApiClient $newtonApiClient, StringsHelper $stringsHelper)
+    public function __construct(NewtonApiClient $newtonApiClient, StringsHelper $stringsHelper, RegularExpressions $regularExpressions)
     {
         $this->newtonApiClient = $newtonApiClient;
         $this->stringsHelper = $stringsHelper;
-        $this->globalDivider = new GlobalDivider();
-        $this->varFractions = [];
-        $this->varFractionsParDivider = [];
+        $this->regularExpressions = $regularExpressions;
     }
 
     /**
@@ -105,100 +76,57 @@ class VariableFractionService
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getVariableFractionData(EquationTemplateNP $data): ?EquationTemplateNP
+    public function processVariableFractions(EquationTemplateNP $data): ?EquationTemplateNP
     {
-        bdump('VARIABLE DIVIDERS: SET DATA');
+        bdump('PROCESS VARIABLE FRACTIONS');
 
-        $this->expression = $data->getStandardized();
-        $varFractionsData = Strings::matchAll($this->expression, self::RE_VARIABLE_STANDARDIZED_DIVIDER);
+        bdump($data->getStandardized());
+        $varFractionsData = Strings::matchAll($data->getStandardized(), sprintf($this->regularExpressions::RE_VARIABLE_STANDARDIZED_FRACTION, $data->getVariable(), $data->getVariable(), $data->getVariable()));
+        bdump($varFractionsData);
 
-        if(!$varFractionsData){
+        $varFractionsDataRes = [];
+
+        foreach ($varFractionsData as $key => $item) {
+            bdump($item[self::EXPRESSION]);
+            if (Strings::contains($item[self::EXPRESSION], $data->getVariable())) {
+                $varFractionsDataRes[] = $item;
+            }
+        }
+
+        bdump($varFractionsDataRes);
+
+        if (!$varFractionsDataRes) {
             return null;
         }
 
-        $globalDivider = new GlobalDivider();
-        $varFractions = [];
-        $varFractionsParametrized = [];
-        $groupedVarFractions = $this->groupVariableFractions($varFractionsData);
-        bdump($groupedVarFractions);
+        $data->setVariableFractionsData($varFractionsDataRes);
 
-        foreach ($groupedVarFractions as $key => $variableFraction){
+        $data = $this->processVariableFractionsFirstRound($data, $varFractionsData);
+        bdump('PROCESS VARIABLE FRACTIONS: AFTER FIRST ROUND');
+        bdump($data);
 
-            $localDivider = $this->getLocalDivider($variableFraction->getDivider());
+        $data = $this->processVariableFractionsSecondRound($data);
+        bdump('PROCESS VARIABLE FRACTIONS: AFTER SECOND ROUND');
+        bdump($data);
 
-            $variableFraction->setCoefficient($localDivider->getCoefficient());
-            $variableFraction->setFactors($localDivider->getFactors());
-            $variableFraction->setDivider($localDivider->getFactored());
-            $variableFraction->setParametrized($variableFraction->hasParameters());
+        $data = $this->varFracNonDegradeConditions($data);
 
-            $varFractions[] = $variableFraction;
-            if($variableFraction->isParametrized()){
-                $varFractionsParametrized[] = $variableFraction;
-            }
-
-            foreach ($localDivider->getFactors() as $factor){
-                $globalDivider->addLCMFactor($this->stringsHelper::trim($factor));
-            }
-
-//            if(!$globalDivider->hasFactoredDivider($localDivider->getFactored())){
-            $globalDivider->raiseLCMCoefficient($localDivider->getCoefficient());
-//            }
-
-//            $globalDivider->addFactoredDivider($localDivider->getFactored());
-//            $globalDivider->addNumerator($this->stringsHelper::trim($variableFraction->getNumerator()));
-
-        }
-
-        $globalDivider->setLcmExpression($globalDivider->getLCMString());
-
-        $data->setGlobalDivider($globalDivider);
-        $data->setVarFractions($varFractions);
-        $data->setVarFractionsParametrized($varFractionsParametrized);
-        $data->setFractionsToCheckCnt($data->calculateFractionsToCheckCnt());
-
+        bdump('PROCESS VARIABLE FRACTIONS RES');
+        bdump($data);
         return $data;
+    }
 
-//        bdump($varFractionsData);
-//        if(!$varFractionsData){
-//            return false;
-//        }
-//
-//        $groupedVarFractions = $this->groupVarFractions($varFractionsData);
-//
-//        foreach ($groupedVarFractions as $key => $fraction) {
-//
-//            $divider = $this->getDivider($fraction[self::DIVIDER]);
-//            bdump('DIVIDER');
-//            bdump($divider);
-//
-//            $variableFraction = new VariableFraction($fraction);
-//            $variableFraction->setCoefficient($divider['coefficient']);
-//            $variableFraction->setFactors($divider['factors']);
-//            $variableFraction->setFactoredDivider($divider['factored']);
-//            $variableFraction->setDividerParametrized( Strings::match($divider['factored'], '~p\d+~') ? true : false );
-//
-//            $this->varFractions[] = $variableFraction;
-//            if($variableFraction->isDividerParametrized()){
-//                $this->varFractionsParDivider[] = $variableFraction;
-//            }
-//
-//            foreach ($divider['factors'] as $factor){
-//                $this->globalDivider->addLCMFactor($this->stringsHelper::trim($factor));
-//            }
-//
-//            if(!$this->globalDivider->hasFactoredDivider($divider['factored'])){
-//                $this->globalDivider->raiseLCMCoefficient($divider['coefficient']);
-//            }
-//
-//            $this->globalDivider->addFactoredDivider($divider['factored']);
-//            $this->globalDivider->addNumerator($this->stringsHelper::trim($fraction[self::FACTOR]));
-//
-//        }
-//
-//        bdump('VAR FRACTIONS PAR DIVIDER');
-//        bdump($this->varFractionsParDivider);
-//
-//        return true;
+    /**
+     * @param string $expression
+     * @param array $fractions
+     * @return string
+     */
+    public function removeFractionsFromExpression(string $expression, array $fractions): string
+    {
+        foreach ($fractions as $fraction) {
+            $expression = $this->stringsHelper::removeSubstring($expression, $fraction[0]);
+        }
+        return $expression;
     }
 
     /**
@@ -211,90 +139,63 @@ class VariableFractionService
      */
     public function getMultipliedByLCM(EquationTemplateNP $data): EquationTemplateNP
     {
-        bdump('GET MULTIPLIED');
-
+        bdump('GET MULTIPLIED BY LCM');
         bdump($data->getGlobalDivider());
 
-        if($data->getVarFractions()){
+        bdump($data);
+        $data->setStandardized(Strings::trim($this->removeFractionsFromExpression($data->getStandardized(), $data->getVariableFractionsData())));
+        bdump($data);
+
+        if ($data->getVarFractions()) {
 
             bdump('HAS VAR FRACTIONS');
-            bdump($data->getVarFractions());
+            //bdump($data->getVarFractions());
 
             $variableFractionsExpression = '';
             $multiplied = $data->getStandardized();
 
-            foreach ($data->getVarFractions() as $key => $varFraction){
-                $multiplied = $this->stringsHelper::removeSubstring($data->getStandardized(), $varFraction->getExpression());
-                $multiplier = ' ' . ($data->getGlobalDivider()->getLCMCoefficient() / $varFraction->getCoefficient()) . ' ';
+            bdump($data->getStandardized());
 
-                foreach ($data->getGlobalDivider()->getLCMFactors() as $LCMFactor){
-                    bdump($LCMFactor);
-                    bdump($varFraction->getFactors());
-                    if(!in_array($LCMFactor, $varFraction->getFactors(), true)){
+            foreach ($data->getVarFractions() as $key => $varFraction) {
+                bdump($varFraction->getExpression());
+//                bdump($multiplied);
+                $multiplier = ' ' . '(' . ($data->getGlobalDivider()->getLCMCoefficient() / $varFraction->getDivider()->getCoefficient()) . ')' . ' ';
+
+                foreach ($data->getGlobalDivider()->getLCMFactors() as $LCMFactor) {
+                    //bdump($LCMFactor);
+                    //bdump($varFraction->getFactors());
+                    if (!in_array($LCMFactor, $varFraction->getDivider()->getFactors(), true)) {
                         $multiplier .= $this->stringsHelper::wrap($LCMFactor);
                     }
                 }
 
-                $variableFractionsExpression .= ($key ? ' +' : ' ') . $multiplier . ' ' . $varFraction->getNumerator();
+                $variableFractionsExpression .= ($key ? ' +' : ' ') . $multiplier . ' ' . $this->stringsHelper::wrap($varFraction->getNumerator()->getExpression());
             }
 
             bdump($variableFractionsExpression);
             bdump('MULTIPLIED');
             bdump($multiplied);
 
-            $multiplied = ($this->stringsHelper::removeWhiteSpaces($multiplied) ? $this->globalDivider->getLCMCoefficient() . '*' . $this->globalDivider->getLCMExpression() . $this->stringsHelper::wrap($multiplied) : '')
-                            . '+ ' . $this->stringsHelper::wrap($variableFractionsExpression);
-            bdump($multiplied);
+            $multiplied = ($this->stringsHelper::removeWhiteSpaces($multiplied) ? $data->getGlobalDivider()->getLCMCoefficient() . ' * ' . $data->getGlobalDivider()->getLCMExpression() . ' ' . $this->stringsHelper::wrap($multiplied) : '')
+                . ' + ' . $this->stringsHelper::wrap($variableFractionsExpression);
+
             $multiplied = $this->newtonApiClient->simplify($multiplied);
+            bdump($multiplied);
+
 
             $data->setStandardized($multiplied);
 
-        }
-        else {
+        } else {
             bdump('HAS NO VAR FRACTIONS');
         }
 
+        bdump('GET MULTIPLIED BY LCM RES');
+        bdump($data);
         return $data;
-
-//        bdump($this->getGlobalDivider());
-//
-//        $this->multiplied = $this->expression;
-//        bdump($this->multiplied);
-//
-//        if($this->varFractions && count($this->varFractions)){
-//
-//            bdump('WITH VAR DIVIDERS');
-//            bdump($this->varFractions);
-//
-//            $varFractionsExpression = '';
-//
-//            foreach ($this->varFractions as $key => $varFraction){
-//                $this->multiplied = $this->stringsHelper::removeSubstring($this->multiplied, $varFraction->getExpression());
-//                $multipliers = $this->globalDivider->getLCMCoefficient() / $varFraction->getCoefficient();
-//                foreach ($this->globalDivider->getLCMFactors() as $factor){
-//                    if(!in_array($factor, $varFraction->getFactors(), true)){
-//                        $multipliers .= $this->stringsHelper::wrap($factor);
-//                    }
-//                }
-//
-//                $varFractionsExpression .= ' ' . $varFraction->getNumerator() . $multipliers;
-//            }
-//
-//            $this->multiplied = ($this->stringsHelper::removeWhiteSpaces($this->multiplied) ? $this->globalDivider->getLCMCoefficient() . '*' . $this->globalDivider->getLCMFactorsString() . $this->stringsHelper::wrap($this->multiplied) : '')
-//                                . '+ ' . $this->stringsHelper::wrap($varFractionsExpression);
-//
-//            $this->multiplied = $this->newtonApiClient->simplify($this->multiplied);
-//
-//        }
-//        else{
-//            bdump('WITHOUT VAR DIVIDERS');
-//        }
-//
-//        return $this->multiplied;
     }
 
     /**
-     * @param string $divider
+     * @param LocalDivider $localDivider
      * @return LocalDivider
      * @throws \App\Exceptions\NewtonApiException
      * @throws \App\Exceptions\NewtonApiRequestException
@@ -302,125 +203,230 @@ class VariableFractionService
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    protected function getLocalDivider(string $divider): LocalDivider
+    protected function processLocalDivider(LocalDivider $localDivider): LocalDivider
     {
-        bdump('GET DIVIDER');
+        bdump('PROCESS LOCAL DIVIDER');
+        bdump($localDivider);
 
-        $res = new LocalDivider();
+        $factored = $this->newtonApiClient->factor($localDivider->getExpression());
+        $localDivider->setFactored($factored);
 
-        $factored = $this->newtonApiClient->factor($divider);
-        $res->setFactored($factored);
+        $matchArr = Strings::match($factored, '~^([\s\d\-\+]*)(.*)~');
+        bdump($matchArr);
+        [$coefficient, $withoutCoefficient] = [$matchArr[1] === '-' ? '-1' : $matchArr[1], $matchArr[2]];
 
-        $coefficient = Strings::trim(Strings::before($factored, '('));
-        $res->setCoefficient((int) $coefficient);
-
-        $withoutCoefficient = Strings::after($factored, '(');
         $withoutCoefficient = $withoutCoefficient ?: $factored;
 
-        $factors = explode(') (', $withoutCoefficient);
+        $localDivider->setCoefficient((int)$coefficient);
 
-        foreach ($factors as $factor){
-            $res->addFactor($this->stringsHelper::trim($factor));
+        bdump($withoutCoefficient);
+        $withoutCoefficient = $this->stringsHelper::trim($withoutCoefficient);
+        $factors = explode('(', $withoutCoefficient);
+        bdump($factors);
+
+        foreach ($factors as $factor) {
+            $localDivider->addFactor($this->stringsHelper::trim($factor));
         }
 
-        return $res;
-
-//        $res = [];
-//
-//        $factored = $this->newtonApiClient->factor($divider);
-//
-//        $coefficient = Strings::trim(Strings::before($factored, '('));
-//        $coefficient = $coefficient !== '' ? $coefficient : '1';
-//
-//        $withoutCoefficient = Strings::after($factored, '(');
-//        $withoutCoefficient = $withoutCoefficient ?: $factored;
-//
-//        $res['coefficient'] = $coefficient;
-//        $dividers = explode(') (', $withoutCoefficient);
-//
-//        foreach ($dividers as $item){
-//            $res['factors'][] = $this->stringsHelper::trim($item);
-//        }
-//        $res['factored'] = $factored;
-//
-//        return $res;
+        bdump('PROCESS LOCAL DIVIDER RES');
+        bdump($localDivider);
+        return $localDivider;
     }
 
     /**
+     * @param EquationTemplateNP $data
      * @param array $variableFractionsData
-     * @return array
+     * @return EquationTemplateNP
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiSyntaxException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function groupVariableFractions(array $variableFractionsData): array
+    public function processVariableFractionsFirstRound(EquationTemplateNP $data, array $variableFractionsData): EquationTemplateNP
     {
-        bdump('GROUP VARIABLE FRACTIONS');
+        bdump('GROUP VARIABLE FRACTIONS DATA');
 
         $usedDividers = [];
-        $res = [];
         $cnt = count($variableFractionsData);
 
-        foreach ($variableFractionsData as $key => $data){
-            if(!in_array($data[3], $usedDividers, true)){
-                $divider = $data[3];
+        $varFractionsStatic = [];
+        $varFractionsParametrized = [];
+        $globalDivider = new GlobalDivider();
+
+        foreach ($variableFractionsData as $key => $fractionData) {
+
+            if (!in_array($fractionData[self::DIVIDER], $usedDividers, true)) {
+
+                $divider = $fractionData[self::DIVIDER];
                 $numerator = '';
 
-                for($i = 0; $i < $cnt; $i++){
-                    if($variableFractionsData[$i][3] === $divider){
-                        $numerator .= $variableFractionsData[$i][1];
+                for ($i = 0; $i < $cnt; $i++) {
+                    if ($variableFractionsData[$i][self::DIVIDER] === $divider) {
+                        $numerator .= $variableFractionsData[$i][self::NUMERATOR];
                     }
                 }
 
-                $tempData['numerator'] = $this->stringsHelper::wrap(Strings::trim($numerator));
-                $tempData['expression'] = $this->stringsHelper::wrap($this->stringsHelper::trim($numerator)) . ' / ' . $data[3];
-                $tempData['divider'] = $data[3];
+                $usedDividers[] = $fractionData[self::DIVIDER];
 
-                $usedDividers[] = $data[3];
+                $expression = $this->stringsHelper::wrap($this->stringsHelper::trim($numerator)) . ' / ' . $fractionData[self::DIVIDER];
+                $numerator = new Numerator($this->stringsHelper::wrap(Strings::trim($numerator)));
+                $localDivider = new LocalDivider($fractionData[self::DIVIDER]);
 
-                $res[] = new VariableFraction(ArrayHash::from($tempData));
+                $variableFraction = new VariableFraction($expression, $localDivider, $numerator);
+
+                $localDivider = $this->processLocalDivider($localDivider);
+                $variableFraction->setDivider($localDivider);
+                $variableFraction->setParametrized($variableFraction->hasParameters());
+
+                if ($variableFraction->isParametrized()) {
+                    $varFractionsParametrized[] = $variableFraction;
+                } else {
+                    $varFractionsStatic[] = $variableFraction;
+                }
+
+                foreach ($localDivider->getFactors() as $factor) {
+                    $globalDivider->addLCMFactor($this->stringsHelper::trim($factor));
+                }
+
+                $globalDivider->raiseLCMCoefficient(abs($localDivider->getCoefficient()));
+            }
+
+            $globalDivider->setLcmExpression($globalDivider->getLCMString());
+            $data->setGlobalDivider($globalDivider);
+            $data->setVarFractionsStatic($varFractionsStatic);
+            $data->setVarFractionsParametrized($varFractionsParametrized);
+        }
+
+        bdump('GROUP VARIABLE FRACTIONS DATA RES');
+        return $data;
+    }
+
+    /**
+     * @param EquationTemplateNP $data
+     * @return EquationTemplateNP
+     */
+    public function processVariableFractionsSecondRound(EquationTemplateNP $data): EquationTemplateNP
+    {
+        bdump('PROCESS VARIABLE FRACTIONS SECOND ROUND');
+
+        $varFractionsStaticRes = [];
+        $varFractionsParametrizedRes = [];
+        $toRemove = [];
+
+        $varFractions = $data->getVarFractions();
+        $varFractionsTemp = $varFractions;
+
+        foreach ($varFractions as $fractionKey => $fraction){
+            unset($varFractionsTemp[$fractionKey]);
+            foreach ($varFractionsTemp as $tempKey => $temp){
+                if($fractionKey !== $tempKey && $fraction->getDivider()->getFactors() === $temp->getDivider()->getFactors()){
+                    $fraction = $fraction->addFraction($temp);
+                    $firstCoefficient = $fraction->getDivider()->getCoefficient();
+                    $secondCoefficient = $temp->getDivider()->getCoefficient();
+                    $reduceLCMBy = $firstCoefficient >= $secondCoefficient ? $secondCoefficient : $firstCoefficient;
+                    $data->getGlobalDivider()->reduceLCMCoefficient($reduceLCMBy);
+                    $toRemove[] = $tempKey;
+                }
             }
         }
 
-        bdump('GROUP VARIABLE FRACTIONS RES');
-        bdump($res);
-        return $res;
+        foreach ($varFractions as $key => $fraction){
+            if(!in_array($key, $toRemove, true)){
+                $fraction->isParametrized() ? ($varFractionsParametrizedRes[] = $fraction) : ($varFractionsStaticRes[] = $fraction);
+            }
+        }
+
+        $data->setVarFractionsParametrized($varFractionsParametrizedRes);
+        $data->setVarFractionsStatic($varFractionsStaticRes);
+
+        bdump('PROCESS VARIABLE FRACTIONS SECOND ROUND RES');
+        bdump($data);
+        return $data;
+    }
+
+        /**
+     * @param EquationTemplateNP $data
+     * @return EquationTemplateNP
+     */
+    public function varFracNonDegradeConditions(EquationTemplateNP $data): EquationTemplateNP
+    {
+        bdump('VAR FRAC NON DEGRADE CONDITIONS');
+
+        if (!$parametrizedFractions = $data->getVarFractionsParametrized()) {
+            bdump('NOTHING TO SET');
+            return $data;
+        }
+        bdump('PARAMETRIZED VARIABLE FRACTIONS FOUND');
+
+        foreach ($parametrizedFractions as $parametrizedFraction) {
+            $parametrizedFraction = $this->varFracNonDegradeCond($parametrizedFraction, $data->getVariable());
+        }
+        $data->setVarFractionsParametrized($parametrizedFractions);
+
+        $data = $this->globalNonDegradeConditions($data);
+
+        return $data;
     }
 
     /**
-     * @return GlobalDivider
+     * @param VariableFraction $varFraction
+     * @param string $variable
+     * @return VariableFraction
      */
-    public function getGlobalDivider(): GlobalDivider
+    public function varFracNonDegradeCond(VariableFraction $varFraction, string $variable): VariableFraction
     {
-        return $this->globalDivider;
+        bdump('VAR FRAC NON DEGRADE COND');
+        $conditions = [];
+
+        if($varFraction->getNumerator()->isParametrized()){
+            $numerator = $this->stringsHelper::normalizeOperators($varFraction->getNumerator()->getExpression());
+            $conditions[] = new NonDegradeCondition($numerator, $variable);
+        }
+
+        if($varFraction->getDivider()->isParametrized()){
+            $divider = $this->stringsHelper::normalizeOperators($varFraction->getDivider()->getExpression());
+            $conditions[] = new NonDegradeCondition($divider, $variable);
+        }
+
+        $conditions[] = new NonDegradeCondition($varFraction->getDivider()->getExpression() . ' - ' . $this->stringsHelper::wrap($varFraction->getNumerator()->getExpression()), $variable);
+
+        foreach ($conditions as $condition) {
+            $condition->setExpression($this->stringsHelper::fillMultipliers(Strings::replace($condition->getExpression(), '~' . $variable . '~', '1')));
+        }
+
+        $varFraction->setNonDegradeConditions($conditions);
+
+        bdump('VAR FRAC NON DEGRADE COND RES');
+        bdump($varFraction);
+        return $varFraction;
     }
 
     /**
-     * @return VariableFraction[]
+     * @param EquationTemplateNP $data
+     * @return EquationTemplateNP
      */
-    public function getVarFractions(): array
+    public function globalNonDegradeConditions(EquationTemplateNP $data): EquationTemplateNP
     {
-        return $this->varFractions;
-    }
+        bdump('GLOBAL NON DEGRADE CONDITIONS');
 
-    /**
-     * @param VariableFraction[] $varFractions
-     */
-    public function setVarFractions(array $varFractions): void
-    {
-        $this->varFractions = $varFractions;
-    }
+        $parametrizedFractions = $data->getVarFractionsParametrized();
+        $parametrizedFractionsCnt = count($parametrizedFractions);
 
-    /**
-     * @return VariableFraction[]
-     */
-    public function getVarFractionsParDivider(): array
-    {
-        return $this->varFractionsParDivider;
-    }
+        $conditions = [];
+        for($i = 1; $i < $parametrizedFractionsCnt; $i++){
+            if($parametrizedFractions[$i-1]->getDivider()->isParametrized() || $parametrizedFractions[$i]->getDivider()->isParametrized()){
+                $firstWithoutCoeff = $parametrizedFractions[$i-1]->getDivider()->getFactoredWithoutCoefficient();
+                $secondWithoutCoeff = $parametrizedFractions[$i]->getDivider()->getFactoredWithoutCoefficient();
+                $expression = Strings::replace(sprintf('%s - (%s)', $firstWithoutCoeff, $secondWithoutCoeff), '~' . $data->getVariable() . '~', '1');
+                $conditions[] = new NonDegradeCondition($expression, $data->getVariable());
+            }
+        }
 
-    /**
-     * @param VariableFraction[] $varFractionsParDivider
-     */
-    public function setVarFractionsParDivider(array $varFractionsParDivider): void
-    {
-        $this->varFractionsParDivider = $varFractionsParDivider;
+        $data->setNonDegradeConditions($conditions);
+
+        bdump('GLOBAL NON DEGRADE CONDITIONS RES');
+        bdump($data);
+        return $data;
     }
 }

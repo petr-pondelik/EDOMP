@@ -40,43 +40,22 @@ class StringsHelper
         'subtraction' => '-'
     ];
 
-    protected const PARAMETER_ATTR_CONTENT_REG = '\-?[0-9a-zA-Z\*\-\+\/\^\"\'\>\<]*';
+    protected const PARAMETER_ATTR_KEY_REG = '\w*';
+
+    protected const PARAMETER_ATTR_VALUE_REG = '\-?[0-9a-zA-Z\*\-\+\/\^\"\'\>\<]*';
 
     /**
      * @param string $expression
      * @return array
      */
-    public static function splitByParameterBase(string $expression): array
+    public static function findParametersAll(string $expression): array
     {
         $regExp = '~'
-                . '(<par\s*>)|'
                 . '(<par\s*/?>)|'
-
-                . sprintf("(<par\s*min=\"%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
-                . sprintf("(<par\s*min='%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
-                . sprintf("(<par\s*min='%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
-                . sprintf("(<par\s*min=\"%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
-
-                . sprintf("(<par\s*max=\"%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
-                . sprintf("(<par\s*max='%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
-                . sprintf("(<par\s*max='%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
-                . sprintf("(<par\s*max=\"%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG)
-
-                . sprintf("(<par\s*min=\"%s'\s*max='%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
-                . sprintf("(<par\s*min='%s\"\s*max='%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
-                . sprintf("(<par\s*min='%s'\s*max=\"%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
-                . sprintf("(<par\s*min='%s'\s*max='%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
-
-                . sprintf("(<par\s*min=\"%s\"\s*max=\"%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
-                . sprintf("(<par\s*min='%s'\s*max='%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
-                . sprintf("(<par\s*min='%s'\s*max=\"%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
-                . sprintf("(<par\s*min=\"%s\"\s*max='%s'\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
-                . sprintf("(<par\s*min=\"%s'\s*max='%s\"\s*/?>)|", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
-                . sprintf("(<par\s*min='%s\"\s*max=\"%s'\s*/?>)", self::PARAMETER_ATTR_CONTENT_REG, self::PARAMETER_ATTR_CONTENT_REG)
-
+                . sprintf("(<par\s*min=?[\"']*%s[\"']*\s*/>)|", self::PARAMETER_ATTR_VALUE_REG)
+                . sprintf("(<par\s*max=?[\"']*%s[\"']*\s*/>)|", self::PARAMETER_ATTR_VALUE_REG)
+                . sprintf("(<par\s*%s=?[\"']*%s[\"']*\s*%s=?[\"']*%s[\"']*\s*[\/]?[>]?)", self::PARAMETER_ATTR_KEY_REG,self::PARAMETER_ATTR_VALUE_REG, self::PARAMETER_ATTR_KEY_REG, self::PARAMETER_ATTR_VALUE_REG)
             . '~';
-
-        bdump($regExp);
 
         return Strings::split($expression, $regExp);
     }
@@ -94,7 +73,7 @@ class StringsHelper
          * ( <par\s*min="\-[0-9]+"\s*max="\-[0-9]+"\s*\/> )
          * */
 
-        return Strings::split($expression,'~(<par\s*min="\-?[0-9]+"\s*max="\-?[0-9]+"\s*\/>)~');
+        return Strings::split($expression,'~(<par\s*min="\-?\d+"\s*max="\-?\d+"\s*\/>)~');
     }
 
     /**
@@ -113,6 +92,22 @@ class StringsHelper
     public static function deduplicateWhiteSpaces(string $expression): string
     {
         return Strings::replace($expression, '~\s{2,}~', ' ');
+    }
+
+    /**
+     * @param string $expression
+     * @return string
+     */
+    public static function normalizeOperators(string $expression): string
+    {
+        $expression = Strings::replace($expression, '~\-\s*\-~', ' + ');
+        $expression = Strings::replace($expression, '~\+\s*\+~', ' + ');
+        $expression = Strings::replace($expression, '~\-\s*\+~', ' - ');
+        $expression = Strings::replace($expression, '~\+\s*\-~', ' - ');
+        $expression = Strings::replace($expression, '~\(\s*\+~', '(');
+        $expression = self::deduplicateWhiteSpaces($expression);
+        $expression = self::trimOperators($expression, true);
+        return $expression;
     }
 
     /**
@@ -189,12 +184,15 @@ class StringsHelper
 
     /**
      * @param string $expression
+     * @param bool $onlyAddition
      * @return string
      */
-    public static function trimOperators(string $expression): string
+    public static function trimOperators(string $expression, bool $onlyAddition = false): string
     {
         $expression = self::trim($expression, self::ADDITION);
-        $expression = self::trim($expression, self::SUBTRACTION);
+        if(!$onlyAddition){
+            $expression = self::trim($expression, self::SUBTRACTION);
+        }
         return $expression;
     }
 
@@ -265,7 +263,7 @@ class StringsHelper
      */
     public static function extractParametersInfo(string $expression): ArrayHash
     {
-        bdump('EXTRACT PARAMETERS INFO');
+        //bdump('EXTRACT PARAMETERS INFO');
         $expressionSplit = self::splitByParameters($expression);
         $parametersMinMax = [];
         $parametersComplexity = 1;
@@ -281,7 +279,7 @@ class StringsHelper
                 $parametersComplexity *= (($max - $min) + 1);
             }
         }
-        bdump($parametersMinMax);
+        //bdump($parametersMinMax);
         return ArrayHash::from([
             'count' => $parametersCnt,
             'complexity' => $parametersComplexity,
@@ -348,7 +346,9 @@ class StringsHelper
      */
     public static function getParametrized(string $expression): ArrayHash
     {
+        bdump('GET PARAMETRIZED');
         $expressionSplit = self::splitByParameters($expression);
+        bdump($expressionSplit);
         $parametrized = [];
         $parametersCnt = 0;
 
@@ -367,8 +367,8 @@ class StringsHelper
         // Merge exploded expression
         $parametrized = implode($parametrized);
 
-        // Fill spaces between parameters and variables
-        $parametrized = Strings::replace($parametrized, '~(p[0-9])([a-zA-Z])~', '$1 $2');
+        // Fill spaces around parameters
+        $parametrized = Strings::replace($parametrized, '~(p\d)+~', ' $1 ');
 
         return ArrayHash::from([
             'expression' => $parametrized,
@@ -383,7 +383,7 @@ class StringsHelper
      */
     public static function getLinearVariableExpresion(string $expression, string $variable): string
     {
-        bdump('GET LINEAR VARIABLE EXPRESSION');
+        //bdump('GET LINEAR VARIABLE EXPRESSION');
 
         $split = Strings::split($expression, '~(' . $variable . ')~');
 
@@ -397,7 +397,7 @@ class StringsHelper
 
         // Check for expr. x / expr. format
         if(Strings::startsWith($split[2], '/')) {
-            bdump('FRACTION FORMAT');
+            //bdump('FRACTION FORMAT');
 
             $multiplier = $split[0] === '' ? '1' : $split[0];
             $multiplier = Strings::trim($multiplier) === '-' ? '-1' : $multiplier;
@@ -408,7 +408,7 @@ class StringsHelper
             $rightSide = sprintf('(%s)/(%s)', $divNeg, $multiplier);
         }
         else{
-            bdump('STANDARD FORMAT');
+            //bdump('STANDARD FORMAT');
 
             $split[2] = self::negateOperators($split[2]);
 
@@ -417,7 +417,7 @@ class StringsHelper
                 $rightSide = sprintf('(%s)/(%s)', $split[2], $split[0]);
             }
             else{
-                bdump('ZERO MULTIPLIER');
+                //bdump('ZERO MULTIPLIER');
                 $rightSide = sprintf('(%s)', $split[2]);
             }
         }
@@ -466,7 +466,6 @@ class StringsHelper
     public static function isSequence(string $expression, string $variable): bool
     {
         bdump('IS SEQUENCE');
-        bdump($expression);
         if(!Strings::match($expression, '~^\s*\w' . $variable . '\s*=~')){
             return false;
         }

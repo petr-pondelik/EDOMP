@@ -21,26 +21,26 @@ use Nette\Utils\Json;
 class ArithmeticSequencePlugin extends SequencePlugin
 {
     /**
-     * @param ProblemTemplateNP $problemTemplate
+     * @param ProblemTemplateNP $data
      * @return bool
      * @throws ProblemTemplateException
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      */
-    public function validateType(ProblemTemplateNP $problemTemplate): bool
+    public function validateType(ProblemTemplateNP $data): bool
     {
-        if(!parent::validateType($problemTemplate)){
+        if(!parent::validateType($data)){
             return false;
         }
 
         bdump('VALIDATE ARITHMETIC SEQUENCE');
-        bdump($data);
 
-        $parametersInfo = $this->stringsHelper::extractParametersInfo($data->expression);
+        // Get three first members of the sequence
+        $a[] = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->getStandardized(), [$data->getVariable() => 1]), $data->getVariable());
+        $a[] = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->getStandardized(), [$data->getVariable() => 2]), $data->getVariable());
+        $a[] = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->getStandardized(), [$data->getVariable() => 3]), $data->getVariable());
 
-        $a1 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 1]), $data->variable);
-        $a2 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 2]), $data->variable);
-        $a3 = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->standardized, [$data->variable => 3]), $data->variable);
+        $data->setFirstValues($a);
 
         // LET THE CONDITION SERVICE FIND MATCHING PARAMETERS --> IF THERE IS NONE, SEQUENCE ISN'T ARITHMETIC
         // REQUIRE STORE JSON DATA INTO TEMPLATE JSON DATA --> FLAG (IS_VALIDATION_DATA) --> DURING TEMPLATE CREATE, MERGE VALIDATION AND CONDITION JSON DATA
@@ -48,8 +48,7 @@ class ArithmeticSequencePlugin extends SequencePlugin
             $matches = $this->conditionService->findConditionsMatches([
                 $this->constHelper::DIFFERENCE_VALIDATION => [
                     $this->constHelper::DIFFERENCE_EXISTS => [
-                        'parametersInfo' => $parametersInfo,
-                        'data' => Json::encode([$a1, $a2, $a3])
+                        'data' => $data
                     ]
                 ]
             ]);
@@ -64,7 +63,7 @@ class ArithmeticSequencePlugin extends SequencePlugin
         $matchesJson = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $matchesJson
-        ]), $data->templateId, true);
+        ]), $data->getIdHidden(), true);
 
         return true;
     }

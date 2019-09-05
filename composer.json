@@ -34,7 +34,8 @@
 		"kdyby/validator": "^0.6.1",
 		"jlawrence/eos": "^3.2",
 		"oops/webpack-nette-adapter": "^1.1",
-		"vojtech-dobes/nette-ajax-history": "^2.0"
+		"vojtech-dobes/nette-ajax-history": "^2.0",
+		"ext-pcntl": "^7.2"
 	},
 	"require-dev": {
 		"nette/tester": "^2.2",

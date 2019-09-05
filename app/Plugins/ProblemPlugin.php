@@ -11,6 +11,7 @@ namespace App\Plugins;
 use App\Exceptions\InvalidParameterException;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
+use App\Helpers\RegularExpressions;
 use App\Helpers\StringsHelper;
 use App\Services\VariableFractionService;
 use App\Model\NonPersistent\Entity\ProblemTemplateNP;
@@ -29,21 +30,6 @@ use Nette\Utils\Strings;
  */
 abstract class ProblemPlugin
 {
-    // Match operator or whitespace
-    public const RE_OPERATOR_WS = '(\+|\-|)';
-
-    // Match parameter
-    public const RE_PARAMETER = '(p(\d)+)';
-
-    // Match logarithm
-    public const RE_LOGARITHM = '(log\d+|log\([\d\+\-\*\/]+\))';
-
-    // Match number, parameter or fraction with numbers and parameters
-    public const RE_NUM_PAR_FRAC = '([\dp\+\-\*\(\)]+\/[\dp\+\-\*\(\)]+|[\dp\+\-\*\(\)]+|)';
-
-    // Match symbols allowed in standardized equation
-    public const RE_EQUATION_SYMBOLS = '[\dp\+\-\*\(\)\/\^]';
-
     /**
      * @var NewtonApiClient
      */
@@ -75,6 +61,11 @@ abstract class ProblemPlugin
     protected $stringsHelper;
 
     /**
+     * @var RegularExpressions
+     */
+    protected $regularExpressions;
+
+    /**
      * @var VariableFractionService
      */
     protected $variableDividers;
@@ -99,6 +90,7 @@ abstract class ProblemPlugin
      * @param StringsHelper $stringsHelper
      * @param VariableFractionService $variableDividers
      * @param ConstHelper $constHelper
+     * @param RegularExpressions $regularExpressions
      * @param Parser $parser
      */
     public function __construct
@@ -108,7 +100,7 @@ abstract class ProblemPlugin
         ConditionService $conditionService,
         TemplateJsonDataFunctionality $templateJsonDataFunctionality,
         LatexHelper $latexHelper, StringsHelper $stringsHelper, VariableFractionService $variableDividers,
-        ConstHelper $constHelper, Parser $parser
+        ConstHelper $constHelper, RegularExpressions $regularExpressions, Parser $parser
     )
     {
         $this->newtonApiClient = $newtonApiClient;
@@ -119,6 +111,7 @@ abstract class ProblemPlugin
         $this->stringsHelper = $stringsHelper;
         $this->variableDividers = $variableDividers;
         $this->constHelper = $constHelper;
+        $this->regularExpressions = $regularExpressions;
         $this->parser = $parser;
     }
 
@@ -138,24 +131,27 @@ abstract class ProblemPlugin
     protected function validateParameters(string $expression): void
     {
         bdump('VALIDATE PARAMETERS');
-        $split = $this->stringsHelper::splitByParameterBase($expression);
 
-        if(!Strings::match($expression,'~\<par.*\>~')) {
+        if(!Strings::match($expression,'~' . $this->regularExpressions::RE_PARAMETER_OPENING . '~')) {
             throw new InvalidParameterException('Zadaná šablona neobsahuje parametr.');
         }
 
+        $split = $this->stringsHelper::findParametersAll($expression);
+
+        bdump($split);
+
         foreach ($split as $part) {
             if ($part !== '' && Strings::startsWith($part, '<par')) {
-                bdump(Strings::match($part, '~<par min=\"\-?[0-9]+\" max=\"\-?[0-9]+\"/>~'));
-                if (!Strings::match($part, '~<par min=\"\-?[0-9]+\" max=\"\-?[0-9]+\"/>~')) {
+
+                if (!Strings::match($part, '~' . $this->regularExpressions::RE_PARAMETER_VALID . '~')) {
                     throw new InvalidParameterException('Zadaná šablona obsahuje nevalidní parametr.');
-                } else {
-                    $min = $this->stringsHelper::extractParAttr($part, 'min');
-                    $max = $this->stringsHelper::extractParAttr($part, 'max');
-                    bdump([$min, $max]);
-                    if ($min > $max) {
-                        throw new InvalidParameterException('Neplatný interval parametru.');
-                    }
+                }
+
+                $min = $this->stringsHelper::extractParAttr($part, 'min');
+                $max = $this->stringsHelper::extractParAttr($part, 'max');
+
+                if ($min > $max) {
+                    throw new InvalidParameterException('Neplatný interval parametru.');
                 }
             }
         }
@@ -163,10 +159,10 @@ abstract class ProblemPlugin
     }
 
     /**
-     * @param string $variable
-     * @return mixed
+     * @param ProblemTemplateNP $problemTemplate
+     * @return int
      */
-    abstract public static function getRegExp(string $variable): string;
+    abstract public function validateBody(ProblemTemplateNP $problemTemplate): int;
 
     /**
      * @param ProblemTemplateNP $expression
@@ -179,10 +175,4 @@ abstract class ProblemPlugin
      * @return ArrayHash
      */
     abstract public function evaluate(ProblemFinal $problem): ArrayHash;
-
-    /**
-     * @param ProblemTemplateNP $problemTemplate
-     * @return int
-     */
-    abstract public function validateBody(ProblemTemplateNP $problemTemplate): int;
 }

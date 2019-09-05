@@ -29,7 +29,7 @@ class GeometricSeqTemplateFormFactory extends ProblemTemplateFormFactory
         return new GeometricSeqTemplateFormControl(
             $this->validator, $functionality, $this->difficultyRepository, $this->problemTypeRepository,
             $this->subCategoryRepository, $this->problemConditionTypeRepository, $this->problemConditionRepository,
-            $this->pluginContainer, $this->constHelper, $edit
+            $this->pluginContainer, $this->stringsHelper, $this->constHelper, $edit
         );
     }
 }

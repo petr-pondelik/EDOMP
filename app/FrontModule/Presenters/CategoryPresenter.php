@@ -117,7 +117,7 @@ class CategoryPresenter extends FrontPresenter
         $paginator->itemsPerPage = 1;
         $paginator->itemCount = $problemsCnt;
 
-        bdump($id);
+        //bdump($id);
 
         $problems = $this->problemFinalRepository->getFiltered($id, $paginator->itemsPerPage, $paginator->offset, $this->filters);
 

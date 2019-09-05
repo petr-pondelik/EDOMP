@@ -285,7 +285,7 @@ class ProblemFinalPresenter extends AdminPresenter
         $control = $this->problemFinalFormFactory->create();
         $control->onSuccess[] = function (){
             $this['problemGrid']->reload();
-            bdump('SUCCESS');
+            //bdump('SUCCESS');
             $this->informUser(new UserInformArgs('create', true));
         };
         $control->onError[] = function ($e){

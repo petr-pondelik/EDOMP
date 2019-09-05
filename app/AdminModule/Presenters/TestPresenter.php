@@ -180,7 +180,7 @@ class TestPresenter extends AdminPresenter
                     'success_rate_' . $i . '_' . $j => $problemFinalAssociation->getSuccessRate()
                 ]);
                 if($problemTemplate = $problemFinalAssociation->getProblemTemplate()){
-                    bdump($problemTemplate->getId());
+                    //bdump($problemTemplate->getId());
                     $form->setDefaults([
                         'problem_template_id_disabled_' . $i . '_' . $j => $problemTemplate->getId(),
                         'problem_template_id_' . $i . '_' . $j => $problemTemplate->getId()

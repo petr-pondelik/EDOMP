@@ -49,6 +49,16 @@ class GlobalDivider
     }
 
     /**
+     * @param int $coefficient
+     */
+    public function reduceLCMCoefficient(int $coefficient): void
+    {
+        bdump('REDUCE LCM COEFFICIENT');
+        bdump($coefficient);
+        $this->LCMCoefficient /= $coefficient;
+    }
+
+    /**
      * @param string $factor
      */
     public function addLCMFactor(string $factor): void
@@ -63,23 +73,12 @@ class GlobalDivider
      */
     public function getLCMString(): string
     {
-        $res = ($this->LCMCoefficient !== 1) ? ($this->LCMCoefficient . ' *') : '';
+        $res = '';
         foreach ($this->LCMFactors as $factor){
             $res .= ' (' . $factor . ')';
         }
-        return Strings::trim($res);
+        return '(' . $res . ')';
     }
-
-//    /**
-//     * @param string $numerator
-//     */
-//    public function addNumerator(string $numerator): void
-//    {
-//        bdump('ADD NUMERATOR');
-//        if(!isset($this->numerators[$numerator]) && Strings::match($numerator, '~p\d+~')){
-//            $this->numerators[$numerator] = $numerator;
-//        }
-//    }
 
     /**
      * @return int
@@ -112,65 +111,6 @@ class GlobalDivider
     {
         $this->LCMFactors = $lcmFactors;
     }
-
-//    /**
-//     * @return array|null
-//     */
-//    public function getOriginalFactors(): ?array
-//    {
-//        return $this->originalFactors;
-//    }
-//
-//    /**
-//     * @return array|null
-//     */
-//    public function getNumerators(): ?array
-//    {
-//        return $this->numerators;
-//    }
-//
-//    /**
-//     * @param array|null $numerators
-//     */
-//    public function setNumerators(?array $numerators): void
-//    {
-//        $this->numerators = $numerators;
-//    }
-//
-//    /**
-//     * @return array
-//     */
-//    public function getFactoredDividers(): array
-//    {
-//        return $this->factoredDividers;
-//    }
-//
-//    /**
-//     * @param array $factoredDividers
-//     */
-//    public function setFactoredDividers(array $factoredDividers): void
-//    {
-//        $this->factoredDividers = $factoredDividers;
-//    }
-//
-//    /**
-//     * @param string $factoredDivider
-//     */
-//    public function addFactoredDivider(string $factoredDivider): void
-//    {
-//        if(!isset($this->factoredDividers[$factoredDivider])){
-//            $this->factoredDividers[$factoredDivider] = $factoredDivider;
-//        }
-//    }
-//
-//    /**
-//     * @param string $factoredDivider
-//     * @return bool
-//     */
-//    public function hasFactoredDivider(string $factoredDivider): bool
-//    {
-//        return isset($this->factoredDividers[$factoredDivider]);
-//    }
 
     /**
      * @return string|null

@@ -12,15 +12,7 @@ namespace App\Model\NonPersistent\Entity;
  * Class ArithmeticSequenceTemplate
  * @package App\Model\NonPersistent\Entity\Entity
  */
-class ArithmeticSequenceTemplateNP extends ProblemTemplateNP
+class ArithmeticSequenceTemplateNP extends SequenceTemplateNP
 {
-    /**
-     * @var string
-     */
-    public $variable;
 
-    /**
-     * @var int
-     */
-    public $firstN;
 }

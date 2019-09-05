@@ -9,6 +9,7 @@
 namespace App\Model\NonPersistent\Entity;
 
 use App\Model\NonPersistent\Math\GlobalDivider;
+use App\Model\NonPersistent\Math\NonDegradeCondition;
 use App\Model\NonPersistent\Math\VariableFraction;
 use App\Model\NonPersistent\Parameter\ParametersData;
 use Nette\Utils\ArrayHash;
@@ -20,34 +21,19 @@ use Nette\Utils\ArrayHash;
 abstract class EquationTemplateNP extends ProblemTemplateNP
 {
     /**
-     * @var int
-     */
-    protected $rank;
-
-    /**
      * @var GlobalDivider|null
      */
     protected $globalDivider;
 
     /**
-     * @var bool
+     * @var array
      */
-    protected $skipZeroFractions;
-
-    /**
-     * @var ParametersData|null
-     */
-    protected $parametersData;
+    protected $variableFractionsData;
 
     /**
      * @var VariableFraction[]
      */
-    protected $varFractions;
-
-    /**
-     * @var int|null
-     */
-    protected $varFractionsCnt;
+    protected $varFractionsStatic;
 
     /**
      * @var VariableFraction[]
@@ -55,19 +41,9 @@ abstract class EquationTemplateNP extends ProblemTemplateNP
     protected $varFractionsParametrized;
 
     /**
-     * @var int
+     * @var NonDegradeCondition[]
      */
-    protected $varFractionsParametrizedCnt;
-
-    /**
-     * @var int
-     */
-    protected $fractionsToCheckCnt;
-
-    /**
-     * @var array
-     */
-    protected $fractionsToCheckIndexes;
+    protected $nonDegradeConditions;
 
     /**
      * EquationTemplateNP constructor.
@@ -76,13 +52,10 @@ abstract class EquationTemplateNP extends ProblemTemplateNP
     public function __construct(ArrayHash $values)
     {
         parent::__construct($values);
-        $this->skipZeroFractions = false;
-        $this->varFractions = [];
-        $this->varFractionsCnt = 0;
+        $this->variableFractionsData = [];
+        $this->varFractionsStatic = [];
         $this->varFractionsParametrized = [];
-        $this->varFractionsParametrizedCnt = 0;
-        $this->fractionsToCheckIndexes = [];
-        $this->fractionsToCheckCnt = 0;
+        $this->nonDegradeConditions = [];
     }
 
     /**
@@ -94,17 +67,6 @@ abstract class EquationTemplateNP extends ProblemTemplateNP
     }
 
     /**
-     * @return int
-     */
-    public function calculateFractionsToCheckCnt(): ?int
-    {
-        if($this->getVarFractionsCnt() === null){
-            return null;
-        }
-        return ($this->rank - ($this->getVarFractionsCnt() - $this->getVarFractionsParametrizedCnt())) ?: 0;
-    }
-
-    /**
      * @return GlobalDivider
      */
     public function getGlobalDivider(): GlobalDivider
@@ -113,60 +75,27 @@ abstract class EquationTemplateNP extends ProblemTemplateNP
     }
 
     /**
-     * @return bool
+     * @return VariableFraction[]
      */
-    public function isSkipZeroFractions(): bool
+    public function getVarFractions(): array
     {
-        return $this->skipZeroFractions;
-    }
-
-    /**
-     * @param bool $skipZeroFractions
-     */
-    public function setSkipZeroFractions(bool $skipZeroFractions): void
-    {
-        $this->skipZeroFractions = $skipZeroFractions;
-    }
-
-    /**
-     * @return ParametersData|null
-     */
-    public function getParametersData(): ?ParametersData
-    {
-        return $this->parametersData;
-    }
-
-    /**
-     * @param ParametersData|null $parametersData
-     */
-    public function setParametersData(?ParametersData $parametersData): void
-    {
-        $this->parametersData = $parametersData;
+        return array_merge($this->getVarFractionsStatic(), $this->getVarFractionsParametrized());
     }
 
     /**
      * @return VariableFraction[]
      */
-    public function getVarFractions(): array
+    public function getVarFractionsStatic(): array
     {
-        return $this->varFractions;
+        return $this->varFractionsStatic;
     }
 
     /**
-     * @param VariableFraction[] $varFractions
+     * @param array $varFractionsStatic
      */
-    public function setVarFractions(array $varFractions): void
+    public function setVarFractionsStatic(array $varFractionsStatic): void
     {
-        $this->varFractions = $varFractions;
-        $this->varFractionsCnt = count($varFractions);
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getVarFractionsCnt(): ?int
-    {
-        return $this->varFractionsCnt;
+        $this->varFractionsStatic = $varFractionsStatic;
     }
 
     /**
@@ -183,46 +112,37 @@ abstract class EquationTemplateNP extends ProblemTemplateNP
     public function setVarFractionsParametrized(array $varFractionsParametrized): void
     {
         $this->varFractionsParametrized = $varFractionsParametrized;
-        $this->varFractionsParametrizedCnt = count($varFractionsParametrized);
-    }
-
-    /**
-     * @return int
-     */
-    public function getVarFractionsParametrizedCnt(): int
-    {
-        return $this->varFractionsParametrizedCnt;
-    }
-
-    /**
-     * @return int
-     */
-    public function getFractionsToCheckCnt(): int
-    {
-        return $this->fractionsToCheckCnt;
-    }
-
-    /**
-     * @param int $fractionsToCheckCnt
-     */
-    public function setFractionsToCheckCnt(int $fractionsToCheckCnt): void
-    {
-        $this->fractionsToCheckCnt = $fractionsToCheckCnt;
     }
 
     /**
      * @return array
      */
-    public function getFractionsToCheckIndexes(): array
+    public function getVariableFractionsData(): array
     {
-        return $this->fractionsToCheckIndexes;
+        return $this->variableFractionsData;
     }
 
     /**
-     * @param array $fractionsToCheckIndexes
+     * @param array $variableFractionsData
      */
-    public function setFractionsToCheckIndexes(array $fractionsToCheckIndexes): void
+    public function setVariableFractionsData(array $variableFractionsData): void
     {
-        $this->fractionsToCheckIndexes = $fractionsToCheckIndexes;
+        $this->variableFractionsData = $variableFractionsData;
+    }
+
+    /**
+     * @return NonDegradeCondition[]
+     */
+    public function getNonDegradeConditions(): array
+    {
+        return $this->nonDegradeConditions;
+    }
+
+    /**
+     * @param NonDegradeCondition[] $nonDegradeConditions
+     */
+    public function setNonDegradeConditions(array $nonDegradeConditions): void
+    {
+        $this->nonDegradeConditions = $nonDegradeConditions;
     }
 }

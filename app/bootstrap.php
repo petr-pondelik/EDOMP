@@ -56,4 +56,9 @@ $configurator->addParameters([
 
 $container = $configurator->createContainer();
 
+register_shutdown_function(function () {
+    bdump('TEST');
+});
+
+
 return $container;

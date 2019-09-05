@@ -382,7 +382,7 @@ class TestFormControl extends FormControl
      */
     public function handleFilterChange(array $filters): void
     {
-        bdump($filters);
+        //bdump($filters);
         foreach($filters as $problemKey => $problemFilters){
 
             if(!isset($problemFilters['filters'])){
@@ -402,21 +402,21 @@ class TestFormControl extends FormControl
 
             if(isset($problemFilters['filters'])){
                 foreach ($problemFilters['filters'] as $filterType => $filterVal) {
-                    bdump($filterVal);
+                    //bdump($filterVal);
                     $this['form'][$filterType . '_' . $problemKey]->setValue($filterVal);
                 }
             }
 
             $this['form']['problem_' . $problemKey]->setItems($filterRes);
 
-            bdump($filterRes);
+            //bdump($filterRes);
 
             $valuesToSetArr = [];
             $valuesToSetObj = [];
 
             if(isset($problemFilters['selected'])){
                 foreach ($problemFilters['selected'] as $selected){
-                    bdump($selected);
+                    //bdump($selected);
                     if(array_key_exists((int) $selected, $filterRes)){
                         $valuesToSetArr[] = $selected;
                         $valuesToSetObj[$selected] = $filterRes[$selected];

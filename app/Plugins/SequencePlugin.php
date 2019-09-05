@@ -14,6 +14,7 @@ use App\Exceptions\NewtonApiSyntaxException;
 use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\Persistent\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Strings;
 
 /**
  * Class SequencePlugin
@@ -21,17 +22,6 @@ use Nette\Utils\ArrayHash;
  */
 abstract class SequencePlugin extends ProblemPlugin
 {
-    /**
-     * @param string $variable
-     * @return mixed
-     */
-    public static function getRegExp(string $variable): string
-    {
-        return '^\s*\w'
-            . $variable
-            . '\s*=~';
-    }
-
     /**
      * @param ProblemTemplateNP $problemTemplate
      * @return ProblemTemplateNP
@@ -44,11 +34,14 @@ abstract class SequencePlugin extends ProblemPlugin
     public function standardize(ProblemTemplateNP $problemTemplate): ProblemTemplateNP
     {
         bdump('STANDARDIZE SEQUENCE');
-        $expression = $this->latexHelper::parseLatex($problemTemplate);
+
+        $expression = $this->latexHelper::parseLatex($problemTemplate->getBody());
+        $problemTemplate->setExpression($expression);
         $parametrized = $this->stringsHelper::getParametrized($expression);
         $sides = $this->stringsHelper::getEquationSides($parametrized->expression);
         $expression = $this->newtonApiClient->simplify($sides->right);
-        $problemTemplate->standardized = $expression;
+        $problemTemplate->setStandardized($expression);
+
         return $problemTemplate;
     }
 
@@ -59,7 +52,8 @@ abstract class SequencePlugin extends ProblemPlugin
     public function validateType(ProblemTemplateNP $problemTemplate): bool
     {
         bdump('VALIDATE SEQUENCE');
-        if (!$this->stringsHelper::isSequence($this->latexHelper::parseLatex($problemTemplate->expression), $problemTemplate->variable)) {
+        bdump($problemTemplate);
+        if(!Strings::match($problemTemplate->getExpression(), '~' . $this->regularExpressions::getSequenceRE($problemTemplate->getVariable()) . '~')){
             return false;
         }
         return true;
@@ -109,15 +103,15 @@ abstract class SequencePlugin extends ProblemPlugin
      */
     public function validateBody(ProblemTemplateNP $problemTemplate): int
     {
-        if(!$this->latexHelper::latexWrapped($problemTemplate->body)){
+        if(!$this->latexHelper::latexWrapped($problemTemplate->getBody())){
             return 1;
         }
-        $parsed = $this->latexHelper::parseLatex($problemTemplate->body);
+        $parsed = $this->latexHelper::parseLatex($problemTemplate->getBody());
 
-        $this->validateParameters($problemTemplate->body);
+        $this->validateParameters($problemTemplate->getBody());
         $split = $this->stringsHelper::splitByParameters($parsed);
 
-        if (empty($problemTemplate->variable) || !$this->stringsHelper::containsVariable($split, $problemTemplate->variable)) {
+        if (empty($problemTemplate->getVariable()) || !$this->stringsHelper::containsVariable($split, $problemTemplate->getVariable())) {
             return 2;
         }
 

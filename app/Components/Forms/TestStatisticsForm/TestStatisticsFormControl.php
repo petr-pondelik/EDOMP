@@ -129,7 +129,7 @@ class TestStatisticsFormControl extends FormControl
                         ])
                     );
                 } catch (\Exception $e){
-                    bdump($e->getMessage());
+                    //bdump($e->getMessage());
                     $this->onError($e);
                     return;
                 }
@@ -142,7 +142,7 @@ class TestStatisticsFormControl extends FormControl
                 try{
                     $this->functionality->calculateSuccessRate($values->{'problem_final_id_' . $i . '_' . $j});
                 } catch (\Exception $e){
-                    bdump($e->getMessage());
+                    //bdump($e->getMessage());
                     $this->onError($e);
                     return;
                 }

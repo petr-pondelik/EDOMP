@@ -44,8 +44,10 @@ use App\Model\Persistent\Repository\QuadraticEqTemplRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Model\Persistent\Repository\TemplateJsonDataRepository;
 use App\Model\Persistent\Repository\TestRepository;
+use App\Plugins\QuadraticEquationPlugin;
 use App\Presenters\BasePresenter;
 use App\Services\Authorizator;
+use App\Services\GeneratorService;
 use App\Services\NewtonApiClient;
 use App\Services\Validator;
 use jlawrence\eos\Parser;
@@ -129,6 +131,16 @@ class DoctrinePresenter extends AdminPresenter
     protected $parser;
 
     /**
+     * @var GeneratorService
+     */
+    protected $generatorService;
+
+    /**
+     * @var QuadraticEquationPlugin
+     */
+    protected $quadraticEquationPlugin;
+
+    /**
      * DoctrinePresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
@@ -144,11 +156,13 @@ class DoctrinePresenter extends AdminPresenter
      * @param ValidatorInterface $validator
      * @param LatexHelper $latexHelper
      * @param StringsHelper $stringsHelper
-     * @param Validator $validator
      * @param TestVariantFunctionality $testVariantFunctionality
      * @param TestFunctionality $testFunctionality
      * @param TestRepository $testRepository
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
+     * @param Parser $parser
+     * @param GeneratorService $generatorService
+     * @param QuadraticEquationPlugin $quadraticEquationPlugin
      */
     public function __construct
     (
@@ -162,7 +176,9 @@ class DoctrinePresenter extends AdminPresenter
         TestFunctionality $testFunctionality,
         TestRepository $testRepository,
         ISectionHelpModalFactory $sectionHelpModalFactory,
-        Parser $parser
+        Parser $parser,
+        GeneratorService $generatorService,
+        QuadraticEquationPlugin $quadraticEquationPlugin
     )
     {
         parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
@@ -179,6 +195,8 @@ class DoctrinePresenter extends AdminPresenter
         $this->testFunctionality = $testFunctionality;
         $this->testRepository = $testRepository;
         $this->parser = $parser;
+        $this->generatorService = $generatorService;
+        $this->quadraticEquationPlugin = $quadraticEquationPlugin;
     }
 
     /**
@@ -186,20 +204,47 @@ class DoctrinePresenter extends AdminPresenter
      */
     public function actionDefault()
     {
-        bdump($this->stringsHelper::fillMultipliers('(1/15 p1 p2 - 1 3/ p2)/((5 / 2 p0 - 2 / p0 p2))'));
-        bdump($this->stringsHelper::firstOperator('(3/8 + 3/8 p0 - p2)'));
+        // EOS Parser testing
+        bdump($this->parser::solve('(4*1 (3*1 + 3)) - (2 - 1) + 4 ((- 1))'));
+
+        bdump($this->parser::solve('- 5'));
+
+        // Get Discriminant A Tests
+        $this->quadraticEquationPlugin->getDiscriminantA('p0 x^3 / p1 - (2 p0 + 5 + p1) x^2 - x / p3 - 5/2 + p2 / p3', 'x');
+        $this->quadraticEquationPlugin->getDiscriminantA('p0 x^3 / p1 + x^2 - x/p3 - 5/2', 'x');
+        $this->quadraticEquationPlugin->getDiscriminantA('x^2 - x/p3 - 5/2', 'x');
+        $this->quadraticEquationPlugin->getDiscriminantA('- x^2 - x/p3 - 5/2', 'x');
+        $this->quadraticEquationPlugin->getDiscriminantA('p0 x^3 / p1 - 2 p0 x^2 / p1 - x / p3 - 5/2 + p2 / p3', 'x');
+        $this->quadraticEquationPlugin->getDiscriminantA('p0 x^3 / p1 - x^2 / p1 - x / p3 - 5/2 + p2 / p3', 'x');
+
+        // Get Discriminant C Tests
+        $this->quadraticEquationPlugin->getDiscriminantC('p0 x^3 / p1 - 2 p0 x^2 / p1 + x - 5/2 + p2 / p3', 'x');
+        $this->quadraticEquationPlugin->getDiscriminantC('p0 x^3 / p1 - 2 p0 x^2 / p1 + p4 x / p5 - 5/2 + p2 / p3', 'x');
+        $this->quadraticEquationPlugin->getDiscriminantC('p0 x^3 / p1 - 2 p0 x^2 / p1 - 5/2 + p2 / p3', 'x');
+        $this->quadraticEquationPlugin->getDiscriminantC('p0 x^3 / p1 - 2 p0 x^2 / p1', 'x');
+        $this->quadraticEquationPlugin->getDiscriminantC('p0 x^3 / p1 - 2 p0 x^2 / p1 + 5 x', 'x');
+
+        // Get Discriminant B Tests
+        $this->quadraticEquationPlugin->getDiscriminantB('p0 x^3 / p1 - 2 p0 x^2 / p1 - x / p3 - 5/2 + p2 / p3', 'x');
+        $this->quadraticEquationPlugin->getDiscriminantB('p0 x^3 / p1 - 2 p0 x^2 / p1 + x / p3 - 5/2 + p2 / p3', 'x');
+        $this->quadraticEquationPlugin->getDiscriminantB('p0 x^3 / p1 - 2 p0 x^2 / p1 - x / p3', 'x');
+        $this->quadraticEquationPlugin->getDiscriminantB('p0 x^3 / p1 - 2 p0 x^2 / p1 - 2 p1 x / p3', 'x');
+        $this->quadraticEquationPlugin->getDiscriminantB('p0 x^3 / p1 - 2 p0 x^2 / p1 - (2 p1 + 4 p2) x / p3', 'x');
+
+        //bdump($this->stringsHelper::fillMultipliers('(1/15 p1 p2 - 1 3/ p2)/((5 / 2 p0 - 2 / p0 p2))'));
+        //bdump($this->stringsHelper::firstOperator('(3/8 + 3/8 p0 - p2)'));
 
         $matches = Strings::matchAll('5 p0 x / ((x - 1) (x + 1)) - 10 p0 / ((x - 1) (x + 1)) - 3 / (x + 4) - 6 / ((x - 3) (x + 6))', '~([x\d\sp]*)\/\s*(\([\-\+\s\(\)\dx]*\))~');
 
-        bdump($matches);
+        //bdump($matches);
 
-        bdump($this->stringsHelper::fillMultipliers('-p1 x^5 + (-3/5 - 3 p1) x^4 + (-9/5 + 5 p0 + 19 p1) x^3 + (27/5 + 5 p0 + 3 p1) x^2 + (9/5 - 120 p0 - 18 p1) x - 24/5 + 180 p0'));
+        //bdump($this->stringsHelper::fillMultipliers('-p1 x^5 + (-3/5 - 3 p1) x^4 + (-9/5 + 5 p0 + 19 p1) x^3 + (27/5 + 5 p0 + 3 p1) x^2 + (9/5 - 120 p0 - 18 p1) x - 24/5 + 180 p0'));
 
-        bdump($this->parser::solve('(-3/5 - 3*0)'));
+        //bdump($this->parser::solve('(-3/5 - 3*0)'));
 
         //-3/5 + 5 p0 x / ((x - 1) (x + 1)) - 10 p0 / ((x - 1) (x + 1)) - p1 x - 6 / ((x - 3) (x + 6))
 
-        bdump($this->parser::solve('(- 1 + 5)/((5 + 2) (3*5 - 12*2))'));
+        //bdump($this->parser::solve('(- 1 + 5)/((5 + 2) (3*5 - 12*2))'));
 
         $allVarDividers = [];
 
@@ -213,28 +258,30 @@ class DoctrinePresenter extends AdminPresenter
             }
         }
 
-        bdump($allVarDividers);
+        //bdump($allVarDividers);
 
+        //bdump($this->parser::solve('1 - -5 + 1'));
 
+        //bdump($this->generatorService->generateArrayUnique(1));
 
 //        $templateJsons = $this->templateJsonDataRepository->findBy(['templateId' => 418]);
 //
 //        $firstJson = Json::decode($templateJsons[0]->getJsonData(), true);
-//        bdump($firstJson);
+//        //bdump($firstJson);
 //
 //        $secondJson = Json::decode($templateJsons[1]->getJsonData(), true);
-//        bdump($secondJson);
+//        //bdump($secondJson);
 //
 //        $intersect = array_uintersect($firstJson, $secondJson, static function($first, $second) {
 //            return strcmp(serialize($first), serialize($second));
 //        });
 //
-//        bdump($intersect);
+//        //bdump($intersect);
 
-//        bdump($this->parser::solve('5+4(1+2)+3+ln(e)'));
-//        bdump($this->parser::solve('0^2 - 4 * 1/2 log(3) * (1/2 0 - 1/5 log(100))'));
+//        //bdump($this->parser::solve('5+4(1+2)+3+ln(e)'));
+//        //bdump($this->parser::solve('0^2 - 4 * 1/2 log(3) * (1/2 0 - 1/5 log(100))'));
 //
-//        bdump($this->parser::solve('2^(1 - 2) * 3^(-1 + 2)'));
+//        //bdump($this->parser::solve('2^(1 - 2) * 3^(-1 + 2)'));
 
 //        $test = $this->testFunctionality->create(ArrayHash::from([
 //            'logo_id' => 1,
@@ -250,7 +297,7 @@ class DoctrinePresenter extends AdminPresenter
 //            'test' => $test
 //        ]));
 //
-//        bdump($testVariant);
+//        //bdump($testVariant);
 //
 //        $test->addTestVariant($testVariant);
 //
@@ -276,29 +323,29 @@ class DoctrinePresenter extends AdminPresenter
 //
 //        /*$entity = new ProblemConditionType();
 //        $errors = $this->validator->validate($entity);
-//        bdump($errors);*/
+//        //bdump($errors);*/
 //
 //        $problemType = new ProblemType();
 //        $problemType->setLabel("Funkce");
 
-//        bdump($this->validator->validateLinearEquation('55/15 x - 42/22 + 2/3 p2 - 43/20 p2 + 4 p3 + 15 p4', 'x'));
-//        bdump($this->latexHelper::parseLatex('$$ x^{2} $$'));
-//        bdump($this->latexHelper::parseLatex('$$ \frac{1}{2} \big( 2 x - 1 \big)^2 - \big( \frac{1}{2} \big( x + 1 \big) \big)^2 = 3 \big( \big( \frac{1}{2} x \big)^2 - \big( \frac{1}{<par min="2" max="10"/>} \big)^2 \big)^{2} $$'));
+//        //bdump($this->validator->validateLinearEquation('55/15 x - 42/22 + 2/3 p2 - 43/20 p2 + 4 p3 + 15 p4', 'x'));
+//        //bdump($this->latexHelper::parseLatex('$$ x^{2} $$'));
+//        //bdump($this->latexHelper::parseLatex('$$ \frac{1}{2} \big( 2 x - 1 \big)^2 - \big( \frac{1}{2} \big( x + 1 \big) \big)^2 = 3 \big( \big( \frac{1}{2} x \big)^2 - \big( \frac{1}{<par min="2" max="10"/>} \big)^2 \big)^{2} $$'));
 //
-//        bdump($this->stringsHelper::getLinearEquationRegExp('x'));
-//        bdump($this->stringsHelper::getQuadraticEquationRegExp('x'));
-//        bdump($this->templateJsonDataRepository->find(35));
+//        //bdump($this->stringsHelper::getLinearEquationRegExp('x'));
+//        //bdump($this->stringsHelper::getQuadraticEquationRegExp('x'));
+//        //bdump($this->templateJsonDataRepository->find(35));
 
         /*$entity = new ArithmeticSeqTempl();
         $errors = $this->validator->validate($entity);
-        bdump($errors);*/
+        //bdump($errors);*/
 
         /*$entity = new ProblemCondition();
         $errors = $this->validator->validate($entity);
-        bdump($errors);*/
+        //bdump($errors);*/
 
         /*$res = $this->categoryRepository->delete(500);
-        bdump($res);*/
+        //bdump($res);*/
 
         /*$problemFinal = new ProblemFinal();
         $problemFinal->setBody("$$ 15 x + 20 = 0 $$");
@@ -315,7 +362,7 @@ class DoctrinePresenter extends AdminPresenter
 
         /*$this->em->persist($category);*/
 
-        //bdump($this->latexHelper::parseLatex('$$ \bigg \langle15 x + 5\bigg \rangle $$'));
+        ////bdump($this->latexHelper::parseLatex('$$ \bigg \langle15 x + 5\bigg \rangle $$'));
 
     }
 }

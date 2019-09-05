@@ -85,8 +85,8 @@ class LinearEqTemplFunctionality extends BaseFunctionality
      */
     public function update(int $id, ArrayHash $data, bool $fromDataGrid = false): Object
     {
-        bdump('UPDATE');
-        bdump($id);
+        //bdump('UPDATE');
+        //bdump($id);
         $entity = $this->baseUpdate($id, $data, $fromDataGrid);
         if(!empty($data->variable)){
             $entity->setVariable($data->variable);

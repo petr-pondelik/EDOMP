@@ -12,6 +12,7 @@ namespace App\Components\Forms\ProblemTemplateForm\ArithmeticSeqTemplateForm;
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormControl;
 use App\Exceptions\EquationException;
 use App\Helpers\ConstHelper;
+use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\Entity\ArithmeticSequenceTemplateNP;
 use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\Persistent\Functionality\BaseFunctionality;
@@ -34,22 +35,37 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
     /**
      * @var array
      */
-    protected $baseItems = [
+    protected $baseValidation = [
         [
             'field' => 'variable',
+            'getter' => 'getVariable',
             'validation' => 'variable'
         ],
         [
             'field' => 'subCategory',
+            'getter' => 'getSubCategory',
             'validation' => 'notEmpty'
         ],
         [
             'field' => 'difficulty',
+            'getter' => 'getDifficulty',
             'validation' => 'notEmpty'
         ],
         [
             'field' => 'firstN',
+            'getter' => 'getFirstN',
             'validation' => 'notEmptyPositive'
+        ]
+    ];
+
+    /**
+     * @var array
+     */
+    protected $baseConditionValidation = [
+        [
+            'field' => 'variable',
+            'getter' => 'getVariable',
+            'validation' => 'variable'
         ]
     ];
 
@@ -68,6 +84,7 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param PluginContainer $pluginContainer
+     * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param bool $edit
      */
@@ -76,13 +93,13 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
         Validator $validator, BaseFunctionality $functionality, DifficultyRepository $difficultyRepository,
         ProblemTypeRepository $problemTypeRepository, SubCategoryRepository $subCategoryRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        PluginContainer $pluginContainer, ConstHelper $constHelper, bool $edit = false
+        PluginContainer $pluginContainer, StringsHelper $stringsHelper, ConstHelper $constHelper, bool $edit = false
     )
     {
         parent::__construct
         (
             $validator, $functionality, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
-            $problemConditionTypeRepository, $problemConditionRepository, $pluginContainer, $constHelper, $edit
+            $problemConditionTypeRepository, $problemConditionRepository, $pluginContainer, $stringsHelper, $constHelper, $edit
         );
         $this->attachEntities($this->constHelper::ARITHMETIC_SEQ);
     }
@@ -112,7 +129,7 @@ class ArithmeticSeqTemplateFormControl extends ProblemTemplateFormControl
      * @param ArrayHash $values
      * @return ArithmeticSequenceTemplateNP|mixed
      */
-    protected function createNonPersistentEntity(ArrayHash $values): ArithmeticSequenceTemplateNP
+    protected function createNonPersistentEntity(ArrayHash $values): ProblemTemplateNP
     {
         return new ArithmeticSequenceTemplateNP($values);
     }

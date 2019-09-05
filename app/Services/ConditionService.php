@@ -10,6 +10,7 @@ namespace App\Services;
 
 
 use App\Helpers\ConstHelper;
+use App\Helpers\RegularExpressions;
 use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\Entity\ArithmeticSequenceTemplateNP;
 use App\Model\NonPersistent\Entity\GeometricSequenceTemplateNP;
@@ -27,8 +28,6 @@ use Nette\Utils\Strings;
  */
 class ConditionService
 {
-    protected const RE_VAR_COEFFICIENT = '~(\([\dp\+\-\*\(\)\/\^\s]+|-?\s?[\d\/p\s]+\)?)\s(x\^?\d*)~';
-
     /**
      * @var MathService
      */
@@ -48,6 +47,11 @@ class ConditionService
      * @var ConstHelper
      */
     protected $constHelper;
+
+    /**
+     * @var RegularExpressions
+     */
+    protected $regularExpressions;
 
     /**
      * @var array
@@ -70,78 +74,126 @@ class ConditionService
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
+     * @param RegularExpressions $regularExpressions
      */
     public function __construct
     (
         MathService $mathService, ProblemConditionTypeRepository $problemConditionTypeRepository,
-        StringsHelper $stringsHelper, ConstHelper $constHelper
+        StringsHelper $stringsHelper, ConstHelper $constHelper, RegularExpressions $regularExpressions
     )
     {
         $this->mathService = $mathService;
         $this->stringsHelper = $stringsHelper;
         $this->constHelper = $constHelper;
+        $this->regularExpressions = $regularExpressions;
 
         $this->validationFunctions = [
 
-            'linearEquationType' => static function (LinearEquationTemplateNP $data, array $parValuesArr) use ($stringsHelper, $mathService) {
-//                bdump('CONDITION SERVICE: LINEAR EQUATION TYPE');
-                $final = $stringsHelper::passValues($data->getStandardized(), $parValuesArr);
-                $varCoefficients = Strings::matchAll($final, self::RE_VAR_COEFFICIENT);
+            'linearEquationType' => static function (LinearEquationTemplateNP $data, array $parValuesArr) use ($stringsHelper, $mathService, $regularExpressions) {
+
+//                //bdump('CONDITION SERVICE: LINEAR EQUATION TYPE');
+
+//                $final = $stringsHelper::passValues($data->getStandardized(), $parValuesArr);
+                $varCoefficients = $mathService->extractVariableCoefficients($data, $parValuesArr);
+//                $varCoefficients = Strings::matchAll($final, sprintf($regularExpressions::RE_VARIABLE_COEFFICIENT, $data->getVariable()));
+
                 foreach ($varCoefficients as $varCoefficient) {
-                    $coefficientRes = $mathService->evaluateExpression($varCoefficient[1]);
-                    if($coefficientRes === 0.0 && $varCoefficient[2] === 'x'){
+                    try{
+                        $coefficientRes = $mathService->evaluateExpression($varCoefficient[1]);
+                    } catch (\Exception $e){
                         return false;
                     }
-                    if($coefficientRes !== 0.0 && $varCoefficient[2] !== 'x'){
+                    if ($coefficientRes === 0.0 && $varCoefficient[2] === 'x') {
+                        return false;
+                    }
+                    if ($coefficientRes !== 0.0 && $varCoefficient[2] !== 'x') {
                         return false;
                     }
                 }
-//                try {
-//                    $mathService->evaluateExpression($final);
-////                    $this->parser::solve($data->data);
-//                } catch (\Exception $e) {
-//                    bdump($e->getMessage());
-//                    return false;
-//                }
-//                bdump('TRUE');
+
+                foreach ($data->getVarFractionsParametrized() as $parametrizedFraction) {
+                    $conditions = $parametrizedFraction->getNonDegradeConditions();
+                    foreach ($conditions as $condition) {
+                        $final = $stringsHelper::normalizeOperators($stringsHelper::passValues($condition->getExpression(), $parValuesArr));
+//                        bdump($final);
+                        try{
+                            $res = $mathService->evaluateExpression($final);
+                        } catch (\Exception $e) {
+                            return false;
+                        }
+                        if ($res === 0.0) {
+                            //bdump('FALSE');
+                            return false;
+                        }
+                    }
+                }
+
+                foreach ($data->getNonDegradeConditions() as $condition){
+                    $final = $stringsHelper::normalizeOperators($stringsHelper::passValues($condition->getExpression(), $parValuesArr));
+                    try{
+                        $res = $mathService->evaluateExpression($final);
+                    } catch (\Exception $e){
+                        return false;
+                    }
+                    if ($res === 0.0){
+                        return false;
+                    }
+                }
+
                 return true;
             },
 
             'quadraticEquationType' => static function (QuadraticEquationTemplateNP $data, array $parValuesArr) use ($stringsHelper, $mathService) {
 
-//                bdump('VALIDATE QUADRATIC EQUATION TYPE');
+                bdump('VALIDATE QUADRATIC EQUATION TYPE');
 
-                $final = $stringsHelper::passValues($data->getStandardized(), $parValuesArr);
-                $varCoefficients = Strings::matchAll($final, self::RE_VAR_COEFFICIENT);
-//                bdump($varCoefficients);
-
-                // TODO: VALIDATE COLLECTED CONDITIONS FOR PARAMETERS!!!
-
-//                $skip = false;
-//
-//                if ($data->isSkipZeroFractions()) {
-//                    foreach ($data->getGlobalDivider()->getOriginalFactors() as $originalFactor) {
-//                        if (!Strings::contains($originalFactor, $data->getVariable())) {
-//                            $filled = $stringsHelper::passValues($originalFactor, $parValuesArr);
-//                            if ($mathService->evaluateExpression($filled) === 0.0) {
-//                                $skip = true;
-//                                break;
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                if ($skip) {
-//                    return false;
-//                }
+                $varCoefficients = $mathService->extractVariableCoefficients($data, $parValuesArr, false);
+                bdump($varCoefficients);
 
                 foreach ($varCoefficients as $varCoefficient) {
-//                    bdump($varCoefficient);
-                    $coefficientRes = $mathService->evaluateExpression($varCoefficient[1]);
-                    if ($coefficientRes === 0.0 && $varCoefficient[2] === 'x^2') {
+                    try{
+                        $coefficientRes = $mathService->evaluateExpression($varCoefficient[1]);
+//                        bdump($coefficientRes);
+                    } catch (\Exception $e) {
+                        bdump($e);
                         return false;
                     }
-                    if ($coefficientRes !== 0.0 && $varCoefficient[2] !== 'x^2' && $varCoefficient[2] !== 'x') {
+                    if ($coefficientRes === 0.0 && $varCoefficient[2] === '2') {
+                        return false;
+                    }
+                    if ($coefficientRes !== 0.0 && $varCoefficient[2] !== '2') {
+                        return false;
+                    }
+                }
+
+//                bdump('COEFFICIENTS TRUE');
+
+                foreach ($data->getVarFractionsParametrized() as $parametrizedFraction) {
+                    $conditions = $parametrizedFraction->getNonDegradeConditions();
+                    foreach ($conditions as $condition) {
+                        $final = $stringsHelper::normalizeOperators($stringsHelper::passValues($condition->getExpression(), $parValuesArr));
+                        bdump($final);
+                        try{
+                            $res = $mathService->evaluateExpression($final);
+                        } catch (\Exception $e) {
+                            return false;
+                        }
+                        if ($res === 0.0) {
+                            bdump('FALSE');
+                            return false;
+                        }
+                    }
+                }
+
+                foreach ($data->getNonDegradeConditions() as $condition){
+                    $final = $stringsHelper::normalizeOperators($stringsHelper::passValues($condition->getExpression(), $parValuesArr));
+                    try{
+                        $res = $mathService->evaluateExpression($final);
+                    } catch (\Exception $e){
+                        return false;
+                    }
+                    if ($res === 0.0){
+                        bdump('TEST');
                         return false;
                     }
                 }
@@ -149,29 +201,43 @@ class ConditionService
                 return true;
             },
 
-            'arithmeticSequenceType' => function (ArithmeticSequenceTemplateNP $data) {
+            'arithmeticSequenceType' => function (ArithmeticSequenceTemplateNP $data, array $parValuesArr) {
                 try {
-                    $values = Json::decode($values);
-                    $diff1 = $this->mathService->evaluateExpression('(' . $values[1] . ')' . ' - ' . '(' . $values[0] . ')');
-                    $diff2 = $this->mathService->evaluateExpression('(' . $values[2] . ')' . ' - ' . '(' . $values[1] . ')');
+                    $values = $data->getFirstValues();
+
+                    $final0 = $this->stringsHelper::passValues($values[0], $parValuesArr);
+                    $final1 = $this->stringsHelper::passValues($values[1], $parValuesArr);
+                    $final2 = $this->stringsHelper::passValues($values[2], $parValuesArr);
+
+                    $diff1 = $this->mathService->evaluateExpression(sprintf('(%s) - (%s)', $final1, $final0));
+                    $diff2 = $this->mathService->evaluateExpression(sprintf('(%s) - (%s)', $final2, $final1));
                     return round($diff1, 5) === round($diff2, 5);
                 } catch (\Exception $e) {
+                    bdump($e);
                     return false;
                 }
             },
 
-            'geometricSequenceType' => function (GeometricSequenceTemplateNP $data) {
+            'geometricSequenceType' => function (GeometricSequenceTemplateNP $data, array $parValuesArr) {
                 try {
-                    $values = Json::decode($values);
-                    $values[0] = $this->mathService->evaluateExpression($values[0]);
-                    $values[1] = $this->mathService->evaluateExpression($values[1]);
-                    $values[2] = $this->mathService->evaluateExpression($values[2]);
+                    $values = $data->getFirstValues();
+
+                    $final0 = $this->stringsHelper::passValues($values[0], $parValuesArr);
+                    $final1 = $this->stringsHelper::passValues($values[1], $parValuesArr);
+                    $final2 = $this->stringsHelper::passValues($values[2], $parValuesArr);
+
+                    $final0 = $this->mathService->evaluateExpression($final0);
+                    $final1 = $this->mathService->evaluateExpression($final1);
+                    $final2 = $this->mathService->evaluateExpression($final2);
+
                     // If the sequence contains 0 --> check all values for zero value --> if all values aren't zero, return false
                     if ($values[0] === 0 || $values[1] === 0 || $values[2] === 0) {
                         return !($values[0] !== 0 || $values[1] !== 0 || $values[2] !== 0);
                     }
-                    $quot1 = $this->mathService->evaluateExpression('(' . $values[1] . ')' . '/' . '(' . $values[0] . ')');
-                    $quot2 = $this->mathService->evaluateExpression('(' . $values[2] . ')' . '/' . '(' . $values[1] . ')');
+
+                    $quot1 = $this->mathService->evaluateExpression(sprintf('(%s) / (%s)', $final1, $final0));
+                    $quot2 = $this->mathService->evaluateExpression(sprintf('(%s) / (%s)', $final2, $final1));
+
                     return round($quot1, 5) === round($quot2, 5);
                 } catch (\Exception $e) {
                     return false;
@@ -182,7 +248,7 @@ class ConditionService
                 $final = $stringsHelper::passValues($data->getConditionValidateData(), $parValuesArr);
                 try {
                     $res = $mathService->evaluateExpression($final);
-                    return $res > 0;
+                    return $res > 0.0;
 //                    return $this->mathService->evaluateExpression($value) > 0;
                 } catch (\Exception $e) {
                     return false;
@@ -202,7 +268,7 @@ class ConditionService
                 $final = $stringsHelper::passValues($data->getConditionValidateData(), $parValuesArr);
                 try {
                     $res = $mathService->evaluateExpression($final);
-                    return $res < 0;
+                    return $res < 0.0;
 //                    return $this->mathService->evaluateExpression($value) < 0;
                 } catch (\Exception $e) {
                     return false;
@@ -211,13 +277,19 @@ class ConditionService
 
             'positiveSquare' => static function (ProblemTemplateNP $data, array $parValuesArr) use ($stringsHelper, $mathService) {
                 $final = $stringsHelper::passValues($data->getConditionValidateData(), $parValuesArr);
+//                bdump($final);
                 try {
                     $value = $mathService->evaluateExpression($final);
-                    if ($value <= 0) {
+//                    bdump($value);
+                    if ($value <= 0.0) {
+//                        bdump('FALSE');
                         return false;
                     }
                     $squareRoot = sqrt($value);
-                    $squareRootInt = (int)$squareRoot;
+                    $squareRootInt = (int) $squareRoot;
+//                    bdump($squareRoot);
+//                    bdump($squareRootInt);
+//                    bdump($squareRootInt == $squareRoot);
                     return $squareRootInt == $squareRoot;
                 } catch (\Exception $e) {
                     return false;
@@ -265,7 +337,7 @@ class ConditionService
      */
     public function findConditionsMatches($fields): ?array
     {
-        bdump('FIND CONDITIONS MATCHES');
+        //bdump('FIND CONDITIONS MATCHES');
         $result = [];
         foreach ((array)$fields as $keyType => $value) {
             if (!array_key_exists($keyType, $this->conditionsMatches)) {
@@ -289,7 +361,7 @@ class ConditionService
      */
     private function findMatches(ProblemTemplateNP $data, int $typeAccessor, int $accessor): ?array
     {
-        bdump('FIND MATCHES');
+        //bdump('FIND MATCHES');
         $matches = [];
         $matchesCnt = 0;
         $res = false;
@@ -377,7 +449,7 @@ class ConditionService
             }
         }
 
-        bdump($matches);
+//        bdump($matches);
 
         if (!$res) {
             return null;

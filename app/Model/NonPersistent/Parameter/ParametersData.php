@@ -40,7 +40,7 @@ class ParametersData
      */
     public function __construct(ArrayHash $data)
     {
-        bdump('CONSTRUCT PARAMETERS DATA');
+        //bdump('CONSTRUCT PARAMETERS DATA');
         $this->setValues($data);
     }
 

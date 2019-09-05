@@ -49,7 +49,7 @@ class ProblemFilterFormFactory extends FormControl
 
         $difficultyOptions = $this->difficultyRepository->findAssoc([],"id");
 
-        bdump($difficultyOptions);
+        //bdump($difficultyOptions);
 
         $form->addMultiSelect("difficulty", "Obtížnost", $difficultyOptions)
             ->setHtmlAttribute("class", "form-control selectpicker");

@@ -230,7 +230,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         $validateFields = [];
         if(!$conditions){
             foreach ($this->baseValidation as $item){
-                bdump($item['field']);
+                //bdump($item['field']);
                 $validateFields[$item['field']] = new ValidatorArgument($problemTemplate->{$item['getter']}(), $item['validation']);
             }
         }
@@ -266,38 +266,39 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     {
         bdump('HANDLE FORM VALIDATE');
         $data = $this->createNonPersistentEntity($form->getValues());
-        $data->setParametersData(new ParametersData($this->stringsHelper::extractParametersInfo($data->getBody())));
 
-        bdump($data);
+        //bdump($data);
 
         // VALIDATE BASE ITEMS
         if(!$this->validateBaseItems($data)){
-            bdump('RETURN');
+            //bdump('RETURN');
             $this->redrawErrors();
             return;
         }
 
         // VALIDATE BODY
         if(!$this->validateBody($data)){
-            bdump('VALIDATE BODY ERROR');
+            //bdump('VALIDATE BODY ERROR');
             $this->redrawErrors();
             return;
         }
 
+        $data->setParametersData(new ParametersData($this->stringsHelper::extractParametersInfo($data->getBody())));
+
         // STANDARDIZE THE INPUT
         $data = $this->standardize($data);
-        bdump('STANDARDIZED');
-        bdump($data);
+        //bdump('STANDARDIZED');
+        //bdump($data);
         if($data === null){
             $this->redrawErrors();
-            bdump('TEST');
+            //bdump('TEST');
             return;
         }
 
         // VALIDATE TYPE
         if(!$this->validateType($data)){
             $this->redrawErrors();
-            bdump('VALIDATE TYPE ERROR');
+            //bdump('VALIDATE TYPE ERROR');
             return;
         }
 
@@ -317,41 +318,40 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         bdump('HANDLE COND VALIDATION');
         $this->redrawControl('flashesSnippet');
 
-        bdump($data);
+        $entity = $this->createNonPersistentEntity(ArrayHash::from($data));
 
-        $data = $this->createNonPersistentEntity(ArrayHash::from($data));
-        $data->setParametersData(new ParametersData($this->stringsHelper::extractParametersInfo($data->getBody())));
-
-        bdump($data);
+        //bdump($data);
 
         // VALIDATE BASE ITEMS
-        if(!$this->validateBaseItems($data, true)){
+        if(!$this->validateBaseItems($entity, true)){
             $this->redrawErrors(false);
             return;
         }
 
         // VALIDATE BODY
-        if(!$this->validateBody($data)){
-            bdump('VALIDATE BODY');
+        if(!$this->validateBody($entity)){
+            //bdump('VALIDATE BODY');
             $this->redrawErrors(false);
             return;
         }
 
+        $entity->setParametersData(new ParametersData($this->stringsHelper::extractParametersInfo($entity->getBody())));
+
         // STANDARDIZE THE INPUT
-        $data = $this->standardize($data);
-        if($data === null){
+        $standardized = $this->standardize($entity);
+        if($standardized === null){
             $this->redrawErrors(false);
             return;
         }
 
         // VALIDATE TYPE
-        if(!$this->validateType($data)){
+        if(!$this->validateType($standardized)){
             $this->redrawErrors(false);
             return;
         }
 
         // VALIDATE SPECIFIED CONDITION
-        if(!$this->validateCondition($data)){
+        if(!$this->validateCondition($standardized)){
             $this->redrawErrors(false);
             return;
         }
@@ -371,9 +371,9 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      */
     public function validateBody(ProblemTemplateNP $problemTemplate): bool
     {
-        bdump('VALIDATE BODY');
+        //bdump('VALIDATE BODY');
         $validateFields['body'] = new ValidatorArgument($problemTemplate, 'body_' . $problemTemplate->getType());
-        bdump($validateFields);
+        //bdump($validateFields);
 
         try{
             $form = $this->validator->validate($this['form'], $validateFields);
@@ -397,8 +397,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      */
     public function validateType(ProblemTemplateNP $data): bool
     {
-        bdump('VALIDATE TYPE');
-        bdump($data);
+        //bdump('VALIDATE TYPE');
+        //bdump($data);
 
         // Validate if the entered problem corresponds to the selected type
         $validateFields['type'] = new ValidatorArgument($data, 'type_' . $data->getType(), 'body');
@@ -483,7 +483,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      */
     public function render(): void
     {
-        bdump('RENDER');
+        //bdump('RENDER');
         $this->template->conditionTypes = $this->conditionTypes;
         if($this->edit){
             $this->template->render(__DIR__ . '/' . $this->formName . '/templates/edit.latte');

@@ -8,8 +8,6 @@
 
 namespace App\Model\NonPersistent\Entity;
 
-use App\Model\NonPersistent\Math\GlobalDivider;
-use App\Model\NonPersistent\Math\VariableFraction;
 use App\Model\NonPersistent\Parameter\ParametersData;
 use App\Model\NonPersistent\Traits\SetValuesTrait;
 use Nette\Utils\ArrayHash;
@@ -86,6 +84,11 @@ abstract class ProblemTemplateNP extends BaseEntityNP
      * @var string
      */
     protected $conditionValidateItem;
+
+    /**
+     * @var ParametersData|null
+     */
+    protected $parametersData;
 
     /**
      * LinearEquationTemplate constructor.
@@ -311,5 +314,21 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     public function setConditionAccessor(?int $conditionAccessor): void
     {
         $this->conditionAccessor = $conditionAccessor;
+    }
+
+    /**
+     * @return ParametersData|null
+     */
+    public function getParametersData(): ?ParametersData
+    {
+        return $this->parametersData;
+    }
+
+    /**
+     * @param ParametersData|null $parametersData
+     */
+    public function setParametersData(?ParametersData $parametersData): void
+    {
+        $this->parametersData = $parametersData;
     }
 }

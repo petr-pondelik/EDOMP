@@ -8,11 +8,9 @@
 
 namespace App\Services;
 
-use App\Arguments\BodyArgument;
-use App\Arguments\EquationValidateArgument;
-use App\Arguments\SequenceValidateArgument;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
+use App\Helpers\RegularExpressions;
 use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\Entity\ArithmeticSequenceTemplateNP;
 use App\Model\NonPersistent\Entity\GeometricSequenceTemplateNP;
@@ -97,6 +95,11 @@ class Validator
     protected $geometricSequencePlugin;
 
     /**
+     * @var RegularExpressions
+     */
+    protected $regularExpressions;
+
+    /**
      * @var array
      */
     static protected $bodyMessages = [
@@ -118,6 +121,7 @@ class Validator
      * @param QuadraticEquationPlugin $quadraticEquationPlugin
      * @param ArithmeticSequencePlugin $arithmeticSequencePlugin
      * @param GeometricSequencePlugin $geometricSequencePlugin
+     * @param RegularExpressions $regularExpressions
      */
     public function __construct
     (
@@ -127,7 +131,8 @@ class Validator
         LinearEquationPlugin $linearEquationPlugin,
         QuadraticEquationPlugin $quadraticEquationPlugin,
         ArithmeticSequencePlugin $arithmeticSequencePlugin,
-        GeometricSequencePlugin $geometricSequencePlugin
+        GeometricSequencePlugin $geometricSequencePlugin,
+        RegularExpressions $regularExpressions
     )
     {
         $this->newtonApiClient = $newtonApiClient;
@@ -140,11 +145,12 @@ class Validator
         $this->quadraticEquationPlugin = $quadraticEquationPlugin;
         $this->arithmeticSequencePlugin = $arithmeticSequencePlugin;
         $this->geometricSequencePlugin = $geometricSequencePlugin;
+        $this->regularExpressions = $regularExpressions;
 
         $this->validationMapping = [
 
             'notEmpty' => static function ($data) {
-                bdump($data);
+                //bdump($data);
                 if (empty($data)) {
                     return 0;
                 }
@@ -220,11 +226,11 @@ class Validator
                 return -1;
             },
 
-            'schoolYear' => static function ($filledVal) {
+            'schoolYear' => static function ($filledVal) use ($regularExpressions) {
                 if (empty($filledVal)) {
                     return 0;
                 }
-                if (!Strings::match($filledVal, '~[0-9]{4}(\/|\-)([0-9]{4}|[0-9]{2})~')) {
+                if (!Strings::match($filledVal, '~' . $regularExpressions::RE_SCHOOL_YEAR . '~')) {
                     return 1;
                 }
                 return -1;
@@ -244,8 +250,8 @@ class Validator
             },
 
             'body_' . $this->constHelper::LINEAR_EQ => function (LinearEquationTemplateNP $problemTemplate) {
-                bdump('VALIDATE LINEAR EQUATION BODY VALIDATOR');
-                bdump($problemTemplate);
+                //bdump('VALIDATE LINEAR EQUATION BODY VALIDATOR');
+                //bdump($problemTemplate);
                 if(empty($problemTemplate->getBody()) || empty($problemTemplate->getVariable())){
                     return 0;
                 }
@@ -301,7 +307,7 @@ class Validator
                 if (!$problemTemplate) {
                     return 0;
                 }
-                bdump($problemTemplate);
+                //bdump($problemTemplate);
                 if(!$this->linearEquationPlugin->validateType($problemTemplate)){
                     return 1;
                 }
@@ -339,7 +345,7 @@ class Validator
             },
 
             'condition_' . $this->constHelper::RESULT => function (ProblemTemplateNP $data) {
-                bdump('VALIDATE RESULT CONDITION');
+                //bdump('VALIDATE RESULT CONDITION');
                 // Maximal number of parameters exceeded
                 if ($data->getParametersData()->getCount() > $this->constHelper::PARAMETERS_MAX) {
                     return 2;
@@ -355,7 +361,7 @@ class Validator
             },
 
             'condition_' . $this->constHelper::DISCRIMINANT => function (ProblemTemplateNP $data) {
-                bdump('VALIDATE DISCRIMINANT CONDITION');
+                //bdump('VALIDATE DISCRIMINANT CONDITION');
                 // Maximal number of parameters exceeded
                 if ($data->getParametersData()->getCount() > $this->constHelper::PARAMETERS_MAX) {
                     return 2;

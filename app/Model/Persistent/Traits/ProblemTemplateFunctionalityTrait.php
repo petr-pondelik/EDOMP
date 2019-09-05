@@ -83,7 +83,7 @@ trait ProblemTemplateFunctionalityTrait
      */
     public function setBaseValues($templ, ArrayHash $data, int $templateId = null, bool $fromDataGrid = false): ProblemTemplate
     {
-        bdump('SET BASE VALUES');
+        //bdump('SET BASE VALUES');
 
         if(isset($data->textBefore)){
             $templ->setTextBefore($data->textBefore);
@@ -118,7 +118,7 @@ trait ProblemTemplateFunctionalityTrait
                 $templateId = $this->repository->getSequenceVal();
             }
 
-            bdump($templateId);
+            //bdump($templateId);
 
             $templateJsonData = [];
 

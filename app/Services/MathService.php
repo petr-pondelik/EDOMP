@@ -8,11 +8,12 @@
 
 namespace App\Services;
 
+use App\Helpers\RegularExpressions;
 use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\Entity\EquationTemplateNP;
 use App\Model\NonPersistent\Entity\LinearEquationTemplateNP;
-use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use jlawrence\eos\Parser;
+use Nette\Utils\Strings;
 
 /**
  * Class MathService
@@ -41,30 +42,39 @@ class MathService
     public $variableFractionService;
 
     /**
+     * @var RegularExpressions
+     */
+    protected $regularExpressions;
+
+    /**
      * MathService constructor.
      * @param Parser $parser
      * @param GeneratorService $generatorService
      * @param StringsHelper $stringsHelper
      * @param VariableFractionService $variableFractionService
+     * @param RegularExpressions $regularExpressions
      */
     public function __construct
     (
-        Parser $parser, GeneratorService $generatorService, StringsHelper $stringsHelper, VariableFractionService $variableFractionService
+        Parser $parser, GeneratorService $generatorService, StringsHelper $stringsHelper,
+        VariableFractionService $variableFractionService, RegularExpressions $regularExpressions
     )
     {
         $this->parser = $parser;
         $this->generatorService = $generatorService;
         $this->stringsHelper = $stringsHelper;
         $this->variableFractionService = $variableFractionService;
+        $this->regularExpressions = $regularExpressions;
     }
 
     /**
      * @param string $expression
+     * @param array $replacements
      * @return float
      */
-    public function evaluateExpression(string $expression): float
+    public function evaluateExpression(string $expression, array $replacements = []): float
     {
-        return $this->parser::solve($expression);
+        return $this->parser::solve($expression, $replacements);
     }
 
     /**
@@ -76,40 +86,73 @@ class MathService
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function multiplyByLCM(EquationTemplateNP $data): EquationTemplateNP
+    public function processVariableFractions(EquationTemplateNP $data): EquationTemplateNP
     {
-        if(!$variableFractionsWrapper = $this->variableFractionService->getVariableFractionData($data)){
+        if (!$fractionsProcessed = $this->variableFractionService->processVariableFractions($data)) {
+            bdump('WITHOUT VARIABLE FRACTIONS');
             return $data;
         }
-
-        bdump($variableFractionsWrapper);
-
-        $data = $this->variableFractionService->getMultipliedByLCM($variableFractionsWrapper);
-
+        //bdump($fractionsProcessed);
+        $data = $this->variableFractionService->getMultipliedByLCM($fractionsProcessed);
+        $data->setStandardized($this->stringsHelper::fillMultipliers($data->getStandardized()));
         return $data;
+    }
 
-//
-//        // TODO: MOVE INTO SEPARATED METHOD
-//        $data->setVarFractions($this->variableFractionService->getVarFractions());
-//        $data->setVarFractionsParDivider($this->variableFractionService->getVarFractionsParDivider());
-//        $data->setFractionsToCheckCnt($data->calculateFractionsToCheckCnt());
-//
-//        if($data->getFractionsToCheckCnt() === 1){
-//            $data->setFractionsToCheckIndexes([
-//                $this->generatorService->generateInteger(0, $data->getVarFractionsParDividerCnt() - 1)
-//            ]);
-//        }
-//
-//        if($data->getFractionsToCheckCnt() === 2){
-//            $toCheckIndexes = [];
-//            $toCheckIndexes[] = $this->generatorService->generateInteger(0, $data->getVarFractionsParDividerCnt() - 1);
-//            $toCheckIndexes[] = $this->generatorService->generateIntegerWithout(0, $data->getVarFractionsParDividerCnt() - 1, $toCheckIndexes);
-//            $data->setFractionsToCheckIndexes($toCheckIndexes);
-//        }
-//        // TODO: MOVE INTO SEPARATED METHOD
-//
-//        bdump($this->variableFractionService);
+    /**
+     * @param EquationTemplateNP $standardized
+     * @param array $parValuesArr
+     * @param bool $withLinearCoefficient
+     * @return array
+     */
+    public function extractVariableCoefficients(EquationTemplateNP $standardized, array $parValuesArr, bool $withLinearCoefficient = true): array
+    {
+        $final = $this->stringsHelper::passValues($standardized->getStandardized(), $parValuesArr);
 
-//        return $data;
+        if($withLinearCoefficient){
+            $matches = Strings::matchAll($final, '~' . sprintf($this->regularExpressions::RE_VARIABLE_COEFFICIENT, $standardized->getVariable()) . '~');
+        }
+        else{
+            $matches = Strings::matchAll($final, '~' . sprintf($this->regularExpressions::RE_VARIABLE_COEFFICIENT_NON_LINEAR, $standardized->getVariable()) . '~');
+        }
+
+        $res = [];
+        foreach ($matches as $match){
+            // Substitute coefficients extreme values
+            $match[1] = $this->normalizeCoefficient($match[1]);
+            $res[] = $match;
+        }
+
+        return $res;
+    }
+
+    /**
+     * @param string $expression
+     * @return string
+     */
+    public function normalizeCoefficient(string $expression): string
+    {
+//        bdump('NORMALIZE COEFFICIENT');
+//        bdump($expression);
+
+        $expression = Strings::trim($expression);
+
+        if($expression === ''){
+            return '1';
+        }
+
+        if($expression === '+'){
+            return '1';
+        }
+
+        if($expression === '-'){
+            return -1;
+        }
+
+        $expression = $this->stringsHelper::normalizeOperators($expression);
+
+//        bdump('NORMALIZE COEFFICIENT RES');
+//        bdump($expression);
+
+        return $expression;
     }
 }

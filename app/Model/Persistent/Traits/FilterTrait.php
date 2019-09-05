@@ -27,7 +27,7 @@ trait FilterTrait
     {
         $filterArr = [];
 
-        bdump($filters);
+        //bdump($filters);
 
         // Apply base filters
         if(isset($filters['is_template']) && $filters['is_template'] !== null){
@@ -44,7 +44,7 @@ trait FilterTrait
         }
 
         $filteredBase = $this->findAssoc($filterArr, 'id');
-        bdump($filteredBase);
+        //bdump($filteredBase);
 
         if(isset($filters['problem_type_id'])){
 
@@ -81,7 +81,7 @@ trait FilterTrait
                             ->getQuery()
                             ->getResult();
 
-                        bdump($filteredByCondition);
+                        //bdump($filteredByCondition);
 
                         foreach ($filteredBase as $key => $item) {
                             if (!isset($filteredByCondition[$key]) && $problemConditionType->getId() === $item->getProblemType()->getId()) {
@@ -92,17 +92,17 @@ trait FilterTrait
                 }
             }
 
-            bdump($res);
+            //bdump($res);
 
             if($conditionFilter) {
                 return $res;
             }
 
-            bdump($filteredBase);
+            //bdump($filteredBase);
             return $filteredBase;
         }
 
-        bdump($filteredBase);
+        //bdump($filteredBase);
         return $filteredBase;
     }
 }

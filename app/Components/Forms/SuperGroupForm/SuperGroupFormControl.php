@@ -73,7 +73,7 @@ class SuperGroupFormControl extends EntityFormControl
     {
         try{
             $values->user_id = $this->presenter->user->id;
-            bdump($values->user_id);
+            //bdump($values->user_id);
             $this->functionality->create($values);
             $this->onSuccess();
         } catch (\Exception $e){

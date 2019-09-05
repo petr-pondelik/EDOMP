@@ -112,25 +112,45 @@ class GeneratorService
      * @param array $without
      * @return int|null
      */
-    public function generateIntegerWithout(int $min, int $max, array $without): ?int
+    public function generateIntegerWithout(int $min, int $max, array $without = []): ?int
     {
-        bdump('GENERATE INTEGER WITHOUT');
-        bdump($without);
-        bdump([$min, $max]);
-        if(!isset($min, $max)){
+        //bdump('GENERATE INTEGER WITHOUT');
+
+        if(!isset($min, $max) || $min > $max){
             return null;
         }
+
         $res = null;
         $used = [];
+
         do {
             $res = $this->generateInteger($min, $max);
-            bdump($res);
-            $used[] = $res;
-            if(count($used) >= ($max - $min + 1)){
+            $used[$res] = $res;
+            if(count($used) > ($max - $min + 1)){
                 return null;
             }
         } while (in_array($res, $without, true));
-        // TODO: GENERATE VALUE THAT IS NOT PRESENT IN $without array
+
+        return $res;
+    }
+
+    /**
+     * @param int $len
+     * @return array|null
+     */
+    public function generateArrayUnique(int $len): ?array
+    {
+        //bdump('GENERATE ARRAY UNIQUE');
+        $res = [];
+        for($i = 0; $i < $len; $i++){
+            $tmp = $this->generateIntegerWithout(0, $len - 1, $res);
+            if($tmp === null){
+                return null;
+            }
+            $res[] = $tmp;
+        }
+        //bdump('GENERATE ARRAY UNIQUE RES');
+        //bdump($res);
         return $res;
     }
 
@@ -228,7 +248,7 @@ class GeneratorService
 
         if($matchesJson){
             // Generate params matching the conditions
-            bdump($matchesJson);
+            //bdump($matchesJson);
             $matchesArr = Json::decode($matchesJson, Json::FORCE_ARRAY);
             $matchesCnt = count($matchesArr);
             $params = $matchesArr[$this->generateInteger(0, $matchesCnt - 1)];
