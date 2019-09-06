@@ -303,46 +303,46 @@ class Validator
                 return -1;
             },
 
-            'type_' . $this->constHelper::LINEAR_EQ => function (LinearEquationTemplateNP $problemTemplate) {
-                if (!$problemTemplate) {
-                    return 0;
-                }
-                //bdump($problemTemplate);
-                if(!$this->linearEquationPlugin->validateType($problemTemplate)){
-                    return 1;
-                }
-                return -1;
-            },
-
-            'type_' . $this->constHelper::QUADRATIC_EQ => function (QuadraticEquationTemplateNP $problemTemplate) {
-                if (!$problemTemplate) {
-                    return 0;
-                }
-                if (!$this->quadraticEquationPlugin->validateType($problemTemplate)) {
-                    return 1;
-                }
-                return -1;
-            },
-
-            'type_' . $this->constHelper::ARITHMETIC_SEQ => function (ArithmeticSequenceTemplateNP $problemTemplate) {
-                if (!$problemTemplate) {
-                    return 0;
-                }
-                if(!$this->arithmeticSequencePlugin->validateType($problemTemplate)){
-                    return 1;
-                }
-                return -1;
-            },
-
-            'type_' . $this->constHelper::GEOMETRIC_SEQ => function (GeometricSequenceTemplateNP $problemTemplate) {
-                if (!$problemTemplate) {
-                    return 0;
-                }
-                if(!$this->geometricSequencePlugin->validateType($problemTemplate)){
-                    return 1;
-                }
-                return -1;
-            },
+//            'type_' . $this->constHelper::LINEAR_EQ => function (LinearEquationTemplateNP $problemTemplate) {
+//                if (!$problemTemplate) {
+//                    return 0;
+//                }
+//                //bdump($problemTemplate);
+//                if(!$this->linearEquationPlugin->validateType($problemTemplate)){
+//                    return 1;
+//                }
+//                return -1;
+//            },
+//
+//            'type_' . $this->constHelper::QUADRATIC_EQ => function (QuadraticEquationTemplateNP $problemTemplate) {
+//                if (!$problemTemplate) {
+//                    return 0;
+//                }
+//                if (!$this->quadraticEquationPlugin->validateType($problemTemplate)) {
+//                    return 1;
+//                }
+//                return -1;
+//            },
+//
+//            'type_' . $this->constHelper::ARITHMETIC_SEQ => function (ArithmeticSequenceTemplateNP $problemTemplate) {
+//                if (!$problemTemplate) {
+//                    return 0;
+//                }
+//                if(!$this->arithmeticSequencePlugin->validateType($problemTemplate)){
+//                    return 1;
+//                }
+//                return -1;
+//            },
+//
+//            'type_' . $this->constHelper::GEOMETRIC_SEQ => function (GeometricSequenceTemplateNP $problemTemplate) {
+//                if (!$problemTemplate) {
+//                    return 0;
+//                }
+//                if(!$this->geometricSequencePlugin->validateType($problemTemplate)){
+//                    return 1;
+//                }
+//                return -1;
+//            },
 
             'condition_' . $this->constHelper::RESULT => function (ProblemTemplateNP $data) {
                 //bdump('VALIDATE RESULT CONDITION');

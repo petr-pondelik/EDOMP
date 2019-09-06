@@ -120,4 +120,29 @@ class BasePresenter extends Presenter
             }
         }
     }
+
+    /**
+     * @param bool $status
+     * @param array|null $data
+     * @throws \Nette\Application\AbortException
+     */
+    public function sendJsonResponse(bool $status, array $data = null): void
+    {
+        $this->sendJson([
+            'status' => $status,
+            'data' => $data
+        ]);
+    }
+
+    /**
+     * @param bool $status
+     * @param array|null $data
+     */
+    public function setPayload(bool $status, array $data = null): void
+    {
+        $this->presenter->payload->response = [
+            'status' => $status,
+            'data' => $data
+        ];
+    }
 }

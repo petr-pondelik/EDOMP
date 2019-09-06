@@ -20,6 +20,7 @@ use App\Model\Persistent\Functionality\LinearEqTemplFunctionality;
 use App\Model\Persistent\Repository\LinearEqTemplRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
+use App\Services\ProblemTemplateStatus;
 use Nette\ComponentModel\IComponent;
 
 /**
@@ -41,6 +42,7 @@ class LinearEqTemplatePresenter extends ProblemTemplatePresenter
      * @param LinearEqTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
+     * @param ProblemTemplateStatus $problemTemplateStatus
      */
     public function __construct
     (
@@ -48,7 +50,8 @@ class LinearEqTemplatePresenter extends ProblemTemplatePresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         LinearEqTemplRepository $repository, LinearEqTemplFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, LinearEqTemplateFormFactory $problemTemplateFormFactory,
-        ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory
+        ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory,
+        ProblemTemplateStatus $problemTemplateStatus
     )
     {
         parent::__construct
@@ -56,7 +59,8 @@ class LinearEqTemplatePresenter extends ProblemTemplatePresenter
             $authorizator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
             $templateGridFactory,
-            $constHelper, $sectionHelpModalFactory
+            $constHelper, $sectionHelpModalFactory,
+            $problemTemplateStatus
         );
         $this->repository = $repository;
         $this->functionality = $functionality;

@@ -34,6 +34,7 @@ import './js/filepond.config';
 // Import custom modules
 import './js/sidemenu';
 
+import './js/problem-template-type-validation';
 import './js/problem-template-conditions-validation';
 
 import './js/test-create-filters';

@@ -32,7 +32,8 @@
                         'type': problemType,
                         'variable': variable
                     },
-                    'problemId': problemId
+                    'problemId': problemId,
+                    'preserveValidation': true
                 },
                 success: (payload) => {
                     if (payload.result) {

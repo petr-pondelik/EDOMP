@@ -22,6 +22,7 @@ use App\Model\Persistent\Functionality\BaseFunctionality;
 use App\Model\Persistent\Repository\BaseRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
+use App\Services\ProblemTemplateStatus;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
@@ -58,6 +59,11 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     protected $constHelper;
 
     /**
+     * @var ProblemTemplateStatus
+     */
+    protected $problemTemplateStatus;
+
+    /**
      * @var string
      */
     protected $type = '';
@@ -77,18 +83,33 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
      * @param TemplateGridFactory $templateGridFactory
      * @param ConstHelper $constHelper
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
+     * @param ProblemTemplateStatus $problemTemplateStatus
      */
     public function __construct
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         TemplateGridFactory $templateGridFactory,
-        ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory
+        ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory,
+        ProblemTemplateStatus $problemTemplateStatus
     )
     {
         parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->templateGridFactory = $templateGridFactory;
         $this->constHelper = $constHelper;
+        $this->problemTemplateStatus = $problemTemplateStatus;
+    }
+
+    public function actionDefault(): void
+    {
+        bdump('ACTION DEFAULT');
+        bdump($this->getParameter('preserveValidation'));
+        if($this->getParameter('preserveValidation') === null){
+            $this->problemTemplateStatus->resetStatus();
+        }
+        bdump($this->problemTemplateStatus->getSerialized());
+        bdump($this->problemTemplateStatus->getUnserialized());
+        bdump($this->problemTemplateStatus->isTypeValidated());
     }
 
     /**
@@ -277,12 +298,20 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
 
     /**
      * @param array $data
-     * @param int $problemId
      */
-    public function handleCondValidation(array $data, $problemId = null): void
+    public function handleCondValidation(array $data): void
     {
         //bdump($data);
-        $form = $problemId ? 'problemTemplateEditForm' : 'problemTemplateCreateForm';
-        $this[$form]->handleCondValidation($data, $problemId);
+        $form = !empty($data['idHidden']) ? 'problemTemplateEditForm' : 'problemTemplateCreateForm';
+        $this[$form]->handleCondValidation($data);
+    }
+
+    /**
+     * @param array $data
+     */
+    public function handleTypeValidation(array $data): void
+    {
+        $form = !empty($data['idHidden']) ? 'problemTemplateEditForm' : 'problemTemplateCreateForm';
+        $this[$form]->handleTypeValidation($data);
     }
 }

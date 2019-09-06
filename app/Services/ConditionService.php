@@ -91,11 +91,10 @@ class ConditionService
 
             'linearEquationType' => static function (LinearEquationTemplateNP $data, array $parValuesArr) use ($stringsHelper, $mathService, $regularExpressions) {
 
-//                //bdump('CONDITION SERVICE: LINEAR EQUATION TYPE');
+                bdump('CONDITION SERVICE: LINEAR EQUATION TYPE');
 
-//                $final = $stringsHelper::passValues($data->getStandardized(), $parValuesArr);
                 $varCoefficients = $mathService->extractVariableCoefficients($data, $parValuesArr);
-//                $varCoefficients = Strings::matchAll($final, sprintf($regularExpressions::RE_VARIABLE_COEFFICIENT, $data->getVariable()));
+                bdump($varCoefficients);
 
                 foreach ($varCoefficients as $varCoefficient) {
                     try{
@@ -103,10 +102,10 @@ class ConditionService
                     } catch (\Exception $e){
                         return false;
                     }
-                    if ($coefficientRes === 0.0 && $varCoefficient[2] === 'x') {
+                    if ($coefficientRes === 0.0 && $varCoefficient[2] === '') {
                         return false;
                     }
-                    if ($coefficientRes !== 0.0 && $varCoefficient[2] !== 'x') {
+                    if ($coefficientRes !== 0.0 && $varCoefficient[2] !== '') {
                         return false;
                     }
                 }

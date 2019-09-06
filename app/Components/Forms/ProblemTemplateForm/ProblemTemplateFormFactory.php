@@ -17,7 +17,9 @@ use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
+use App\Plugins\ProblemPlugin;
 use App\Services\PluginContainer;
+use App\Services\ProblemTemplateStatus;
 use App\Services\Validator;
 
 /**
@@ -52,6 +54,11 @@ abstract class ProblemTemplateFormFactory extends FormFactory
     protected $problemConditionRepository;
 
     /**
+     * @var ProblemPlugin
+     */
+    protected $problemTemplatePlugin;
+
+    /**
      * @var PluginContainer
      */
     protected $pluginContainer;
@@ -67,6 +74,11 @@ abstract class ProblemTemplateFormFactory extends FormFactory
     protected $constHelper;
 
     /**
+     * @var ProblemTemplateStatus
+     */
+    protected $problemTemplateStatus;
+
+    /**
      * ProblemTemplateFormFactory constructor.
      * @param Validator $validator
      * @param DifficultyRepository $difficultyRepository
@@ -77,6 +89,7 @@ abstract class ProblemTemplateFormFactory extends FormFactory
      * @param PluginContainer $pluginContainer
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
+     * @param ProblemTemplateStatus $problemTemplateStatus
      */
     public function __construct
     (
@@ -84,7 +97,8 @@ abstract class ProblemTemplateFormFactory extends FormFactory
         DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        PluginContainer $pluginContainer, StringsHelper $stringsHelper, ConstHelper $constHelper
+        PluginContainer $pluginContainer, StringsHelper $stringsHelper, ConstHelper $constHelper,
+        ProblemTemplateStatus $problemTemplateStatus
     )
     {
         parent::__construct($validator);
@@ -96,6 +110,7 @@ abstract class ProblemTemplateFormFactory extends FormFactory
         $this->pluginContainer = $pluginContainer;
         $this->stringsHelper = $stringsHelper;
         $this->constHelper = $constHelper;
+        $this->problemTemplateStatus = $problemTemplateStatus;
     }
 
     /**

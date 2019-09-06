@@ -20,7 +20,9 @@ use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
+use App\Plugins\ProblemPlugin;
 use App\Services\PluginContainer;
+use App\Services\ProblemTemplateStatus;
 use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -77,9 +79,11 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
      * @param SubCategoryRepository $subCategoryRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
+     * @param ProblemPlugin $problemTemplatePlugin
      * @param PluginContainer $pluginContainer
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
+     * @param ProblemTemplateStatus $problemTemplateStatus
      * @param bool $edit
      */
     public function __construct
@@ -87,13 +91,19 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
         Validator $validator, BaseFunctionality $functionality, DifficultyRepository $difficultyRepository,
         ProblemTypeRepository $problemTypeRepository, SubCategoryRepository $subCategoryRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        PluginContainer $pluginContainer, StringsHelper $stringsHelper, ConstHelper $constHelper, bool $edit = false
+        ProblemPlugin $problemTemplatePlugin, PluginContainer $pluginContainer,
+        StringsHelper $stringsHelper, ConstHelper $constHelper,
+        ProblemTemplateStatus $problemTemplateStatus,
+        bool $edit = false
     )
     {
         parent::__construct
         (
             $validator, $functionality, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
-            $problemConditionTypeRepository, $problemConditionRepository, $pluginContainer, $stringsHelper, $constHelper, $edit
+            $problemConditionTypeRepository, $problemConditionRepository, $problemTemplatePlugin, $pluginContainer,
+            $stringsHelper, $constHelper,
+            $problemTemplateStatus,
+            $edit
         );
         $this->attachEntities($this->constHelper::LINEAR_EQ);
     }

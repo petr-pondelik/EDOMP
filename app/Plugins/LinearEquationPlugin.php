@@ -37,7 +37,7 @@ class LinearEquationPlugin extends EquationPlugin
 
         // Trivial fail case
         if (Strings::match($standardized, '~' . $data->getVariable() . '\^' . '~')) {
-            return false;
+            throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat lineární rovnici.');
         }
 
 //        $parametersInfo = $this->stringsHelper::extractParametersInfo($problemTemplate->body);
@@ -48,7 +48,7 @@ class LinearEquationPlugin extends EquationPlugin
 
         // Check if the whole expression was matched
         if($matches[0] !== $standardized){
-            return false;
+            throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat lineární rovnici.');
         }
 
         //bdump($data);
@@ -67,9 +67,8 @@ class LinearEquationPlugin extends EquationPlugin
         }
 
         if(!$matches){
-//            return false;
             // TODO: Handle when there are no parameters matches in validation !!!!
-            throw new ProblemTemplateException('Neexistuje ');
+            throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat lineární rovnici.');
         }
 
         $matchesJson = Json::encode($matches);
@@ -115,6 +114,7 @@ class LinearEquationPlugin extends EquationPlugin
     public function validateResultCond(LinearEquationTemplateNP $data): bool
     {
         bdump('VALIDATE RESULT COND');
+        bdump($data);
 
         $variableExp = $this->stringsHelper::getLinearVariableExpresion($data->getStandardized(), $data->getVariable());
         $data->setLinearVariableExpression($variableExp);

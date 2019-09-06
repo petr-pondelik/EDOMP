@@ -11,7 +11,6 @@ namespace App\Model\NonPersistent\Entity;
 use App\Model\NonPersistent\Math\GlobalDivider;
 use App\Model\NonPersistent\Math\NonDegradeCondition;
 use App\Model\NonPersistent\Math\VariableFraction;
-use App\Model\NonPersistent\Parameter\ParametersData;
 use Nette\Utils\ArrayHash;
 
 /**
