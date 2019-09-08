@@ -33,21 +33,25 @@
                         'variable': variable
                     },
                     'problemId': problemId,
-                    'preserveValidation': true
+                    'defaultValidation': true
                 },
                 success: (payload) => {
-                    if (payload.result) {
+
+                    // if (payload.response.status === true) {
+
+                        // console.log('CONDITION VALIDATION: SUCCESS');
 
                         //Enable create button
                         $(document).find('#submit-btn').attr('disabled', false);
                         $(document).find('#submit-btn').removeClass('disabled');
 
-                        //Set condition_valid to true for specific condition
-                        console.log(conditionType);
-                        $(document).find('#condition-valid-' + conditionType).val(1);
-                        $(document).find('#conditions-valid').val(1);
+                        // //Set condition_valid to true for specific condition
+                        // console.log('CONDITION TYPE: ' + conditionType);
+                        // $(document).find('#condition-valid-' + conditionType).val(1);
+                        // $(document).find('#conditions-valid').val(1);
 
-                    }
+                    // }
+
                 }
             });
 

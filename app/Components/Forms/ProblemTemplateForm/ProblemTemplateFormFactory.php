@@ -19,7 +19,8 @@ use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Plugins\ProblemPlugin;
 use App\Services\PluginContainer;
-use App\Services\ProblemTemplateStatus;
+use App\Services\ProblemTemplateSession;
+use App\Services\ProblemTemplateState;
 use App\Services\Validator;
 
 /**
@@ -74,9 +75,9 @@ abstract class ProblemTemplateFormFactory extends FormFactory
     protected $constHelper;
 
     /**
-     * @var ProblemTemplateStatus
+     * @var ProblemTemplateSession
      */
-    protected $problemTemplateStatus;
+    protected $problemTemplateSession;
 
     /**
      * ProblemTemplateFormFactory constructor.
@@ -89,7 +90,7 @@ abstract class ProblemTemplateFormFactory extends FormFactory
      * @param PluginContainer $pluginContainer
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
-     * @param ProblemTemplateStatus $problemTemplateStatus
+     * @param ProblemTemplateSession $problemTemplateSession
      */
     public function __construct
     (
@@ -98,7 +99,7 @@ abstract class ProblemTemplateFormFactory extends FormFactory
         SubCategoryRepository $subCategoryRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
         PluginContainer $pluginContainer, StringsHelper $stringsHelper, ConstHelper $constHelper,
-        ProblemTemplateStatus $problemTemplateStatus
+        ProblemTemplateSession $problemTemplateSession
     )
     {
         parent::__construct($validator);
@@ -110,7 +111,7 @@ abstract class ProblemTemplateFormFactory extends FormFactory
         $this->pluginContainer = $pluginContainer;
         $this->stringsHelper = $stringsHelper;
         $this->constHelper = $constHelper;
-        $this->problemTemplateStatus = $problemTemplateStatus;
+        $this->problemTemplateSession = $problemTemplateSession;
     }
 
     /**

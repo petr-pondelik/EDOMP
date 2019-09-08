@@ -95,31 +95,31 @@ $(document).ready(() => {
 
         let conditionElem = $(document).find('#condition-' + type);
 
-        //Block form submit only if the problem is prototype
-        if(!e.target.dataset.final){
-
-            if(conditionElem.length){
-                if (conditionElem.val() != 0) {
-                    $(document).find('#conditions-valid').val(0);
-                    $(document).find('#submit-btn').attr('disabled', true);
-                    $(document).find('#submit-btn').addClass('disabled');
-                } else {
-                    $(document).find('#conditions-valid').val(1);
-                    $(document).find('#submit-btn').attr('disabled', false);
-                    $(document).find('#submit-btn').removeClass('disabled');
-                }
-            }
-            else{
-                $(document).find('#conditions-valid').val(1);
-                $(document).find('#submit-btn').attr('disabled', false);
-                $(document).find('#submit-btn').removeClass('disabled');
-            }
-
-        }
+        // //Block form submit only if the problem is prototype
+        // if(!e.target.dataset.final){
+        //
+        //     if(conditionElem.length){
+        //         if (conditionElem.val() != 0) {
+        //             $(document).find('#conditions-valid').val(0);
+        //             $(document).find('#submit-btn').attr('disabled', true);
+        //             $(document).find('#submit-btn').addClass('disabled');
+        //         } else {
+        //             $(document).find('#conditions-valid').val(1);
+        //             $(document).find('#submit-btn').attr('disabled', false);
+        //             $(document).find('#submit-btn').removeClass('disabled');
+        //         }
+        //     }
+        //     else{
+        //         $(document).find('#conditions-valid').val(1);
+        //         $(document).find('#submit-btn').attr('disabled', false);
+        //         $(document).find('#submit-btn').removeClass('disabled');
+        //     }
+        //
+        // }
 
     });
 
-    //Watch body changes and disable submit button when conditioned body was changed
+    // Watch body changes and disable submit button when conditioned body was changed
     $(document).on('change', '#body', (e) => {
         let type = $(document).find('#type').val();
         let conditionElem = $(document).find('#condition-' + type);
@@ -128,13 +128,13 @@ $(document).ready(() => {
             if(conditionElem.length){
                 if (conditionElem.val() != 0) {
                     $(document).find('#conditions-valid').val(0);
-                    $(document).find('#submit-btn').attr('disabled', true);
-                    $(document).find('#submit-btn').addClass('disabled');
+                    // $(document).find('#submit-btn').attr('disabled', true);
+                    // $(document).find('#submit-btn').addClass('disabled');
                     $(document).find('#condition-validation-btn-' + type).show();
                 } else {
                     $(document).find('#conditions-valid').val(1);
-                    $(document).find('#submit-btn').attr('disabled', false);
-                    $(document).find('#submit-btn').removeClass('disabled');
+                    // $(document).find('#submit-btn').attr('disabled', false);
+                    // $(document).find('#submit-btn').removeClass('disabled');
                 }
             }
         }
@@ -148,14 +148,14 @@ $(document).ready(() => {
                 $(document).find('#condition-validation-btn-' + key).show();
                 $(document).find('#condition-valid-' + key).val(0);
                 $(document).find('#conditions-valid').val(0);
-                $(document).find('#submit-btn').attr('disabled', true);
-                $(document).find('#submit-btn').addClass('disabled');
+                // $(document).find('#submit-btn').attr('disabled', true);
+                // $(document).find('#submit-btn').addClass('disabled');
             } else {
                 $(document).find('#condition-validation-btn-' + key).hide();
                 $(document).find('#condition-valid-' + key).val(1);
                 $(document).find('#conditions-valid').val(1);
-                $(document).find('#submit-btn').attr('disabled', false);
-                $(document).find('#submit-btn').removeClass('disabled');
+                // $(document).find('#submit-btn').attr('disabled', false);
+                // $(document).find('#submit-btn').removeClass('disabled');
             }
         }
 

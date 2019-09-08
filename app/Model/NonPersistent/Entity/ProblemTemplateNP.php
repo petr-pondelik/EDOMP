@@ -8,7 +8,8 @@
 
 namespace App\Model\NonPersistent\Entity;
 
-use App\Model\NonPersistent\Parameter\ParametersData;
+use App\Model\NonPersistent\TemplateData\ParametersData;
+use App\Model\NonPersistent\TemplateData\ProblemTemplateState;
 use App\Model\NonPersistent\Traits\SetValuesTrait;
 use Nette\Utils\ArrayHash;
 
@@ -91,6 +92,11 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     protected $parametersData;
 
     /**
+     * @var ProblemTemplateState
+     */
+    protected $state;
+
+    /**
      * LinearEquationTemplate constructor.
      * @param ArrayHash $values
      */
@@ -98,6 +104,7 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     {
         $this->setValues($values);
         $this->conditionValidateItem = 'standardized';
+        $this->state = new ProblemTemplateState();
     }
 
     /**
@@ -330,5 +337,21 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     public function setParametersData(?ParametersData $parametersData): void
     {
         $this->parametersData = $parametersData;
+    }
+
+    /**
+     * @return ProblemTemplateState
+     */
+    public function getState(): ProblemTemplateState
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param ProblemTemplateState $state
+     */
+    public function setState(ProblemTemplateState $state): void
+    {
+        $this->state = $state;
     }
 }

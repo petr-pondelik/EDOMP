@@ -8,6 +8,7 @@
 
 namespace App\Components\Forms;
 
+use App\Model\Persistent\Entity\BaseEntity;
 use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -22,6 +23,11 @@ abstract class EntityFormControl extends FormControl
      * @var bool
      */
     protected $edit;
+
+    /**
+     * @var BaseEntity|null
+     */
+    protected $entity;
 
     /**
      * EntityFormControl constructor.
@@ -62,4 +68,20 @@ abstract class EntityFormControl extends FormControl
      * @param ArrayHash $values
      */
     abstract public function handleEditFormSuccess(Form $form, ArrayHash $values): void;
+
+    /**
+     * @param BaseEntity $entity
+     */
+    public function setEntity(BaseEntity $entity): void
+    {
+        $this->entity = $entity;
+    }
+
+    /**
+     * @return BaseEntity|null
+     */
+    public function getEntity(): ?BaseEntity
+    {
+        return $this->entity;
+    }
 }

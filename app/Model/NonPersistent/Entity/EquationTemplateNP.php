@@ -50,6 +50,7 @@ abstract class EquationTemplateNP extends ProblemTemplateNP
      */
     public function __construct(ArrayHash $values)
     {
+        bdump('EQUATION CONSTRUCTOR');
         parent::__construct($values);
         $this->variableFractionsData = [];
         $this->varFractionsStatic = [];

@@ -6,14 +6,14 @@
  * Time: 18:16
  */
 
-namespace App\Model\NonPersistent\Parameter;
+namespace App\Model\NonPersistent\TemplateData;
 
 use App\Model\NonPersistent\Traits\SetValuesTrait;
 use Nette\Utils\ArrayHash;
 
 /**
  * Class ParametersData
- * @package App\Model\NonPersistent\Parameter
+ * @package App\Model\NonPersistent\TemplateData
  */
 class ParametersData
 {

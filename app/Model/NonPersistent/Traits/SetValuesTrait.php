@@ -19,10 +19,26 @@ trait SetValuesTrait
     /**
      * @param ArrayHash $values
      */
-    protected function setValues(ArrayHash $values): void
+    public function setValues(ArrayHash $values): void
     {
+        bdump('SET VALUES');
+        bdump($values);
         foreach ($values as $key => $value){
             if(property_exists(static::class, $key)){
+                $this->{$key} = $value;
+            }
+        }
+    }
+
+    /**
+     * @param ArrayHash $values
+     */
+    public function completeValues(ArrayHash $values): void
+    {
+        bdump('COMPLETE VALUES');
+        bdump($values);
+        foreach ($values as $key => $value){
+            if(property_exists(static::class, $key) && $this->{$key} === null){
                 $this->{$key} = $value;
             }
         }

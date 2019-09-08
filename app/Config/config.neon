@@ -211,7 +211,7 @@ services:
 	service.eos.parser: jlawrence\eos\Parser
 	service.math: App\Services\MathService
 	service.fractions.variable: App\Services\VariableFractionService
-	service.problem.template.status: App\Services\ProblemTemplateStatus
+	service.session.problem.template: App\Services\ProblemTemplateSession
 
 	# Managers
 	manager.entity.constraint: App\Model\Persistent\Manager\ConstraintEntityManager

@@ -12,11 +12,10 @@ namespace App\AdminModule\Presenters;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
-use App\Exceptions\EntityException;
 use App\Helpers\FlashesTranslator;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
-use App\Model\NonPersistent\Entity\ProblemTemplateStatusItem;
+use App\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
 use App\Model\Persistent\Entity\ArithmeticSeqTempl;
 use App\Model\Persistent\Entity\Category;
 use App\Model\Persistent\Entity\Difficulty;
@@ -50,7 +49,7 @@ use App\Presenters\BasePresenter;
 use App\Services\Authorizator;
 use App\Services\GeneratorService;
 use App\Services\NewtonApiClient;
-use App\Services\ProblemTemplateStatus;
+use App\Services\ProblemTemplateSession;
 use App\Services\Validator;
 use jlawrence\eos\Parser;
 use Kdyby\Doctrine\EntityManager;
@@ -143,9 +142,9 @@ class DoctrinePresenter extends AdminPresenter
     protected $quadraticEquationPlugin;
 
     /**
-     * @var ProblemTemplateStatus
+     * @var ProblemTemplateSession
      */
-    protected $problemTemplateStatus;
+    protected $problemTemplateSession;
 
     /**
      * DoctrinePresenter constructor.
@@ -170,7 +169,7 @@ class DoctrinePresenter extends AdminPresenter
      * @param Parser $parser
      * @param GeneratorService $generatorService
      * @param QuadraticEquationPlugin $quadraticEquationPlugin
-     * @param ProblemTemplateStatus $problemTemplateStatus
+     * @param ProblemTemplateSession $problemTemplateSession
      */
     public function __construct
     (
@@ -187,7 +186,7 @@ class DoctrinePresenter extends AdminPresenter
         Parser $parser,
         GeneratorService $generatorService,
         QuadraticEquationPlugin $quadraticEquationPlugin,
-        ProblemTemplateStatus $problemTemplateStatus
+        ProblemTemplateSession $problemTemplateSession
     )
     {
         parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
@@ -206,7 +205,7 @@ class DoctrinePresenter extends AdminPresenter
         $this->parser = $parser;
         $this->generatorService = $generatorService;
         $this->quadraticEquationPlugin = $quadraticEquationPlugin;
-        $this->problemTemplateStatus = $problemTemplateStatus;
+        $this->problemTemplateSession = $problemTemplateSession;
     }
 
     /**
@@ -214,19 +213,12 @@ class DoctrinePresenter extends AdminPresenter
      */
     public function actionDefault()
     {
-        // ProblemTemplateStatus testing
-        $problemTemplateStatusItem = new ProblemTemplateStatusItem(1, true);
-
-        $problemTemplateStatusItemSerialized = serialize($problemTemplateStatusItem);
-        bdump($problemTemplateStatusItemSerialized);
-
-        $problemTemplateStatusItemUnserialized = unserialize($problemTemplateStatusItemSerialized, [ProblemTemplateStatusItem::class]);
-        bdump($problemTemplateStatusItemUnserialized);
+        // ProblemTemplateState testing
+        $problemTemplateStatusItem = new ProblemTemplateStateItem(1, true);
 
 
-        bdump($this->problemTemplateStatus->getUnserialized());
-        $this->problemTemplateStatus->updateStatus($problemTemplateStatusItem);
-        bdump($this->problemTemplateStatus->getUnserialized());
+
+        $this->problemTemplateSession->getProblemTemplate()->getState()->update($problemTemplateStatusItem);
 
 
         // EOS Parser testing

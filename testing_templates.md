@@ -2,6 +2,8 @@
 
 ## Testing Linear Equations templates
 
+$$ <par min="1" max="3"/> x = <par min="1" max="2"/> $$
+
 $$ <par min="-3" max="3"/> x = <par min="-2" max="2"/> - <par min="-3" max="3"/>x $$
 
 $$ <par min="-10" max="10"/> x - <par min="-2" max="2"/> = <par min="-5" max="5"/> - <par min="-6" max="6"/>x $$

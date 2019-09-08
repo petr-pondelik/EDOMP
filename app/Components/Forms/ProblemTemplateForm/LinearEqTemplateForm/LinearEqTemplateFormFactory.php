@@ -19,7 +19,8 @@ use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Plugins\LinearEquationPlugin;
 use App\Services\PluginContainer;
-use App\Services\ProblemTemplateStatus;
+use App\Services\ProblemTemplateSession;
+use App\Services\ProblemTemplateState;
 use App\Services\Validator;
 
 
@@ -41,7 +42,7 @@ class LinearEqTemplateFormFactory extends ProblemTemplateFormFactory
      * @param PluginContainer $pluginContainer
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
-     * @param ProblemTemplateStatus $problemTemplateStatus
+     * @param ProblemTemplateSession $problemTemplateSession
      */
     public function __construct
     (
@@ -50,13 +51,13 @@ class LinearEqTemplateFormFactory extends ProblemTemplateFormFactory
         ProblemConditionRepository $problemConditionRepository,
         LinearEquationPlugin $problemTemplatePlugin, PluginContainer $pluginContainer,
         StringsHelper $stringsHelper, ConstHelper $constHelper,
-        ProblemTemplateStatus $problemTemplateStatus
+        ProblemTemplateSession $problemTemplateSession
     )
     {
         parent::__construct(
             $validator, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
             $problemConditionTypeRepository, $problemConditionRepository, $pluginContainer,
-            $stringsHelper, $constHelper, $problemTemplateStatus
+            $stringsHelper, $constHelper, $problemTemplateSession
         );
         $this->problemTemplatePlugin = $problemTemplatePlugin;
     }
@@ -72,7 +73,7 @@ class LinearEqTemplateFormFactory extends ProblemTemplateFormFactory
             $this->validator, $functionality, $this->difficultyRepository, $this->problemTypeRepository,
             $this->subCategoryRepository, $this->problemConditionTypeRepository, $this->problemConditionRepository,
             $this->problemTemplatePlugin, $this->pluginContainer, $this->stringsHelper, $this->constHelper,
-            $this->problemTemplateStatus,
+            $this->problemTemplateSession,
             $edit
         );
     }

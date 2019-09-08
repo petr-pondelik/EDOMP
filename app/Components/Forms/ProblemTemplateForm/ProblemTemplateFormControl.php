@@ -16,8 +16,8 @@ use App\Exceptions\ProblemTemplateException;
 use App\Helpers\ConstHelper;
 use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\Entity\ProblemTemplateNP;
-use App\Model\NonPersistent\Entity\ProblemTemplateStatusItem;
-use App\Model\NonPersistent\Parameter\ParametersData;
+use App\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
+use App\Model\NonPersistent\TemplateData\ParametersData;
 use App\Model\Persistent\Entity\ProblemConditionType;
 use App\Model\Persistent\Entity\ProblemType;
 use App\Model\Persistent\Functionality\BaseFunctionality;
@@ -28,13 +28,14 @@ use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Plugins\ProblemPlugin;
 use App\Services\PluginContainer;
-use App\Services\ProblemTemplateStatus;
+use App\Services\ProblemTemplateSession;
 use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SelectBox;
 use Nette\Forms\Controls\TextBase;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Strings;
 
 /**
  * Class ProblemTemplateFormControl
@@ -93,9 +94,9 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     protected $problemType;
 
     /**
-     * @var ProblemTemplateStatus
+     * @var ProblemTemplateSession
      */
-    protected $problemTemplateStatus;
+    protected $problemTemplateSession;
 
     /**
      * @var ProblemConditionType[]
@@ -130,7 +131,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      * @param PluginContainer $pluginContainer
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
-     * @param ProblemTemplateStatus $problemTemplateStatus
+     * @param ProblemTemplateSession $problemTemplateSession
      * @param bool $edit
      */
     public function __construct
@@ -143,7 +144,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         ProblemPlugin $problemPlugin,
         PluginContainer $pluginContainer,
         StringsHelper $stringsHelper, ConstHelper $constHelper,
-        ProblemTemplateStatus $problemTemplateStatus,
+        ProblemTemplateSession $problemTemplateSession,
         bool $edit = false
     )
     {
@@ -158,7 +159,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         $this->pluginContainer = $pluginContainer;
         $this->stringsHelper = $stringsHelper;
         $this->constHelper = $constHelper;
-        $this->problemTemplateStatus = $problemTemplateStatus;
+        $this->problemTemplateSession = $problemTemplateSession;
     }
 
     /**
@@ -276,126 +277,56 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     }
 
     /**
-     * @param Form $form
-     */
-    public function handleFormValidate(Form $form): void
-    {
-        bdump('HANDLE FORM VALIDATE');
-        $data = $this->createNonPersistentEntity($form->getValues());
-
-        // VALIDATE BASE ITEMS
-        if(!$this->validateBaseItems($data)){
-            $this->redrawErrors();
-            return;
-        }
-
-        // VALIDATE BODY
-        if(!$this->validateBody($data)){
-            $this->redrawErrors();
-            return;
-        }
-
-        $data->setParametersData(new ParametersData($this->stringsHelper::extractParametersInfo($data->getBody())));
-
-        // STANDARDIZE THE INPUT
-        $data = $this->standardize($data);
-        if($data === null){
-            $this->redrawErrors();
-            return;
-        }
-
-        // VALIDATE TYPE
-        if(!$this->validateType($data)){
-            $this->redrawErrors();
-            return;
-        }
-
-        // VALIDATE IF ALL CONDITIONS ARE SATISFIED
-        $validateFields['conditions_valid'] = new ValidatorArgument($form->getValues()->conditions_valid, 'isTrue', 'submit');
-        $this->validator->validate($form, $validateFields);
-
-        // REDRAW ERRORS
-        $this->redrawErrors();
-    }
-
-    /**
-     * @param array $data
-     */
-    public function handleTypeValidation(array $data): void
-    {
-        bdump('HANDLE TYPE VALIDATION');
-        $this->redrawControl('flashesSnippet');
-
-        $data['type'] = $this->problemType->getId();
-        $data['idHidden'] = $data['idHidden'] ?: null;
-
-        $entity = $this->createNonPersistentEntity(ArrayHash::from($data));
-
-        // VALIDATE BODY
-        if(!$this->validateBody($entity)){
-            $this->redrawErrors(false);
-            return;
-        }
-
-        $entity->setParametersData(new ParametersData($this->stringsHelper::extractParametersInfo($entity->getBody())));
-
-        // STANDARDIZE THE INPUT
-        $standardized = $this->standardize($entity);
-        if($standardized === null){
-            $this->redrawErrors(false);
-            return;
-        }
-
-        // VALIDATE TYPE
-        if(!$this->validateType($standardized)){
-            $this->redrawErrors(false);
-            return;
-        }
-
-        $this->flashMessage('Ze zadané šablony lze vygenerovat úlohy typu ' . $this->problemType->getLabel() . '.', 'success');
-        $this->redrawControl('flashesSnippet');
-
-        $this->redrawErrors(false);
-
-        $this->presenter->setPayload(true);
-    }
-
-    /**
      * @param array $data
      */
     public function handleCondValidation(array $data): void
     {
         bdump('HANDLE COND VALIDATION');
+        bdump($data);
+
         $this->redrawControl('flashesSnippet');
 
-        $entity = $this->createNonPersistentEntity(ArrayHash::from($data));
+        $this->problemTemplateSession->setProblemTemplate($this->createNonPersistentEntity(ArrayHash::from($data)));
 
-        if(!$this->problemTemplateStatus->isTypeValidated()){
-            $this['form']['condition_' . $entity->getConditionType()]->addError('Nejdříve ověřte šablonu.');
+//        $defaultState = $this->problemTemplateSession->getDefaultState()->getProblemTemplateStateItems();
+        $this->problemTemplateSession->getProblemTemplate()->getState()->reset();
+
+        bdump($this->problemTemplateSession->getProblemTemplate());
+
+        // VALIDATE BODY
+        if(!$this->validateBody($this->problemTemplateSession->getProblemTemplate())){
             $this->redrawErrors(false);
             return;
         }
 
-        // VALIDATE BASE ITEMS
-        if(!$this->validateBaseItems($entity, true)){
-            $this->redrawErrors(false);
-            return;
-        }
-
-        $entity->setParametersData(new ParametersData($this->stringsHelper::extractParametersInfo($entity->getBody())));
+        $problemData = new ParametersData($this->stringsHelper::extractParametersInfo($this->problemTemplateSession->getProblemTemplate()->getBody()));
+        $this->problemTemplateSession->getProblemTemplate()->setParametersData($problemData);
 
         // STANDARDIZE THE INPUT
-        $standardized = $this->standardize($entity);
+        $standardized = $this->standardize($this->problemTemplateSession->getProblemTemplate());
         if($standardized === null){
             $this->redrawErrors(false);
             return;
         }
+        $this->problemTemplateSession->setProblemTemplate($standardized);
 
-        // VALIDATE SPECIFIED CONDITION
-        if(!$this->validateCondition($standardized)){
+        bdump($this->problemTemplateSession->getProblemTemplate());
+
+        // VALIDATE TYPE
+        if(!$this->validateType($this->problemTemplateSession->getProblemTemplate())){
             $this->redrawErrors(false);
             return;
         }
+
+        bdump($this->problemTemplateSession->getProblemTemplate());
+
+        // VALIDATE SPECIFIED CONDITION
+        if(!$this->validateCondition($this->problemTemplateSession->getProblemTemplate())){
+            $this->redrawErrors(false);
+            return;
+        }
+
+        bdump($this->problemTemplateSession->getProblemTemplate());
 
         $this->flashMessage('Podmínka je splnitelná.', 'success');
         $this->redrawControl('flashesSnippet');
@@ -407,12 +338,117 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     }
 
     /**
+     * @param Form $form
+     */
+    public function handleFormValidate(Form $form): void
+    {
+        bdump('HANDLE FORM VALIDATE');
+        bdump($this->problemTemplateSession->getProblemTemplate());
+
+        $values = $form->getValues();
+        bdump($values);
+
+        // If condition validation was triggered
+        if($this->problemTemplateSession->getProblemTemplate()){
+
+            bdump('CONDITION VALIDATION WAS TRIGGERED');
+
+            // Get old problem template body
+            $bodyOld = $this->problemTemplateSession->getProblemTemplate()->getBody();
+
+            // Actualize problemTemplateSession with actual values
+            $this->problemTemplateSession->getProblemTemplate()->setValues($values);
+            $new = $this->standardize($this->problemTemplateSession->getProblemTemplate());
+            $this->problemTemplateSession->setProblemTemplate($new);
+
+            // If template body was changed, the type must be validated again
+            // If template's old body was not successfully validated by type, the type must be validated again
+            if(
+                Strings::trim($bodyOld) !== Strings::trim($values->body) ||
+                !$this->problemTemplateSession->getProblemTemplate()->getState()->isTypeValidated()
+            ){
+                // VALIDATE TYPE
+                if(!$this->validateType($this->problemTemplateSession->getProblemTemplate())){
+                    $this->redrawErrors();
+                    return;
+                }
+            }
+
+            if(
+                Strings::trim($bodyOld) !== Strings::trim($values->body) ||
+                $this->conditionsToValidate($values)
+//                !$this->problemTemplateSession->getProblemTemplate()->getState()->isAllValidated($this->conditionTypes, $values)
+            ){
+                bdump('CONDITION NEEDS TO BE VALIDATED');
+//                $this->problemTemplateSession->getProblemTemplate()->getState()->invalidateConditions($values);
+                $form['submit']->addError('Ověřte prosím zadanou podmínku.');
+                $this->redrawErrors();
+                return;
+            }
+
+            $entity = $this->problemTemplateSession->getProblemTemplate();
+
+        }
+        // If it wasn't
+        else{
+
+            $entity = $this->createNonPersistentEntity($values);
+
+            if($this->edit){
+                $defaultState = $this->problemTemplateSession->getDefaultState()->getProblemTemplateStateItems();
+                $entity->getState()->updateArr($defaultState);
+            }
+
+            bdump($entity);
+
+            // VALIDATE BODY
+            if(!$this->validateBody($entity)){
+                $this->redrawErrors();
+                return;
+            }
+
+            $entity->setParametersData(new ParametersData($this->stringsHelper::extractParametersInfo($entity->getBody())));
+
+            // STANDARDIZE THE INPUT
+            $entity = $this->standardize($entity);
+            if($entity === null){
+                $this->redrawErrors();
+                return;
+            }
+
+            // VALIDATE TYPE
+            if(!$this->validateType($entity)){
+                $this->redrawErrors();
+                return;
+            }
+
+            if($this->conditionsToValidate($values)){
+                $form['submit']->addError('Ověřte prosím zadanou podmínku.');
+                $this->redrawErrors();
+                return;
+            }
+
+        }
+
+        bdump($entity);
+
+        // VALIDATE BASE ITEMS
+        if(!$this->validateBaseItems($entity)){
+            $this->redrawErrors();
+            return;
+        }
+
+        // REDRAW ERRORS
+        $this->redrawErrors();
+    }
+
+    /**
      * @param ProblemTemplateNP $problemTemplate
      * @return bool
      */
     public function validateBody(ProblemTemplateNP $problemTemplate): bool
     {
-        //bdump('VALIDATE BODY');
+        bdump('VALIDATE BODY');
         $validateFields['body'] = new ValidatorArgument($problemTemplate, 'body_' . $problemTemplate->getType());
         //bdump($validateFields);
 
@@ -439,17 +475,17 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     public function validateType(ProblemTemplateNP $data): bool
     {
         bdump('VALIDATE TYPE');
-        bdump($data);
 
         try{
             if($this->problemTemplatePlugin->validateType($data)){
-                $this->problemTemplateStatus->updateStatus(new ProblemTemplateStatusItem('type', true));
+                $data->getState()->update(new ProblemTemplateStateItem('type', true, true));
             }
             else{
-                $this->problemTemplateStatus->updateStatus(new ProblemTemplateStatusItem('type', false));
+                $data->getState()->update(new ProblemTemplateStateItem('type', false, true));
+                return false;
             }
         } catch (\Exception $e){
-            $this->problemTemplateStatus->updateStatus(new ProblemTemplateStatusItem('type', false));
+            $data->getState()->update(new ProblemTemplateStateItem('type', false, true));
             $this['form']['body']->addError($e->getMessage());
             $this->redrawErrors(false);
             return false;
@@ -472,18 +508,16 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         try{
             $form = $this->validator->validate($this['form'], $validationFields);
             if($form->hasErrors()){
-                $this->problemTemplateStatus->updateStatus(new ProblemTemplateStatusItem($data->getConditionType(), false));
+                $data->getState()->update(new ProblemTemplateStateItem('condition_' . $data->getConditionType(), $data->getConditionAccessor(), false));
                 return false;
             }
         } catch (ProblemTemplateException $e){
             $this['form']['body']->addError($e->getMessage());
-            $this->problemTemplateStatus->updateStatus(new ProblemTemplateStatusItem($data->getConditionType(), false));
+            $data->getState()->update(new ProblemTemplateStateItem('condition_' . $data->getConditionType(), $data->getConditionAccessor(), false));
             return false;
         }
 
-        $this->problemTemplateStatus->updateStatus(new ProblemTemplateStatusItem($data->getConditionType(), true));
-
-        bdump($this->problemTemplateStatus->getSerialized());
+        $data->getState()->update(new ProblemTemplateStateItem('condition_' . $data->getConditionType(), $data->getConditionAccessor(), true));
 
         return true;
     }
@@ -494,15 +528,17 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      */
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
-        try{
-            $this->functionality->create($values);
-            $this->onSuccess();
-        } catch (\Exception $e){
-            if ($e instanceof AbortException){
-                return;
-            }
-            $this->onError($e);
-        }
+        bdump('HANDLE FORM SUCCESS');
+//        try{
+//            $this->functionality->create($values);
+//            $this->onSuccess();
+//        } catch (\Exception $e){
+//            if ($e instanceof AbortException){
+//                return;
+//            }
+//            $this->onError($e);
+//        }
+//        $this->problemTemplateSession->erase();
     }
 
     /**
@@ -511,6 +547,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      */
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
+        bdump('HANDLE FORM SUCCESS');
+        bdump($values);
         try{
             $this->functionality->update($values->idHidden, $values);
             $this->onSuccess();
@@ -523,11 +561,54 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     }
 
     /**
+     * @param ArrayHash $values
+     * @return bool
+     */
+    public function conditionsToValidate(ArrayHash $values): bool
+    {
+        // In the case of edit
+        if($this->edit){
+            $conditions = $this->entity->getConditions()->getValues();
+            bdump($conditions);
+            if($this->problemTemplateSession->getProblemTemplate()){
+                return !$this->problemTemplateSession->getProblemTemplate()->getState()->conditionsValidated($values);
+            }
+            else{
+                foreach ($conditions as $condition){
+                    $conditionTypeId = $condition->getProblemConditionType()->getId();
+                    bdump([$values->{'condition_' . $conditionTypeId}, $condition->getAccessor()]);
+                    if($values->{'condition_' . $conditionTypeId} !== 0 && $values->{'condition_' . $conditionTypeId} !== $condition->getAccessor()){
+                        return true;
+                    }
+                }
+            }
+
+        }
+        // In the case of create
+        else{
+            // If the validation was already triggered
+            if($this->problemTemplateSession->getProblemTemplate()) {
+                return !$this->problemTemplateSession->getProblemTemplate()->getState()->conditionsValidated($values);
+            }
+            // If the validation wasn't triggered yet
+            foreach ($values as $key => $value){
+                if($value !== 0 && Strings::match($key, '~condition_\d~')){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @throws \Exception
      */
     public function render(): void
     {
-        //bdump('RENDER');
+        bdump('RENDER');
+        bdump($this->entity);
+        $this->template->entity = $this->entity;
         $this->template->problemType = $this->problemType;
         $this->template->conditionTypes = $this->conditionTypes;
         if($this->edit){

@@ -32,6 +32,8 @@ class LinearEquationPlugin extends EquationPlugin
     {
         bdump('VALIDATE LINEAR EQUATION');
 
+        bdump($data->getStandardized());
+
         // Remove all the spaces
         $standardized = $this->stringsHelper::removeWhiteSpaces($data->getStandardized());
 
@@ -45,6 +47,7 @@ class LinearEquationPlugin extends EquationPlugin
 
         // Match string against the linear expression regexp
         $matches = Strings::match($standardized, '~' . $this->regularExpressions::getLinearEquationRE($data->getVariable()) . '~');
+        bdump($matches);
 
         // Check if the whole expression was matched
         if($matches[0] !== $standardized){

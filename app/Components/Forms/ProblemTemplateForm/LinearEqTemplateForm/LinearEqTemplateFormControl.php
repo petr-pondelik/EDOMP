@@ -22,7 +22,7 @@ use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Plugins\ProblemPlugin;
 use App\Services\PluginContainer;
-use App\Services\ProblemTemplateStatus;
+use App\Services\ProblemTemplateSession;
 use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -83,7 +83,7 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
      * @param PluginContainer $pluginContainer
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
-     * @param ProblemTemplateStatus $problemTemplateStatus
+     * @param ProblemTemplateSession $problemTemplateSession
      * @param bool $edit
      */
     public function __construct
@@ -93,7 +93,7 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
         ProblemPlugin $problemTemplatePlugin, PluginContainer $pluginContainer,
         StringsHelper $stringsHelper, ConstHelper $constHelper,
-        ProblemTemplateStatus $problemTemplateStatus,
+        ProblemTemplateSession $problemTemplateSession,
         bool $edit = false
     )
     {
@@ -102,7 +102,7 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
             $validator, $functionality, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
             $problemConditionTypeRepository, $problemConditionRepository, $problemTemplatePlugin, $pluginContainer,
             $stringsHelper, $constHelper,
-            $problemTemplateStatus,
+            $problemTemplateSession,
             $edit
         );
         $this->attachEntities($this->constHelper::LINEAR_EQ);

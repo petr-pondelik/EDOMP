@@ -9,6 +9,8 @@
 namespace App\Services;
 
 use App\Model\NonPersistent\Entity\ProblemTemplateNP;
+use App\Model\NonPersistent\TemplateData\ProblemTemplateState;
+use App\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
 use Nette\Http\Session;
 use Nette\Http\SessionSection;
 
@@ -38,18 +40,37 @@ class ProblemTemplateSession
     }
 
     /**
-     * @return ProblemTemplateNP
+     * @return ProblemTemplateNP|null
      */
-    public function getProblemTemplate(): ProblemTemplateNP
+    public function getProblemTemplate(): ?ProblemTemplateNP
     {
         return $this->problemTemplateSession->problemTemplate;
     }
 
     /**
-     * @param ProblemTemplateNP $template
+     * @param ProblemTemplateNP|null $template
      */
-    public function setProblemTemplate(ProblemTemplateNP $template): void
+    public function setProblemTemplate(?ProblemTemplateNP $template): void
     {
         $this->problemTemplateSession->problemTemplate = $template;
+    }
+
+    /**
+     * @param ProblemTemplateStateItem $item
+     */
+    public function addDefaultStateItem(ProblemTemplateStateItem $item): void
+    {
+        if(!$this->problemTemplateSession->defaultState){
+            $this->problemTemplateSession->defaultState = new ProblemTemplateState();
+        }
+        $this->problemTemplateSession->defaultState->update($item);
+    }
+
+    /**
+     * @return ProblemTemplateState|null
+     */
+    public function getDefaultState(): ?ProblemTemplateState
+    {
+        return $this->problemTemplateSession->defaultState;
     }
 }
