@@ -20,6 +20,7 @@ use App\Model\Persistent\Functionality\QuadraticEqTemplFunctionality;
 use App\Model\Persistent\Repository\QuadraticEqTemplRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
+use App\Services\ProblemTemplateSession;
 use Nette\ComponentModel\IComponent;
 
 /**
@@ -41,6 +42,7 @@ class QuadraticEqTemplatePresenter extends ProblemTemplatePresenter
      * @param QuadraticEqTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
+     * @param ProblemTemplateSession $problemTemplateSession
      */
     public function __construct
     (
@@ -48,7 +50,8 @@ class QuadraticEqTemplatePresenter extends ProblemTemplatePresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         QuadraticEqTemplRepository $repository, QuadraticEqTemplFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, QuadraticEqTemplateFormFactory $problemTemplateFormFactory,
-        ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory
+        ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory,
+        ProblemTemplateSession $problemTemplateSession
     )
     {
         parent::__construct
@@ -56,7 +59,8 @@ class QuadraticEqTemplatePresenter extends ProblemTemplatePresenter
             $authorizator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
             $templateGridFactory,
-            $constHelper, $sectionHelpModalFactory
+            $constHelper, $sectionHelpModalFactory,
+            $problemTemplateSession
         );
         $this->repository = $repository;
         $this->functionality = $functionality;

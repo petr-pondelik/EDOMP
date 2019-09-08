@@ -62,7 +62,7 @@ class GeometricSequencePlugin extends SequencePlugin
         $matchesJson = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $matchesJson
-        ]), $data->getIdHidden(), true);
+        ]), $data->getIdHidden());
 
         return true;
     }

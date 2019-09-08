@@ -20,6 +20,7 @@ use App\Model\Persistent\Functionality\ArithmeticSeqTemplFunctionality;
 use App\Model\Persistent\Repository\ArithmeticSeqTemplRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
+use App\Services\ProblemTemplateSession;
 use Nette\ComponentModel\IComponent;
 
 /**
@@ -41,6 +42,7 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
      * @param ArithmeticSeqTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
+     * @param ProblemTemplateSession $problemTemplateSession
      */
     public function __construct
     (
@@ -48,14 +50,17 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ArithmeticSeqTemplRepository $repository, ArithmeticSeqTemplFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, ArithmeticSeqTemplateFormFactory $problemTemplateFormFactory,
-        ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory
+        ConstHelper $constHelper,
+        ISectionHelpModalFactory $sectionHelpModalFactory,
+        ProblemTemplateSession $problemTemplateSession
     )
     {
         parent::__construct
         (
             $authorizator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
-            $templateGridFactory, $constHelper, $sectionHelpModalFactory
+            $templateGridFactory, $constHelper, $sectionHelpModalFactory,
+            $problemTemplateSession
         );
         $this->repository = $repository;
         $this->functionality = $functionality;

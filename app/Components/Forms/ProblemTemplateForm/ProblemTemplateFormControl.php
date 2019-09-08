@@ -244,6 +244,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      */
     public function validateBaseItems(ProblemTemplateNP $problemTemplate, bool $conditions = false): bool
     {
+        bdump('VALIDATE BASE ITEMS');
         $validateFields = [];
         if(!$conditions){
             foreach ($this->baseValidation as $item){
@@ -392,6 +393,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         // If it wasn't
         else{
 
+            bdump('FIRST VALIDATION');
+
             $entity = $this->createNonPersistentEntity($values);
 
             if($this->edit){
@@ -415,6 +418,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
                 $this->redrawErrors();
                 return;
             }
+
+            bdump('TEST');
 
             // VALIDATE TYPE
             if(!$this->validateType($entity)){
@@ -449,6 +454,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     public function validateBody(ProblemTemplateNP $problemTemplate): bool
     {
         bdump('VALIDATE BODY');
+        bdump($problemTemplate);
         $validateFields['body'] = new ValidatorArgument($problemTemplate, 'body_' . $problemTemplate->getType());
         //bdump($validateFields);
 
@@ -482,9 +488,12 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
             }
             else{
                 $data->getState()->update(new ProblemTemplateStateItem('type', false, true));
+                $this['form']['body']->addError('TEST');
+                $this->redrawErrors(false);
                 return false;
             }
         } catch (\Exception $e){
+            bdump($e);
             $data->getState()->update(new ProblemTemplateStateItem('type', false, true));
             $this['form']['body']->addError($e->getMessage());
             $this->redrawErrors(false);
@@ -529,16 +538,17 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         bdump('HANDLE FORM SUCCESS');
-//        try{
-//            $this->functionality->create($values);
-//            $this->onSuccess();
-//        } catch (\Exception $e){
-//            if ($e instanceof AbortException){
-//                return;
-//            }
-//            $this->onError($e);
-//        }
-//        $this->problemTemplateSession->erase();
+        try{
+            $this->functionality->create($values);
+            $this->onSuccess();
+        } catch (\Exception $e){
+            bdump($e);
+            if ($e instanceof AbortException){
+                return;
+            }
+            $this->onError($e);
+        }
+        $this->problemTemplateSession->erase();
     }
 
     /**
@@ -566,6 +576,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      */
     public function conditionsToValidate(ArrayHash $values): bool
     {
+        bdump('CONDITIONS TO VALIDATE');
+
         // In the case of edit
         if($this->edit){
             $conditions = $this->entity->getConditions()->getValues();

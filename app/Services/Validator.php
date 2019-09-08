@@ -252,28 +252,28 @@ class Validator
             'body_' . $this->constHelper::LINEAR_EQ => function (LinearEquationTemplateNP $problemTemplate) {
                 //bdump('VALIDATE LINEAR EQUATION BODY VALIDATOR');
                 //bdump($problemTemplate);
-                if(empty($problemTemplate->getBody()) || empty($problemTemplate->getVariable())){
+                if(empty($problemTemplate->getBody())){
                     return 0;
                 }
                 return $this->linearEquationPlugin->validateBody($problemTemplate);
             },
 
             'body_' . $this->constHelper::QUADRATIC_EQ => function (QuadraticEquationTemplateNP $problemTemplate) {
-                if(empty($problemTemplate->getBody()) || empty($problemTemplate->getVariable())){
+                if(empty($problemTemplate->getBody())){
                     return 0;
                 }
                 return $this->linearEquationPlugin->validateBody($problemTemplate);
             },
 
             'body_' . $this->constHelper::ARITHMETIC_SEQ => function (ArithmeticSequenceTemplateNP $problemTemplate) {
-                if(empty($problemTemplate->getBody()) || empty($problemTemplate->getVariable())){
+                if(empty($problemTemplate->getBody())){
                     return 0;
                 }
                 return $this->arithmeticSequencePlugin->validateBody($problemTemplate);
             },
 
             'body_' . $this->constHelper::GEOMETRIC_SEQ => function (GeometricSequenceTemplateNP $problemTemplate) {
-                if(empty($problemTemplate->getBody()) || empty($problemTemplate->getVariable())){
+                if(empty($problemTemplate->getBody())){
                     return 0;
                 }
                 return $this->geometricSequencePlugin->validateBody($problemTemplate);

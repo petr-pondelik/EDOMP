@@ -19,6 +19,7 @@ use App\Model\Persistent\Functionality\GeometricSeqTemplFunctionality;
 use App\Model\Persistent\Repository\GeometricSeqTemplRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
+use App\Services\ProblemTemplateSession;
 use Nette\ComponentModel\IComponent;
 use ProblemTemplateForm\GeometricSeqTemplateForm\GeometricSeqTemplateFormFactory;
 
@@ -41,6 +42,7 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
      * @param GeometricSeqTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
+     * @param ProblemTemplateSession $problemTemplateSession
      */
     public function __construct
     (
@@ -48,7 +50,9 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         GeometricSeqTemplRepository $repository, GeometricSeqTemplFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, GeometricSeqTemplateFormFactory $problemTemplateFormFactory,
-        ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory
+        ConstHelper $constHelper,
+        ISectionHelpModalFactory $sectionHelpModalFactory,
+        ProblemTemplateSession $problemTemplateSession
     )
     {
         parent::__construct
@@ -56,7 +60,8 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
             $authorizator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
             $templateGridFactory,
-            $constHelper, $sectionHelpModalFactory
+            $constHelper, $sectionHelpModalFactory,
+            $problemTemplateSession
         );
         $this->repository = $repository;
         $this->functionality = $functionality;

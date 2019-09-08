@@ -66,18 +66,18 @@ class LinearEquationPlugin extends EquationPlugin
             ]);
         } catch (\Exception $e){
             bdump($e);
-            throw new ProblemTemplateException('Zadán chybný formát šablony.');
+            throw new ProblemTemplateException('Zadán nepodporovaný formát šablony.');
         }
 
         if(!$matches){
-            // TODO: Handle when there are no parameters matches in validation !!!!
+            // When there are no parameters matches in validation !!!!
             throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat lineární rovnici.');
         }
 
         $matchesJson = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $matchesJson
-        ]), $data->getIdHidden(), true);
+        ]), $data->getIdHidden());
 
         return true;
     }
@@ -144,7 +144,7 @@ class LinearEquationPlugin extends EquationPlugin
         $jsonData = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $jsonData
-        ]), $data->getIdHidden());
+        ]), $data->getIdHidden(), $data->getConditionType());
 
         return true;
     }

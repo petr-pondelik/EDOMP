@@ -190,7 +190,7 @@ class QuadraticEquationPlugin extends EquationPlugin
 
         // Check if the whole expression was matched
         if($matches[0] !== $standardized){
-            return false;
+            throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat kvadratickou rovnici.');
         }
 
         bdump('VARIABLE COEFFICIENTS');
@@ -200,8 +200,7 @@ class QuadraticEquationPlugin extends EquationPlugin
         foreach ($variableCoefficients as $variableCoefficient){
             if($variableCoefficient[2] > 2){
                 if($variableCoefficient[1] === '' || Strings::match($variableCoefficient[1], '~' . $this->regularExpressions::RE_NUM_FRAC . '~')){
-                    bdump('FALSE');
-                    return false;
+                    throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat kvadratickou rovnici.');
                 }
             }
         }
@@ -216,22 +215,17 @@ class QuadraticEquationPlugin extends EquationPlugin
             ]);
         } catch (\Exception $e){
             bdump($e);
-            throw new ProblemTemplateException('Zadán chybný formát šablony.');
+            throw new ProblemTemplateException('Zadán nepodporovaný formát šablony.');
         }
-
-        bdump($matches);
 
         if(!$matches){
-            // TODO: Handle when there are no parameters matches in validation !!!!
-            return false;
+            throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat kvadratickou rovnici.');
         }
-
-        //bdump($matches);
 
         $matchesJson = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $matchesJson
-        ]), $data->getIdHidden(), true);
+        ]), $data->getIdHidden());
 
         return true;
     }
@@ -319,7 +313,7 @@ class QuadraticEquationPlugin extends EquationPlugin
         $jsonData = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $jsonData
-        ]), $data->getIdHidden());
+        ]), $data->getIdHidden(), $data->getConditionType());
 
         return true;
     }

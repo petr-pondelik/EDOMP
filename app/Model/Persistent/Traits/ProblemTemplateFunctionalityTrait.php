@@ -83,7 +83,8 @@ trait ProblemTemplateFunctionalityTrait
      */
     public function setBaseValues($templ, ArrayHash $data, int $templateId = null, bool $fromDataGrid = false): ProblemTemplate
     {
-        //bdump('SET BASE VALUES');
+        bdump('SET BASE VALUES');
+        bdump($data);
 
         if(isset($data->textBefore)){
             $templ->setTextBefore($data->textBefore);
@@ -122,14 +123,17 @@ trait ProblemTemplateFunctionalityTrait
 
             $templateJsonData = [];
 
+            bdump('BEFORE TEMPLATE MATCHES INTERSECT');
             if($templateJsons = $this->templateJsonDataRepository->findBy(['templateId' => $templateId])){
                 $templateJsonData = Json::decode($templateJsons[0]->getJsonData());
                 // Unset picked template JSON
                 unset($templateJsons[0]);
                 // Make merge of all template recorded JSONs
                 foreach ($templateJsons as $json){
-                    $arr = Json::decode($json->getJsonData());
-                    $templateJsonData = $this->intersectJsonDataArrays($templateJsonData, $arr);
+                    if($data->{'condition_' . $json->getProblemConditionType()->getId()} != 0){
+                        $arr = Json::decode($json->getJsonData());
+                        $templateJsonData = $this->intersectJsonDataArrays($templateJsonData, $arr);
+                    }
                 }
             }
 

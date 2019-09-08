@@ -19,7 +19,9 @@ use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
+use App\Plugins\ProblemPlugin;
 use App\Services\PluginContainer;
+use App\Services\ProblemTemplateSession;
 use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -76,9 +78,11 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
      * @param SubCategoryRepository $subCategoryRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
+     * @param ProblemPlugin $problemTemplatePlugin
      * @param PluginContainer $pluginContainer
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
+     * @param ProblemTemplateSession $problemTemplateSession
      * @param bool $edit
      */
     public function __construct
@@ -86,13 +90,22 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
         Validator $validator, BaseFunctionality $functionality, DifficultyRepository $difficultyRepository,
         ProblemTypeRepository $problemTypeRepository, SubCategoryRepository $subCategoryRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        PluginContainer $pluginContainer, StringsHelper $stringsHelper, ConstHelper $constHelper, bool $edit = false
+        ProblemPlugin $problemTemplatePlugin,
+        PluginContainer $pluginContainer,
+        StringsHelper $stringsHelper, ConstHelper $constHelper,
+        ProblemTemplateSession $problemTemplateSession,
+        bool $edit = false
     )
     {
         parent::__construct
         (
             $validator, $functionality, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
-            $problemConditionTypeRepository, $problemConditionRepository, $pluginContainer, $stringsHelper, $constHelper, $edit
+            $problemConditionTypeRepository, $problemConditionRepository,
+            $problemTemplatePlugin,
+            $pluginContainer,
+            $stringsHelper, $constHelper,
+            $problemTemplateSession,
+            $edit
         );
         $this->attachEntities($this->constHelper::QUADRATIC_EQ);
     }

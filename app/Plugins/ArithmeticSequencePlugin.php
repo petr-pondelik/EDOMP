@@ -30,7 +30,7 @@ class ArithmeticSequencePlugin extends SequencePlugin
     public function validateType(ProblemTemplateNP $data): bool
     {
         if(!parent::validateType($data)){
-            return false;
+            throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat aritmetickou posloupnost.');
         }
 
         bdump('VALIDATE ARITHMETIC SEQUENCE');
@@ -53,17 +53,17 @@ class ArithmeticSequencePlugin extends SequencePlugin
                 ]
             ]);
         } catch (\Exception $e){
-            throw new ProblemTemplateException('Zadán chybný formát šablony.');
+            throw new ProblemTemplateException('Zadán nepodporovaný formát šablony.');
         }
 
         if(!$matches){
-            return false;
+            throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat aritmetickou posloupnost.');
         }
 
         $matchesJson = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $matchesJson
-        ]), $data->getIdHidden(), true);
+        ]), $data->getIdHidden());
 
         return true;
     }
@@ -80,6 +80,4 @@ class ArithmeticSequencePlugin extends SequencePlugin
         $data->res['Diference'] = $difference;
         return $data->res;
     }
-
-
 }

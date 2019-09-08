@@ -48,16 +48,23 @@ class TemplateJsonData extends BaseEntity
      */
     protected $templateId;
 
+//    /**
+//     * @ORM\Column(type="boolean", nullable=true)
+//     * @Assert\Type(
+//     *     type="bool",
+//     *     message="IsValidation must be {{ type }}."
+//     * )
+//     *
+//     * @var bool
+//     */
+//    protected $isValidation;
+
     /**
-     * @ORM\Column(type="boolean", nullable=true)
-     * @Assert\Type(
-     *     type="bool",
-     *     message="IsValidation must be {{ type }}."
-     * )
+     * @ORM\ManyToOne(targetEntity="App\Model\Persistent\Entity\ProblemConditionType", cascade={"persist", "merge"})
      *
-     * @var bool
+     * @var ProblemConditionType
      */
-    protected $isValidation;
+    protected $problemConditionType;
 
     /**
      * @return string
@@ -92,18 +99,18 @@ class TemplateJsonData extends BaseEntity
     }
 
     /**
-     * @return bool
+     * @return ProblemConditionType
      */
-    public function isValidation(): bool
+    public function getProblemConditionType(): ProblemConditionType
     {
-        return $this->isValidation;
+        return $this->problemConditionType;
     }
 
     /**
-     * @param bool $isValidation
+     * @param ProblemConditionType $problemConditionType
      */
-    public function setIsValidation(bool $isValidation): void
+    public function setProblemConditionType(ProblemConditionType $problemConditionType): void
     {
-        $this->isValidation = $isValidation;
+        $this->problemConditionType = $problemConditionType;
     }
 }

@@ -100,7 +100,9 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
         parent::__construct
         (
             $validator, $functionality, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
-            $problemConditionTypeRepository, $problemConditionRepository, $problemTemplatePlugin, $pluginContainer,
+            $problemConditionTypeRepository, $problemConditionRepository,
+            $problemTemplatePlugin,
+            $pluginContainer,
             $stringsHelper, $constHelper,
             $problemTemplateSession,
             $edit

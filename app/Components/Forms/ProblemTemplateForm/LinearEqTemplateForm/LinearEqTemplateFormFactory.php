@@ -49,15 +49,19 @@ class LinearEqTemplateFormFactory extends ProblemTemplateFormFactory
         Validator $validator, DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository, ProblemConditionTypeRepository $problemConditionTypeRepository,
         ProblemConditionRepository $problemConditionRepository,
-        LinearEquationPlugin $problemTemplatePlugin, PluginContainer $pluginContainer,
+        LinearEquationPlugin $problemTemplatePlugin,
+        PluginContainer $pluginContainer,
         StringsHelper $stringsHelper, ConstHelper $constHelper,
         ProblemTemplateSession $problemTemplateSession
     )
     {
-        parent::__construct(
+        parent::__construct
+        (
             $validator, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
-            $problemConditionTypeRepository, $problemConditionRepository, $pluginContainer,
-            $stringsHelper, $constHelper, $problemTemplateSession
+            $problemConditionTypeRepository, $problemConditionRepository,
+            $pluginContainer,
+            $stringsHelper, $constHelper,
+            $problemTemplateSession
         );
         $this->problemTemplatePlugin = $problemTemplatePlugin;
     }
@@ -72,7 +76,9 @@ class LinearEqTemplateFormFactory extends ProblemTemplateFormFactory
         return new LinearEqTemplateFormControl(
             $this->validator, $functionality, $this->difficultyRepository, $this->problemTypeRepository,
             $this->subCategoryRepository, $this->problemConditionTypeRepository, $this->problemConditionRepository,
-            $this->problemTemplatePlugin, $this->pluginContainer, $this->stringsHelper, $this->constHelper,
+            $this->problemTemplatePlugin,
+            $this->pluginContainer,
+            $this->stringsHelper, $this->constHelper,
             $this->problemTemplateSession,
             $edit
         );
