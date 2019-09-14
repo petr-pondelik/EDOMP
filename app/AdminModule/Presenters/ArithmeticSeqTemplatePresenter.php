@@ -15,9 +15,9 @@ use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\FlashesTranslator;
-use App\Model\Persistent\Entity\ProblemTemplate;
-use App\Model\Persistent\Functionality\ArithmeticSeqTemplFunctionality;
-use App\Model\Persistent\Repository\ArithmeticSeqTemplRepository;
+use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
+use App\Model\Persistent\Functionality\ProblemTemplate\ArithmeticSequenceTemplateFunctionality;
+use App\Model\Persistent\Repository\ProblemTemplate\ArithmeticSequenceTemplateRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use App\Services\ProblemTemplateSession;
@@ -36,8 +36,8 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
-     * @param ArithmeticSeqTemplRepository $repository
-     * @param ArithmeticSeqTemplFunctionality $functionality
+     * @param ArithmeticSequenceTemplateRepository $repository
+     * @param ArithmeticSequenceTemplateFunctionality $functionality
      * @param TemplateGridFactory $templateGridFactory
      * @param ArithmeticSeqTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
@@ -48,7 +48,7 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        ArithmeticSeqTemplRepository $repository, ArithmeticSeqTemplFunctionality $functionality,
+        ArithmeticSequenceTemplateRepository $repository, ArithmeticSequenceTemplateFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, ArithmeticSeqTemplateFormFactory $problemTemplateFormFactory,
         ConstHelper $constHelper,
         ISectionHelpModalFactory $sectionHelpModalFactory,
@@ -75,7 +75,7 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
     public function setDefaults(IComponent $form, ProblemTemplate $record): void
     {
         parent::setDefaults($form, $record);
-        $form['variable']->setDefaultValue($record->getVariable());
+        $form['indexVariable']->setDefaultValue($record->getIndexVariable());
         $form['firstN']->setDefaultValue($record->getFirstN());
     }
 }

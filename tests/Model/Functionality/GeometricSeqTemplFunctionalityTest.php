@@ -30,13 +30,13 @@ class GeometricSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
     {
         parent::setUp();
 
-        // Mock the GeometricSeqTemplRepository
+        // Mock the GeometricSequenceTemplateRepository
         $this->repositoryMock = $this->getMockBuilder(GeometricSeqTemplRepository::class)
             ->setMethods(['find', 'getSequenceVal'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        // Set expected return values for GeometricSeqTemplRepository getSequenceVal method
+        // Set expected return values for GeometricSequenceTemplateRepository getSequenceVal method
         $this->repositoryMock->expects($this->any())
             ->method('getSequenceVal')
             ->willReturn(1);
@@ -53,7 +53,7 @@ class GeometricSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
      */
     public function testFunctionality(): void
     {
-        // Data for ArithmeticSeqTempl create
+        // Data for ArithmeticSequenceTemplate create
         $data = ArrayHash::from([
             'variable' => 'T',
             'body' => 'TEST_BODY',
@@ -68,7 +68,7 @@ class GeometricSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
             'created' => new DateTime('2000-01-01')
         ]);
 
-        // Prepare GeometricSeqTempl expected object
+        // Prepare GeometricSequenceTemplate expected object
         $geometricSeqTemplExpected = new GeometricSeqTempl();
         $geometricSeqTemplExpected->setVariable($data->variable);
         $geometricSeqTemplExpected->setBody($data->body);
@@ -91,10 +91,10 @@ class GeometricSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         );
         $geometricSeqTemplExpected->setCreated($data->created);
 
-        // Create GeometricSeqTempl
+        // Create GeometricSequenceTemplate
         $geometricSeqTempl = $this->functionality->create($data);
 
-        // Test created GeometricSeqTempl against expected GeometricSeqTempl object
+        // Test created GeometricSequenceTemplate against expected GeometricSequenceTemplate object
         $this->assertEquals($geometricSeqTemplExpected, $geometricSeqTempl);
 
         // Data for arithmeticSeqTempl update
@@ -113,7 +113,7 @@ class GeometricSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
             'created' => new DateTime('2000-02-02')
         ]);
 
-        // Prepare updated GeometricSeqTempl expected object
+        // Prepare updated GeometricSequenceTemplate expected object
         $geometricSeqTemplExpected->setVariable($data->variable);
         $geometricSeqTemplExpected->setBody($data->body);
         $geometricSeqTemplExpected->setTextBefore($data->textBefore);
@@ -136,7 +136,7 @@ class GeometricSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         );
         $geometricSeqTemplExpected->setCreated($data->created);
 
-        // Set expected return values for GeometricSeqTemplRepository find method
+        // Set expected return values for GeometricSequenceTemplateRepository find method
         $this->repositoryMock->expects($this->any())
             ->method('find')
             ->willReturnCallback(static function ($arg) use (
@@ -149,10 +149,10 @@ class GeometricSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
                 return false;
             });
 
-        // Update GeometricSeqTempl
+        // Update GeometricSequenceTemplate
         $geometricSeqTempl = $this->functionality->update(1, $data);
 
-        // Test updated GeometricSeqTempl against expected GeometricSeqTempl object
+        // Test updated GeometricSequenceTemplate against expected GeometricSequenceTemplate object
         $this->assertEquals($geometricSeqTemplExpected, $geometricSeqTempl);
     }
 }

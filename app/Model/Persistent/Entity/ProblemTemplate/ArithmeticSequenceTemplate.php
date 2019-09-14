@@ -6,37 +6,37 @@
  * Time: 22:51
  */
 
-namespace App\Model\Persistent\Entity;
+namespace App\Model\Persistent\Entity\ProblemTemplate;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\ArithmeticSeqTemplRepository")
+ * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\ProblemTemplate\ArithmeticSequenceTemplateRepository")
  *
- * Class ArithmeticSeqTempl
+ * Class ArithmeticSequenceTemplate
  * @package App\Model\Persistent\Entity
  */
-class ArithmeticSeqTempl extends ProblemTemplate
+class ArithmeticSequenceTemplate extends ProblemTemplate
 {
     /**
      * @ORM\Column(type="string", nullable=false)
      * @Assert\NotBlank(
-     *     message="Variable can't be blank."
+     *     message="IndexVariable can't be blank."
      * )
      * @Assert\Type(
      *     type="string",
-     *     message="Variable must be {{ type }}."
+     *     message="IndexVariable must be {{ type }}."
      * )
      * @Assert\Length(
      *     min=1,
      *     max=1,
-     *     exactMessage="Variable must be string of length 1."
+     *     exactMessage="IndexVariable must be string of length 1."
      * )
      *
      * @var string
      */
-    protected $variable;
+    protected $indexVariable;
 
     /**
      * @ORM\Column(type="integer", nullable=false)
@@ -62,22 +62,6 @@ class ArithmeticSeqTempl extends ProblemTemplate
      * @var float
      */
     protected $difference;
-
-    /**
-     * @return string
-     */
-    public function getVariable(): string
-    {
-        return $this->variable;
-    }
-
-    /**
-     * @param string $variable
-     */
-    public function setVariable(string $variable): void
-    {
-        $this->variable = $variable;
-    }
 
     /**
      * @return int
@@ -109,5 +93,21 @@ class ArithmeticSeqTempl extends ProblemTemplate
     public function setDifference(float $difference): void
     {
         $this->difference = $difference;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIndexVariable(): string
+    {
+        return $this->indexVariable;
+    }
+
+    /**
+     * @param string $indexVariable
+     */
+    public function setIndexVariable(string $indexVariable): void
+    {
+        $this->indexVariable = $indexVariable;
     }
 }

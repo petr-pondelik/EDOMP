@@ -60,7 +60,7 @@ class LocalDivider
      */
     public function getFactoredWithoutCoefficient(): string
     {
-        $matchArr = Strings::match($this->factored, '~^\d*\s*(.*)$~');
+        $matchArr = Strings::match($this->factored, '~^[\dp\s]*\s*(.*)$~');
         return Strings::trim($matchArr[1]);
     }
 

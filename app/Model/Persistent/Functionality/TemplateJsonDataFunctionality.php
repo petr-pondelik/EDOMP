@@ -8,10 +8,11 @@
 
 namespace App\Model\Persistent\Functionality;
 
+use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Entity\TemplateJsonData;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
-use App\Model\Persistent\Repository\ProblemTemplateRepository;
+use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
 use App\Model\Persistent\Repository\TemplateJsonDataRepository;
 use Nette\Utils\ArrayHash;
 
@@ -55,10 +56,10 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
      * @param ArrayHash $data
      * @param int|null $templateId
      * @param int|null $conditionTypeId
-     * @return Object|null
+     * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, int $templateId = null, int $conditionTypeId = null): ?Object
+    public function create(ArrayHash $data, int $templateId = null, int $conditionTypeId = null): ?BaseEntity
     {
         if(!$templateId){
             $templateId = $this->problemTemplateRepository->getSequenceVal();
@@ -86,9 +87,9 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
-     * @return Object
+     * @return BaseEntity|null
      */
-    public function update(int $id, ArrayHash $data): ?Object
+    public function update(int $id, ArrayHash $data): ?BaseEntity
     {
         return null;
     }

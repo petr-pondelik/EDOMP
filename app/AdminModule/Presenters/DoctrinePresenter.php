@@ -16,55 +16,39 @@ use App\Helpers\FlashesTranslator;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
-use App\Model\Persistent\Entity\ArithmeticSeqTempl;
-use App\Model\Persistent\Entity\Category;
-use App\Model\Persistent\Entity\Difficulty;
-use App\Model\Persistent\Entity\Group;
-use App\Model\Persistent\Entity\LinearEqTempl;
-use App\Model\Persistent\Entity\Logo;
-use App\Model\Persistent\Entity\ProblemCondition;
-use App\Model\Persistent\Entity\ProblemConditionType;
-use App\Model\Persistent\Entity\ProblemFinal;
-use App\Model\Persistent\Entity\ProblemFinalTestVariantAssociation;
-use App\Model\Persistent\Entity\ProblemType;
-use App\Model\Persistent\Entity\QuadraticEqTempl;
-use App\Model\Persistent\Entity\Role;
-use App\Model\Persistent\Entity\SubCategory;
-use App\Model\Persistent\Entity\Test;
-use App\Model\Persistent\Entity\TestVariant;
-use App\Model\Persistent\Entity\User;
+use App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
 use App\Model\Persistent\Functionality\TestFunctionality;
 use App\Model\Persistent\Functionality\TestVariantFunctionality;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\CategoryRepository;
-use App\Model\Persistent\Repository\DifficultyRepository;
-use App\Model\Persistent\Repository\ProblemFinalRepository;
-use App\Model\Persistent\Repository\ProblemTemplateRepository;
-use App\Model\Persistent\Repository\QuadraticEqTemplRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
+use App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
+use App\Model\Persistent\Repository\ProblemRepository;
+use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
+use App\Model\Persistent\Repository\ProblemTemplate\QuadraticEquationTemplateRepository;
 use App\Model\Persistent\Repository\TemplateJsonDataRepository;
 use App\Model\Persistent\Repository\TestRepository;
 use App\Plugins\QuadraticEquationPlugin;
-use App\Presenters\BasePresenter;
 use App\Services\Authorizator;
 use App\Services\GeneratorService;
 use App\Services\NewtonApiClient;
+use App\Services\PluginContainer;
 use App\Services\ProblemTemplateSession;
-use App\Services\Validator;
 use jlawrence\eos\Parser;
-use Kdyby\Doctrine\EntityManager;
-use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
-use Nette\Utils\Json;
 use Nette\Utils\Strings;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DoctrinePresenter extends AdminPresenter
 {
     /**
-     * @var ProblemFinalRepository
+     * @var ProblemRepository
      */
     protected $problemRepository;
+
+    /**
+     * @var ProblemFinalRepository
+     */
+    protected $problemFinalRepository;
 
     /**
      * @var CategoryRepository
@@ -82,7 +66,7 @@ class DoctrinePresenter extends AdminPresenter
     protected $problemTemplateRepository;
 
     /**
-     * @var QuadraticEqTemplRepository
+     * @var QuadraticEquationTemplateRepository
      */
     protected $quadraticEqTemplRepository;
 
@@ -147,6 +131,16 @@ class DoctrinePresenter extends AdminPresenter
     protected $problemTemplateSession;
 
     /**
+     * @var PluginContainer
+     */
+    protected $pluginContainer;
+
+    /**
+     * @var ProblemFinalFunctionality
+     */
+    protected $problemFinalFunctionality;
+
+    /**
      * DoctrinePresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
@@ -158,7 +152,7 @@ class DoctrinePresenter extends AdminPresenter
      * @param CategoryRepository $categoryRepository
      * @param TemplateJsonDataRepository $templateJsonDataRepository
      * @param ProblemTemplateRepository $problemTemplateRepository
-     * @param QuadraticEqTemplRepository $quadraticEqTemplRepository
+     * @param QuadraticEquationTemplateRepository $quadraticEqTemplRepository
      * @param ValidatorInterface $validator
      * @param LatexHelper $latexHelper
      * @param StringsHelper $stringsHelper
@@ -170,14 +164,16 @@ class DoctrinePresenter extends AdminPresenter
      * @param GeneratorService $generatorService
      * @param QuadraticEquationPlugin $quadraticEquationPlugin
      * @param ProblemTemplateSession $problemTemplateSession
+     * @param PluginContainer $pluginContainer
+     * @param ProblemFinalFunctionality $problemFinalFunctionality
      */
     public function __construct
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        ConstraintEntityManager $em, ProblemFinalRepository $problemRepository, CategoryRepository $categoryRepository,
+        ConstraintEntityManager $em, ProblemFinalRepository $problemFinalRepository, CategoryRepository $categoryRepository,
         TemplateJsonDataRepository $templateJsonDataRepository,
-        ProblemTemplateRepository $problemTemplateRepository, QuadraticEqTemplRepository $quadraticEqTemplRepository,
+        ProblemTemplateRepository $problemTemplateRepository, QuadraticEquationTemplateRepository $quadraticEqTemplRepository,
         ValidatorInterface $validator,
         LatexHelper $latexHelper, StringsHelper $stringsHelper, TestVariantFunctionality $testVariantFunctionality,
         TestFunctionality $testFunctionality,
@@ -186,11 +182,14 @@ class DoctrinePresenter extends AdminPresenter
         Parser $parser,
         GeneratorService $generatorService,
         QuadraticEquationPlugin $quadraticEquationPlugin,
-        ProblemTemplateSession $problemTemplateSession
+        ProblemTemplateSession $problemTemplateSession,
+        PluginContainer $pluginContainer,
+        ProblemFinalFunctionality $problemFinalFunctionality,
+        ProblemRepository $problemRepository
     )
     {
         parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
-        $this->problemRepository = $problemRepository;
+        $this->problemFinalRepository = $problemFinalRepository;
         $this->categoryRepository = $categoryRepository;
         $this->templateJsonDataRepository = $templateJsonDataRepository;
         $this->problemTemplateRepository = $problemTemplateRepository;
@@ -206,6 +205,9 @@ class DoctrinePresenter extends AdminPresenter
         $this->generatorService = $generatorService;
         $this->quadraticEquationPlugin = $quadraticEquationPlugin;
         $this->problemTemplateSession = $problemTemplateSession;
+        $this->pluginContainer = $pluginContainer;
+        $this->problemFinalFunctionality = $problemFinalFunctionality;
+        $this->problemRepository = $problemRepository;
     }
 
     /**
@@ -213,13 +215,44 @@ class DoctrinePresenter extends AdminPresenter
      */
     public function actionDefault()
     {
+        bdump(DateTime::from(''));
+        bdump(new DateTime());
+        bdump($this->parser::solve('e'));
+
+        bdump('Testing ProblemPlugin constructProblemFinalData');
+
+        $problemTemplate = $this->problemRepository->find(38);
+        bdump($problemTemplate);
+        $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
+        $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
+        $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate);
+        bdump($linearEquationFinal);
+
+        $problemTemplate = $this->problemTemplateRepository->find(12);
+        $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
+        $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
+        $quadraticEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate);
+        bdump($quadraticEquationFinal);
+
+        $problemTemplate = $this->problemTemplateRepository->find(18);
+        $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
+        $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
+        $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate);
+        bdump($linearEquationFinal);
+
+        $problemTemplate = $this->problemTemplateRepository->find(22);
+        $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
+        $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
+        $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate);
+        bdump($linearEquationFinal);
+
+        bdump($this->latexHelper->postprocessProblemFinalBody('0 \big[ 5x + 15 \big] + 4x + 0 \frac{5x}{2} + 0*5 + 0 - 0 + 2'));
+
+//        $this->em->flush();
+
         // ProblemTemplateState testing
-        $problemTemplateStatusItem = new ProblemTemplateStateItem(1, true);
-
-
-
-        $this->problemTemplateSession->getProblemTemplate()->getState()->update($problemTemplateStatusItem);
-
+        $problemTemplateStatusItem = new ProblemTemplateStateItem(1, true, true);
+//        $this->problemTemplateSession->getProblemTemplate()->getState()->update($problemTemplateStatusItem);
 
         // EOS Parser testing
         bdump($this->parser::solve('(4*1 (3*1 + 3)) - (2 - 1) + 4 ((- 1))'));
@@ -352,7 +385,7 @@ class DoctrinePresenter extends AdminPresenter
 //        //bdump($this->stringsHelper::getQuadraticEquationRegExp('x'));
 //        //bdump($this->templateJsonDataRepository->find(35));
 
-        /*$entity = new ArithmeticSeqTempl();
+        /*$entity = new ArithmeticSequenceTemplate();
         $errors = $this->validator->validate($entity);
         //bdump($errors);*/
 

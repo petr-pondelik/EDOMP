@@ -14,9 +14,9 @@ use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\FlashesTranslator;
-use App\Model\Persistent\Entity\ProblemTemplate;
-use App\Model\Persistent\Functionality\GeometricSeqTemplFunctionality;
-use App\Model\Persistent\Repository\GeometricSeqTemplRepository;
+use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
+use App\Model\Persistent\Functionality\ProblemTemplate\GeometricSequenceTemplateFunctionality;
+use App\Model\Persistent\Repository\ProblemTemplate\GeometricSequenceTemplateRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use App\Services\ProblemTemplateSession;
@@ -36,8 +36,8 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
-     * @param GeometricSeqTemplRepository $repository
-     * @param GeometricSeqTemplFunctionality $functionality
+     * @param GeometricSequenceTemplateRepository $repository
+     * @param GeometricSequenceTemplateFunctionality $functionality
      * @param TemplateGridFactory $templateGridFactory
      * @param GeometricSeqTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
@@ -48,7 +48,7 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        GeometricSeqTemplRepository $repository, GeometricSeqTemplFunctionality $functionality,
+        GeometricSequenceTemplateRepository $repository, GeometricSequenceTemplateFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, GeometricSeqTemplateFormFactory $problemTemplateFormFactory,
         ConstHelper $constHelper,
         ISectionHelpModalFactory $sectionHelpModalFactory,
@@ -76,7 +76,7 @@ class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
     public function setDefaults(IComponent $form, ProblemTemplate $record): void
     {
         parent::setDefaults($form, $record);
-        $form['variable']->setDefaultValue($record->getVariable());
+        $form['indexVariable']->setDefaultValue($record->getIndexVariable());
         $form['firstN']->setDefaultValue($record->getFirstN());
     }
 }

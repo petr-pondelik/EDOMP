@@ -3,35 +3,38 @@
  * Created by PhpStorm.
  * User: wiedzmin
  * Date: 28.4.19
- * Time: 19:46
+ * Time: 14:19
  */
 
-namespace App\Model\Persistent\Functionality;
+namespace App\Model\Persistent\Functionality\ProblemTemplate;
 
-use App\Model\Persistent\Entity\QuadraticEqTempl;
+use App\Model\Persistent\Entity\BaseEntity;
+use App\Model\Persistent\Entity\ProblemTemplate\LinearEquationTemplate;
+use App\Model\Persistent\Functionality\BaseFunctionality;
+use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\DifficultyRepository;
+use App\Model\Persistent\Repository\ProblemTemplate\LinearEquationTemplateRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
-use App\Model\Persistent\Repository\QuadraticEqTemplRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Model\Persistent\Repository\TemplateJsonDataRepository;
 use App\Model\Persistent\Traits\ProblemTemplateFunctionalityTrait;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class QuadraticEqTemplFunctionality
+ * Class LinearEquationTemplateFunctionality
  * @package App\Model\Persistent\Functionality
  */
-class QuadraticEqTemplFunctionality extends BaseFunctionality
+class LinearEquationTemplateFunctionality extends BaseFunctionality
 {
     use ProblemTemplateFunctionalityTrait;
 
     /**
-     * QuadraticEqTemplFunctionality constructor.
+     * LinearEquationTemplateFunctionality constructor.
      * @param ConstraintEntityManager $entityManager
-     * @param QuadraticEqTemplRepository $repository
+     * @param LinearEquationTemplateRepository $repository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
@@ -43,7 +46,7 @@ class QuadraticEqTemplFunctionality extends BaseFunctionality
     public function __construct
     (
         ConstraintEntityManager $entityManager,
-        QuadraticEqTemplRepository $repository,
+        LinearEquationTemplateRepository $repository,
         ProblemTypeRepository $problemTypeRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
@@ -66,31 +69,32 @@ class QuadraticEqTemplFunctionality extends BaseFunctionality
      * @return Object|null
      * @throws \Exception
      */
-    public function create(ArrayHash $data): ?Object
+    public function create(ArrayHash $data): ?BaseEntity
     {
-        $templ = new QuadraticEqTempl();
-        $templ = $this->setBaseValues($templ, $data);
-        $templ->setVariable($data->variable);
-        $this->em->persist($templ);
+        $entity = new LinearEquationTemplate();
+        $entity = $this->setBasics($entity, $data);
+        $entity->setVariable($data->variable);
+        $this->em->persist($entity);
         $this->em->flush();
-        return $templ;
+        return $entity;
     }
 
     /**
      * @param int $id
      * @param ArrayHash $data
      * @param bool $fromDataGrid
-     * @return Object|null
-     * @throws \Exception
+     * @return BaseEntity|null
+     * @throws \App\Exceptions\EntityException
+     * @throws \Nette\Utils\JsonException
      */
-    public function update(int $id, ArrayHash $data, bool $fromDataGrid = false): ?Object
+    public function update(int $id, ArrayHash $data, bool $fromDataGrid = false): ?BaseEntity
     {
-        $templ = $this->baseUpdate($id, $data, $fromDataGrid);
+        $entity = $this->baseUpdate($id, $data, $fromDataGrid);
         if(!empty($data->variable)){
-            $templ->setVariable($data->variable);
+            $entity->setVariable($data->variable);
         }
-        $this->em->persist($templ);
+        $this->em->persist($entity);
         $this->em->flush();
-        return $templ;
+        return $entity;
     }
 }

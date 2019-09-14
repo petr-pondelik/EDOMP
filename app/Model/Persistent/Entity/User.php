@@ -111,7 +111,6 @@ class User extends BaseEntity
 
     /**
      * User constructor.
-     * @throws \Exception
      */
     public function __construct()
     {

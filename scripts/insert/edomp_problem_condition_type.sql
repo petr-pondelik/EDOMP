@@ -1,4 +1,6 @@
 INSERT INTO edomp.problem_condition_type (id, prompt, created, label, is_validation) VALUES (1, 'Zvolte podmínky výsledku', '2019-04-27 11:42:36', 'Podmínka výsledku', 0);
 INSERT INTO edomp.problem_condition_type (id, prompt, created, label, is_validation) VALUES (2, 'Zvolte podmínky diskriminantu', '2019-04-27 11:42:58', 'Podmínka diskriminantu', 0);
-INSERT INTO edomp.problem_condition_type (id, prompt, created, label, is_validation) VALUES (3, null, '2019-07-28 07:46:22', 'Podmínka diference', 1);
-INSERT INTO edomp.problem_condition_type (id, prompt, created, label, is_validation) VALUES (4, null, '2019-07-28 11:53:58', 'Podmínka kvocientu', 1);
+INSERT INTO edomp.problem_condition_type (id, prompt, created, label, is_validation) VALUES (3, null, '2019-07-28 07:46:22', 'Podmínka aritmetické posloupnosti (typ)', 1);
+INSERT INTO edomp.problem_condition_type (id, prompt, created, label, is_validation) VALUES (4, null, '2019-07-28 11:53:58', 'Podmínka geometrické posloupnosti (typ)', 1);
+INSERT INTO edomp.problem_condition_type (id, prompt, created, label, is_validation) VALUES (5, null, '2019-08-16 16:36:31', 'Podmínka lineární rovnice (typ)', 1);
+INSERT INTO edomp.problem_condition_type (id, prompt, created, label, is_validation) VALUES (6, null, '2019-08-16 20:11:38', 'Podmínka kvadratické rovnice (typ)', 1);

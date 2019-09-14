@@ -62,7 +62,6 @@ class ProblemConditionType extends BaseEntity
 
     /**
      * ProblemConditionType constructor.
-     * @throws \Exception
      */
     public function __construct()
     {

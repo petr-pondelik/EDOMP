@@ -12,7 +12,7 @@ namespace App\Components\Forms\ProblemFinalForm;
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Helpers\ConstHelper;
-use App\Model\Persistent\Functionality\ProblemFinalFunctionality;
+use App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;

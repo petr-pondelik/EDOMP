@@ -83,19 +83,13 @@ abstract class FormControl extends Control
     {
         $form = $this['form'];
         $values = $form->getValues();
-        //bdump($form->getErrors());
-        //bdump($values);
         if($submitted){
             if($form->isSubmitted()){
-                foreach ($values as $key => $value){
-                    $this->redrawControl($key . 'ErrorSnippet');
-                }
+                foreach ($values as $key => $value) { $this->redrawControl($key . 'ErrorSnippet'); }
             }
         }
         else{
-            foreach ($values as $key => $value){
-                $this->redrawControl($key . 'ErrorSnippet');
-            }
+            foreach ($values as $key => $value) { $this->redrawControl($key . 'ErrorSnippet'); }
         }
     }
 

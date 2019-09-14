@@ -341,6 +341,27 @@ class LatexHelper
     ];
 
     /**
+     * @var StringsHelper
+     */
+    protected $stringsHelper;
+
+    /**
+     * @var RegularExpressions
+     */
+    protected $regularExpressions;
+
+    /**
+     * LatexHelper constructor.
+     * @param StringsHelper $stringsHelper
+     * @param RegularExpressions $regularExpressions
+     */
+    public function __construct(StringsHelper $stringsHelper, RegularExpressions $regularExpressions)
+    {
+        $this->stringsHelper = $stringsHelper;
+        $this->regularExpressions = $regularExpressions;
+    }
+
+    /**
      * @param string $latex
      * @return string
      */
@@ -450,5 +471,62 @@ class LatexHelper
         $res = self::parseFractions($res);
         //bdump($res);
         return $res;
+    }
+
+    /**
+     * @param string $expression
+     * @return string
+     */
+    public function removeZeroMultipliedBrackets(string $expression): string
+    {
+        foreach (self::PREFIXES[self::PARENTHESES] as $prefixSetKey => $prefixSet){
+            foreach ($prefixSet as $prefixKey => $prefix){
+                $expression = Strings::replace($expression, '~' . sprintf($this->regularExpressions::RE_BRACKETS_ZERO_MULTIPLIED, $prefix['original'], self::SUFFIXES[self::PARENTHESES][$prefixSetKey][$prefixKey]['original']) . '~', '');
+            }
+        }
+        return $expression;
+    }
+
+    /**
+     * @param string $expression
+     * @return string
+     */
+    public function removeZeroMultipliedFractions(string $expression): string
+    {
+        return Strings::replace($expression, '~' . $this->regularExpressions::RE_FRACTIONS_ZERO_MULTIPLIED . '~', '');
+    }
+
+    /**
+     * @param string $expression
+     * @return string
+     */
+    public function removeZeroMultipliedValues(string $expression): string
+    {
+        return Strings::replace($expression, '~' . $this->regularExpressions::RE_VALUES_ZERO_MULTIPLIED . '~', '');
+    }
+
+    /**
+     * @param string $expression
+     * @return string
+     */
+    public function removeZeroValues(string $expression): string
+    {
+        return Strings::replace($expression, '~' . $this->regularExpressions::RE_ZERO_VALUES . '~', '');
+    }
+
+    /**
+     * @param string $body
+     * @return string
+     */
+    public function postprocessProblemFinalBody(string $body): string
+    {
+        // TODO: POSTPROCESS PROBLEM FINAL BODY
+        $body = $this->removeZeroMultipliedBrackets($body);
+        $body = $this->removeZeroMultipliedFractions($body);
+        $body = $this->removeZeroMultipliedValues($body);
+        $body = $this->removeZeroValues($body);
+        $body = $this->stringsHelper::normalizeOperators($body);
+        $body = $this->stringsHelper::deduplicateWhiteSpaces($body);
+        return $body;
     }
 }

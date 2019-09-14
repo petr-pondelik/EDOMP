@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace App\Model\Persistent\Functionality;
 
+use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Entity\Category;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\CategoryRepository;
@@ -38,10 +39,10 @@ class CategoryFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return Object|null
-     * @throws \Exception
+     * @return BaseEntity|null
+     * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data): ?Object
+    public function create(ArrayHash $data): ?BaseEntity
     {
         $category = new Category();
         $category->setLabel($data->label);
@@ -53,10 +54,10 @@ class CategoryFunctionality extends BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
-     * @return Object|null
-     * @throws \Exception
+     * @return BaseEntity|null
+     * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data): ?Object
+    public function update(int $id, ArrayHash $data): ?BaseEntity
     {
         $category = $this->repository->find($id);
         $category->setLabel($data->label);

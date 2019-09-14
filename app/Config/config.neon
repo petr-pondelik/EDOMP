@@ -46,14 +46,34 @@ services:
 	       doctrine.repositoryEntity: App\Model\Persistent\Entity\Problem
 
 	repository.problem.final:
-	    class: App\Model\Persistent\Repository\ProblemFinalRepository
+	    class: App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemFinal
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemFinal\ProblemFinal
+
+	repository.problem.final.equation.linear:
+	    class: App\Model\Persistent\Repository\ProblemFinal\LinearEquationFinalRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemFinal\LinearEquationFinal
+
+	repository.problem.final.equation.quadratic:
+	    class: App\Model\Persistent\Repository\ProblemFinal\QuadraticEquationFinalRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemFinal\QuadraticEquationFinal
+
+	repository.problem.final.sequence.arithmetic:
+	    class: App\Model\Persistent\Repository\ProblemFinal\ArithmeticSequenceFinalRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemFinal\ArithmeticSequenceFinal
+
+	repository.problem.final.sequence.geometric:
+	    class: App\Model\Persistent\Repository\ProblemFinal\GeometricSequenceFinalRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemFinal\GeometricSequenceFinal
 
 	repository.problem.template:
-	    class: App\Model\Persistent\Repository\ProblemTemplateRepository
+	    class: App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemTemplate
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate
 
 	repository.problemtype:
 	    class: App\Model\Persistent\Repository\ProblemTypeRepository
@@ -86,24 +106,24 @@ services:
 	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemCondition
 
 	repository.template.equation.linear:
-	    class: App\Model\Persistent\Repository\LinearEqTemplRepository
+	    class: App\Model\Persistent\Repository\ProblemTemplate\LinearEquationTemplateRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\LinearEqTempl
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemTemplate\LinearEquationTemplate
 
 	repository.template.equation.quadratic:
-	    class: App\Model\Persistent\Repository\QuadraticEqTemplRepository
+	    class: App\Model\Persistent\Repository\ProblemTemplate\QuadraticEquationTemplateRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\QuadraticEqTempl
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemTemplate\QuadraticEquationTemplate
 
 	repository.template.sequence.arithmetic:
-	    class: App\Model\Persistent\Repository\ArithmeticSeqTemplRepository
+	    class: App\Model\Persistent\Repository\ProblemTemplate\ArithmeticSequenceTemplateRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ArithmeticSeqTempl
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemTemplate\ArithmeticSequenceTemplate
 
 	repository.template.sequence.geometric:
-	    class: App\Model\Persistent\Repository\GeometricSeqTemplRepository
+	    class: App\Model\Persistent\Repository\ProblemTemplate\GeometricSequenceTemplateRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\GeometricSeqTempl
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemTemplate\GeometricSequenceTemplate
 
 	repository.supergroup:
 	    class: App\Model\Persistent\Repository\SuperGroupRepository
@@ -147,16 +167,20 @@ services:
 
 	# Functionalities
 	functionality.user: App\Model\Persistent\Functionality\UserFunctionality
-	functionality.problem.final: App\Model\Persistent\Functionality\ProblemFinalFunctionality
+	functionality.problem.final: App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality
+	functionality.problem.final.equation.linear: App\Model\Persistent\Functionality\ProblemFinal\LinearEquationFinalFunctionality
+	functionality.problem.final.equation.quadratic: App\Model\Persistent\Functionality\ProblemFinal\QuadraticEquationFinalFunctionality
+	functionality.problem.final.sequence.arithmetic: App\Model\Persistent\Functionality\ProblemFinal\ArithmeticSequenceFinalFunctionality
+	functionality.problem.final.sequence.geometric: App\Model\Persistent\Functionality\ProblemFinal\GeometricSequenceFinalFunctionality
 	functionality.category: App\Model\Persistent\Functionality\CategoryFunctionality
 	functionality.subcategory: App\Model\Persistent\Functionality\SubCategoryFunctionality
 	functionality.problem: App\Model\Persistent\Functionality\ProblemFunctionality
 	functionality.problem.type: App\Model\Persistent\Functionality\ProblemTypeFunctionality
 	functionality.problem.final.test.variant.association: App\Model\Persistent\Functionality\ProblemFinalTestVariantAssociationFunctionality
-	functionality.template.equation.linear: App\Model\Persistent\Functionality\LinearEqTemplFunctionality
-	functionality.template.equation.quadratic: App\Model\Persistent\Functionality\QuadraticEqTemplFunctionality
-	functionality.template.sequence.arithmetic: App\Model\Persistent\Functionality\ArithmeticSeqTemplFunctionality
-	functionality.template.sequence.geometric: App\Model\Persistent\Functionality\GeometricSeqTemplFunctionality
+	functionality.template.equation.linear: App\Model\Persistent\Functionality\ProblemTemplate\LinearEquationTemplateFunctionality
+	functionality.template.equation.quadratic: App\Model\Persistent\Functionality\ProblemTemplate\QuadraticEquationTemplateFunctionality
+	functionality.template.sequence.arithmetic: App\Model\Persistent\Functionality\ProblemTemplate\ArithmeticSequenceTemplateFunctionality
+	functionality.template.sequence.geometric: App\Model\Persistent\Functionality\ProblemTemplate\GeometricSequenceTemplateFunctionality
 	functionality.supergroup: App\Model\Persistent\Functionality\SuperGroupFunctionality
 	functionality.group: App\Model\Persistent\Functionality\GroupFunctionality
 	functionality.logo: App\Model\Persistent\Functionality\LogoFunctionality

@@ -15,9 +15,9 @@ use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\FlashesTranslator;
-use App\Model\Persistent\Entity\ProblemTemplate;
-use App\Model\Persistent\Functionality\QuadraticEqTemplFunctionality;
-use App\Model\Persistent\Repository\QuadraticEqTemplRepository;
+use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
+use App\Model\Persistent\Functionality\ProblemTemplate\QuadraticEquationTemplateFunctionality;
+use App\Model\Persistent\Repository\ProblemTemplate\QuadraticEquationTemplateRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use App\Services\ProblemTemplateSession;
@@ -36,8 +36,8 @@ class QuadraticEqTemplatePresenter extends ProblemTemplatePresenter
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
-     * @param QuadraticEqTemplRepository $repository
-     * @param QuadraticEqTemplFunctionality $functionality
+     * @param QuadraticEquationTemplateRepository $repository
+     * @param QuadraticEquationTemplateFunctionality $functionality
      * @param TemplateGridFactory $templateGridFactory
      * @param QuadraticEqTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
@@ -48,7 +48,7 @@ class QuadraticEqTemplatePresenter extends ProblemTemplatePresenter
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        QuadraticEqTemplRepository $repository, QuadraticEqTemplFunctionality $functionality,
+        QuadraticEquationTemplateRepository $repository, QuadraticEquationTemplateFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, QuadraticEqTemplateFormFactory $problemTemplateFormFactory,
         ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory,
         ProblemTemplateSession $problemTemplateSession

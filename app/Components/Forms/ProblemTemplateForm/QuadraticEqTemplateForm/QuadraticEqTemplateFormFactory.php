@@ -12,7 +12,7 @@ namespace App\Components\Forms\ProblemTemplateForm\QuadraticEqTemplateForm;
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\StringsHelper;
-use App\Model\Persistent\Functionality\BaseFunctionality;
+use App\Model\Persistent\Functionality\ProblemTemplate\QuadraticEquationTemplateFunctionality;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
@@ -42,6 +42,7 @@ class QuadraticEqTemplateFormFactory extends ProblemTemplateFormFactory
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param ProblemTemplateSession $problemTemplateSession
+     * @param QuadraticEquationTemplateFunctionality $quadraticEquationTemplateFunctionality
      */
     public function __construct
     (
@@ -55,7 +56,8 @@ class QuadraticEqTemplateFormFactory extends ProblemTemplateFormFactory
         PluginContainer $pluginContainer,
         StringsHelper $stringsHelper,
         ConstHelper $constHelper,
-        ProblemTemplateSession $problemTemplateSession
+        ProblemTemplateSession $problemTemplateSession,
+        QuadraticEquationTemplateFunctionality $quadraticEquationTemplateFunctionality
     )
     {
         parent::__construct(
@@ -65,18 +67,18 @@ class QuadraticEqTemplateFormFactory extends ProblemTemplateFormFactory
             $stringsHelper, $constHelper,
             $problemTemplateSession
         );
+        $this->functionality = $quadraticEquationTemplateFunctionality;
         $this->problemTemplatePlugin = $quadraticEquationPlugin;
     }
 
     /**
-     * @param BaseFunctionality $functionality
      * @param bool $edit
      * @return mixed
      */
-    public function create(BaseFunctionality $functionality, bool $edit = false)
+    public function create(bool $edit = false)
     {
         return new QuadraticEqTemplateFormControl(
-            $this->validator, $functionality, $this->difficultyRepository, $this->problemTypeRepository,
+            $this->validator, $this->functionality, $this->difficultyRepository, $this->problemTypeRepository,
             $this->subCategoryRepository, $this->problemConditionTypeRepository, $this->problemConditionRepository,
             $this->problemTemplatePlugin,
             $this->pluginContainer,

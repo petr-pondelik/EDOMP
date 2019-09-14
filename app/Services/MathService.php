@@ -92,7 +92,6 @@ class MathService
             bdump('WITHOUT VARIABLE FRACTIONS');
             return $data;
         }
-        //bdump($fractionsProcessed);
         $data = $this->variableFractionService->getMultipliedByLCM($fractionsProcessed);
         $data->setStandardized($this->stringsHelper::fillMultipliers($data->getStandardized()));
         return $data;
@@ -131,9 +130,6 @@ class MathService
      */
     public function normalizeCoefficient(string $expression): string
     {
-//        bdump('NORMALIZE COEFFICIENT');
-//        bdump($expression);
-
         $expression = Strings::trim($expression);
 
         if($expression === ''){
@@ -149,9 +145,6 @@ class MathService
         }
 
         $expression = $this->stringsHelper::normalizeOperators($expression);
-
-//        bdump('NORMALIZE COEFFICIENT RES');
-//        bdump($expression);
 
         return $expression;
     }

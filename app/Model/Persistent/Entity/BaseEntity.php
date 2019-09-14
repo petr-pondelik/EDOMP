@@ -48,11 +48,10 @@ abstract class BaseEntity
 
     /**
      * BaseEntity constructor.
-     * @throws \Exception
      */
     public function __construct()
     {
-        $this->created = new DateTime();
+        $this->created = DateTime::from('');
     }
 
     /**

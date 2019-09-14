@@ -56,7 +56,6 @@ class Category extends BaseEntity
 
     /**
      * Category constructor.
-     * @throws \Exception
      */
     public function __construct()
     {

@@ -36,7 +36,6 @@ class ValidationFunction extends BaseEntity
 
     /**
      * ValidationFunction constructor.
-     * @throws \Exception
      */
     public function __construct()
     {

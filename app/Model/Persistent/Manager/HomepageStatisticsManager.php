@@ -53,12 +53,14 @@ class HomepageStatisticsManager
             ->from($entityClass, 'e')
             ->indexBy('e', 'e.id');
 
-        if($entityClass === User::class)
+        if($entityClass === User::class){
             $qb = $qb->where('e.isAdmin = false');
+        }
 
-        if($entityClass === Group::class || $entityClass === SuperGroup::class)
+        if($entityClass === Group::class || $entityClass === SuperGroup::class){
             $qb = $qb->where('e.id != :id')
                 ->setParameter('id', $this->constHelper::ADMIN_GROUP);
+        }
 
         return count($qb->getQuery()->getResult());
     }

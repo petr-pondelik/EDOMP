@@ -8,6 +8,7 @@
 
 namespace App\Model\Persistent\Functionality;
 
+use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository;
 use Nette\Utils\ArrayHash;
@@ -32,9 +33,9 @@ class ProblemFinalTestVariantAssociationFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return Object|null
+     * @return BaseEntity|null
      */
-    public function create(ArrayHash $data): ?Object
+    public function create(ArrayHash $data): ?BaseEntity
     {
         return null;
     }
@@ -42,10 +43,10 @@ class ProblemFinalTestVariantAssociationFunctionality extends BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
-     * @return Object
-     * @throws \Exception
+     * @return BaseEntity|null
+     * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data): ?Object
+    public function update(int $id, ArrayHash $data): ?BaseEntity
     {
         $association = $this->repository->findOneBy([
             'problemFinal.id' => $id,

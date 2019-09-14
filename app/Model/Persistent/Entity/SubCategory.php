@@ -27,7 +27,7 @@ class SubCategory extends BaseEntity
     /**
      * @var string
      */
-    protected $toStringAttr = "label";
+    protected $toStringAttr = 'label';
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Persistent\Entity\Category", inversedBy="subCategories", cascade={"persist", "merge"})
@@ -40,7 +40,7 @@ class SubCategory extends BaseEntity
     protected $category;
 
     /**
-     * @ORM\OneToMany(targetEntity="ProblemFinal", mappedBy="subCategory", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="App\Model\Persistent\Entity\ProblemFinal\ProblemFinal", mappedBy="subCategory", cascade={"all"})
      *
      * @var Collection
      */
@@ -48,7 +48,6 @@ class SubCategory extends BaseEntity
 
     /**
      * SubCategory constructor.
-     * @throws \Exception
      */
     public function __construct()
     {

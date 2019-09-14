@@ -2,24 +2,22 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 28.4.19
- * Time: 10:21
+ * Date: 27.4.19
+ * Time: 22:31
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\Model\Persistent\Repository\ProblemTemplate;
 
-use App\Model\Persistent\Traits\FilterTrait;
+use App\Model\Persistent\Repository\BaseRepository;
 use App\Model\Persistent\Traits\SequenceValTrait;
 
 /**
- * Class ProblemTemplateRepository
+ * Class GeometricSequenceTemplateRepository
  * @package App\Model\Persistent\Repository
  */
-class ProblemTemplateRepository extends BaseRepository
+class GeometricSequenceTemplateRepository extends BaseRepository
 {
     use SequenceValTrait;
-
-    use FilterTrait;
 
     /**
      * @var string

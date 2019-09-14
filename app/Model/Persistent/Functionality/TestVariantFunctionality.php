@@ -8,9 +8,10 @@
 
 namespace App\Model\Persistent\Functionality;
 
-use App\Model\Persistent\Entity\ProblemFinal;
+use App\Model\Persistent\Entity\BaseEntity;
+use App\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
 use App\Model\Persistent\Entity\ProblemFinalTestVariantAssociation;
-use App\Model\Persistent\Entity\ProblemTemplate;
+use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use App\Model\Persistent\Entity\TestVariant;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\TestVariantRepository;
@@ -38,10 +39,10 @@ class TestVariantFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return Object|null
-     * @throws \Exception
+     * @return BaseEntity|null
+     * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data): ?Object
+    public function create(ArrayHash $data): ?BaseEntity
     {
         $entity = new TestVariant();
         $entity->setLabel($data->variantLabel);
@@ -53,9 +54,9 @@ class TestVariantFunctionality extends BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
-     * @return Object
+     * @return BaseEntity|null
      */
-    public function update(int $id, ArrayHash $data): ?Object
+    public function update(int $id, ArrayHash $data): ?BaseEntity
     {
         return null;
     }
@@ -70,8 +71,6 @@ class TestVariantFunctionality extends BaseFunctionality
      */
     public function attachProblem(TestVariant $testVariant, ProblemFinal $problemFinal, ProblemTemplate $problemTemplate = null, bool $newPage = false): TestVariant
     {
-        //bdump('ATTACH PROBLEM');
-        //bdump($problemTemplate);
         $association = new ProblemFinalTestVariantAssociation();
         $association->setTestVariant($testVariant);
         $association->setProblemFinal($problemFinal);

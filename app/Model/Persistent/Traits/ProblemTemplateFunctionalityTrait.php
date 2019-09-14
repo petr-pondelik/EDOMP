@@ -8,7 +8,7 @@
 
 namespace App\Model\Persistent\Traits;
 
-use App\Model\Persistent\Entity\ProblemTemplate;
+use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
@@ -74,52 +74,47 @@ trait ProblemTemplateFunctionalityTrait
     }
 
     /**
-     * @param $templ
+     * @param $template
      * @param ArrayHash $data
      * @param int|null $templateId
      * @param bool $fromDataGrid
      * @return ProblemTemplate
      * @throws \Nette\Utils\JsonException
      */
-    public function setBaseValues($templ, ArrayHash $data, int $templateId = null, bool $fromDataGrid = false): ProblemTemplate
+    public function setBasics($template, ArrayHash $data, int $templateId = null, bool $fromDataGrid = false): ProblemTemplate
     {
         bdump('SET BASE VALUES');
         bdump($data);
 
         if(isset($data->textBefore)){
-            $templ->setTextBefore($data->textBefore);
+            $template->setTextBefore($data->textBefore);
         }
         if(isset($data->body)){
-            $templ->setBody($data->body);
+            $template->setBody($data->body);
         }
         if(isset($data->textAfter)){
-            $templ->setTextAfter($data->textAfter);
+            $template->setTextAfter($data->textAfter);
         }
         if(isset($data->type)){
-            $templ->setProblemType($this->problemTypeRepository->find($data->type));
+            $template->setProblemType($this->problemTypeRepository->find($data->type));
         }
         if(isset($data->difficulty)){
-            $templ->setDifficulty($this->difficultyRepository->find($data->difficulty));
+            $template->setDifficulty($this->difficultyRepository->find($data->difficulty));
         }
         if(isset($data->subCategory)){
-            $templ->setSubCategory($this->subCategoryRepository->find($data->subCategory));
+            $template->setSubCategory($this->subCategoryRepository->find($data->subCategory));
         }
         if(isset($data->matches)){
-            $templ->setMatches($data->matches);
-        }
-        if(isset($data->created)){
-            $templ->setCreated($data->created);
+            $template->setMatches($data->matches);
         }
 
         if(!$fromDataGrid){
-            $attached = $this->attachConditions($templ, $data);
-            $templ = $attached->template;
+            $attached = $this->attachConditions($template, $data);
+            $template = $attached->template;
 
             if(!$templateId){
                 $templateId = $this->repository->getSequenceVal();
             }
-
-            //bdump($templateId);
 
             $templateJsonData = [];
 
@@ -130,7 +125,8 @@ trait ProblemTemplateFunctionalityTrait
                 unset($templateJsons[0]);
                 // Make merge of all template recorded JSONs
                 foreach ($templateJsons as $json){
-                    if($data->{'condition_' . $json->getProblemConditionType()->getId()} != 0){
+                    $problemConditionTypeId = $json->getProblemConditionType()->getId();
+                    if( isset($data->{'condition_' . $problemConditionTypeId}) && $data->{'condition_' . $problemConditionTypeId} !== 0) {
                         $arr = Json::decode($json->getJsonData());
                         $templateJsonData = $this->intersectJsonDataArrays($templateJsonData, $arr);
                     }
@@ -142,13 +138,13 @@ trait ProblemTemplateFunctionalityTrait
                 $templateJsonData = Json::encode(array_values($templateJsonData));
             }
 
-            $templ->setMatches($templateJsonData);
+            $template->setMatches($templateJsonData);
 
             // Comment this for testing purposes
             $this->templateJsonDataFunctionality->deleteByTemplate($templateId);
         }
 
-        return $templ;
+        return $template;
     }
 
     /**
@@ -160,19 +156,19 @@ trait ProblemTemplateFunctionalityTrait
      */
     public function baseUpdate(int $id, ArrayHash $data, bool $fromDataGrid = false): ?Object
     {
-        $templ = $this->repository->find($id);
+        $template = $this->repository->find($id);
         if(!$fromDataGrid){
-            $templ->setConditions(new ArrayCollection());
+            $template->setConditions(new ArrayCollection());
         }
-        return $this->setBaseValues($templ, $data, $id, $fromDataGrid);
+        return $this->setBasics($template, $data, $id, $fromDataGrid);
     }
 
     /**
-     * @param $templ
+     * @param $template
      * @param ArrayHash $data
      * @return ArrayHash
      */
-    protected function attachConditions($templ, ArrayHash $data): ArrayHash
+    protected function attachConditions($template, ArrayHash $data): ArrayHash
     {
         $hasCondition = false;
         $problemCondTypes = $this->problemConditionTypeRepository->findNonValidation($data->type);
@@ -194,11 +190,11 @@ trait ProblemTemplateFunctionalityTrait
                 'accessor' => $condTypeVal
             ]);
 
-            $templ->addCondition($condition);
+            $template->addCondition($condition);
         }
 
         return ArrayHash::from([
-            'template' => $templ,
+            'template' => $template,
             'hasCondition' => $hasCondition
         ]);
     }

@@ -11,7 +11,6 @@ namespace App\Model\Persistent\Traits;
 
 use App\Model\Persistent\Entity\Problem;
 use App\Model\Persistent\Entity\ProblemType;
-use Doctrine\ORM\Query;
 
 /**
  * Trait FilterTrait

@@ -29,13 +29,13 @@ class QuadraticEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
     {
         parent::setUp();
 
-        // Mock the QuadraticEqTemplRepository
+        // Mock the QuadraticEquationTemplateRepository
         $this->repositoryMock = $this->getMockBuilder(QuadraticEqTemplRepository::class)
             ->setMethods(['find', 'getSequenceVal'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        // Set expected return values for QuadraticEqTemplRepository getSequenceVal method
+        // Set expected return values for QuadraticEquationTemplateRepository getSequenceVal method
         $this->repositoryMock->expects($this->any())
             ->method('getSequenceVal')
             ->willReturn(1);
@@ -52,7 +52,7 @@ class QuadraticEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
      */
     public function testFunctionality(): void
     {
-        // Data for QuadraticEqTempl create
+        // Data for QuadraticEquationTemplate create
         $data = ArrayHash::from([
             'variable' => 'T',
             'body' => 'TEST_BODY',
@@ -66,7 +66,7 @@ class QuadraticEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
             'created' => new DateTime('2000-01-01')
         ]);
 
-        // Prepare QuadraticEqTempl expected object
+        // Prepare QuadraticEquationTemplate expected object
         $quadraticEqTemplExpected = new QuadraticEqTempl();
         $quadraticEqTemplExpected->setVariable($data->variable);
         $quadraticEqTemplExpected->setBody($data->body);
@@ -88,13 +88,13 @@ class QuadraticEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         );
         $quadraticEqTemplExpected->setCreated($data->created);
 
-        // Create QuadraticEqTempl
+        // Create QuadraticEquationTemplate
         $quadraticEqTempl = $this->functionality->create($data);
 
-        // Test created QuadraticEqTempl against expected QuadraticEqTempl object
+        // Test created QuadraticEquationTemplate against expected QuadraticEquationTemplate object
         $this->assertEquals($quadraticEqTemplExpected, $quadraticEqTempl);
 
-        // Data for QuadraticEqTempl update
+        // Data for QuadraticEquationTemplate update
         $data = ArrayHash::from([
             'variable' => 'U',
             'body' => 'TEST_BODY_NEW',
@@ -109,7 +109,7 @@ class QuadraticEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
             'created' => new DateTime('2000-02-02')
         ]);
 
-        // Prepare updated QuadraticEqTempl expected object
+        // Prepare updated QuadraticEquationTemplate expected object
         $quadraticEqTemplExpected->setVariable($data->variable);
         $quadraticEqTemplExpected->setBody($data->body);
         $quadraticEqTemplExpected->setTextBefore($data->textBefore);
@@ -131,7 +131,7 @@ class QuadraticEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         );
         $quadraticEqTemplExpected->setCreated($data->created);
 
-        // Set expected return values for QuadraticEqTemplRepository find method
+        // Set expected return values for QuadraticEquationTemplateRepository find method
         $this->repositoryMock->expects($this->any())
             ->method('find')
             ->willReturnCallback(static function ($arg) use (
@@ -144,10 +144,10 @@ class QuadraticEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
                 return false;
             });
 
-        // Update QuadraticEqTempl
+        // Update QuadraticEquationTemplate
         $quadraticEqTempl = $this->functionality->update(1, $data);
 
-        // Test updated QuadraticEqTempl against expected QuadraticEqTempl object
+        // Test updated QuadraticEquationTemplate against expected QuadraticEquationTemplate object
         $this->assertEquals($quadraticEqTemplExpected, $quadraticEqTempl);
     }
 }

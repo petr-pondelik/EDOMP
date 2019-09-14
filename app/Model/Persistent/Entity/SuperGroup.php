@@ -47,7 +47,6 @@ class SuperGroup extends BaseEntity
 
     /**
      * SuperGroup constructor.
-     * @throws \Exception
      */
     public function __construct()
     {

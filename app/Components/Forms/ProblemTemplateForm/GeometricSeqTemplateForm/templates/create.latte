@@ -41,12 +41,12 @@
                 {/snippet}
             </div>
             <div class="form-group">
-                {label variable}
-                {input variable}
-                {snippet variableErrorSnippet}
+                {label indexVariable}
+                {input indexVariable}
+                {snippet indexVariableErrorSnippet}
                     {var $form = $control['form']}
                     <div n:if="$form->hasErrors()" class="mt-2">
-                        <p n:foreach="$form['variable']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
+                        <p n:foreach="$form['indexVariable']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                             {$error}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>

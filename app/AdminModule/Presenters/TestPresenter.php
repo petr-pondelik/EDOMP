@@ -22,7 +22,7 @@ use App\Model\Persistent\Entity\Test;
 use App\Model\Persistent\Functionality\TestFunctionality;
 use App\Model\Persistent\Repository\LogoRepository;
 use App\Model\Persistent\Repository\ProblemRepository;
-use App\Model\Persistent\Repository\ProblemTemplateRepository;
+use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
 use App\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository;
 use App\Model\Persistent\Repository\TestRepository;
 use App\Services\Authorizator;

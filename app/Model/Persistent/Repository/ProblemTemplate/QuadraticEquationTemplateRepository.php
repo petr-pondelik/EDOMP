@@ -6,15 +6,16 @@
  * Time: 22:49
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\Model\Persistent\Repository\ProblemTemplate;
 
+use App\Model\Persistent\Repository\BaseRepository;
 use App\Model\Persistent\Traits\SequenceValTrait;
 
 /**
- * Class LinearEqTemplRepository
+ * Class QuadraticEquationTemplateRepository
  * @package App\Model\Persistent\Repository
  */
-class LinearEqTemplRepository extends BaseRepository
+class QuadraticEquationTemplateRepository extends BaseRepository
 {
     use SequenceValTrait;
 

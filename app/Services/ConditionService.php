@@ -19,8 +19,6 @@ use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\NonPersistent\Entity\QuadraticEquationTemplateNP;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use Nette\NotSupportedException;
-use Nette\Utils\Json;
-use Nette\Utils\Strings;
 
 /**
  * Class ConditionService
@@ -147,7 +145,7 @@ class ConditionService
                 bdump('VALIDATE QUADRATIC EQUATION TYPE');
 
                 $varCoefficients = $mathService->extractVariableCoefficients($data, $parValuesArr, false);
-                bdump($varCoefficients);
+//                bdump($varCoefficients);
 
                 foreach ($varCoefficients as $varCoefficient) {
                     try{
@@ -171,14 +169,14 @@ class ConditionService
                     $conditions = $parametrizedFraction->getNonDegradeConditions();
                     foreach ($conditions as $condition) {
                         $final = $stringsHelper::normalizeOperators($stringsHelper::passValues($condition->getExpression(), $parValuesArr));
-                        bdump($final);
+//                        bdump($final);
                         try{
                             $res = $mathService->evaluateExpression($final);
                         } catch (\Exception $e) {
                             return false;
                         }
                         if ($res === 0.0) {
-                            bdump('FALSE');
+//                            bdump('FALSE');
                             return false;
                         }
                     }
@@ -192,7 +190,7 @@ class ConditionService
                         return false;
                     }
                     if ($res === 0.0){
-                        bdump('TEST');
+//                        bdump('TEST');
                         return false;
                     }
                 }
@@ -212,7 +210,7 @@ class ConditionService
                     $diff2 = $this->mathService->evaluateExpression(sprintf('(%s) - (%s)', $final2, $final1));
                     return round($diff1, 5) === round($diff2, 5);
                 } catch (\Exception $e) {
-                    bdump($e);
+//                    bdump($e);
                     return false;
                 }
             },

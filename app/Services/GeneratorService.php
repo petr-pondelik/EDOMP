@@ -10,8 +10,8 @@ namespace App\Services;
 
 use App\Helpers\ConstHelper;
 use App\Helpers\StringsHelper;
-use App\Model\Persistent\Entity\ProblemTemplate;
-use App\Model\Persistent\Repository\ProblemTemplateRepository;
+use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
+use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
 
@@ -238,13 +238,16 @@ class GeneratorService
      * @return string
      * @throws \Nette\Utils\JsonException
      */
-    public function generateProblemFinal(ProblemTemplate $problemTemplate): string
+    public function generateProblemFinalBody(ProblemTemplate $problemTemplate): string
     {
         $parametrized = $this->stringsHelper::getParametrized($problemTemplate->getBody());
 
         // Use JSON matches array of problemPrototype
         $matchesJson = $this->problemTemplateRepository->find($problemTemplate->getId())->getMatches();
         $matchesArr = null;
+
+        bdump($this->problemTemplateRepository->find($problemTemplate->getId()));
+        bdump($matchesJson);
 
         if($matchesJson){
             // Generate params matching the conditions
@@ -257,6 +260,8 @@ class GeneratorService
             // Generate params without conditions
             $params = $this->generateParams($problemTemplate->getBody());
         }
+
+        bdump($params);
 
         return $this->stringsHelper::passValues($parametrized->expression, $params);
     }

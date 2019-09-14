@@ -6,14 +6,17 @@
  * Time: 12:29
  */
 
-namespace App\Model\Persistent\Entity;
+namespace App\Model\Persistent\Entity\ProblemFinal;
 
+use App\Model\Persistent\Entity\Problem;
+use App\Model\Persistent\Entity\ProblemFinalTestVariantAssociation;
+use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\ProblemFinalRepository")
+ * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository")
  *
  * Class ProblemFinal
  * @package App\Model\Persistent\Entity
@@ -43,41 +46,14 @@ class ProblemFinal extends Problem
     protected $isGenerated = false;
 
     /**
-     * @ORM\Column(type="string", nullable=true, length=1)
-     * @Assert\Type(
-     *     type="string",
-     *     message="Variable must be {{ type }}."
-     * )
-     * @Assert\Length(
-     *     min=1,
-     *     max=1,
-     *     exactMessage="Variable must be string of length 1.",
-     * )
-     *
-     * @var string
-     */
-    protected $variable;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Assert\Type(
-     *     type="int",
-     *     message="FirstN must be {{ type }}."
-     * )
-     *
-     * @var int
-     */
-    protected $firstN;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Model\Persistent\Entity\ProblemTemplate", cascade={"persist", "merge"})
+     * @ORM\ManyToOne(targetEntity="App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate", cascade={"persist", "merge"})
      *
      * @var ProblemTemplate
      */
     protected $problemTemplate;
 
     /**
-     * @ORM\OneToMany(targetEntity="ProblemFinalTestVariantAssociation", mappedBy="problemFinal", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="App\Model\Persistent\Entity\ProblemFinalTestVariantAssociation", mappedBy="problemFinal", cascade={"all"})
      *
      * @var ProblemFinalTestVariantAssociation[]
      */
@@ -85,7 +61,6 @@ class ProblemFinal extends Problem
 
     /**
      * ProblemFinal constructor.
-     * @throws \Exception
      */
     public function __construct()
     {
@@ -140,38 +115,6 @@ class ProblemFinal extends Problem
     public function setProblemTemplate(ProblemTemplate $problemTemplate): void
     {
         $this->problemTemplate = $problemTemplate;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getVariable(): ?string
-    {
-        return $this->variable;
-    }
-
-    /**
-     * @param string|null $variable
-     */
-    public function setVariable(string $variable = null): void
-    {
-        $this->variable = $variable;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getFirstN(): ?int
-    {
-        return $this->firstN;
-    }
-
-    /**
-     * @param int|null $firstN
-     */
-    public function setFirstN(int $firstN = null): void
-    {
-        $this->firstN = $firstN;
     }
 
     /**

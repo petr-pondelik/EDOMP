@@ -45,7 +45,6 @@ class Role extends BaseEntity
 
     /**
      * Role constructor.
-     * @throws \Exception
      */
     public function __construct()
     {

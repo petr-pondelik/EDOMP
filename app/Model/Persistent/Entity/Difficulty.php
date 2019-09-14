@@ -28,7 +28,7 @@ class Difficulty extends BaseEntity
     protected $toStringAttr = 'label';
 
     /**
-     * @ORM\OneToMany(targetEntity="ProblemFinal", mappedBy="difficulty", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="App\Model\Persistent\Entity\ProblemFinal\ProblemFinal", mappedBy="difficulty", cascade={"all"})
      *
      * @var ArrayCollection
      */
@@ -36,7 +36,6 @@ class Difficulty extends BaseEntity
 
     /**
      * Difficulty constructor.
-     * @throws \Exception
      */
     public function __construct()
     {

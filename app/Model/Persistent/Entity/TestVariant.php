@@ -50,7 +50,6 @@ class TestVariant extends BaseEntity
 
     /**
      * TestVariant constructor.
-     * @throws \Exception
      */
     public function __construct()
     {

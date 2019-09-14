@@ -16,9 +16,9 @@ use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
-use App\Model\Persistent\Entity\ProblemFinal;
-use App\Model\Persistent\Functionality\ProblemFinalFunctionality;
-use App\Model\Persistent\Repository\ProblemFinalRepository;
+use App\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
+use App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
+use App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
 use App\Services\Authorizator;
 use App\Services\PluginContainer;
 use App\Services\NewtonApiClient;
@@ -214,7 +214,7 @@ class ProblemFinalPresenter extends AdminPresenter
     public function handleInlineUpdate(int $id, ArrayHash $data): void
     {
         try{
-            $this->problemFunctionality->update($id, $data, false);
+            $this->problemFunctionality->update($id, $data);
         } catch (\Exception $e){
             $this->informUser(new UserInformArgs('edit', true, 'error', $e));
         }
@@ -267,12 +267,12 @@ class ProblemFinalPresenter extends AdminPresenter
         $problem = $this->problemRepository->find($id);
         $result = null;
         try{
-            $result = $this->pluginContainer->evaluate[(int) $problem->getProblemType()->getId()]($problem);
+            $this->pluginContainer->getPlugin($problem->getProblemType()->getKeyLabel())->evaluate($problem);
         } catch (\Exception $e){
             $this->informUser(new UserInformArgs('getRes', true, 'error', $e));
             return;
         }
-        $this->problemFunctionality->storeResult($id, $result);
+//        $this->problemFunctionality->storeResult($id, $result);
         $this['problemGrid']->reload();
         $this->informUser(new UserInformArgs('getRes', true));
     }

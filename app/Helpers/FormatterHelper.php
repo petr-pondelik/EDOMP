@@ -37,7 +37,7 @@ class FormatterHelper
      * @param ArrayHash $resultArray
      * @return string
      */
-    public function formatResult(ArrayHash $resultArray) :string
+    public function formatResult(ArrayHash $resultArray): string
     {
         $result = '';
         foreach ($resultArray as $key => $resItem) {

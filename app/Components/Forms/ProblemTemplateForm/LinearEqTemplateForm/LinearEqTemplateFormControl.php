@@ -142,12 +142,11 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
     /**
      * @param ProblemTemplateNP $problemTemplate
      * @return ProblemTemplateNP|null
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function standardize(ProblemTemplateNP $problemTemplate): ?ProblemTemplateNP
     {
         try{
-            $standardized = $this->pluginContainer->standardizeLinearEquation($problemTemplate);
+            $standardized = $this->pluginContainer->getPlugin($this->problemType->getKeyLabel())->standardize($problemTemplate);
         } catch (\Exception $e){
             $this['form']['body']->addError($e->getMessage());
             return null;

@@ -10,7 +10,7 @@ namespace App\Components\DataGrids;
 
 use App\Helpers\ConstHelper;
 use App\Model\Persistent\Repository\DifficultyRepository;
-use App\Model\Persistent\Repository\ProblemFinalRepository;
+use App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
 use Ublaboo\DataGrid\DataGrid;

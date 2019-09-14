@@ -20,6 +20,11 @@ use Nette\Utils\ArrayHash;
 abstract class EquationTemplateNP extends ProblemTemplateNP
 {
     /**
+     * @var string|null
+     */
+    protected $variable;
+
+    /**
      * @var GlobalDivider|null
      */
     protected $globalDivider;
@@ -144,5 +149,21 @@ abstract class EquationTemplateNP extends ProblemTemplateNP
     public function setNonDegradeConditions(array $nonDegradeConditions): void
     {
         $this->nonDegradeConditions = $nonDegradeConditions;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getVariable(): ?string
+    {
+        return $this->variable;
+    }
+
+    /**
+     * @param string|null $variable
+     */
+    public function setVariable(?string $variable): void
+    {
+        $this->variable = $variable;
     }
 }

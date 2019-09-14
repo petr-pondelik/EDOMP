@@ -11,8 +11,7 @@ namespace App\Components\Forms\ProblemFinalForm;
 
 use App\Components\Forms\FormFactory;
 use App\Helpers\ConstHelper;
-use App\Model\Persistent\Functionality\ProblemFinalFunctionality;
-use App\Model\Persistent\Functionality\ProblemFunctionality;
+use App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;

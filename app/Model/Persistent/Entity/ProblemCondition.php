@@ -59,13 +59,12 @@ class ProblemCondition extends BaseEntity
     protected $problemConditionType;
 
     /**
-     * @ORM\ManyToMany(targetEntity="ProblemFinal", mappedBy="conditions")
+     * @ORM\ManyToMany(targetEntity="App\Model\Persistent\Entity\ProblemFinal\ProblemFinal", mappedBy="conditions")
      */
     protected $problems;
 
     /**
      * ProblemCondition constructor.
-     * @throws \Exception
      */
     public function __construct()
     {

@@ -13,14 +13,15 @@ use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\RegularExpressions;
 use App\Helpers\StringsHelper;
+use App\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
+use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
+use App\Model\Persistent\Functionality\BaseFunctionality;
+use App\Services\GeneratorService;
 use App\Services\VariableFractionService;
-use App\Model\NonPersistent\Entity\ProblemTemplateNP;
-use App\Model\Persistent\Entity\ProblemFinal;
 use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\Services\ConditionService;
 use App\Services\MathService;
 use App\Services\NewtonApiClient;
-use jlawrence\eos\Parser;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 
@@ -28,7 +29,7 @@ use Nette\Utils\Strings;
  * Class ProblemPlugin
  * @package App\Plugins
  */
-abstract class ProblemPlugin
+abstract class ProblemPlugin implements IProblemPlugin
 {
     /**
      * @var NewtonApiClient
@@ -44,6 +45,16 @@ abstract class ProblemPlugin
      * @var ConditionService
      */
     protected $conditionService;
+
+    /**
+     * @var GeneratorService
+     */
+    protected $generatorService;
+
+    /**
+     * @var BaseFunctionality
+     */
+    protected $functionality;
 
     /**
      * @var TemplateJsonDataFunctionality
@@ -76,52 +87,41 @@ abstract class ProblemPlugin
     protected $constHelper;
 
     /**
-     * @var Parser
-     */
-    protected $parser;
-
-    /**
      * ProblemPlugin constructor.
      * @param NewtonApiClient $newtonApiClient
      * @param MathService $mathService
      * @param ConditionService $conditionService
+     * @param GeneratorService $generatorService
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param LatexHelper $latexHelper
      * @param StringsHelper $stringsHelper
      * @param VariableFractionService $variableDividers
      * @param ConstHelper $constHelper
      * @param RegularExpressions $regularExpressions
-     * @param Parser $parser
      */
     public function __construct
     (
         NewtonApiClient $newtonApiClient,
         MathService $mathService,
         ConditionService $conditionService,
+        GeneratorService $generatorService,
         TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexHelper $latexHelper, StringsHelper $stringsHelper, VariableFractionService $variableDividers,
-        ConstHelper $constHelper, RegularExpressions $regularExpressions, Parser $parser
+        LatexHelper $latexHelper, StringsHelper $stringsHelper,
+        VariableFractionService $variableDividers,
+        ConstHelper $constHelper,
+        RegularExpressions $regularExpressions
     )
     {
         $this->newtonApiClient = $newtonApiClient;
         $this->mathService = $mathService;
         $this->conditionService = $conditionService;
+        $this->generatorService = $generatorService;
         $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
         $this->latexHelper = $latexHelper;
         $this->stringsHelper = $stringsHelper;
         $this->variableDividers = $variableDividers;
         $this->constHelper = $constHelper;
         $this->regularExpressions = $regularExpressions;
-        $this->parser = $parser;
-    }
-
-    /**
-     * @param $expression
-     * @return float
-     */
-    public function evaluateExpression($expression): float
-    {
-        return $this->parser::solve($expression);
     }
 
     /**
@@ -159,20 +159,38 @@ abstract class ProblemPlugin
     }
 
     /**
-     * @param ProblemTemplateNP $problemTemplate
-     * @return int
-     */
-    abstract public function validateBody(ProblemTemplateNP $problemTemplate): int;
-
-    /**
-     * @param ProblemTemplateNP $expression
-     * @return ProblemTemplateNP
-     */
-    abstract public function standardize(ProblemTemplateNP $expression): ProblemTemplateNP;
-
-    /**
-     * @param ProblemFinal $problem
+     * @param ProblemTemplate $problemTemplate
      * @return ArrayHash
+     * @throws \Nette\Utils\JsonException
      */
-    abstract public function evaluate(ProblemFinal $problem): ArrayHash;
+    public function constructProblemFinalData(ProblemTemplate $problemTemplate): ArrayHash
+    {
+        $finalBody = $this->generatorService->generateProblemFinalBody($problemTemplate);
+        bdump($finalBody);
+        $finalData = ArrayHash::from([
+            'textBefore' => $problemTemplate->getTextBefore(),
+            'body' => $finalBody,
+            'textAfter' => $problemTemplate->getTextAfter(),
+            'difficulty' => $problemTemplate->getDifficulty()->getId(),
+            'problemType' => $problemTemplate->getProblemType()->getId(),
+            'subCategory' => $problemTemplate->getSubCategory()->getId(),
+            'problemTemplateId' => $problemTemplate->getId(),
+            'isGenerated' => true
+        ]);
+        return $finalData;
+    }
+
+    /**
+     * @param ProblemTemplate $problemTemplate
+     * @return ProblemFinal
+     * @throws \Nette\Utils\JsonException
+     */
+    public function constructProblemFinal(ProblemTemplate $problemTemplate): ProblemFinal
+    {
+        $finalData = $this->constructProblemFinalData($problemTemplate);
+        $conditions = $problemTemplate->getConditions()->getValues();
+        $problemFinal = $this->functionality->create($finalData, $conditions, false);
+        $problemFinal->setBody($this->latexHelper->postprocessProblemFinalBody($problemFinal->getBody()));
+        return $problemFinal;
+    }
 }

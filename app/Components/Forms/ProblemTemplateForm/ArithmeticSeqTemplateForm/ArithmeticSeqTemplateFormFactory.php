@@ -11,7 +11,7 @@ namespace App\Components\Forms\ProblemTemplateForm\ArithmeticSeqTemplateForm;
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\StringsHelper;
-use App\Model\Persistent\Functionality\BaseFunctionality;
+use App\Model\Persistent\Functionality\ProblemTemplate\ArithmeticSequenceTemplateFunctionality;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
@@ -41,6 +41,7 @@ class ArithmeticSeqTemplateFormFactory extends ProblemTemplateFormFactory
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param ProblemTemplateSession $problemTemplateSession
+     * @param ArithmeticSequenceTemplateFunctionality $arithmeticSequenceTemplateFunctionality
      */
     public function __construct
     (
@@ -50,7 +51,8 @@ class ArithmeticSeqTemplateFormFactory extends ProblemTemplateFormFactory
         ArithmeticSequencePlugin $problemTemplatePlugin,
         PluginContainer $pluginContainer,
         StringsHelper $stringsHelper, ConstHelper $constHelper,
-        ProblemTemplateSession $problemTemplateSession
+        ProblemTemplateSession $problemTemplateSession,
+        ArithmeticSequenceTemplateFunctionality $arithmeticSequenceTemplateFunctionality
     )
     {
         parent::__construct
@@ -61,18 +63,18 @@ class ArithmeticSeqTemplateFormFactory extends ProblemTemplateFormFactory
             $stringsHelper, $constHelper,
             $problemTemplateSession
         );
+        $this->functionality = $arithmeticSequenceTemplateFunctionality;
         $this->problemTemplatePlugin = $problemTemplatePlugin;
     }
 
     /**
-     * @param BaseFunctionality $functionality
      * @param bool $edit
      * @return mixed
      */
-    public function create(BaseFunctionality $functionality, bool $edit = false)
+    public function create(bool $edit = false)
     {
         return new ArithmeticSeqTemplateFormControl(
-            $this->validator, $functionality, $this->difficultyRepository, $this->problemTypeRepository,
+            $this->validator, $this->functionality, $this->difficultyRepository, $this->problemTypeRepository,
             $this->subCategoryRepository, $this->problemConditionTypeRepository, $this->problemConditionRepository,
             $this->problemTemplatePlugin,
             $this->pluginContainer,

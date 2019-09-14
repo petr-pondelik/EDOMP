@@ -9,8 +9,19 @@
 namespace App\Plugins;
 
 use App\Exceptions\ProblemTemplateException;
+use App\Helpers\ConstHelper;
+use App\Helpers\LatexHelper;
+use App\Helpers\RegularExpressions;
+use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\Entity\ProblemTemplateNP;
-use App\Model\Persistent\Entity\ProblemFinal;
+use App\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
+use App\Model\Persistent\Functionality\ProblemFinal\ArithmeticSequenceFinalFunctionality;
+use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
+use App\Services\ConditionService;
+use App\Services\GeneratorService;
+use App\Services\MathService;
+use App\Services\NewtonApiClient;
+use App\Services\VariableFractionService;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 
@@ -20,6 +31,33 @@ use Nette\Utils\Json;
  */
 class ArithmeticSequencePlugin extends SequencePlugin
 {
+    /**
+     * ArithmeticSequencePlugin constructor.
+     * @param NewtonApiClient $newtonApiClient
+     * @param MathService $mathService
+     * @param ConditionService $conditionService
+     * @param GeneratorService $generatorService
+     * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
+     * @param LatexHelper $latexHelper
+     * @param StringsHelper $stringsHelper
+     * @param VariableFractionService $variableDividers
+     * @param ConstHelper $constHelper
+     * @param RegularExpressions $regularExpressions
+     * @param ArithmeticSequenceFinalFunctionality $arithmeticSequenceFinalFunctionality
+     */
+    public function __construct
+    (
+        NewtonApiClient $newtonApiClient, MathService $mathService, ConditionService $conditionService,
+        GeneratorService $generatorService, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
+        LatexHelper $latexHelper, StringsHelper $stringsHelper, VariableFractionService $variableDividers,
+        ConstHelper $constHelper, RegularExpressions $regularExpressions,
+        ArithmeticSequenceFinalFunctionality $arithmeticSequenceFinalFunctionality
+    )
+    {
+        parent::__construct($newtonApiClient, $mathService, $conditionService, $generatorService, $templateJsonDataFunctionality, $latexHelper, $stringsHelper, $variableDividers, $constHelper, $regularExpressions);
+        $this->functionality = $arithmeticSequenceFinalFunctionality;
+    }
+
     /**
      * @param ProblemTemplateNP $data
      * @return bool
@@ -36,9 +74,9 @@ class ArithmeticSequencePlugin extends SequencePlugin
         bdump('VALIDATE ARITHMETIC SEQUENCE');
 
         // Get three first members of the sequence
-        $a[] = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->getStandardized(), [$data->getVariable() => 1]), $data->getVariable());
-        $a[] = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->getStandardized(), [$data->getVariable() => 2]), $data->getVariable());
-        $a[] = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->getStandardized(), [$data->getVariable() => 3]), $data->getVariable());
+        $a[] = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->getStandardized(), [$data->getIndexVariable() => 1]), $data->getIndexVariable());
+        $a[] = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->getStandardized(), [$data->getIndexVariable() => 2]), $data->getIndexVariable());
+        $a[] = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->getStandardized(), [$data->getIndexVariable() => 3]), $data->getIndexVariable());
 
         $data->setFirstValues($a);
 
@@ -78,6 +116,7 @@ class ArithmeticSequencePlugin extends SequencePlugin
         $data = parent::evaluate($problem);
         $difference = (string) round($data->res[$data->seqName . '_{' . '2}'] - $data->res[$data->seqName . '_{' . '1}'], 3);
         $data->res['Diference'] = $difference;
+        $this->functionality->storeResult($problem->getId(), $data->res);
         return $data->res;
     }
 }

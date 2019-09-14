@@ -115,9 +115,8 @@ abstract class ProblemTemplateFormFactory extends FormFactory
     }
 
     /**
-     * @param BaseFunctionality $functionality
      * @param bool $edit
      * @return mixed
      */
-    abstract public function create(BaseFunctionality $functionality, bool $edit = false);
+    abstract public function create(bool $edit = false);
 }

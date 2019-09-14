@@ -8,6 +8,7 @@
 
 namespace App\Model\Persistent\Functionality;
 
+use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Entity\ProblemType;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
@@ -37,10 +38,10 @@ class ProblemTypeFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return Object|null
-     * @throws \Exception
+     * @return BaseEntity|null
+     * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data): ?Object
+    public function create(ArrayHash $data): ?BaseEntity
     {
         $problemType = new ProblemType();
         $problemType->setLabel($data->label);
@@ -52,11 +53,11 @@ class ProblemTypeFunctionality extends BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
-     * @return Object|null
-     * @throws \App\Exceptions\EntityException
+     * @return BaseEntity|null
      * @throws EntityNotFoundException
+     * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data): ?Object
+    public function update(int $id, ArrayHash $data): ?BaseEntity
     {
         $problemType = $this->repository->find($id);
         if(!$problemType){

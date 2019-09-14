@@ -17,12 +17,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({
- *     "problemfinal" = "ProblemFinal",
- *     "problemtemplate" = "ProblemTemplate",
- *     "lineareq" = "LinearEqTempl",
- *     "quadraticeq" = "QuadraticEqTempl",
- *     "arithmeticseq" = "ArithmeticSeqTempl",
- *     "geometicSeq" = "GeometricSeqTempl"
+ *     "problemfinal" = "App\Model\Persistent\Entity\ProblemFinal\ProblemFinal",
+ *     "problemTemplate" = "App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate",
+ *     "linearequationfinal" = "App\Model\Persistent\Entity\ProblemFinal\LinearEquationFinal",
+ *     "quadraticequationfinal" = "App\Model\Persistent\Entity\ProblemFinal\QuadraticEquationFinal",
+ *     "arithmeticsequencefinal" = "App\Model\Persistent\Entity\ProblemFinal\ArithmeticSequenceFinal",
+ *     "geometricsequencefinal" = "App\Model\Persistent\Entity\ProblemFinal\GeometricSequenceFinal",
+ *     "lineareqtemplate" = "App\Model\Persistent\Entity\ProblemTemplate\LinearEquationTemplate",
+ *     "quadraticeqtemplate" = "App\Model\Persistent\Entity\ProblemTemplate\QuadraticEquationTemplate",
+ *     "arithmeticseqtemplate" = "App\Model\Persistent\Entity\ProblemTemplate\ArithmeticSequenceTemplate",
+ *     "geometicseqtemplate" = "App\Model\Persistent\Entity\ProblemTemplate\GeometricSequenceTemplate"
  * })
  *
  * Class ProblemFinal
@@ -128,8 +132,7 @@ abstract class Problem extends BaseEntity
     protected $conditions;
 
     /**
-     * ProblemFinal constructor.
-     * @throws \Exception
+     * Problem constructor.
      */
     public function __construct()
     {

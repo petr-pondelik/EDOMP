@@ -11,7 +11,7 @@ namespace App\Components\Forms\ProblemTemplateForm\LinearEqTemplateForm;
 use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\StringsHelper;
-use App\Model\Persistent\Functionality\BaseFunctionality;
+use App\Model\Persistent\Functionality\ProblemTemplate\LinearEquationTemplateFunctionality;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
@@ -20,7 +20,6 @@ use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Plugins\LinearEquationPlugin;
 use App\Services\PluginContainer;
 use App\Services\ProblemTemplateSession;
-use App\Services\ProblemTemplateState;
 use App\Services\Validator;
 
 
@@ -43,6 +42,7 @@ class LinearEqTemplateFormFactory extends ProblemTemplateFormFactory
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param ProblemTemplateSession $problemTemplateSession
+     * @param LinearEquationTemplateFunctionality $linearEquationTemplateFunctionality
      */
     public function __construct
     (
@@ -52,7 +52,8 @@ class LinearEqTemplateFormFactory extends ProblemTemplateFormFactory
         LinearEquationPlugin $problemTemplatePlugin,
         PluginContainer $pluginContainer,
         StringsHelper $stringsHelper, ConstHelper $constHelper,
-        ProblemTemplateSession $problemTemplateSession
+        ProblemTemplateSession $problemTemplateSession,
+        LinearEquationTemplateFunctionality $linearEquationTemplateFunctionality
     )
     {
         parent::__construct
@@ -63,18 +64,18 @@ class LinearEqTemplateFormFactory extends ProblemTemplateFormFactory
             $stringsHelper, $constHelper,
             $problemTemplateSession
         );
+        $this->functionality = $linearEquationTemplateFunctionality;
         $this->problemTemplatePlugin = $problemTemplatePlugin;
     }
 
     /**
-     * @param BaseFunctionality $functionality
      * @param bool $edit
      * @return LinearEqTemplateFormControl|mixed
      */
-    public function create(BaseFunctionality $functionality, bool $edit = false)
+    public function create(bool $edit = false)
     {
         return new LinearEqTemplateFormControl(
-            $this->validator, $functionality, $this->difficultyRepository, $this->problemTypeRepository,
+            $this->validator, $this->functionality, $this->difficultyRepository, $this->problemTypeRepository,
             $this->subCategoryRepository, $this->problemConditionTypeRepository, $this->problemConditionRepository,
             $this->problemTemplatePlugin,
             $this->pluginContainer,

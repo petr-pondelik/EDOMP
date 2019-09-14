@@ -10,6 +10,8 @@ namespace App\Plugins;
 
 use App\Exceptions\NewtonApiSyntaxException;
 use App\Model\NonPersistent\Entity\ProblemTemplateNP;
+use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
+use Nette\Utils\ArrayHash;
 
 /**
  * Class EquationPlugin
@@ -51,6 +53,29 @@ abstract class EquationPlugin extends ProblemPlugin
     }
 
     /**
+     * @param string $expression
+     * @return string
+     * @throws \App\Exceptions\EquationException
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function standardizeFinal(string $expression): string
+    {
+        bdump('STANDARDIZE EQUATION');
+        $expression = $this->latexHelper::parseLatex($expression);
+        $parameterized = $this->stringsHelper::getParametrized($expression);
+        $sides = $this->stringsHelper::getEquationSides($parameterized->expression);
+        $sides->left = $this->newtonApiClient->simplify($sides->left);
+        $sides->right = $this->newtonApiClient->simplify($sides->right);
+        $expression = $this->stringsHelper::mergeEqSides($sides);
+        $expression = $this->newtonApiClient->simplify($expression);
+        bdump($expression);
+        return $expression;
+    }
+
+    /**
      * @param ProblemTemplateNP $problemTemplate
      * @return int
      * @throws \App\Exceptions\EquationException
@@ -87,5 +112,17 @@ abstract class EquationPlugin extends ProblemPlugin
         }
 
         return -1;
+    }
+
+    /**
+     * @param ProblemTemplate $problemTemplate
+     * @return ArrayHash
+     * @throws \Nette\Utils\JsonException
+     */
+    public function constructProblemFinalData(ProblemTemplate $problemTemplate): ArrayHash
+    {
+        $finalData = parent::constructProblemFinalData($problemTemplate);
+        $finalData->variable = $problemTemplate->getVariable();
+        return $finalData;
     }
 }

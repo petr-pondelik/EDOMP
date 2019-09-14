@@ -6,17 +6,18 @@
  * Time: 22:17
  */
 
-namespace App\Model\Persistent\Entity;
+namespace App\Model\Persistent\Entity\ProblemTemplate;
 
+use App\Model\Persistent\Entity\Problem;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\ProblemTemplateRepository")
+ * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository")
  *
  * Class ProblemTemplate
  * @package App\Model\Persistent\Entity
  */
-abstract class ProblemTemplate extends Problem
+class ProblemTemplate extends Problem
 {
     /**
      * @ORM\Column(type="json", nullable=true)
@@ -26,7 +27,6 @@ abstract class ProblemTemplate extends Problem
 
     /**
      * ProblemTemplate constructor.
-     * @throws \Exception
      */
     public function __construct()
     {
@@ -35,18 +35,19 @@ abstract class ProblemTemplate extends Problem
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getMatches()
+    public function getMatches(): string
     {
         return $this->matches;
     }
 
     /**
-     * @param null $matches
+     * @param string $matches
      */
-    public function setMatches($matches = null): void
+    public function setMatches(string $matches): void
     {
         $this->matches = $matches;
     }
+
 }

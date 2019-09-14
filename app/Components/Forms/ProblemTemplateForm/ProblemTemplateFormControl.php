@@ -248,7 +248,6 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         $validateFields = [];
         if(!$conditions){
             foreach ($this->baseValidation as $item){
-                //bdump($item['field']);
                 $validateFields[$item['field']] = new ValidatorArgument($problemTemplate->{$item['getter']}(), $item['validation']);
             }
         }
@@ -350,26 +349,32 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         bdump($values);
 
         // If condition validation was triggered
-        if($this->problemTemplateSession->getProblemTemplate()){
+        if($entity = $this->problemTemplateSession->getProblemTemplate()){
 
             bdump('CONDITION VALIDATION WAS TRIGGERED');
 
             // Get old problem template body
-            $bodyOld = $this->problemTemplateSession->getProblemTemplate()->getBody();
+            $bodyOld = $entity->getBody();
 
             // Actualize problemTemplateSession with actual values
-            $this->problemTemplateSession->getProblemTemplate()->setValues($values);
-            $new = $this->standardize($this->problemTemplateSession->getProblemTemplate());
-            $this->problemTemplateSession->setProblemTemplate($new);
+            $entity->setValues($values);
+            $entity = $this->standardize($entity);
+//            $this->problemTemplateSession->setProblemTemplate($new);
+
+            // VALIDATE BASE ITEMS
+            if(!$this->validateBaseItems($entity)){
+                $this->redrawErrors();
+                return;
+            }
 
             // If template body was changed, the type must be validated again
             // If template's old body was not successfully validated by type, the type must be validated again
             if(
                 Strings::trim($bodyOld) !== Strings::trim($values->body) ||
-                !$this->problemTemplateSession->getProblemTemplate()->getState()->isTypeValidated()
+                !$entity->getState()->isTypeValidated()
             ){
                 // VALIDATE TYPE
-                if(!$this->validateType($this->problemTemplateSession->getProblemTemplate())){
+                if(!$this->validateType($entity)){
                     $this->redrawErrors();
                     return;
                 }
@@ -387,7 +392,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
                 return;
             }
 
-            $entity = $this->problemTemplateSession->getProblemTemplate();
+//            $entity = $this->problemTemplateSession->getProblemTemplate();
+            $this->problemTemplateSession->setProblemTemplate($entity);
 
         }
         // If it wasn't
@@ -396,6 +402,13 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
             bdump('FIRST VALIDATION');
 
             $entity = $this->createNonPersistentEntity($values);
+            bdump($entity);
+
+            // VALIDATE BASE ITEMS
+            if(!$this->validateBaseItems($entity)){
+                $this->redrawErrors();
+                return;
+            }
 
             if($this->edit){
                 $defaultState = $this->problemTemplateSession->getDefaultState()->getProblemTemplateStateItems();
@@ -436,12 +449,6 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         }
 
         bdump($entity);
-
-        // VALIDATE BASE ITEMS
-        if(!$this->validateBaseItems($entity)){
-            $this->redrawErrors();
-            return;
-        }
 
         // REDRAW ERRORS
         $this->redrawErrors();

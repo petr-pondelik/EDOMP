@@ -9,7 +9,7 @@
 namespace App\Model\Persistent\Repository;
 
 use App\Helpers\ConstHelper;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Model\Persistent\Entity\BaseEntity;
 use Doctrine\ORM\Mapping;
 use Kdyby\Doctrine\EntityRepository;
 

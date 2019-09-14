@@ -8,6 +8,7 @@
 
 namespace App\Model\Persistent\Entity;
 
+use App\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
 use App\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,6 +26,17 @@ class ProblemType extends BaseEntity
     use LabelTrait;
 
     /**
+     * @ORM\Column(type="string", nullable=false)
+     * @Assert\Type(
+     *     type="string",
+     *     message="keyLabel must be {{ type }}."
+     * )
+     *
+     * @var string
+     */
+    protected $keyLabel;
+
+    /**
      * @var string
      */
     protected $toStringAttr = 'label';
@@ -33,7 +45,7 @@ class ProblemType extends BaseEntity
      * @ORM\Column(type="boolean", nullable=true)
      * @Assert\Type(
      *     type="bool",
-     *     message="IsGeneratable must be {{ type }}."
+     *     message="isGeneratable must be {{ type }}."
      * )
      *
      * @var bool
@@ -41,7 +53,7 @@ class ProblemType extends BaseEntity
     protected $isGeneratable;
 
     /**
-     * @ORM\OneToMany(targetEntity="ProblemFinal", mappedBy="problemType", cascade={"persist", "merge"})
+     * @ORM\OneToMany(targetEntity="App\Model\Persistent\Entity\ProblemFinal\ProblemFinal", mappedBy="problemType", cascade={"persist", "merge"})
      *
      * @var ArrayCollection|ProblemFinal[]
      */
@@ -55,7 +67,6 @@ class ProblemType extends BaseEntity
 
     /**
      * ProblemType constructor.
-     * @throws \Exception
      */
     public function __construct()
     {
@@ -111,5 +122,21 @@ class ProblemType extends BaseEntity
     public function setIsGeneratable(bool $isGeneratable): void
     {
         $this->isGeneratable = $isGeneratable;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKeyLabel(): string
+    {
+        return $this->keyLabel;
+    }
+
+    /**
+     * @param string $keyLabel
+     */
+    public function setKeyLabel(string $keyLabel): void
+    {
+        $this->keyLabel = $keyLabel;
     }
 }

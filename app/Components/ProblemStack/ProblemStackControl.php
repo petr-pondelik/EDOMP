@@ -43,8 +43,6 @@ class ProblemStackControl extends Control
     {
         parent::__construct();
         $this->problemRepository = $problemRepository;
-
-        $this->problems = $problemRepository->findAssoc([], 'id');
     }
 
     /**
@@ -64,11 +62,16 @@ class ProblemStackControl extends Control
 
     /**
      * @param array $problems
-     * @param array $selectedProblems
+     * @param array|null $selectedProblems
      */
-    public function setProblems(array $problems, array $selectedProblems): void
+    public function setProblems(array $problems, ?array $selectedProblems = null): void
     {
-        $this->problems = $this->filterStackBySelected($problems, $selectedProblems);
+        if($selectedProblems){
+            $this->problems = $this->filterStackBySelected($problems, $selectedProblems);
+        }
+        else{
+            $this->problems = $problems;
+        }
         $this->selectedProblems = $selectedProblems;
     }
 

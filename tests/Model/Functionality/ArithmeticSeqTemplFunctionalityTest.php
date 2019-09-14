@@ -29,13 +29,13 @@ class ArithmeticSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
     {
         parent::setUp();
 
-        // Mock the ArithmeticSeqTemplRepository
+        // Mock the ArithmeticSequenceTemplateRepository
         $this->repositoryMock = $this->getMockBuilder(ArithmeticSeqTemplRepository::class)
             ->setMethods(['find', 'getSequenceVal'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        // Set expected return values for ArithmeticSeqTemplRepository getSequenceVal method
+        // Set expected return values for ArithmeticSequenceTemplateRepository getSequenceVal method
         $this->repositoryMock->expects($this->any())
             ->method('getSequenceVal')
             ->willReturn(1);
@@ -52,7 +52,7 @@ class ArithmeticSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
      */
     public function testFunctionality(): void
     {
-        // Data for ArithmeticSeqTempl create
+        // Data for ArithmeticSequenceTemplate create
         $data = ArrayHash::from([
             'variable' => 'T',
             'body' => 'TEST_BODY',
@@ -67,7 +67,7 @@ class ArithmeticSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
             'created' => new DateTime('2000-01-01')
         ]);
 
-        // Prepare ArithmeticSeqTempl expected object
+        // Prepare ArithmeticSequenceTemplate expected object
         $arithmeticSeqTemplExpected = new ArithmeticSeqTempl();
         $arithmeticSeqTemplExpected->setVariable($data->variable);
         $arithmeticSeqTemplExpected->setBody($data->body);
@@ -90,10 +90,10 @@ class ArithmeticSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         );
         $arithmeticSeqTemplExpected->setCreated($data->created);
 
-        // Create ArithmeticSeqTempl
+        // Create ArithmeticSequenceTemplate
         $arithmeticSeqTempl = $this->functionality->create($data);
 
-        // Test created ArithmeticSeqTempl against expected ArithmeticSeqTempl object
+        // Test created ArithmeticSequenceTemplate against expected ArithmeticSequenceTemplate object
         $this->assertEquals($arithmeticSeqTemplExpected, $arithmeticSeqTempl);
 
         // Data for arithmeticSeqTempl update
@@ -112,7 +112,7 @@ class ArithmeticSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
             'created' => new DateTime('2000-02-02')
         ]);
 
-        // Prepare updated ArithmeticSeqTempl expected object
+        // Prepare updated ArithmeticSequenceTemplate expected object
         $arithmeticSeqTemplExpected->setVariable($data->variable);
         $arithmeticSeqTemplExpected->setBody($data->body);
         $arithmeticSeqTemplExpected->setTextBefore($data->textBefore);
@@ -135,7 +135,7 @@ class ArithmeticSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         );
         $arithmeticSeqTemplExpected->setCreated($data->created);
 
-        // Set expected return values for ArithmeticSeqTemplRepository find method
+        // Set expected return values for ArithmeticSequenceTemplateRepository find method
         $this->repositoryMock->expects($this->any())
             ->method('find')
             ->willReturnCallback(static function ($arg) use (
@@ -148,10 +148,10 @@ class ArithmeticSeqTemplFunctionalityTest extends ProblemFunctionalityTestCase
                 return false;
             });
 
-        // Update ArithmeticSeqTempl
+        // Update ArithmeticSequenceTemplate
         $arithmeticSeqTempl = $this->functionality->update(1, $data);
 
-        // Test updated ArithmeticSeqTempl against expected ArithmeticSeqTempl object
+        // Test updated ArithmeticSequenceTemplate against expected ArithmeticSequenceTemplate object
         $this->assertEquals($arithmeticSeqTemplExpected, $arithmeticSeqTempl);
     }
 }

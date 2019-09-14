@@ -8,11 +8,10 @@
 
 namespace App\Plugins;
 
-use App\Arguments\BodyArgument;
-use App\Arguments\SequenceValidateArgument;
 use App\Exceptions\NewtonApiSyntaxException;
 use App\Model\NonPersistent\Entity\ProblemTemplateNP;
-use App\Model\Persistent\Entity\ProblemFinal;
+use App\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
+use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 
@@ -46,6 +45,27 @@ abstract class SequencePlugin extends ProblemPlugin
     }
 
     /**
+     * @param string $expression
+     * @return string
+     * @throws \App\Exceptions\EquationException
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function standardizeFinal(string $expression): string
+    {
+        bdump('STANDARDIZE SEQUENCE');
+
+        $expression = $this->latexHelper::parseLatex($expression);
+        $parametrized = $this->stringsHelper::getParametrized($expression);
+        $sides = $this->stringsHelper::getEquationSides($parametrized->expression);
+        $expression = $this->newtonApiClient->simplify($sides->right);
+
+        return $expression;
+    }
+
+    /**
      * @param ProblemTemplateNP $problemTemplate
      * @return bool
      */
@@ -53,7 +73,7 @@ abstract class SequencePlugin extends ProblemPlugin
     {
         bdump('VALIDATE SEQUENCE');
         bdump($problemTemplate);
-        if(!Strings::match($problemTemplate->getExpression(), '~' . $this->regularExpressions::getSequenceRE($problemTemplate->getVariable()) . '~')){
+        if(!Strings::match($problemTemplate->getExpression(), '~' . $this->regularExpressions::getSequenceRE($problemTemplate->getIndexVariable()) . '~')){
             return false;
         }
         return true;
@@ -79,7 +99,7 @@ abstract class SequencePlugin extends ProblemPlugin
         $sides->right = $this->stringsHelper::fillMultipliers($sides->right, $variable);
 
         for($i = 1; $i <= $firstN; $i++){
-            $res[$seqName . '_{' . $i . '}'] = $this->parser::solve(
+            $res[$seqName . '_{' . $i . '}'] = $this->mathService->evaluateExpression(
                 $this->stringsHelper::passValues($sides->right, [
                     $variable => $i
                 ])
@@ -111,7 +131,7 @@ abstract class SequencePlugin extends ProblemPlugin
         $this->validateParameters($problemTemplate->getBody());
         $split = $this->stringsHelper::splitByParameters($parsed);
 
-        if (empty($problemTemplate->getVariable()) || !$this->stringsHelper::containsVariable($split, $problemTemplate->getVariable())) {
+        if (empty($problemTemplate->getIndexVariable()) || !$this->stringsHelper::containsVariable($split, $problemTemplate->getIndexVariable())) {
             return 2;
         }
 
@@ -124,5 +144,18 @@ abstract class SequencePlugin extends ProblemPlugin
         }
 
         return -1;
+    }
+
+    /**
+     * @param ProblemTemplate $problemTemplate
+     * @return ArrayHash
+     * @throws \Nette\Utils\JsonException
+     */
+    public function constructProblemFinalData(ProblemTemplate $problemTemplate): ArrayHash
+    {
+        $finalData = parent::constructProblemFinalData($problemTemplate);
+        $finalData->index = $problemTemplate->getIndexVariable();
+        $finalData->firstN = $problemTemplate->getFirstN();
+        return $finalData;
     }
 }

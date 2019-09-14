@@ -50,7 +50,6 @@ class RegularExpressions
     // Match variable coefficients without linear variable coefficient
     public const RE_VARIABLE_COEFFICIENT_NON_LINEAR = '(\(?[\dp\+\-\*\(\)\/\s]*)\)*%s\^(\d+)';
 
-
     // Split expression by it's first operator
     public const RE_FIRST_OPERATOR_SPLIT = '^([\s\d\/p]*)(\+|\-)(.*)$';
 
@@ -68,6 +67,18 @@ class RegularExpressions
 
     // Match school year format
     public const RE_SCHOOL_YEAR = '[0-9]{4}(\/|\-)([0-9]{4}|[0-9]{2})';
+
+    // Match brackets with passed prefix and suffix multiplied by zero
+    public const RE_BRACKETS_ZERO_MULTIPLIED = '[\+\-]?\s*0\s*%s[\d\\a-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*%s';
+
+    // Match fractions multiplied by zero
+    public const RE_FRACTIONS_ZERO_MULTIPLIED = '[\+\-]?\s*0\s*\\\frac\{[\d\\a-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*\}\s*\{[\da-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*\}';
+
+    // Match values multiplied by zero
+    public const RE_VALUES_ZERO_MULTIPLIED = '[\+\-]\s*0(\s+|\s*\*\s*)\d';
+
+    // Match zero values
+    public const RE_ZERO_VALUES = '[\+\-]\s*0\s*';
 
     /**
      * @param string $variable

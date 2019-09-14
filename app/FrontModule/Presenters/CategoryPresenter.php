@@ -14,7 +14,7 @@ use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Persistent\Repository\CategoryRepository;
-use App\Model\Persistent\Repository\ProblemFinalRepository;
+use App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
 use App\Services\Authorizator;
 use IPub\VisualPaginator\Components as VisualPaginator;
 use Nette\Utils\ArrayHash;

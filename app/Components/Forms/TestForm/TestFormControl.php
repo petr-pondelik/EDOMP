@@ -19,9 +19,9 @@ use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\GroupRepository;
 use App\Model\Persistent\Repository\LogoRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
-use App\Model\Persistent\Repository\ProblemFinalRepository;
+use App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
 use App\Model\Persistent\Repository\ProblemRepository;
-use App\Model\Persistent\Repository\ProblemTemplateRepository;
+use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Model\Persistent\Repository\TestRepository;
@@ -187,10 +187,16 @@ class TestFormControl extends FormControl
     {
         parent::loadState($params);
 
+        $problems = $this->problemRepository->findAssoc([], 'id');
+
         $this->maxProblems = $this->presenter->context->parameters['testMaxProblems'];
 
         for ($i = 0; $i < $this->maxProblems; $i++){
             $this->addComponent($this->problemStackFactory->create(), 'problemStack' . $i);
+        }
+
+        for ($i = 0; $i < $this->maxProblems; $i++){
+            $this['problemStack' . $i]->setProblems($problems);
         }
     }
 

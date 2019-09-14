@@ -8,6 +8,7 @@
 
 namespace App\Model\Persistent\Functionality;
 
+use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Entity\Group;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\CategoryRepository;
@@ -62,10 +63,10 @@ class GroupFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return Object|null
-     * @throws \Exception
+     * @return BaseEntity|null
+     * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data): ?Object
+    public function create(ArrayHash $data): ?BaseEntity
     {
         $group = new Group();
         $group->setLabel($data->label);
@@ -84,10 +85,10 @@ class GroupFunctionality extends BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
-     * @return Object
-     * @throws \Exception
+     * @return BaseEntity|null
+     * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data): ?Object
+    public function update(int $id, ArrayHash $data): ?BaseEntity
     {
         $group = $this->repository->find($id);
         if(isset($data->label)){

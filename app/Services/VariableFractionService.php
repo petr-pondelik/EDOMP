@@ -392,7 +392,10 @@ class VariableFractionService
         $conditions[] = new NonDegradeCondition($varFraction->getDivider()->getExpression() . ' - ' . $this->stringsHelper::wrap($varFraction->getNumerator()->getExpression()), $variable);
 
         foreach ($conditions as $condition) {
-            $condition->setExpression($this->stringsHelper::fillMultipliers(Strings::replace($condition->getExpression(), '~' . $variable . '~', '1')));
+//            $expression = $this->stringsHelper::fillMultipliers(Strings::replace($condition->getExpression(), '~' . $variable . '~', '1'));
+            $expression = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($condition->getExpression(), [ $variable => 'e' ]));
+            $expression = $this->stringsHelper::normalizeOperators($expression);
+            $condition->setExpression($expression);
         }
 
         $varFraction->setNonDegradeConditions($conditions);
@@ -418,7 +421,10 @@ class VariableFractionService
             if($parametrizedFractions[$i-1]->getDivider()->isParametrized() || $parametrizedFractions[$i]->getDivider()->isParametrized()){
                 $firstWithoutCoeff = $parametrizedFractions[$i-1]->getDivider()->getFactoredWithoutCoefficient();
                 $secondWithoutCoeff = $parametrizedFractions[$i]->getDivider()->getFactoredWithoutCoefficient();
-                $expression = Strings::replace(sprintf('%s - (%s)', $firstWithoutCoeff, $secondWithoutCoeff), '~' . $data->getVariable() . '~', '1');
+                bdump($firstWithoutCoeff);
+                $expression = $this->stringsHelper::passValues(sprintf('%s - (%s)', $firstWithoutCoeff, $secondWithoutCoeff), [ $data->getVariable() => 'e' ]);
+                $expression = $this->stringsHelper::normalizeOperators($expression);
+                bdump($expression);
                 $conditions[] = new NonDegradeCondition($expression, $data->getVariable());
             }
         }

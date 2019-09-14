@@ -12,7 +12,6 @@ namespace App\Components\Forms\TestStatisticsForm;
 use App\Components\Forms\FormFactory;
 use App\Model\Persistent\Functionality\ProblemFunctionality;
 use App\Model\Persistent\Functionality\ProblemFinalTestVariantAssociationFunctionality;
-use App\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository;
 use App\Model\Persistent\Repository\TestRepository;
 use App\Services\Validator;
 

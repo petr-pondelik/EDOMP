@@ -8,6 +8,7 @@
 
 namespace App\Model\Persistent\Functionality;
 
+use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\ProblemRepository;
 use App\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository;
@@ -29,7 +30,7 @@ class ProblemFunctionality extends BaseFunctionality
      * ProblemFunctionality constructor.
      * @param ConstraintEntityManager $entityManager
      * @param ProblemRepository $problemRepository
-     * @param ProblemFinalTestVariantAssociationRepository $problemTestAssociationRepository
+     * @param ProblemFinalTestVariantAssociationRepository $problemFinalTestVariantAssociationRepository
      */
     public function __construct
     (
@@ -44,9 +45,9 @@ class ProblemFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return Object|null
+     * @return BaseEntity|null
      */
-    public function create(ArrayHash $data): ?Object
+    public function create(ArrayHash $data): ?BaseEntity
     {
         return null;
     }
@@ -54,10 +55,11 @@ class ProblemFunctionality extends BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
-     * @return Object
-     * @throws \Exception
+     * @return BaseEntity|null
+     * @throws EntityNotFoundException
+     * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data): ?Object
+    public function update(int $id, ArrayHash $data): ?BaseEntity
     {
         $problem = $this->repository->find($id);
         if(!$problem){

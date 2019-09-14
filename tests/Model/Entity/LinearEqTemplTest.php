@@ -12,7 +12,7 @@ use App\Model\Entity\LinearEqTempl;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Class LinearEqTempl
+ * Class LinearEquationTemplate
  * @package App\AppTests\Entity
  */
 class LinearEqTemplTest extends ProblemEntityTestCase

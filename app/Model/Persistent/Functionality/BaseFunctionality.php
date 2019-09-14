@@ -8,10 +8,10 @@
 
 namespace App\Model\Persistent\Functionality;
 
+use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\BaseRepository;
 use Doctrine\ORM\EntityNotFoundException;
-use Kdyby\StrictObjects\MemberAccessException;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -44,16 +44,16 @@ abstract class BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return Object|null
+     * @return BaseEntity|null
      */
-    abstract public function create(ArrayHash $data): ?Object;
+    abstract public function create(ArrayHash $data): ?BaseEntity;
 
     /**
      * @param int $id
      * @param ArrayHash $data
-     * @return Object
+     * @return BaseEntity|null
      */
-    abstract public function update(int $id, ArrayHash $data): ?Object;
+    abstract public function update(int $id, ArrayHash $data): ?BaseEntity;
 
     /**
      * @param int $id

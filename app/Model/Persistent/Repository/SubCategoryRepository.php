@@ -8,8 +8,6 @@
 
 namespace App\Model\Persistent\Repository;
 
-use App\Model\Persistent\Entity\SubCategory;
-
 /**
  * Class SubCategoryRepository
  * @package App\Model\Persistent\Repository

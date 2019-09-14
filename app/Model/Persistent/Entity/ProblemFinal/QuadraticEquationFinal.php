@@ -2,28 +2,26 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 27.4.19
- * Time: 22:47
+ * Date: 8.9.19
+ * Time: 21:56
  */
 
-namespace App\Model\Persistent\Entity;
+namespace App\Model\Persistent\Entity\ProblemFinal;
+
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\LinearEqTemplRepository")
+ * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\ProblemFinal\QuadraticEquationFinalRepository")
  *
- * Class LinearEqTempl
+ * Class QuadraticEquationFinal
  * @package App\Model\Persistent\Entity
  */
-class LinearEqTempl extends ProblemTemplate
+class QuadraticEquationFinal extends ProblemFinal
 {
     /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank(
-     *     message="Variable can't be blank."
-     * )
+     * @ORM\Column(type="string", nullable=true, length=1)
      * @Assert\Type(
      *     type="string",
      *     message="Variable must be {{ type }}."
@@ -31,7 +29,7 @@ class LinearEqTempl extends ProblemTemplate
      * @Assert\Length(
      *     min=1,
      *     max=1,
-     *     exactMessage="Variable must be string of length 1."
+     *     exactMessage="Variable must be string of length 1.",
      * )
      *
      * @var string

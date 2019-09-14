@@ -3,35 +3,38 @@
  * Created by PhpStorm.
  * User: wiedzmin
  * Date: 28.4.19
- * Time: 14:19
+ * Time: 19:46
  */
 
-namespace App\Model\Persistent\Functionality;
+namespace App\Model\Persistent\Functionality\ProblemTemplate;
 
-use App\Model\Persistent\Entity\LinearEqTempl;
+use App\Model\Persistent\Entity\BaseEntity;
+use App\Model\Persistent\Entity\ProblemTemplate\QuadraticEquationTemplate;
+use App\Model\Persistent\Functionality\BaseFunctionality;
+use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\DifficultyRepository;
-use App\Model\Persistent\Repository\LinearEqTemplRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
+use App\Model\Persistent\Repository\ProblemTemplate\QuadraticEquationTemplateRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Model\Persistent\Repository\TemplateJsonDataRepository;
 use App\Model\Persistent\Traits\ProblemTemplateFunctionalityTrait;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class LinearEqTemplFunctionality
+ * Class QuadraticEquationTemplateFunctionality
  * @package App\Model\Persistent\Functionality
  */
-class LinearEqTemplFunctionality extends BaseFunctionality
+class QuadraticEquationTemplateFunctionality extends BaseFunctionality
 {
     use ProblemTemplateFunctionalityTrait;
 
     /**
-     * LinearEqTemplFunctionality constructor.
+     * QuadraticEquationTemplateFunctionality constructor.
      * @param ConstraintEntityManager $entityManager
-     * @param LinearEqTemplRepository $repository
+     * @param QuadraticEquationTemplateRepository $repository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
@@ -43,7 +46,7 @@ class LinearEqTemplFunctionality extends BaseFunctionality
     public function __construct
     (
         ConstraintEntityManager $entityManager,
-        LinearEqTemplRepository $repository,
+        QuadraticEquationTemplateRepository $repository,
         ProblemTypeRepository $problemTypeRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
@@ -63,13 +66,14 @@ class LinearEqTemplFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return Object|null
-     * @throws \Exception
+     * @return BaseEntity|null
+     * @throws \App\Exceptions\EntityException
+     * @throws \Nette\Utils\JsonException
      */
-    public function create(ArrayHash $data): ?Object
+    public function create(ArrayHash $data): ?BaseEntity
     {
-        $entity = new LinearEqTempl();
-        $entity = $this->setBaseValues($entity, $data);
+        $entity = new QuadraticEquationTemplate();
+        $entity = $this->setBasics($entity, $data);
         $entity->setVariable($data->variable);
         $this->em->persist($entity);
         $this->em->flush();
@@ -80,13 +84,12 @@ class LinearEqTemplFunctionality extends BaseFunctionality
      * @param int $id
      * @param ArrayHash $data
      * @param bool $fromDataGrid
-     * @return Object
-     * @throws \Exception
+     * @return BaseEntity|null
+     * @throws \App\Exceptions\EntityException
+     * @throws \Nette\Utils\JsonException
      */
-    public function update(int $id, ArrayHash $data, bool $fromDataGrid = false): Object
+    public function update(int $id, ArrayHash $data, bool $fromDataGrid = false): ?BaseEntity
     {
-        //bdump('UPDATE');
-        //bdump($id);
         $entity = $this->baseUpdate($id, $data, $fromDataGrid);
         if(!empty($data->variable)){
             $entity->setVariable($data->variable);

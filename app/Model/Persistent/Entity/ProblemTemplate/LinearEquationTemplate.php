@@ -3,24 +3,24 @@
  * Created by PhpStorm.
  * User: wiedzmin
  * Date: 27.4.19
- * Time: 22:50
+ * Time: 22:47
  */
 
-namespace App\Model\Persistent\Entity;
+namespace App\Model\Persistent\Entity\ProblemTemplate;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\QuadraticEqTemplRepository")
+ * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\ProblemTemplate\LinearEquationTemplateRepository")
  *
- * Class QuadraticEqTempl
+ * Class LinearEquationTemplate
  * @package App\Model\Persistent\Entity
  */
-class QuadraticEqTempl extends ProblemTemplate
+class LinearEquationTemplate extends ProblemTemplate
 {
     /**
-     * @ORM\Column(type="string", nullable=false, length=1)
+     * @ORM\Column(type="string", nullable=false)
      * @Assert\NotBlank(
      *     message="Variable can't be blank."
      * )

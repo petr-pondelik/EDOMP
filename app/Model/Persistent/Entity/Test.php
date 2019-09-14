@@ -111,7 +111,6 @@ class Test extends BaseEntity
 
     /**
      * Test constructor.
-     * @throws \Exception
      */
     public function __construct()
     {

@@ -9,8 +9,19 @@
 namespace App\Plugins;
 
 use App\Exceptions\ProblemTemplateException;
+use App\Helpers\ConstHelper;
+use App\Helpers\LatexHelper;
+use App\Helpers\RegularExpressions;
+use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\Entity\QuadraticEquationTemplateNP;
-use App\Model\Persistent\Entity\ProblemFinal;
+use App\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
+use App\Model\Persistent\Functionality\ProblemFinal\QuadraticEquationFinalFunctionality;
+use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
+use App\Services\ConditionService;
+use App\Services\GeneratorService;
+use App\Services\MathService;
+use App\Services\NewtonApiClient;
+use App\Services\VariableFractionService;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
@@ -21,6 +32,33 @@ use Nette\Utils\Strings;
  */
 class QuadraticEquationPlugin extends EquationPlugin
 {
+    /**
+     * QuadraticEquationPlugin constructor.
+     * @param NewtonApiClient $newtonApiClient
+     * @param MathService $mathService
+     * @param ConditionService $conditionService
+     * @param GeneratorService $generatorService
+     * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
+     * @param LatexHelper $latexHelper
+     * @param StringsHelper $stringsHelper
+     * @param VariableFractionService $variableDividers
+     * @param ConstHelper $constHelper
+     * @param RegularExpressions $regularExpressions
+     * @param QuadraticEquationFinalFunctionality $quadraticEquationFinalFunctionality
+     */
+    public function __construct
+    (
+        NewtonApiClient $newtonApiClient, MathService $mathService, ConditionService $conditionService,
+        GeneratorService $generatorService, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
+        LatexHelper $latexHelper, StringsHelper $stringsHelper, VariableFractionService $variableDividers,
+        ConstHelper $constHelper, RegularExpressions $regularExpressions,
+        QuadraticEquationFinalFunctionality $quadraticEquationFinalFunctionality
+    )
+    {
+        parent::__construct($newtonApiClient, $mathService, $conditionService, $generatorService, $templateJsonDataFunctionality, $latexHelper, $stringsHelper, $variableDividers, $constHelper, $regularExpressions);
+        $this->functionality = $quadraticEquationFinalFunctionality;
+    }
+
     /**
      * @param string $expression
      * @param string $variable
@@ -241,16 +279,16 @@ class QuadraticEquationPlugin extends EquationPlugin
      */
     public function evaluate(ProblemFinal $problem): ArrayHash
     {
-        $standardized = $this->standardize($problem->getBody());
+        $standardized = $this->standardizeFinal($problem->getBody());
         $a = $this->getDiscriminantA($standardized, $problem->getVariable());
         $b = $this->getDiscriminantB($standardized, $problem->getVariable());
         /*$a = $this->stringsHelper::trim($a);
         $b = $this->stringsHelper::trim($b);*/
         $discriminant = $this->getDiscriminantExpression($standardized, $problem->getVariable());
-        $discriminant = $this->evaluateExpression($discriminant);
+        $discriminant = $this->mathService->evaluateExpression($discriminant);
 
-        $b = $this->evaluateExpression($b);
-        $a = $this->evaluateExpression($a);
+        $b = $this->mathService->evaluateExpression($b);
+        $a = $this->mathService->evaluateExpression($a);
 
         if($discriminant > 0){
             $res1 = ((-$b) + sqrt($discriminant)) / (2*$a);
@@ -276,7 +314,11 @@ class QuadraticEquationPlugin extends EquationPlugin
             ];
         }
 
-        return ArrayHash::from($res);
+        $res = ArrayHash::from($res);
+
+        $this->functionality->storeResult($problem->getId(), $res);
+
+        return $res;
     }
 
     /**

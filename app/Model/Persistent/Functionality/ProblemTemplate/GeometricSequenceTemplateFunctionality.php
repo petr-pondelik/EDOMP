@@ -2,16 +2,19 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 28.4.19
- * Time: 23:39
+ * Date: 29.4.19
+ * Time: 18:28
  */
 
-namespace App\Model\Persistent\Functionality;
+namespace App\Model\Persistent\Functionality\ProblemTemplate;
 
-use App\Model\Persistent\Entity\ArithmeticSeqTempl;
+use App\Model\Persistent\Entity\BaseEntity;
+use App\Model\Persistent\Entity\ProblemTemplate\GeometricSequenceTemplate;
+use App\Model\Persistent\Functionality\BaseFunctionality;
+use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\ArithmeticSeqTemplRepository;
 use App\Model\Persistent\Repository\DifficultyRepository;
+use App\Model\Persistent\Repository\ProblemTemplate\GeometricSequenceTemplateRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
@@ -21,17 +24,17 @@ use App\Model\Persistent\Traits\ProblemTemplateFunctionalityTrait;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class ArithmeticSeqTemplFunctionality
+ * Class GeometricSequenceTemplateFunctionality
  * @package App\Model\Persistent\Functionality
  */
-class ArithmeticSeqTemplFunctionality extends BaseFunctionality
+class GeometricSequenceTemplateFunctionality extends BaseFunctionality
 {
     use ProblemTemplateFunctionalityTrait;
 
     /**
-     * ArithmeticSeqTemplFunctionality constructor.
+     * GeometricSequenceTemplateFunctionality constructor.
      * @param ConstraintEntityManager $entityManager
-     * @param ArithmeticSeqTemplRepository $repository
+     * @param GeometricSequenceTemplateRepository $repository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
@@ -43,7 +46,7 @@ class ArithmeticSeqTemplFunctionality extends BaseFunctionality
     public function __construct
     (
         ConstraintEntityManager $entityManager,
-        ArithmeticSeqTemplRepository $repository,
+        GeometricSequenceTemplateRepository $repository,
         ProblemTypeRepository $problemTypeRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
@@ -63,38 +66,40 @@ class ArithmeticSeqTemplFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
-     * @return Object|null
-     * @throws \Exception
+     * @return BaseEntity|null
+     * @throws \App\Exceptions\EntityException
+     * @throws \Nette\Utils\JsonException
      */
-    public function create(ArrayHash $data): ?Object
+    public function create(ArrayHash $data): ?BaseEntity
     {
-        $templ = new ArithmeticSeqTempl();
-        $templ = $this->setBaseValues($templ, $data);
-        $templ->setVariable($data->variable);
-        $templ->setFirstN($data->firstN);
-        $this->em->persist($templ);
+        $entity = new GeometricSequenceTemplate();
+        $entity = $this->setBasics($entity, $data);
+        $entity->setIndexVariable($data->indexVariable);
+        $entity->setFirstN($data->firstN);
+        $this->em->persist($entity);
         $this->em->flush();
-        return $templ;
+        return $entity;
     }
 
     /**
      * @param int $id
      * @param ArrayHash $data
      * @param bool $fromDataGrid
-     * @return Object
-     * @throws \Exception
+     * @return BaseEntity|null
+     * @throws \App\Exceptions\EntityException
+     * @throws \Nette\Utils\JsonException
      */
-    public function update(int $id, ArrayHash $data, bool $fromDataGrid = false): ?Object
+    public function update(int $id, ArrayHash $data, bool $fromDataGrid = false): ?BaseEntity
     {
-        $templ = $this->baseUpdate($id, $data, $fromDataGrid);
-        if(!empty($data->variable)){
-            $templ->setVariable($data->variable);
+        $entity = $this->baseUpdate($id, $data, $fromDataGrid);
+        if(isset($data->indexVariable)){
+            $entity->setIndexVariable($data->indexVariable);
         }
-        if(!empty($data->firstN)){
-            $templ->setFirstN($data->firstN);
+        if(isset($data->firstN)){
+            $entity->setFirstN($data->firstN);
         }
-        $this->em->persist($templ);
+        $this->em->persist($entity);
         $this->em->flush();
-        return $templ;
+        return $entity;
     }
 }

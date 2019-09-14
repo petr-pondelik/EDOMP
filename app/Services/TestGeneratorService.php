@@ -10,7 +10,7 @@ namespace App\Services;
 
 use App\Exceptions\ProblemFinalCollisionException;
 use App\Model\Persistent\Entity\Test;
-use App\Model\Persistent\Functionality\ProblemFinalFunctionality;
+use App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
 use App\Model\Persistent\Functionality\TestFunctionality;
 use App\Model\Persistent\Functionality\TestVariantFunctionality;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
@@ -60,6 +60,11 @@ class TestGeneratorService
     protected $generatorService;
 
     /**
+     * @var PluginContainer
+     */
+    protected $pluginContainer;
+
+    /**
      * @var array
      */
     protected $testVariantsLabels;
@@ -78,13 +83,15 @@ class TestGeneratorService
      * @param TestFunctionality $testFunctionality
      * @param TestVariantFunctionality $testVariantFunctionality
      * @param GeneratorService $generatorService
+     * @param PluginContainer $pluginContainer
      */
     public function __construct
     (
         ProblemRepository $problemRepository, TestRepository $testRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository,
         ProblemFinalFunctionality $problemFinalFunctionality, TestFunctionality $testFunctionality, TestVariantFunctionality $testVariantFunctionality,
-        GeneratorService $generatorService
+        GeneratorService $generatorService,
+        PluginContainer $pluginContainer
     )
     {
         $this->problemRepository = $problemRepository;
@@ -94,6 +101,7 @@ class TestGeneratorService
         $this->testFunctionality = $testFunctionality;
         $this->testVariantFunctionality = $testVariantFunctionality;
         $this->generatorService = $generatorService;
+        $this->pluginContainer = $pluginContainer;
 
         $this->problemConditionTypesId = $this->problemConditionTypeRepository->findPairs([], 'id');
 
@@ -290,7 +298,6 @@ class TestGeneratorService
 
                 }
 
-
             }
             // If only one problem was selected, just pick it up
             else{
@@ -300,34 +307,18 @@ class TestGeneratorService
             //If the problem is prototype, it needs to be generated to it's final form
             if($problem->isTemplate()){
 
-                $generatedFinal = $this->generatorService->generateProblemFinal($problem);
+                bdump($problem);
 
-                //Build final problem object
-                $finalData = new ArrayHash();
-
-                $finalData['textBefore'] = $problem->getTextBefore();
-                $finalData['body'] = $generatedFinal;
-                $finalData['textAfter'] = $problem->getTextAfter();
-                $finalData['difficulty'] = $problem->getDifficulty()->getId();
-                $finalData['problemType'] = $problem->getProblemType()->getId();
-                $finalData['subCategory'] = $problem->getSubCategory()->getId();
-                $finalData['problem_template_id'] = $problem->getId();
-                $finalData['is_generated'] = true;
-
-                if(method_exists($problem, 'getFirstN')){
-                    $finalData['first_n'] = $problem->getFirstN();
-                }
-                if(method_exists($problem, 'getVariable')){
-                    $finalData['variable'] = $problem->getVariable();
-                }
-
-                //Get prototype conditions
-                $templateConditions = $problem->getConditions();
-
-                //Store generated final problem to DB and switch problemId to it's ID
+                // Store generated final problem to DB and switch problemId to it's ID
                 $problemTemplate = $problem;
 
-                $problem = $this->problemFinalFunctionality->create($finalData, $templateConditions->getValues(), false);
+                $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
+                $problem = $this->pluginContainer->getPlugin($problemTypeKeyLabel)->constructProblemFinal($problemTemplate);
+
+                bdump($problem);
+
+//                $problem = $this->problemFinalFunctionality->create($finalData, $templateConditions->getValues(), false);
+
             }
             else{
                 $usedFinals[] = $problem->getId();

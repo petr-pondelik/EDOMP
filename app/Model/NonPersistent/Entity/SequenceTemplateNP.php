@@ -17,6 +17,11 @@ use Nette\Utils\ArrayHash;
 class SequenceTemplateNP extends ProblemTemplateNP
 {
     /**
+     * @var string|null
+     */
+    protected $indexVariable;
+
+    /**
      * @var int|null
      */
     protected $firstN;
@@ -66,5 +71,21 @@ class SequenceTemplateNP extends ProblemTemplateNP
     public function setFirstValues(?array $firstValues): void
     {
         $this->firstValues = $firstValues;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getIndexVariable(): ?string
+    {
+        return $this->indexVariable;
+    }
+
+    /**
+     * @param string|null $indexVariable
+     */
+    public function setIndexVariable(?string $indexVariable): void
+    {
+        $this->indexVariable = $indexVariable;
     }
 }

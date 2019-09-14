@@ -39,8 +39,8 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
      */
     protected $baseValidation = [
         [
-            'field' => 'variable',
-            'getter' => 'getVariable',
+            'field' => 'indexVariable',
+            'getter' => 'getIndexVariable',
             'validation' => 'variable'
         ],
         [
@@ -125,7 +125,7 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
     {
         $form = parent::createComponentForm();
 
-        $form->addText('variable', 'Index *')
+        $form->addText('indexVariable', 'Index *')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte index šablony posloupnosti.')
             ->setHtmlId('variable');
@@ -150,19 +150,18 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
     /**
      * @param ProblemTemplateNP $problemTemplate
      * @return ProblemTemplateNP|null
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function standardize(ProblemTemplateNP $problemTemplate): ?ProblemTemplateNP
     {
         try{
-            $problemTemplate = $this->pluginContainer->standardizeGeometricSequence($problemTemplate);
+            $standardized = $this->pluginContainer->getPlugin($this->problemType->getKeyLabel())->standardize($problemTemplate);
         } catch (EquationException $e){
             $this['form']['body']->addError('Zadaný výraz není validním předpisem posloupnosti.');
             return null;
         } catch (\Exception $e){
             $this['form']['body']->addError($e->getMessage());
         }
-        return $problemTemplate;
+        return $standardized;
     }
 
 }

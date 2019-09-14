@@ -18,7 +18,7 @@ use App\Components\SideBar\SideBarFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\FlashesTranslator;
 use App\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
-use App\Model\Persistent\Entity\ProblemTemplate;
+use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use App\Model\Persistent\Functionality\BaseFunctionality;
 use App\Model\Persistent\Repository\BaseRepository;
 use App\Services\Authorizator;
@@ -249,8 +249,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     public function handleSubCategoryUpdate(int $templateId, int $subCategoryId): void
     {
         try{
-            $this->functionality->update($templateId,
-                ArrayHash::from(['subcategory' => $subCategoryId]), true
+            $this->functionality->update($templateId, ArrayHash::from(['subCategory' => $subCategoryId]), true
             );
         } catch (\Exception $e){
             $this->informUser(new UserInformArgs('subCategory', true, 'error', $e, true));
@@ -282,7 +281,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
      */
     public function createComponentProblemTemplateCreateForm(): ProblemTemplateFormControl
     {
-        $control = $this->problemTemplateFormFactory->create($this->functionality);
+        $control = $this->problemTemplateFormFactory->create();
         $control->onSuccess[] = function () {
             $this['templateGrid']->reload();
             $this['problemTemplateCreateForm']->restoreDefaults();
@@ -300,7 +299,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
      */
     public function createComponentProblemTemplateEditForm(): ProblemTemplateFormControl
     {
-        $control = $this->problemTemplateFormFactory->create($this->functionality, true);
+        $control = $this->problemTemplateFormFactory->create(true);
         $control->onSuccess[] = function () {
             $this->informUser(new UserInformArgs('edit', true, 'success', null, true));
             $this->redirect('default');

@@ -15,9 +15,9 @@ use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\SideBarFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\FlashesTranslator;
-use App\Model\Persistent\Entity\ProblemTemplate;
-use App\Model\Persistent\Functionality\LinearEqTemplFunctionality;
-use App\Model\Persistent\Repository\LinearEqTemplRepository;
+use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
+use App\Model\Persistent\Functionality\ProblemTemplate\LinearEquationTemplateFunctionality;
+use App\Model\Persistent\Repository\ProblemTemplate\LinearEquationTemplateRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use App\Services\ProblemTemplateSession;
@@ -36,8 +36,8 @@ class LinearEqTemplatePresenter extends ProblemTemplatePresenter
      * @param HeaderBarFactory $headerBarFactory
      * @param SideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
-     * @param LinearEqTemplRepository $repository
-     * @param LinearEqTemplFunctionality $functionality
+     * @param LinearEquationTemplateRepository $repository
+     * @param LinearEquationTemplateFunctionality $functionality
      * @param TemplateGridFactory $templateGridFactory
      * @param LinearEqTemplateFormFactory $problemTemplateFormFactory
      * @param ConstHelper $constHelper
@@ -48,7 +48,7 @@ class LinearEqTemplatePresenter extends ProblemTemplatePresenter
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        LinearEqTemplRepository $repository, LinearEqTemplFunctionality $functionality,
+        LinearEquationTemplateRepository $repository, LinearEquationTemplateFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, LinearEqTemplateFormFactory $problemTemplateFormFactory,
         ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory,
         ProblemTemplateSession $problemTemplateSession

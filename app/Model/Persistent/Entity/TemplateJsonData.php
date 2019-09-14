@@ -48,17 +48,6 @@ class TemplateJsonData extends BaseEntity
      */
     protected $templateId;
 
-//    /**
-//     * @ORM\Column(type="boolean", nullable=true)
-//     * @Assert\Type(
-//     *     type="bool",
-//     *     message="IsValidation must be {{ type }}."
-//     * )
-//     *
-//     * @var bool
-//     */
-//    protected $isValidation;
-
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Persistent\Entity\ProblemConditionType", cascade={"persist", "merge"})
      *

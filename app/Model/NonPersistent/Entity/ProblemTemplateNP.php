@@ -52,11 +52,6 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     protected $textAfter;
 
     /**
-     * @var string|null
-     */
-    protected $variable;
-
-    /**
      * @var int|null
      */
     protected $difficulty;
@@ -225,22 +220,6 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     public function setTextAfter(?string $textAfter): void
     {
         $this->textAfter = $textAfter;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getVariable(): ?string
-    {
-        return $this->variable;
-    }
-
-    /**
-     * @param string|null $variable
-     */
-    public function setVariable(?string $variable): void
-    {
-        $this->variable = $variable;
     }
 
     /**

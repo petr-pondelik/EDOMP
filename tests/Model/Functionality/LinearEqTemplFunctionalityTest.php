@@ -30,13 +30,13 @@ class LinearEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
     {
         parent::setUp();
 
-        // Mock the LinearEqTemplRepository
+        // Mock the LinearEquationTemplateRepository
         $this->repositoryMock = $this->getMockBuilder(LinearEqTemplRepository::class)
             ->setMethods(['find', 'getSequenceVal'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        // Set expected return values for LinearEqTemplRepository getSequenceVal method
+        // Set expected return values for LinearEquationTemplateRepository getSequenceVal method
         $this->repositoryMock->expects($this->any())
             ->method('getSequenceVal')
             ->willReturn(1);
@@ -53,7 +53,7 @@ class LinearEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
      */
     public function testFunctionality(): void
     {
-        // Data for LinearEqTempl create
+        // Data for LinearEquationTemplate create
         $data = ArrayHash::from([
             'variable' => 'T',
             'body' => 'TEST_BODY',
@@ -67,7 +67,7 @@ class LinearEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
             'created' => new DateTime('2000-01-01')
         ]);
 
-        // Prepare LinearEqTempl expected object
+        // Prepare LinearEquationTemplate expected object
         $linearEqTemplExpected = new LinearEqTempl();
         $linearEqTemplExpected->setVariable($data->variable);
         $linearEqTemplExpected->setBody($data->body);
@@ -89,13 +89,13 @@ class LinearEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         );
         $linearEqTemplExpected->setCreated($data->created);
 
-        // Create LinearEqTempl
+        // Create LinearEquationTemplate
         $linearEqTempl = $this->functionality->create($data);
 
-        // Test created LinearEqTempl against expected LinearEqTempl object
+        // Test created LinearEquationTemplate against expected LinearEquationTemplate object
         $this->assertEquals($linearEqTemplExpected, $linearEqTempl);
 
-        // Data for LinearEqTempl update
+        // Data for LinearEquationTemplate update
         $data = ArrayHash::from([
             'variable' => 'U',
             'body' => 'TEST_BODY_NEW',
@@ -110,7 +110,7 @@ class LinearEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
             'created' => new DateTime('2000-02-02')
         ]);
 
-        // Prepare updated LinearEqTempl expected object
+        // Prepare updated LinearEquationTemplate expected object
         $linearEqTemplExpected->setVariable($data->variable);
         $linearEqTemplExpected->setBody($data->body);
         $linearEqTemplExpected->setTextBefore($data->textBefore);
@@ -132,7 +132,7 @@ class LinearEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
         );
         $linearEqTemplExpected->setCreated($data->created);
 
-        // Set expected return values for LinearEqTemplRepository find method
+        // Set expected return values for LinearEquationTemplateRepository find method
         $this->repositoryMock->expects($this->any())
             ->method('find')
             ->willReturnCallback(static function ($arg) use (
@@ -145,10 +145,10 @@ class LinearEqTemplFunctionalityTest extends ProblemFunctionalityTestCase
                 return false;
             });
 
-        // Update LinearEqTempl
+        // Update LinearEquationTemplate
         $linearEqTempl = $this->functionality->update(1, $data);
 
-        // Test updated LinearEqTempl against expected LinearEqTempl object
+        // Test updated LinearEquationTemplate against expected LinearEquationTemplate object
         $this->assertEquals($linearEqTemplExpected, $linearEqTempl);
     }
 }

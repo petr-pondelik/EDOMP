@@ -59,7 +59,6 @@ class Group extends BaseEntity
 
     /**
      * Group constructor.
-     * @throws \Exception
      */
     public function __construct()
     {

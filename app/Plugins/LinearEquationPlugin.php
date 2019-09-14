@@ -9,8 +9,19 @@
 namespace App\Plugins;
 
 use App\Exceptions\ProblemTemplateException;
+use App\Helpers\ConstHelper;
+use App\Helpers\LatexHelper;
+use App\Helpers\RegularExpressions;
+use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\Entity\LinearEquationTemplateNP;
-use App\Model\Persistent\Entity\ProblemFinal;
+use App\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
+use App\Model\Persistent\Functionality\ProblemFinal\LinearEquationFinalFunctionality;
+use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
+use App\Services\ConditionService;
+use App\Services\GeneratorService;
+use App\Services\MathService;
+use App\Services\NewtonApiClient;
+use App\Services\VariableFractionService;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
@@ -21,6 +32,33 @@ use Nette\Utils\Strings;
  */
 class LinearEquationPlugin extends EquationPlugin
 {
+    /**
+     * LinearEquationPlugin constructor.
+     * @param NewtonApiClient $newtonApiClient
+     * @param MathService $mathService
+     * @param ConditionService $conditionService
+     * @param GeneratorService $generatorService
+     * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
+     * @param LatexHelper $latexHelper
+     * @param StringsHelper $stringsHelper
+     * @param VariableFractionService $variableDividers
+     * @param ConstHelper $constHelper
+     * @param RegularExpressions $regularExpressions
+     * @param LinearEquationFinalFunctionality $linearEquationFinalFunctionality
+     */
+    public function __construct
+    (
+        NewtonApiClient $newtonApiClient, MathService $mathService, ConditionService $conditionService,
+        GeneratorService $generatorService, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
+        LatexHelper $latexHelper, StringsHelper $stringsHelper, VariableFractionService $variableDividers,
+        ConstHelper $constHelper, RegularExpressions $regularExpressions,
+        LinearEquationFinalFunctionality $linearEquationFinalFunctionality
+    )
+    {
+        parent::__construct($newtonApiClient, $mathService, $conditionService, $generatorService, $templateJsonDataFunctionality, $latexHelper, $stringsHelper, $variableDividers, $constHelper, $regularExpressions);
+        $this->functionality = $linearEquationFinalFunctionality;
+    }
+
     /**
      * @param LinearEquationTemplateNP $data
      * @return bool
@@ -93,18 +131,16 @@ class LinearEquationPlugin extends EquationPlugin
      */
     public function evaluate(ProblemFinal $problem): ArrayHash
     {
-        //bdump('LINEAR EQUATION EVALUATE');
-        $standardized = $this->standardize($problem->getBody());
+        bdump('LINEAR EQUATION EVALUATE');
+
+        $standardized = $this->standardizeFinal($problem->getBody());
         $variable = $problem->getVariable();
         $variableExp = $this->stringsHelper::getLinearVariableExpresion($standardized, $variable);
 
-        //bdump($variableExp);
+        $res = ArrayHash::from([ $variable => $this->mathService->evaluateExpression($variableExp) ]);
+        $this->functionality->storeResult($problem->getId(), $res);
 
-        $res = [
-            $variable => $this->evaluateExpression($variableExp)
-        ];
-
-        return ArrayHash::from($res);
+        return $res;
     }
 
     /**
