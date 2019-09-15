@@ -8,9 +8,8 @@
 
 namespace App\Components\SideBar;
 
-use App\Components\Traits\ModuleDetectTrait;
+use App\Components\Traits\DetectPresenterTrait;
 use Nette\Application\UI\Control;
-use Nette\Utils\Strings;
 
 /**
  * Class SideBarControl
@@ -18,11 +17,12 @@ use Nette\Utils\Strings;
  */
 class SideBarControl extends Control
 {
-    use ModuleDetectTrait;
+    use DetectPresenterTrait;
 
     public function render(): void
     {
         $this->template->adminModule = $this->isAdminModule();
+        $this->template->problemTemplatePresenter = $this->isProblemTemplatePresenter();
         $this->template->render(__DIR__ . '/templates/sideBar.latte');
     }
 }

@@ -37,11 +37,16 @@
 
             {if $adminModule}
 
-                <li {ifset templateActive}class="active"{/ifset}>
-                    <a href="javascript:void(0)" class="submenu-indicator-minus">
+                <li n:class="$problemTemplatePresenter ? active">
+                    <a href="javascript:void(0)"
+                            n:class="$presenter->isLinkCurrent('LinearEqTemplate:*') ||
+                                     $presenter->isLinkCurrent('QuadraticEqTemplate:*') ||
+                                     $presenter->isLinkCurrent('ArithmeticSeqTemplate:*') ||
+                                     $presenter->isLinkCurrent('GeometricSeqTemplate:*')
+                                     ? submenu-indicator-minus">
                         <i class="fas fa-file mr-3"></i>Šablony
                     </a>
-                    <ul class="submenu">
+                    <ul class="submenu" {if !$problemTemplatePresenter} style="display: none;" {/if}>
                         <li n:class="$presenter->isLinkCurrent('LinearEqTemplate:*') ? active">
                             <a href={plink :Admin:LinearEqTemplate:default}>Lineární rovnice</a>
                         </li>

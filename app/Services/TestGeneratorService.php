@@ -182,19 +182,19 @@ class TestGeneratorService
      * @param Test $test
      * @param string $variantLabel
      * @param ArrayHash $data
-     * @return Test
-     * @throws \Exception
+     * @param array $usedFinals
+     * @return array
+     * @throws ProblemFinalCollisionException
+     * @throws \App\Exceptions\EntityException
+     * @throws \Nette\Utils\JsonException
      */
-    protected function generateTestVariant(Test $test, string $variantLabel, ArrayHash $data): Test
+    protected function generateTestVariant(Test $test, string $variantLabel, ArrayHash $data, array $usedFinals): array
     {
         // Create TestVariant entity
         $testVariant = $this->testVariantFunctionality->create(ArrayHash::from([
             'variantLabel' => $variantLabel,
             'test' => $test
         ]));
-
-        // Array of chosen final problems IDs
-        $usedFinals = [];
 
         for($i = 0; $i < $data->problems_cnt; $i++){
             $problemTemplate = null;
@@ -213,7 +213,9 @@ class TestGeneratorService
 
                 $finalsFree = [];
                 foreach($finals as $final){
-                    $finalsFree[$final->getId()] = true;
+                    if(!isset($usedFinals[$final->getId()])){
+                        $finalsFree[$final->getId()] = true;
+                    }
                 }
 
                 while(true){
@@ -239,8 +241,11 @@ class TestGeneratorService
 
                     // If the problems isn't template, mark used final problem
                     if(!$problem->isTemplate()){
-                        if(!in_array($problem->getId(), $usedFinals, true)){
-                            $usedFinals[] = $problem->getId();
+                        bdump($usedFinals);
+                        bdump($problem);
+                        if(!isset($usedFinals[$problem->getId()])){
+                            $usedFinals[$problem->getId()] = $problem->getId();
+                            bdump($usedFinals);
                             break;
                         }
                         $finalsFree[$problem->getId()] = false;
@@ -286,8 +291,8 @@ class TestGeneratorService
 
                     // If the problem isn't template, mak used final problem
                     if(!$problem->isTemplate()){
-                        if(!in_array($problem->getId(), $usedFinals, true)){
-                            $usedFinals[] = $problem->getId();
+                        if(!isset($usedFinals[$problem->getId()])){
+                            $usedFinals[$problem->getId()] = $problem->getId();
                             break;
                         }
                         $selectedFinalsFree[$problem->getId()] = false;
@@ -317,12 +322,10 @@ class TestGeneratorService
 
                 bdump($problem);
 
-//                $problem = $this->problemFinalFunctionality->create($finalData, $templateConditions->getValues(), false);
-
             }
-            else{
-                $usedFinals[] = $problem->getId();
-            }
+//            else{
+//                $usedFinals[] = $problem->getId();
+//            }
 
             //Attach current problem to the created test
             $testVariant = $this->testVariantFunctionality->attachProblem($testVariant, $problem, $problemTemplate ?? null, $data->{'newpage_' . $i});
@@ -330,7 +333,7 @@ class TestGeneratorService
 
         $test->addTestVariant($testVariant);
 
-        return $test;
+        return [$test, $usedFinals];
     }
 
     /**
@@ -341,6 +344,7 @@ class TestGeneratorService
     public function generateTest(ArrayHash $data)
     {
         $variants = $this->testVariantsToArray($data);
+
         $test = $this->testFunctionality->create(ArrayHash::from([
             'logo' => $data->logo,
             'term' => $data->testTerm,
@@ -349,11 +353,17 @@ class TestGeneratorService
             'groups' => $data->groups,
             'introductionText' => $data->introductionText
         ]));
+
+        // Array of chosen final problems IDs
+        $usedFinals = [];
+
         if($test){
             foreach($variants as $variant){
-                $test = $this->generateTestVariant($test, $variant, $data);
+                [$test, $usedFinals] = $this->generateTestVariant($test, $variant, $data, $usedFinals);
+                bdump($usedFinals);
             }
         }
+
         return $test;
     }
 }

@@ -16,7 +16,7 @@ $$ x + <par min="0" max="0"/> \big( 5 x + 4 \big) + <par min="0" max="0"/> = - <
 
 ## Testing Quadratic Equations templates with variable fractions
 
-$$ \frac{x}{x - <par min="-5" max="5"/>} + \frac{x - <par min="-5" max="5"/>}{x} = \frac{4}{x^2 - 2x} $$
+$$ \frac{x}{x - <par min="-5" max="5"/>} + \frac{x - <par min="-5" max="5"/>}{6} = \frac{4}{2} $$
 
 $$ \frac{x - <par min="-5" max="5"/>}{x} + \frac{x}{x - 1} + \frac{<par min="-10" max="10"/>}{x - x^2} = 0 $$
 

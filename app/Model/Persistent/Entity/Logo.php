@@ -59,6 +59,14 @@ class Logo extends BaseEntity
     protected $isUsed = false;
 
     /**
+     * @return bool
+     */
+    public function isPdf(): bool
+    {
+        return $this->extension === '.pdf';
+    }
+
+    /**
      * @return string
      */
     public function getPath(): ?string

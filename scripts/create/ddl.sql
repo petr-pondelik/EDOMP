@@ -47,7 +47,7 @@ create table problem_type
   is_generatable tinyint(1)   null,
   created        datetime     not null,
   label          varchar(255) not null,
-  form_name      varchar(255) null
+  key_label      varchar(255) not null
 )
   collate = utf8_unicode_ci;
 
@@ -116,38 +116,73 @@ create table problem
 )
   collate = utf8_unicode_ci;
 
-create table arithmetic_seq_templ
+create table arithmetic_sequence_final
 (
-  id         int          not null
+  id             int        not null
     primary key,
-  variable   varchar(255) not null,
-  first_n    int          not null,
-  difference double       null,
-  constraint FK_3E471ABEBF396750
+  index_variable varchar(1) not null,
+  first_n        int        not null,
+  constraint FK_C41EAA70BF396750
     foreign key (id) references problem (id)
       on delete cascade
 )
   collate = utf8_unicode_ci;
 
-create table geometric_seq_templ
+create table arithmetic_sequence_template
 (
-  id       int          not null
+  id             int          not null
     primary key,
-  variable varchar(255) not null,
-  first_n  int          not null,
-  quotient double       null,
-  constraint FK_DC9BD28CBF396750
+  index_variable varchar(255) not null,
+  first_n        int          not null,
+  difference     double       null,
+  constraint FK_18E3C00ABF396750
     foreign key (id) references problem (id)
       on delete cascade
 )
   collate = utf8_unicode_ci;
 
-create table linear_eq_templ
+create table geometric_sequence_final
+(
+  id             int        not null
+    primary key,
+  index_variable varchar(1) not null,
+  first_n        int        not null,
+  constraint FK_44DDDA45BF396750
+    foreign key (id) references problem (id)
+      on delete cascade
+)
+  collate = utf8_unicode_ci;
+
+create table geometric_sequence_template
+(
+  id             int          not null
+    primary key,
+  index_variable varchar(255) not null,
+  first_n        int          not null,
+  quotient       double       null,
+  constraint FK_17110D0DBF396750
+    foreign key (id) references problem (id)
+      on delete cascade
+)
+  collate = utf8_unicode_ci;
+
+create table linear_equation_final
+(
+  id       int        not null
+    primary key,
+  variable varchar(1) null,
+  constraint FK_6AC811BF396750
+    foreign key (id) references problem (id)
+      on delete cascade
+)
+  collate = utf8_unicode_ci;
+
+create table linear_equation_template
 (
   id       int          not null
     primary key,
   variable varchar(255) not null,
-  constraint FK_7C28422FBF396750
+  constraint FK_5155DDD9BF396750
     foreign key (id) references problem (id)
       on delete cascade
 )
@@ -180,8 +215,6 @@ create table problem_final
   problem_template_id int        null,
   result              longtext   null,
   is_generated        tinyint(1) null,
-  variable            varchar(1) null,
-  first_n             int        null,
   constraint FK_74DD736D32497E7
     foreign key (problem_template_id) references problem_template (id),
   constraint FK_74DD736DBF396750
@@ -193,12 +226,23 @@ create table problem_final
 create index IDX_74DD736D32497E7
   on problem_final (problem_template_id);
 
-create table quadratic_eq_templ
+create table quadratic_equation_final
+(
+  id       int        not null
+    primary key,
+  variable varchar(1) null,
+  constraint FK_D7177185BF396750
+    foreign key (id) references problem (id)
+      on delete cascade
+)
+  collate = utf8_unicode_ci;
+
+create table quadratic_equation_template
 (
   id       int        not null
     primary key,
   variable varchar(1) not null,
-  constraint FK_C98826F6BF396750
+  constraint FK_B0FCD552BF396750
     foreign key (id) references problem (id)
       on delete cascade
 )
@@ -209,14 +253,19 @@ create index IDX_BCE3F79812469DE2
 
 create table template_json_data
 (
-  id            int auto_increment
+  id                        int auto_increment
     primary key,
-  json_data     longtext   null comment '(DC2Type:json)',
-  template_id   int        not null,
-  created       datetime   not null,
-  is_validation tinyint(1) null
+  json_data                 longtext null comment '(DC2Type:json)',
+  template_id               int      not null,
+  created                   datetime not null,
+  problem_condition_type_id int      null,
+  constraint FK_BD3CD912FF45F437
+    foreign key (problem_condition_type_id) references problem_condition_type (id)
 )
   collate = utf8_unicode_ci;
+
+create index IDX_BD3CD912FF45F437
+  on template_json_data (problem_condition_type_id);
 
 create table test
 (
@@ -433,11 +482,11 @@ create table problem_condition
 (
   id                        int auto_increment
     primary key,
+  validation_function_id    int          null,
   problem_condition_type_id int          null,
   accessor                  int          not null,
   created                   datetime     not null,
   label                     varchar(255) not null,
-  validation_function_id    int          null,
   constraint FK_22A086E4CFFB0E2D
     foreign key (validation_function_id) references validation_function (id),
   constraint FK_22A086E4FF45F437

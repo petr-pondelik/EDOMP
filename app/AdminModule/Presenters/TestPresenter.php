@@ -179,7 +179,7 @@ class TestPresenter extends AdminPresenter
                     'problem_final_id_' . $i . '_' . $j => $problemFinal->getId(),
                     'success_rate_' . $i . '_' . $j => $problemFinalAssociation->getSuccessRate()
                 ]);
-                if($problemTemplate = $problemFinalAssociation->getProblemTemplate()){
+                if($problemTemplate = $problemFinalAssociation->getProblemFinal()->getProblemTemplate()){
                     //bdump($problemTemplate->getId());
                     $form->setDefaults([
                         'problem_template_id_disabled_' . $i . '_' . $j => $problemTemplate->getId(),
@@ -293,7 +293,7 @@ class TestPresenter extends AdminPresenter
         $control =  $this->testFormFactory->create();
         $control->onSuccess[] = function (){
             $this->informUser(new UserInformArgs('create'));
-            $this->redirect('default');
+//            $this->redirect('default');
         };
         $control->onError[] = function ($e){
             $this->informUser(new UserInformArgs('create', true, 'error', $e, false, 'testCreateForm'));

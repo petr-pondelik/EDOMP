@@ -1,0 +1,14 @@
+.pdf-ui-action-bar {
+    @include mixin-transition;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    background-color: $blueLightColor;
+    color: white;
+}
+
+.pdf-ui-action-bar:hover{
+    cursor: grab;
+    background-color: $blueMiddleColor;
+}

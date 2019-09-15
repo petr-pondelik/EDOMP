@@ -8,7 +8,7 @@
 
 namespace App\Components\HeaderBar;
 
-use App\Components\Traits\ModuleDetectTrait;
+use App\Components\Traits\DetectPresenterTrait;
 use Nette\Application\UI\Control;
 
 /**
@@ -17,7 +17,7 @@ use Nette\Application\UI\Control;
  */
 class HeaderBarControl extends Control
 {
-    use ModuleDetectTrait;
+    use DetectPresenterTrait;
 
     public function render(): void
     {
