@@ -10,13 +10,12 @@ namespace App\AdminModule\Presenters;
 
 use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\LogoGridFactory;
-use App\Components\Forms\LogoForm\LogoFormControl;
-use App\Components\Forms\LogoForm\LogoFormFactory;
+use App\Components\Forms\EntityFormControl;
+use App\Components\Forms\LogoForm\ILogoIFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
-use App\Components\SideBar\SideBarFactory;
+use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
-use App\Model\Persistent\Entity\Logo;
 use App\Model\Persistent\Functionality\LogoFunctionality;
 use App\Model\Persistent\Repository\LogoRepository;
 use App\Services\Authorizator;
@@ -24,219 +23,105 @@ use App\Services\FileService;
 use App\Services\NewtonApiClient;
 use App\Services\Validator;
 use Nette\Application\Responses\TextResponse;
-use Nette\ComponentModel\IComponent;
+use Nette\IOException;
 
 /**
  * Class LogoPresenter
  * @package App\Presenters
  */
-class LogoPresenter extends AdminPresenter
+class LogoPresenter extends EntityPresenter
 {
-    /**
-     * @var LogoRepository
-     */
-    protected $logoRepository;
-
-    /**
-     * @var LogoFunctionality
-     */
-    protected $logoFunctionality;
-
-    /**
-     * @var Validator
-     */
-    protected $validator;
-
     /**
      * @var FileService
      */
     protected $fileService;
 
     /**
-     * @var LogoGridFactory
-     */
-    protected $logoGridFactory;
-
-    /**
-     * @var LogoFormFactory
-     */
-    protected $logoFormFactory;
-
-    /**
-     * SettingsPresenter constructor.
+     * LogoPresenter constructor.
      * @param Authorizator $authorizator
+     * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
-     * @param SideBarFactory $sideBarFactory
+     * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param LogoRepository $logoRepository
      * @param LogoFunctionality $logoFunctionality
-     * @param Validator $validator
      * @param FileService $fileService
      * @param LogoGridFactory $logoGridFactory
-     * @param LogoFormFactory $logoFormFactory
+     * @param ILogoIFormFactory $logoFormFactory
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
-        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
+        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         LogoRepository $logoRepository, LogoFunctionality $logoFunctionality,
-        Validator $validator, FileService $fileService,
-        LogoGridFactory $logoGridFactory, LogoFormFactory $logoFormFactory,
+        FileService $fileService,
+        LogoGridFactory $logoGridFactory, ILogoIFormFactory $logoFormFactory,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
-        $this->logoRepository = $logoRepository;
-        $this->logoFunctionality = $logoFunctionality;
-        $this->validator = $validator;
+        parent::__construct
+        (
+            $authorizator, $validator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory,
+            $logoRepository, $logoFunctionality, $logoGridFactory, $logoFormFactory
+        );
         $this->fileService = $fileService;
-        $this->logoGridFactory = $logoGridFactory;
-        $this->logoFormFactory = $logoFormFactory;
     }
 
     public function renderDefault():void
     {
-        $this->logoFunctionality->deleteEmpty();
+        $this->functionality->deleteEmpty();
         $this->fileService->clearLogosTmpDir();
     }
 
     /**
-     * @param $id
-     */
-    public function actionEdit($id): void
-    {
-        $form = $this['logoEditForm']['form'];
-        if(!$form->isSubmitted()){
-            $record = $this->logoRepository->find((int) $id);
-            $this->template->entityLabel = $record->getLabel();
-            $this['logoEditForm']->template->entityLabel = $record->getLabel();
-            $this['logoEditForm']->template->path = $record->getPath();
-            $this['logoEditForm']->template->extension = $record->getExtension();
-            $this->setDefaults($form, $record);
-        }
-    }
-
-    /**
-     * @param IComponent $form
-     * @param Logo $record
-     */
-    public function setDefaults(IComponent $form, Logo $record): void
-    {
-        $form["id"]->setDefaultValue($record->getId());
-        $form["idHidden"]->setDefaultValue($record->getId());
-        $form["label"]->setDefaultValue($record->getLabel());
-        $form["logo"]->setDefaultValue($record->getId());
-    }
-
-    /**
      * @param $name
-     * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function createComponentLogoGrid($name): void
+    public function createComponentEntityGrid($name): void
     {
-        $grid = $this->logoGridFactory->create($this, $name);
-        $grid->addAction("delete", "", "delete!")
-            ->setTemplate(__DIR__ . "/templates/Logo/delete_action.latte");
-        $grid->addAction("edit", "", "edit!")
-            ->setIcon("edit")
-            ->setClass("btn btn-primary btn-sm");
+        $grid = $this->gridFactory->create($this, $name);
+        $grid->addAction('delete', '', 'delete!')
+            ->setTemplate(__DIR__ . '/templates/Logo/delete_action.latte');
+        $grid->addAction('edit', '', 'update!')
+            ->setIcon('edit')
+            ->setClass('btn btn-primary btn-sm');
         $grid->addInlineEdit()
             ->setIcon('pencil-alt')
             ->setTitle('Upravit inline')
             ->setClass('btn btn-primary btn-sm ajax')
-            ->onControlAdd[] = function($container) {
+            ->onControlAdd[] = static function ($container) {
             $container->addText('label', '');
         };
-        $grid->getInlineEdit()->onSetDefaults[] = function($cont, $item) {
-            $cont->setDefaults([
-                "label" => $item->getLabel()
+        $grid->getInlineEdit()->onSetDefaults[] = static function ($container, $item) {
+            $container->setDefaults([
+                'label' => $item->getLabel()
             ]);
         };
         $grid->getInlineEdit()->onSubmit[] = [$this, 'handleInlineUpdate'];
-        $grid->setItemsDetail(__DIR__ . "/templates/Logo/detail.latte")
-            ->setClass("btn btn-sm btn-primary ajax");
-    }
-
-    /**
-     * @param int $logoId
-     * @throws \Exception
-     */
-    public function handleDelete(int $logoId): void
-    {
-        try{
-            $this->logoFunctionality->delete($logoId);
-            $this->fileService->deleteLogoFile($logoId);
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('delete', true, 'error', $e));
-            return;
-        }
-        $this['logoGrid']->reload();
-        $this->informUser(new UserInformArgs('delete', true));
+        $grid->setItemsDetail(__DIR__ . '/templates/Logo/detail.latte')
+            ->setClass('btn btn-sm btn-primary ajax');
     }
 
     /**
      * @param int $id
-     * @throws \Nette\Application\AbortException
-     */
-    public function handleEdit(int $id): void
-    {
-        $this->redirect('edit', $id);
-    }
-
-    /**
-     * @param int $logoId
      * @param $row
      */
-    public function handleInlineUpdate(int $logoId, $row): void
+    public function handleInlineUpdate(int $id, $row): void
     {
         try{
-            $this->logoFunctionality->update($logoId, $row);
+            $this->functionality->update($id, $row);
         } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('edit', true, 'error', $e));
+            $this->informUser(new UserInformArgs('update', true,'error', $e, true));
         }
-        $this->informUser(new UserInformArgs('edit', true));
-    }
-
-    /**
-     * @return LogoFormControl
-     */
-    public function createComponentLogoCreateForm(): LogoFormControl
-    {
-        $control = $this->logoFormFactory->create();
-        $control->onSuccess[] = function (){
-            $this['logoGrid']->reload();
-            $this->informUser(new UserInformArgs('create', true));
-        };
-        $control->onError[] = function ($e){
-            $this->informUser(new UserInformArgs('create', true, 'error', $e));
-        };
-        return $control;
-    }
-
-    /**
-     * @return LogoFormControl
-     */
-    public function createComponentLogoEditForm(): LogoFormControl
-    {
-        $control = $this->logoFormFactory->create(true);
-        $control->onSuccess[] = function (){
-            $this->informUser(new UserInformArgs('edit'));
-            $this->redirect('default');
-        };
-        $control->onError[] = function ($e){
-            $this->informUser(new UserInformArgs('edit', false, 'errpr', $e));
-            $this->redirect('default');
-        };
-        return $control;
+        $this->informUser(new UserInformArgs('update', true, 'success',null, true));
     }
 
     /**
      * @throws \Nette\Application\AbortException
      * @throws \Exception
      */
-    public function handleUploadFile()
+    public function handleUploadFile(): void
     {
         $this->sendResponse( new TextResponse($this->fileService->uploadFile($this->getHttpRequest())) );
     }
@@ -245,7 +130,7 @@ class LogoPresenter extends AdminPresenter
      * @throws \Nette\Application\AbortException
      * @throws \Exception
      */
-    public function handleRevertFileUpload()
+    public function handleRevertFileUpload(): void
     {
         $this->sendResponse( new TextResponse($this->fileService->revertFileUpload($this->getHttpRequest())) );
     }
@@ -254,7 +139,7 @@ class LogoPresenter extends AdminPresenter
      * @throws \Nette\Application\AbortException
      * @throws \Exception
      */
-    public function handleUpdateFile()
+    public function handleUpdateFile(): void
     {
         $this->sendResponse( new TextResponse($this->fileService->updateFile($this->getHttpRequest())) );
     }
@@ -262,8 +147,34 @@ class LogoPresenter extends AdminPresenter
     /**
      * @throws \Nette\Application\AbortException
      */
-    public function handleRevertFileUpdate()
+    public function handleRevertFileUpdate(): void
     {
         $this->sendResponse( new TextResponse($this->fileService->revertFileUpdate($this->getHttpRequest())) );
+    }
+
+    /**
+     * @return EntityFormControl
+     */
+    public function createComponentEntityForm(): EntityFormControl
+    {
+        $control = $this->formFactory->create();
+        $control->onError[] = function ($e) use ($control) {
+            if($e instanceof IOException){
+                $control->flashMessage('Opakujte prosím volbu souboru loga.', 'danger');
+                return;
+            }
+            $this->informUser(new UserInformArgs($this->getAction(), true, 'error', $e, false, 'entityForm'));
+        };
+        $control->onSuccess[] = function () use ($control) {
+            $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null, false, 'entityForm'));
+            $this->reloadEntity();
+            if(!$control->isUpdate()){
+                $this['entityGrid']->reload();
+            }
+            if($control->isUpdate()){
+                $control->redrawControl();
+            }
+        };
+        return $control;
     }
 }

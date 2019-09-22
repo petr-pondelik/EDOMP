@@ -16,6 +16,7 @@ use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\Entity\GeometricSequenceTemplateNP;
 use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\Persistent\Functionality\BaseFunctionality;
+use App\Model\Persistent\Functionality\ProblemTemplate\GeometricSequenceTemplateFunctionality;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
@@ -79,41 +80,37 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
     /**
      * GeometricSeqTemplateFormControl constructor.
      * @param Validator $validator
-     * @param BaseFunctionality $functionality
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param SubCategoryRepository $subCategoryRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
-     * @param ProblemPlugin $problemTemplatePlugin
      * @param PluginContainer $pluginContainer
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param ProblemTemplateSession $problemTemplateSession
-     * @param bool $edit
+     * @param GeometricSequenceTemplateFunctionality $functionality
      */
     public function __construct
     (
-        Validator $validator, BaseFunctionality $functionality, DifficultyRepository $difficultyRepository,
+        Validator $validator, DifficultyRepository $difficultyRepository,
         ProblemTypeRepository $problemTypeRepository, SubCategoryRepository $subCategoryRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        ProblemPlugin $problemTemplatePlugin,
         PluginContainer $pluginContainer,
         StringsHelper $stringsHelper, ConstHelper $constHelper,
         ProblemTemplateSession $problemTemplateSession,
-        bool $edit = false
+        GeometricSequenceTemplateFunctionality $functionality
     )
     {
         parent::__construct
         (
-            $validator, $functionality, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
+            $validator, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
             $problemConditionTypeRepository, $problemConditionRepository,
-            $problemTemplatePlugin,
             $pluginContainer,
             $stringsHelper, $constHelper,
-            $problemTemplateSession,
-            $edit
+            $problemTemplateSession
         );
+        $this->functionality = $functionality;
         $this->attachEntities($this->constHelper::GEOMETRIC_SEQ);
     }
 
@@ -164,4 +161,13 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
         return $standardized;
     }
 
+    public function setDefaults(): void
+    {
+        if(!$this->isUpdate()){
+            return;
+        }
+        parent::setDefaults();
+        $this['form']['indexVariable']->setDefaultValue($this->entity->getIndexVariable());
+        $this['form']['firstN']->setDefaultValue($this->entity->getFirstN());
+    }
 }

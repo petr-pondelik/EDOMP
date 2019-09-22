@@ -10,9 +10,9 @@ namespace App\Presenters;
 
 use App\Components\Forms\SignForm\SignFormControl;
 use App\Components\HeaderBar\HeaderBarFactory;
-use App\Components\SideBar\SideBarFactory;
+use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
-use App\Components\Forms\SignForm\SignFormFactory;
+use App\Components\Forms\SignForm\ISignIFormFactory;
 use App\Services\Authenticator;
 use App\Services\Validator;
 
@@ -33,7 +33,7 @@ abstract class BaseSignPresenter extends BasePresenter
     protected $validator;
 
     /**
-     * @var SignFormFactory
+     * @var ISignIFormFactory
      */
     protected $signFormFactory;
 
@@ -46,17 +46,17 @@ abstract class BaseSignPresenter extends BasePresenter
      * BaseSignPresenter constructor.
      * @param Authenticator $authenticator
      * @param HeaderBarFactory $headerBarFactory
-     * @param SideBarFactory $sideBarFactory
+     * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param Validator $validator
-     * @param SignFormFactory $signFormFactory
+     * @param ISignIFormFactory $signFormFactory
      */
     public function __construct
     (
         Authenticator $authenticator,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         Validator $validator,
-        SignFormFactory $signFormFactory
+        ISignIFormFactory $signFormFactory
     )
     {
         parent::__construct($headerBarFactory, $sideBarFactory, $flashesTranslator);

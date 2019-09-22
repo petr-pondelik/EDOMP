@@ -1,0 +1,21 @@
+{import 'default.latte'}
+
+{define isEdit}{/define}
+
+{block headingFirstLink}
+    <li class="breadcrumb-item">
+        <a n:href="Group:default">
+            {include headingFirst}
+        </a>
+    </li>
+{/block}
+
+{block headingSecondLink}
+    <li n:snippet="breadcrumbSnippet" class="breadcrumb-item font-weight-bold active">
+        {$entity}
+    </li>
+{/block}
+
+{block content}
+    {control entityForm}
+{/block}

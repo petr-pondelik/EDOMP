@@ -9,19 +9,18 @@
 namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\TemplateGridFactory;
-use App\Components\Forms\ProblemTemplateForm\ArithmeticSeqTemplateForm\ArithmeticSeqTemplateFormFactory;
+use App\Components\Forms\ProblemTemplateForm\ArithmeticSeqTemplateForm\IArithmeticSeqTemplateFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
-use App\Components\SideBar\SideBarFactory;
+use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\FlashesTranslator;
-use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use App\Model\Persistent\Functionality\ProblemTemplate\ArithmeticSequenceTemplateFunctionality;
 use App\Model\Persistent\Repository\ProblemTemplate\ArithmeticSequenceTemplateRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use App\Services\ProblemTemplateSession;
-use Nette\ComponentModel\IComponent;
+use App\Services\Validator;
 
 /**
  * Class ArithmeticSeqTemplatePresenter
@@ -32,24 +31,25 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
     /**
      * ArithmeticSeqTemplatePresenter constructor.
      * @param Authorizator $authorizator
+     * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
-     * @param SideBarFactory $sideBarFactory
+     * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param ArithmeticSequenceTemplateRepository $repository
      * @param ArithmeticSequenceTemplateFunctionality $functionality
      * @param TemplateGridFactory $templateGridFactory
-     * @param ArithmeticSeqTemplateFormFactory $problemTemplateFormFactory
+     * @param IArithmeticSeqTemplateFormFactory $formFactory
      * @param ConstHelper $constHelper
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
      * @param ProblemTemplateSession $problemTemplateSession
      */
     public function __construct
     (
-        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
+        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ArithmeticSequenceTemplateRepository $repository, ArithmeticSequenceTemplateFunctionality $functionality,
-        TemplateGridFactory $templateGridFactory, ArithmeticSeqTemplateFormFactory $problemTemplateFormFactory,
+        TemplateGridFactory $templateGridFactory, IArithmeticSeqTemplateFormFactory $formFactory,
         ConstHelper $constHelper,
         ISectionHelpModalFactory $sectionHelpModalFactory,
         ProblemTemplateSession $problemTemplateSession
@@ -57,25 +57,12 @@ class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
     {
         parent::__construct
         (
-            $authorizator, $newtonApiClient,
+            $authorizator, $validator, $newtonApiClient,
             $headerBarFactory, $sideBarFactory, $flashesTranslator,
             $templateGridFactory, $constHelper, $sectionHelpModalFactory,
-            $problemTemplateSession
+            $problemTemplateSession,
+            $repository, $functionality, $formFactory
         );
-        $this->repository = $repository;
-        $this->functionality = $functionality;
-        $this->problemTemplateFormFactory = $problemTemplateFormFactory;
         $this->typeId = $this->constHelper::ARITHMETIC_SEQ;
-    }
-
-    /**
-     * @param IComponent $form
-     * @param ProblemTemplate $record
-     */
-    public function setDefaults(IComponent $form, ProblemTemplate $record): void
-    {
-        parent::setDefaults($form, $record);
-        $form['indexVariable']->setDefaultValue($record->getIndexVariable());
-        $form['firstN']->setDefaultValue($record->getFirstN());
     }
 }

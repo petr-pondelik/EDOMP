@@ -8,19 +8,15 @@
 
 namespace App\Components\HeaderBar;
 
-use App\Components\IControlFactory;
 
 /**
  * Class HeaderBarFactory
  * @package App\Components\HeaderBar
  */
-class HeaderBarFactory implements IControlFactory
+interface HeaderBarFactory
 {
     /**
      * @return HeaderBarControl
      */
-    public function create(): HeaderBarControl
-    {
-        return new HeaderBarControl();
-    }
+    public function create(): HeaderBarControl;
 }

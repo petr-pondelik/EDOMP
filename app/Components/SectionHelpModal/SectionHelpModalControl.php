@@ -8,14 +8,14 @@
 
 namespace App\Components\SectionHelpModal;
 
-use Nette\Application\UI\Control;
+use App\Components\EDOMPControl;
 use Nette\Utils\Strings;
 
 /**
  * Class ProblemTemplateHelpControl
  * @package App\Components\ProblemTemplateHelp
  */
-class SectionHelpModalControl extends Control
+class SectionHelpModalControl extends EDOMPControl
 {
     /**
      * @param string $presenterName

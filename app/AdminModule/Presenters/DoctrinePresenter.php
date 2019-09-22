@@ -11,7 +11,7 @@ namespace App\AdminModule\Presenters;
 
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
-use App\Components\SideBar\SideBarFactory;
+use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
@@ -145,7 +145,7 @@ class DoctrinePresenter extends AdminPresenter
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
-     * @param SideBarFactory $sideBarFactory
+     * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param ConstraintEntityManager $em
      * @param ProblemFinalRepository $problemRepository
@@ -170,7 +170,7 @@ class DoctrinePresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ConstraintEntityManager $em, ProblemFinalRepository $problemFinalRepository, CategoryRepository $categoryRepository,
         TemplateJsonDataRepository $templateJsonDataRepository,
         ProblemTemplateRepository $problemTemplateRepository, QuadraticEquationTemplateRepository $quadraticEqTemplRepository,
@@ -211,13 +211,19 @@ class DoctrinePresenter extends AdminPresenter
     }
 
     /**
-     * @throws \Exception
+     * @throws \App\Exceptions\NewtonApiException
+     * @throws \App\Exceptions\NewtonApiRequestException
+     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Nette\Utils\JsonException
      */
     public function actionDefault()
     {
-        bdump(DateTime::from(''));
-        bdump(new DateTime());
-        bdump($this->parser::solve('e'));
+//        bdump(DateTime::from(''));
+//        bdump(new DateTime());
+//        bdump($this->parser::solve('e'));
+
+        bdump(array_keys($this->problemRepository->findAssoc([], 'id')));
 
         bdump('Testing ProblemPlugin constructProblemFinalData');
 

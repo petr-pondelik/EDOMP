@@ -39,10 +39,11 @@ class TestVariantFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data): ?BaseEntity
+    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $entity = new TestVariant();
         $entity->setLabel($data->variantLabel);
@@ -54,9 +55,10 @@ class TestVariantFunctionality extends BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      */
-    public function update(int $id, ArrayHash $data): ?BaseEntity
+    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         return null;
     }
@@ -64,19 +66,15 @@ class TestVariantFunctionality extends BaseFunctionality
     /**
      * @param TestVariant $testVariant
      * @param ProblemFinal $problemFinal
-     * @param ProblemTemplate|null $problemTemplate
      * @param bool $newPage
      * @return TestVariant
      * @throws \App\Exceptions\EntityException
      */
-    public function attachProblem(TestVariant $testVariant, ProblemFinal $problemFinal, ProblemTemplate $problemTemplate = null, bool $newPage = false): TestVariant
+    public function attachProblem(TestVariant $testVariant, ProblemFinal $problemFinal, bool $newPage = false): TestVariant
     {
         $association = new ProblemFinalTestVariantAssociation();
         $association->setTestVariant($testVariant);
         $association->setProblemFinal($problemFinal);
-        if($problemTemplate){
-            $association->setProblemTemplate($problemTemplate);
-        }
         $association->setNextPage($newPage);
         $this->em->persist($association);
         $testVariant->addProblemFinalAssociation($association);

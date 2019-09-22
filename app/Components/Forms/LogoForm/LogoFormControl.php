@@ -11,7 +11,9 @@ namespace App\Components\Forms\LogoForm;
 
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
+use App\Components\LogoView\ILogoViewFactory;
 use App\Model\Persistent\Functionality\LogoFunctionality;
+use App\Model\Persistent\Repository\LogoRepository;
 use App\Services\FileService;
 use App\Services\Validator;
 use Nette\Application\AbortException;
@@ -25,26 +27,53 @@ use Nette\Utils\ArrayHash;
 class LogoFormControl extends EntityFormControl
 {
     /**
+     * @var LogoRepository
+     */
+    protected $repository;
+
+    /**
      * @var FileService
      */
     protected $fileService;
+
+    /**
+     * @var ILogoViewFactory
+     */
+    protected $logoViewFactory;
 
     /**
      * LogoFormControl constructor.
      * @param Validator $validator
      * @param LogoFunctionality $logoFunctionality
      * @param FileService $fileService
-     * @param bool $edit
+     * @param ILogoViewFactory $logoViewFactory
      */
-    public function __construct
-    (
-        Validator $validator, LogoFunctionality $logoFunctionality, FileService $fileService,
-        bool $edit = false
-    )
+    public function __construct(Validator $validator, LogoFunctionality $logoFunctionality, FileService $fileService, ILogoViewFactory $logoViewFactory)
     {
-        parent::__construct($validator, $edit);
+        parent::__construct($validator);
         $this->functionality = $logoFunctionality;
         $this->fileService = $fileService;
+        $this->logoViewFactory = $logoViewFactory;
+    }
+
+    /**
+     * @param array $params
+     * @throws \Nette\Application\BadRequestException
+     */
+    public function loadState($params): void
+    {
+        parent::loadState($params);
+        if($this->isUpdate()){
+            $this->addComponent($this->logoViewFactory->create(), 'logoView');
+        }
+    }
+
+    public function initComponents(): void
+    {
+        parent::initComponents();
+        if($this->isUpdate()){
+            $this['logoView']->setLogo($this->entity);
+        }
     }
 
     /**
@@ -61,7 +90,7 @@ class LogoFormControl extends EntityFormControl
         $form->addText('logo', 'Soubor *')
             ->setHtmlAttribute('class', 'file-pond-input');
 
-        if($this->edit){
+        if($this->isUpdate()){
             $form->addSelect('edit_logo', 'Editovat soubor', [
                 0 => 'Ne',
                 1 => 'Ano'
@@ -79,7 +108,7 @@ class LogoFormControl extends EntityFormControl
     {
         $values = $form->values;
         $validateFields['label'] = new ValidatorArgument($values->label, 'stringNotEmpty');
-        if($this->edit){
+        if($this->isUpdate()){
             if($values->edit_logo){
                 $validateFields['logo'] = new ValidatorArgument($values->logo, 'notEmpty');
             }
@@ -88,18 +117,8 @@ class LogoFormControl extends EntityFormControl
             $validateFields['logo'] = new ValidatorArgument($values->logo, 'notEmpty');
         }
         $this->validator->validate($form, $validateFields);
-
-//        if($validationErrors){
-//            foreach($validationErrors as $veKey => $errorGroup){
-//                foreach($errorGroup as $egKey => $error){
-//                    $form[$veKey]->addError($error);
-//                }
-//            }
-//        }
-//
-//        $this->redrawControl('labelErrorSnippet');
-//        $this->redrawControl('logoErrorSnippet');
         $this->redrawErrors();
+        $this->redrawFlashes();
     }
 
     /**
@@ -111,12 +130,10 @@ class LogoFormControl extends EntityFormControl
         if($values->logo) {
             try{
                 $this->fileService->finalStore($values->logo);
-                $this->functionality->update($values->logo, ArrayHash::from([
-                    'label' => $values->label
-                ]));
+                $this->functionality->update($values->logo, ArrayHash::from([ 'label' => $values->label ]));
                 $this->onSuccess();
             } catch (\Exception $e){
-                //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
+                // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
                 if ($e instanceof AbortException){
                     return;
                 }
@@ -131,16 +148,18 @@ class LogoFormControl extends EntityFormControl
      */
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
+        bdump('HANDLE EDIT FORM SUCCESS');
+        bdump($values);
         try{
             if($values->edit_logo && $values->logo){
                 $this->fileService->finalStore($values->logo);
             }
-            $this->functionality->update($values->idHidden, ArrayHash::from([
-                'label' => $values->label
-            ]));
+            $data['label'] = $values->label;
+            $this->functionality->update($this->entity->getId(), ArrayHash::from($data));
             $this->onSuccess();
         } catch (\Exception $e){
-            //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
+            bdump($e);
+            // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
             if ($e instanceof AbortException){
                 return;
             }
@@ -148,13 +167,9 @@ class LogoFormControl extends EntityFormControl
         }
     }
 
-    public function render(): void
+    public function setDefaults(): void
     {
-        if ($this->edit){
-            $this->template->render(__DIR__ . '/templates/edit.latte');
-        }
-        else{
-            $this->template->render(__DIR__ . '/templates/create.latte');
-        }
+        $this['form']['id']->setDefaultValue($this->entity->getId());
+        $this['form']['label']->setDefaultValue($this->entity->getLabel());
     }
 }

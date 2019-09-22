@@ -9,6 +9,7 @@
 namespace App\Model\Persistent\Entity;
 
 
+use App\Model\Persistent\Traits\KeyArrayTrait;
 use App\Model\Persistent\Traits\ToStringTrait;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 use Nette\Utils\DateTime;
@@ -24,11 +25,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 abstract class BaseEntity
 {
-    //Identifier trait for ID column
+    // Identifier trait for ID column
     use Identifier;
 
-    //Trait for converting entity to string
+    // Trait for converting entity to string
     use ToStringTrait;
+
+    // Trait for converting Doctrine ArrayCollection into array of entity keys
+    use KeyArrayTrait;
 
     /**
      * @var string

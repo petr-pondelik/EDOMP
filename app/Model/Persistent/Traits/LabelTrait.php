@@ -9,7 +9,6 @@
 namespace App\Model\Persistent\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
-use Nette\Utils\Strings;
 use Symfony\Component\Validator\Constraints as Assert;
 
 trait LabelTrait

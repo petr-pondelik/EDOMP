@@ -27,9 +27,9 @@
 
         <div id="ublaboo-datagrid" class="table-responsive">
 
-            {snippet flashesSnippet}
+            {snippet mainFlashesSnippet}
                 <div class="mt-3">
-                    <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} border-0 alert-dismissible fade show" role="alert"">
+                    <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} border-0 alert-dismissible fade show" role="alert">
                         {$flash->message}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -38,7 +38,7 @@
                 </div>
             {/snippet}
 
-            {control superGroupGrid}
+            {control entityGrid}
 
         </div>
 
@@ -60,36 +60,7 @@
                     </button>
                 </div>
 
-                {*{form superGroupCreateForm}
-
-                <div class="modal-body">
-
-                    <div class="form-group col-12">
-                        {label label}
-                        {input label}
-                        {snippet labelErrorSnippet}
-                            {var $form = $control['superGroupCreateForm']}
-                            <div n:if="$form->hasErrors()" class="mt-2">
-                                <p n:foreach="$form['label']->errors as $error" class="alert alert-danger border-0">
-                                    {$error}
-                                </p>
-                            </div>
-                        {/snippet}
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <div class="col-12 text-right">
-                        <button n:name="submit" id="submit-btn" class="btn btn-primary mr-1"/>
-                        <button type="button" class="btn btn-secondary" id="create-close" data-dismiss="modal">Zavřít
-                        </button>
-                    </div>
-                </div>
-
-                {/form}*}
-
-                {control superGroupCreateForm}
+                {control entityForm}
 
             </div>
         </div>

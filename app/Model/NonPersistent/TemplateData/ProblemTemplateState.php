@@ -8,7 +8,6 @@
 
 namespace App\Model\NonPersistent\TemplateData;
 
-use App\Model\Persistent\Entity\ProblemConditionType;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 
@@ -34,6 +33,13 @@ class ProblemTemplateState
     public function reset(): void
     {
         $this->problemTemplateStateItems = [];
+    }
+
+    public function invalidate(): void
+    {
+        foreach ($this->problemTemplateStateItems as $problemTemplateStateItem){
+            $problemTemplateStateItem->setValidated(false);
+        }
     }
 
     /**
@@ -63,7 +69,7 @@ class ProblemTemplateState
         if(!isset($this->problemTemplateStateItems['type'])){
             return false;
         }
-        return (bool) $this->problemTemplateStateItems['type']->getValue();
+        return $this->problemTemplateStateItems['type']->isValidated();
     }
 
     /**
@@ -74,21 +80,13 @@ class ProblemTemplateState
     {
         bdump('CONDITIONS VALIDATED');
         $stateItems = $this->getProblemTemplateStateItems();
-        bdump($stateItems);
-        bdump($values);
         foreach ($values as $key => $value){
-            if(Strings::match($key, '~condition_\d~')){
-                bdump($value);
-                bdump($stateItems[$key]->getValue());
-            }
             if(
                 $value !== 0 &&
                 Strings::match($key, '~condition_\d~') &&
                 ($value !== (int) $stateItems[$key]->getValue() ||
                 !$stateItems[$key]->isValidated())
             ){
-                bdump($value);
-                bdump($stateItems[$key]);
                 return false;
             }
         }

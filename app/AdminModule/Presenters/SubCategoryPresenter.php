@@ -11,19 +11,17 @@ namespace App\AdminModule\Presenters;
 use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\SubCategoryGridFactory;
 use App\Components\Forms\SubCategoryForm\SubCategoryFormControl;
-use App\Components\Forms\SubCategoryForm\SubCategoryFormFactory;
+use App\Components\Forms\SubCategoryForm\ISubCategoryFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
-use App\Components\SideBar\SideBarFactory;
+use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
-use App\Model\Persistent\Entity\SubCategory;
 use App\Model\Persistent\Functionality\SubCategoryFunctionality;
 use App\Model\Persistent\Repository\CategoryRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use App\Services\Validator;
-use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 
@@ -31,112 +29,60 @@ use Ublaboo\DataGrid\DataGrid;
  * Class SubCategoryPresenter
  * @package App\AdminModule\Presenters
  */
-class SubCategoryPresenter extends AdminPresenter
+class SubCategoryPresenter extends EntityPresenter
 {
-    /**
-     * @var SubCategoryRepository
-     */
-    protected $subCategoryRepository;
-
-    /**
-     * @var SubCategoryFunctionality
-     */
-    protected $subCategoryFunctionality;
-
     /**
      * @var CategoryRepository
      */
     protected $categoryRepository;
 
     /**
-     * @var Validator
-     */
-    protected $validator;
-
-    /**
-     * @var SubCategoryGridFactory
-     */
-    protected $subCategoryGridFactory;
-
-    /**
-     * @var SubCategoryFormFactory
-     */
-    protected $subCategoryFormFactory;
-
-    /**
      * SubCategoryPresenter constructor.
      * @param Authorizator $authorizator
+     * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
-     * @param SideBarFactory $sideBarFactory
+     * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param SubCategoryRepository $subCategoryRepository
      * @param SubCategoryFunctionality $subCategoryFunctionality
      * @param CategoryRepository $categoryRepository
-     * @param Validator $validator
      * @param SubCategoryGridFactory $subCategoryGridFactory
-     * @param SubCategoryFormFactory $subCategoryFormFactory
+     * @param ISubCategoryFormFactory $subCategoryFormFactory
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
-        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
+        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         SubCategoryRepository $subCategoryRepository, SubCategoryFunctionality $subCategoryFunctionality,
         CategoryRepository $categoryRepository,
-        Validator $validator,
-        SubCategoryGridFactory $subCategoryGridFactory, SubCategoryFormFactory $subCategoryFormFactory,
+        SubCategoryGridFactory $subCategoryGridFactory, ISubCategoryFormFactory $subCategoryFormFactory,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
-        $this->subCategoryRepository = $subCategoryRepository;
-        $this->subCategoryFunctionality = $subCategoryFunctionality;
+        parent::__construct(
+            $authorizator, $validator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory,
+            $subCategoryRepository, $subCategoryFunctionality, $subCategoryGridFactory, $subCategoryFormFactory
+        );
         $this->categoryRepository = $categoryRepository;
-        $this->validator = $validator;
-        $this->subCategoryGridFactory = $subCategoryGridFactory;
-        $this->subCategoryFormFactory = $subCategoryFormFactory;
-    }
-
-    public function actionEdit(int $id)
-    {
-        $form = $this["subCategoryEditForm"]["form"];
-        if(!$form->isSubmitted()){
-            $record = $this->subCategoryRepository->find($id);
-            $this["subCategoryEditForm"]->template->entityLabel = $record->getLabel();
-            $this->template->entityLabel = $record->getLabel();
-            $this->setDefaults($form, $record);
-        }
-    }
-
-    /**
-     * @param IComponent $form
-     * @param SubCategory $record
-     */
-    private function setDefaults(IComponent $form, SubCategory $record)
-    {
-        $form["id"]->setDefaultValue($record->getId());
-        $form["idHidden"]->setDefaultValue($record->getId());
-        $form["label"]->setDefaultValue($record->getLabel());
-        $form["category"]->setDefaultValue($record->getCategory()->getId());
     }
 
     /**
      * @param $name
      * @return DataGrid
-     * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function createComponentSubCategoryGrid($name): DataGrid
+    public function createComponentEntityGrid($name): DataGrid
     {
-        $grid = $this->subCategoryGridFactory->create($this, $name);
+        $grid = $this->gridFactory->create($this, $name);
 
-        $grid->addAction("delete", "", "delete!")
-            ->setIcon("trash")
-            ->setClass("btn btn-danger btn-sm ajax");
+        $grid->addAction('delete', '', 'delete!')
+            ->setIcon('trash')
+            ->setClass('btn btn-danger btn-sm ajax');
 
-        $grid->addAction("edit", "", "edit!")
-            ->setIcon("edit")
-            ->setClass("btn btn-primary btn-sm");
+        $grid->addAction('edit', '', 'update!')
+            ->setIcon('edit')
+            ->setClass('btn btn-primary btn-sm');
 
         $grid->addInlineEdit()
             ->setIcon('pencil-alt')
@@ -147,7 +93,7 @@ class SubCategoryPresenter extends AdminPresenter
         };
 
         $grid->getInlineEdit()->onSetDefaults[] = function($cont, $item) {
-            $cont->setDefaults([ "label" => $item->getLabel() ]);
+            $cont->setDefaults([ 'label' => $item->getLabel() ]);
         };
 
         $grid->getInlineEdit()->onSubmit[] = [$this, 'handleInlineUpdate'];
@@ -156,91 +102,19 @@ class SubCategoryPresenter extends AdminPresenter
     }
 
     /**
-     * @param int $id
-     */
-    public function handleDelete(int $id)
-    {
-        try{
-            $this->subCategoryFunctionality->delete($id);
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('delete', true, 'error', $e));
-            return;
-        }
-        $this["subCategoryGrid"]->reload();
-        $this->informUser(new UserInformArgs('delete', true));
-    }
-
-    /**
-     * @param int $id
-     * @throws \Nette\Application\AbortException
-     */
-    public function handleEdit(int $id)
-    {
-        $this->redirect("SubCategory:edit", $id);
-    }
-
-    /**
-     * @param int $id
-     * @param $row
-     */
-    public function handleInlineUpdate(int $id, $row)
-    {
-        try{
-            $this->subCategoryFunctionality->update($id, $row);
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('edit', true, 'error', $e));
-        }
-        $this->informUser(new UserInformArgs('edit', true));
-    }
-
-    /**
      * @param int $subCategoryId
      * @param $categoryId
      */
-    public function handleCategoryUpdate(int $subCategoryId, $categoryId)
+    public function handleCategoryUpdate(int $subCategoryId, $categoryId): void
     {
         try{
-            $this->subCategoryFunctionality->update($subCategoryId,
-                ArrayHash::from(["category" => $categoryId])
+            $this->functionality->update($subCategoryId,
+                ArrayHash::from(['category' => $categoryId])
             );
         } catch (\Exception $e){
             $this->informUser(new UserInformArgs('category', true,'error', $e));
         }
-        $this['subCategoryGrid']->reload();
+        $this['entityGrid']->reload();
         $this->informUser(new UserInformArgs('category', true));
-    }
-
-    /**
-     * @return SubCategoryFormControl
-     */
-    public function createComponentSubCategoryCreateForm(): SubCategoryFormControl
-    {
-        $control = $this->subCategoryFormFactory->create();
-        $control->onSuccess[] = function (){
-            $this["subCategoryGrid"]->reload();
-            $this->informUser(new UserInformArgs('create', true));
-        };
-        $control->onError[] = function ($e){
-            $this->informUser(new UserInformArgs('create', true,'error', $e));
-        };
-        return $control;
-    }
-
-    /**
-     * @param $name
-     * @return SubCategoryFormControl
-     */
-    public function createComponentSubCategoryEditForm(): SubCategoryFormControl
-    {
-        $control = $this->subCategoryFormFactory->create(true);
-        $control->onSuccess[] = function (){
-            $this->informUser(new UserInformArgs('edit'));
-            $this->redirect('default');
-        };
-        $control->onError[] = function ($e){
-            $this->informUser(new UserInformArgs('edit', false,'error', $e));
-            $this->redirect('default');
-        };
-        return $control;
     }
 }

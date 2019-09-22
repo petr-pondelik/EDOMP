@@ -69,7 +69,6 @@ class ProblemFinalFormControl extends EntityFormControl
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param ConstHelper $constHelper
-     * @param bool $edit
      */
     public function __construct
     (
@@ -78,11 +77,10 @@ class ProblemFinalFormControl extends EntityFormControl
         DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        ConstHelper $constHelper,
-        bool $edit = false
+        ConstHelper $constHelper
     )
     {
-        parent::__construct($validator, $edit);
+        parent::__construct($validator);
         $this->functionality = $problemFinalFunctionality;
         $this->difficultyRepository = $difficultyRepository;
         $this->problemTypeRepository = $problemTypeRepository;
@@ -102,9 +100,6 @@ class ProblemFinalFormControl extends EntityFormControl
 
         $difficulties = $this->difficultyRepository->findAssoc([], 'id');
         $subcategories = $this->subCategoryRepository->findAssoc([], 'id');
-
-        // Find only non-validation problem condition types
-//        $conditionTypes = $this->problemConditionTypeRepository->findAssoc(['isValidation' => false], 'id');
 
         $form->addHidden('is_generatable_hidden');
 
@@ -157,6 +152,7 @@ class ProblemFinalFormControl extends EntityFormControl
         $validateFields['subCategory'] = new ValidatorArgument($values->subCategory, 'notEmpty', 'subCategory');
         $this->validator->validate($form, $validateFields);
         $this->redrawErrors();
+        $this->redrawFlashes();
     }
 
     /**
@@ -168,9 +164,9 @@ class ProblemFinalFormControl extends EntityFormControl
         try{
             $this->functionality->create($values);
             $this->onSuccess();
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException){
+            if ($e instanceof AbortException) {
                 return;
             }
             $this->onError($e);
@@ -184,26 +180,34 @@ class ProblemFinalFormControl extends EntityFormControl
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
-            $this->functionality->update($values->idHidden, $values);
+            $this->functionality->update($this->entity->getId(), $values);
             $this->onSuccess();
-        } catch (\Exception $e){
-            if ($e instanceof AbortException){
+        } catch (\Exception $e) {
+            if ($e instanceof AbortException) {
                 return;
             }
             $this->onError($e);
         }
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function render(): void
+    public function setDefaults(): void
     {
-        if ($this->edit){
-            $this->template->render(__DIR__ . '/templates/edit.latte');
+        if(!$this->entity){
+            return;
         }
-        else{
-            $this->template->render(__DIR__ . '/templates/create.latte');
+
+        $this['form']['id']->setDefaultValue($this->entity->getId());
+        $this['form']['is_generatable_hidden']->setDefaultValue($this->entity->isGenerated());
+        $this['form']['textBefore']->setDefaultValue($this->entity->getTextBefore());
+        $this['form']['textAfter']->setDefaultValue($this->entity->getTextAfter());
+        $this['form']['result']->setDefaultValue($this->entity->getResult());
+        $this['form']['difficulty']->setDefaultValue($this->entity->getDifficulty()->getId());
+        $this['form']['subCategory']->setDefaultValue($this->entity->getSubCategory()->getId());
+
+        if($this->entity->isGenerated()){
+            $this['form']['body']->setDisabled();
         }
+
+        $this['form']['body']->setDefaultValue($this->entity->getBody());
     }
 }

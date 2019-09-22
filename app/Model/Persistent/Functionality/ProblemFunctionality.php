@@ -45,9 +45,10 @@ class ProblemFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      */
-    public function create(ArrayHash $data): ?BaseEntity
+    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         return null;
     }
@@ -55,11 +56,12 @@ class ProblemFunctionality extends BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws EntityNotFoundException
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data): ?BaseEntity
+    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $problem = $this->repository->find($id);
         if(!$problem){
@@ -67,16 +69,20 @@ class ProblemFunctionality extends BaseFunctionality
         }
         $problem->setSuccessRate($data->success_rate);
         $this->em->persist($problem);
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
         return $problem;
     }
 
     /**
      * @param int $id
      * @param bool $isTemplate
-     * @throws \Exception
+     * @param bool $flush
+     * @throws EntityNotFoundException
+     * @throws \App\Exceptions\EntityException
      */
-    public function calculateSuccessRate(int $id, bool $isTemplate = false): void
+    public function calculateSuccessRate(int $id, bool $isTemplate = false, bool $flush = true): void
     {
         !$isTemplate ?
             $associations = $this->problemFinalTestVariantAssociationRepository->findBy(['problemFinal.id' => $id]) :
@@ -90,13 +96,9 @@ class ProblemFunctionality extends BaseFunctionality
             }
         }
         if($cnt > 0){
-            $this->update($id, ArrayHash::from([
-                'success_rate' => $ratingSum / $cnt
-            ]));
+            $this->update($id, ArrayHash::from([ 'success_rate' => $ratingSum / $cnt ]), $flush);
             return;
         }
-        $this->update($id, ArrayHash::from([
-            'success_rate' => null
-        ]));
+        $this->update($id, ArrayHash::from([ 'success_rate' => null ]), $flush);
     }
 }

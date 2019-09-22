@@ -27,16 +27,14 @@ class SuperGroupFormControl extends EntityFormControl
      * SuperGroupFormControl constructor.
      * @param Validator $validator
      * @param SuperGroupFunctionality $superGroupFunctionality
-     * @param bool $edit
      */
     public function __construct
     (
         Validator $validator,
-        SuperGroupFunctionality $superGroupFunctionality,
-        bool $edit = false
+        SuperGroupFunctionality $superGroupFunctionality
     )
     {
-        parent::__construct($validator, $edit);
+        parent::__construct($validator);
         $this->functionality = $superGroupFunctionality;
     }
 
@@ -73,11 +71,10 @@ class SuperGroupFormControl extends EntityFormControl
     {
         try{
             $values->user_id = $this->presenter->user->id;
-            //bdump($values->user_id);
             $this->functionality->create($values);
             $this->onSuccess();
         } catch (\Exception $e){
-            //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
+            // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
             if($e instanceof AbortException){
                 return;
             }
@@ -92,12 +89,10 @@ class SuperGroupFormControl extends EntityFormControl
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
-            $this->functionality->update($values->idHidden, ArrayHash::from([
-                'label' => $values->label
-            ]));
+            $this->functionality->update($this->entity->getId(), ArrayHash::from([ 'label' => $values->label ]));
             $this->onSuccess();
         } catch (\Exception $e){
-            //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
+            // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
             if($e instanceof AbortException){
                 return;
             }
@@ -105,13 +100,9 @@ class SuperGroupFormControl extends EntityFormControl
         }
     }
 
-    public function render(): void
+    public function setDefaults(): void
     {
-        if ($this->edit){
-            $this->template->render(__DIR__ . '/templates/edit.latte');
-        }
-        else{
-            $this->template->render(__DIR__ . '/templates/create.latte');
-        }
+        $this['form']['id']->setDefaultValue($this->entity->getId());
+        $this['form']['label']->setDefaultValue($this->entity->getLabel());
     }
 }

@@ -66,30 +66,34 @@ class GeometricSequenceTemplateFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      */
-    public function create(ArrayHash $data): ?BaseEntity
+    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $entity = new GeometricSequenceTemplate();
         $entity = $this->setBasics($entity, $data);
         $entity->setIndexVariable($data->indexVariable);
         $entity->setFirstN($data->firstN);
         $this->em->persist($entity);
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
         return $entity;
     }
 
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @param bool $flush
      * @param bool $fromDataGrid
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      */
-    public function update(int $id, ArrayHash $data, bool $fromDataGrid = false): ?BaseEntity
+    public function update(int $id, ArrayHash $data, bool $flush = true, bool $fromDataGrid = false): ?BaseEntity
     {
         $entity = $this->baseUpdate($id, $data, $fromDataGrid);
         if(isset($data->indexVariable)){
@@ -99,7 +103,9 @@ class GeometricSequenceTemplateFunctionality extends BaseFunctionality
             $entity->setFirstN($data->firstN);
         }
         $this->em->persist($entity);
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
         return $entity;
     }
 }

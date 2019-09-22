@@ -6,21 +6,17 @@
  * Time: 23:21
  */
 
-namespace App\Components\ProblemTemplateHelp;
+namespace App\Components\SectionHelpModal;
 
-use App\Components\IControlFactory;
 
 /**
- * Class ProblemTemplateHelpFactory
+ * Interface SectionHelpModalFactory
  * @package App\Components\ProblemTemplateHelp
  */
-class SectionHelpModalFactory implements IControlFactory
+interface SectionHelpModalFactory
 {
     /**
      * @return SectionHelpModalControl
      */
-    public function create(): SectionHelpModalControl
-    {
-        return new SectionHelpModalControl();
-    }
+    public function create(): SectionHelpModalControl;
 }

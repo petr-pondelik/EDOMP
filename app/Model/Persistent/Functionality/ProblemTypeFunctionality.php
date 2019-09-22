@@ -38,26 +38,30 @@ class ProblemTypeFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data): ?BaseEntity
+    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $problemType = new ProblemType();
         $problemType->setLabel($data->label);
         $this->em->persist($problemType);
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
         return $problemType;
     }
 
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws EntityNotFoundException
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data): ?BaseEntity
+    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $problemType = $this->repository->find($id);
         if(!$problemType){
@@ -65,7 +69,9 @@ class ProblemTypeFunctionality extends BaseFunctionality
         }
         $problemType->setLabel($data->label);
         $this->em->persist($problemType);
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
         return $problemType;
     }
 }

@@ -8,14 +8,14 @@
 
 namespace App\Components\SideBar;
 
+use App\Components\EDOMPControl;
 use App\Components\Traits\DetectPresenterTrait;
-use Nette\Application\UI\Control;
 
 /**
  * Class SideBarControl
  * @package App\Components\SideBar
  */
-class SideBarControl extends Control
+class SideBarControl extends EDOMPControl
 {
     use DetectPresenterTrait;
 

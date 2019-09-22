@@ -1,0 +1,284 @@
+{snippetArea formSnippetArea}
+
+    {form form}
+
+        <div class="card-header d-flex justify-content-between">
+            <h1 class="col-6 pl-0 mb-0 font-weight-bold card-heading">
+                <i class="fas fa-file-alt mr-3"></i>Test {$entity->getId()}
+            </h1>
+            <div>
+                <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
+                <a href="{plink :Admin:Test:default}" class="btn btn-secondary btn-sm" title="Zpět na přehled">Zpět</a>
+            </div>
+        </div>
+
+        <div class="card-body col-12">
+
+            {snippet flashesSnippet}
+                <div n:foreach="$flashes as $flash"
+                        class="mb-4 flash alert alert-{$flash->type} alert-dismissible fade show border-0" role="alert">
+                    {$flash->message}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {/snippet}
+
+            <div class="card card-shadow border-light mb-4">
+                <div class="card-header">
+                    <h4>Status</h4>
+                </div>
+                <div class="card-body text-center">
+                    {if $entity->isClosed()}
+                        <span class="text-danger text-status">Uzavřený</span>
+                        {else}
+                        <span class="text-success text-status">Otevřený</span>
+                    {/if}
+                </div>
+            </div>
+
+            {if !$entity->isClosed()}
+
+                <div class="card card-shadow border-light mb-5">
+
+                    <div class="card-header">
+                        <h4>Varianty</h4>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-center mb-2 mt-2">
+                            <div class="form-group col-12">
+                                {label variant}
+                                {input variant}
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="card card-shadow border-light mb-5">
+
+                    <div class="card-header mb-3">
+                        <h4>Hlavička</h4>
+                    </div>
+
+                    <div class="card-body mb-3">
+
+                        <div class="form-group col-12 mb-5">
+
+                            {label logo}
+                            {input logo, class => 'hidden'}
+
+                            {control logoDragAndDrop}
+
+                            {snippet logoErrorSnippet}
+                                {var $form = $control['form']}
+                                <div n:if="$form->hasErrors()" class="mt-2">
+                                    <p n:foreach="$form['logo']->errors as $error"
+                                            class="alert alert-danger border-0 alert-dismissible fade show"
+                                            role="alert">
+                                        {$error}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </p>
+                                </div>
+                            {/snippet}
+
+                            <p class="mt-5">Aktuální logo</p>
+
+                            {snippet logoViewSnippet}
+                                {control logoView}
+                            {/snippet}
+
+                        </div>
+
+                        <div class="col-12 pt-4">
+
+                            <div class="row d-flex justify-content-between mb-4">
+
+                                <div class="form-group col-md-6">
+                                    {label groups}
+                                    {input groups}
+                                    {snippet groupsErrorSnippet}
+                                        {var $form = $control['form']}
+                                        <div n:if="$form->hasErrors()" class="mt-2">
+                                            <p n:foreach="$form['groups']->errors as $error"
+                                                    class="alert alert-danger border-0 alert-dismissible fade show"
+                                                    role="alert">
+                                                {$error}
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </p>
+                                        </div>
+                                    {/snippet}
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    {label testTerm}
+                                    {input testTerm}
+                                    {snippet testTermErrorSnippet}
+                                        {var $form = $control['form']}
+                                        <div n:if="$form->hasErrors()" class="mt-2">
+                                            <p n:foreach="$form['testTerm']->errors as $error"
+                                                    class="alert alert-danger border-0 alert-dismissible fade show"
+                                                    role="alert">
+                                                {$error}
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </p>
+                                        </div>
+                                    {/snippet}
+                                </div>
+
+                            </div>
+
+                            <div class="row d-flex justify-content-between">
+
+                                <div class="form-group col-md-6 md-3">
+                                    {label schoolYear}
+                                    {input schoolYear}
+                                    {snippet schoolYearErrorSnippet}
+                                        {var $form = $control['form']}
+                                        <div n:if="$form->hasErrors()" class="mt-2">
+                                            <p n:foreach="$form['schoolYear']->errors as $error"
+                                                    class="alert alert-danger border-0 alert-dismissible fade show"
+                                                    role="alert">
+                                                {$error}
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </p>
+                                        </div>
+                                    {/snippet}
+                                </div>
+
+                                <div class="form-group col-md-6 md-3">
+                                    {label testNumber}
+                                    {input testNumber}
+                                    {snippet testNumberErrorSnippet}
+                                        {var $form = $control['form']}
+                                        <div n:if="$form->hasErrors()" class="mt-2">
+                                            <p n:foreach="$form['testNumber']->errors as $error"
+                                                    class="alert alert-danger border-0 alert-dismissible fade show"
+                                                    role="alert">
+                                                {$error}
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </p>
+                                        </div>
+                                    {/snippet}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="card card-shadow border-light mb-4">
+
+                    <h4 class="card-header">Úvod</h4>
+
+                    <div class="card-body mb-3">
+
+                        <div class="form-group mt-3 mb-3">
+                            {label introductionText}
+                            {input introductionText}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {/if}
+
+            {var $i = 0}
+
+            {foreach $entity->getTestVariants()->getValues() as $variant}
+
+                <div class="card card-shadow border-light mb-5">
+
+                    <div class="card-header">
+                        <h2>Varianta {$variant->getLabel()}</h2>
+                    </div>
+
+                    <div class="card-body">
+
+                        {var $j = 0}
+
+                        {foreach $variant->getProblemFinalAssociations()->getValues() as $problemFinalAssociation}
+
+                            <div class="card card-shadow border-light mb-5">
+
+                                <div class="card-body">
+
+                                    <div class="form-group">
+                                        {label problem_final_id_disabled_{$i}_$j}
+                                        {input problem_final_id_disabled_{$i}_$j}
+                                    </div>
+
+                                    <div class="form-group">
+                                        {label problem_template_id_disabled_{$i}_$j}
+                                        {input problem_template_id_disabled_{$i}_$j}
+                                    </div>
+
+                                    <p class="text-center mt-5 mb-5">{$problemFinalAssociation->getProblemFinal()->getBody()}</p>
+
+                                    <div class="form-group">
+                                        {label success_rate_{$i}_$j}
+                                        {input success_rate_{$i}_$j}
+                                    </div>
+
+                                    {snippet successRate{$i}{$j}ErrorSnippet}
+                                        <div n:if="$control['form']->hasErrors()" class="mt-2">
+                                            <p n:foreach="$control['form']['success_rate_' . $i . '_' . $j]->errors as $error"
+                                                    class="alert alert-danger border-0 alert-dismissible fade show"
+                                                    role="alert">
+                                                {$error}
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </p>
+                                        </div>
+                                    {/snippet}
+
+                                </div>
+
+                            </div>
+
+                            {var $j += 1}
+
+                        {/foreach}
+
+                    </div>
+
+                </div>
+
+                {var $i += 1}
+
+            {/foreach}
+
+            {if count($entity->getTestVariants()->getValues()) > 1}
+                <button n:name="submit" id="submit-btn" class="btn btn-primary col-12 mb-3">Uložit</button>
+                <a href="{plink :Admin:Test:default}" class="btn btn-secondary col-12 mb-4"
+                   title="Zpět na přehled">Zpět</a>
+            {/if}
+
+        </div>
+
+    {/form}
+
+{/snippetArea}

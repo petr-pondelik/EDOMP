@@ -190,37 +190,38 @@ services:
 
 	# Factories
 	factory.header.bar: App\Components\HeaderBar\HeaderBarFactory
-	factory.side.bar: App\Components\SideBar\SideBarFactory
+	factory.side.bar: App\Components\SideBar\ISideBarFactory
+	factory.form.user: App\Components\Forms\UserForm\IUserIFormFactory
+	factory.form.category: App\Components\Forms\CategoryForm\ICategoryFormFactory
+	factory.form.subcategory: App\Components\Forms\SubCategoryForm\ISubCategoryFormFactory
+	factory.form.problem.final: App\Components\Forms\ProblemFinalForm\IProblemFinalFormFactory
+	factory.form.problem.type: App\Components\Forms\ProblemTypeForm\IProblemTypeFormFactory
+	factory.form.problem.template.lineareq: App\Components\Forms\ProblemTemplateForm\LinearEqTemplateForm\ILinearEqTemplateFormFactory
+	factory.form.problem.template.quadraticeq: App\Components\Forms\ProblemTemplateForm\QuadraticEqTemplateForm\IQuadraticEqTemplateFormFactory
+	factory.form.problem.template.arithmeticseq: App\Components\Forms\ProblemTemplateForm\ArithmeticSeqTemplateForm\IArithmeticSeqTemplateFormFactory
+	factory.form.problem.template.geometicseq: ProblemTemplateForm\GeometricSeqTemplateForm\IGeometricSeqTemplateFormFactory
+	factory.form.supergroup: App\Components\Forms\SuperGroupForm\ISuperGroupIFormFactory
+	factory.form.logo: App\Components\Forms\LogoForm\ILogoIFormFactory
+	factory.form.group: App\Components\Forms\GroupForm\IGroupIFormFactory
+	factory.form.test.create: App\Components\Forms\TestForm\TestEntityForm\ITestEntityFormFactory
+	factory.form.test.statistics: App\Components\Forms\TestStatisticsForm\ITestStatisticsIFormFactory
+	factory.form.permission: App\Components\Forms\PermissionForm\IPermissionIFormFactory
+	factory.form.sign: App\Components\Forms\SignForm\ISignIFormFactory
+	factory.form.problem.filter: App\Components\Forms\ProblemFilterForm\IProblemFilterFormFactory
 	factory.grid.user: App\Components\DataGrids\UserGridFactory
-	factory.form.user: App\Components\Forms\UserForm\UserFormFactory
 	factory.grid.category: App\Components\DataGrids\CategoryGridFactory
-	factory.form.category: App\Components\Forms\CategoryForm\CategoryFormFactory
 	factory.grid.subcategory: App\Components\DataGrids\SubCategoryGridFactory
-	factory.form.subcategory: App\Components\Forms\SubCategoryForm\SubCategoryFormFactory
 	factory.grid.problem: App\Components\DataGrids\ProblemGridFactory
-	factory.form.problem.final: App\Components\Forms\ProblemFinalForm\ProblemFinalFormFactory
 	factory.grid.problem.type: App\Components\DataGrids\ProblemTypeGridFactory
-	factory.form.problem.type: App\Components\Forms\ProblemTypeForm\ProblemTypeFormFactory
 	factory.grid.template: App\Components\DataGrids\TemplateGridFactory
-	factory.form.problem.template.lineareq: App\Components\Forms\ProblemTemplateForm\LinearEqTemplateForm\LinearEqTemplateFormFactory
-	factory.form.problem.template.quadraticeq: App\Components\Forms\ProblemTemplateForm\QuadraticEqTemplateForm\QuadraticEqTemplateFormFactory
-	factory.form.problem.template.arithmeticseq: App\Components\Forms\ProblemTemplateForm\ArithmeticSeqTemplateForm\ArithmeticSeqTemplateFormFactory
-	factory.form.problem.template.geometicseq: ProblemTemplateForm\GeometricSeqTemplateForm\GeometricSeqTemplateFormFactory
 	factory.grid.logo: App\Components\DataGrids\LogoGridFactory
-	factory.form.logo: App\Components\Forms\LogoForm\LogoFormFactory
 	factory.grid.supergroup: App\Components\DataGrids\SuperGroupGridFactory
-	factory.form.supergroup: App\Components\Forms\SuperGroupForm\SuperGroupFormFactory
 	factory.grid.group: App\Components\DataGrids\GroupGridFactory
-	factory.form.group: App\Components\Forms\GroupForm\GroupFormFactory
 	factory.grid.test: App\Components\DataGrids\TestGridFactory
-	factory.form.test: App\Components\Forms\TestForm\ITestFormFactory
-	factory.form.test.statistics: App\Components\Forms\TestStatisticsForm\TestStatisticsFormFactory
-	factory.form.permission: App\Components\Forms\PermissionForm\PermissionFormFactory
-	factory.form.sign: App\Components\Forms\SignForm\SignFormFactory
-	factory.form.problem.filter: App\Components\Forms\ProblemFilterForm\ProblemFilterFormFactory
 	factory.logo.draganddrop: App\Components\LogoDragAndDrop\ILogoDragAndDropFactory
 	factory.problem.stack: App\Components\ProblemStack\IProblemStackFactory
 	factory.section.help.modal: App\Components\SectionHelpModal\ISectionHelpModalFactory
+	factory.logo.view: App\Components\LogoView\ILogoViewFactory
 
 	# Services
 	service.newtopapi.client: App\Services\NewtonApiClient(%newtonApiHost%)
@@ -236,6 +237,7 @@ services:
 	service.math: App\Services\MathService
 	service.fractions.variable: App\Services\VariableFractionService
 	service.session.problem.template: App\Services\ProblemTemplateSession
+	service.model.problem.duplicity: App\Services\ProblemDuplicityModel
 
 	# Managers
 	manager.entity.constraint: App\Model\Persistent\Manager\ConstraintEntityManager

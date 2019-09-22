@@ -32,11 +32,10 @@ class ProblemTypeFormControl extends EntityFormControl
     public function __construct
     (
         Validator $validator,
-        ProblemTypeFunctionality $problemTypeFunctionality,
-        bool $edit = false
+        ProblemTypeFunctionality $problemTypeFunctionality
     )
     {
-        parent::__construct($validator, $edit);
+        parent::__construct($validator);
         $this->functionality = $problemTypeFunctionality;
     }
 
@@ -99,13 +98,8 @@ class ProblemTypeFormControl extends EntityFormControl
         }
     }
 
-    public function render(): void
+    public function setDefaults(): void
     {
-        if ($this->edit){
-            $this->template->render(__DIR__ . '/templates/edit.latte');
-        }
-        else{
-            $this->template->render(__DIR__ . '/templates/create.latte');
-        }
+        // TODO: Implement setDefaults() method.
     }
 }

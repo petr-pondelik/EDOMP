@@ -1,0 +1,96 @@
+{form form}
+
+    <div class="card-header edit-card-header d-lg-flex justify-content-between">
+        <h1 class="mb-0 font-weight-bold card-heading">
+            <i class="fas fa-calculator mr-3"></i>Příklad {$entity->getId()}
+        </h1>
+        <div class="d-inline">
+            <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
+            <a href="{plink :Admin:ProblemFinal:default}" class="btn btn-secondary btn-sm">Zpět</a>
+        </div>
+    </div>
+
+    <div class="card-body">
+
+        {snippet flashesSnippet}
+            <div class="mt-3">
+                <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} border-0 alert-dismissible fade show" role="alert">
+                    {$flash->message}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        {/snippet}
+
+        <div class="form-group">
+            {label id}
+            {input id}
+        </div>
+
+        <div class="form-group">
+            {label subCategory}
+            {input subCategory}
+            {snippet subCategoryErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['subCategory']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
+                        {$error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </p>
+                </div>
+            {/snippet}
+        </div>
+
+        <div class="form-group">
+            {label textBefore}
+            {input textBefore}
+        </div>
+
+        <div class="form-group">
+            {label body}
+            {input body, "data-final" => "true"}
+            {snippet bodyErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['body']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
+                        {$error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </p>
+                </div>
+            {/snippet}
+        </div>
+
+        <div class="form-group">
+            {label textAfter}
+            {input textAfter}
+        </div>
+
+        <div class="form-group">
+            {label result}
+            {input result}
+        </div>
+
+        <div class="form-group">
+            {label difficulty}
+            {input difficulty}
+            {snippet difficultyErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['difficulty']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
+                        {$error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </p>
+                </div>
+            {/snippet}
+        </div>
+
+    </div>
+
+{/form}

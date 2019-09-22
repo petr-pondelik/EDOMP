@@ -1,0 +1,23 @@
+{import 'default.latte'}
+
+{block headingFirstLink}
+    <li class="breadcrumb-item">
+        <a n:href="Test:default">
+            {include headingFirst}
+        </a>
+    </li>
+{/block}
+
+{block headingSecond}
+    Test {$entity->getId()}
+{/block}
+
+{block headingSecondLink}
+    <li class="breadcrumb-item font-weight-bold active">
+        {include headingSecond}
+    </li>
+{/block}
+
+{block content}
+    {control entityForm}
+{/block}

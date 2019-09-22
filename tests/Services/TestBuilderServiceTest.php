@@ -371,7 +371,7 @@ class TestBuilderServiceTest extends TestCase
     }
 
     /**
-     * @throws \App\Exceptions\ProblemFinalCollisionException
+     * @throws \App\Exceptions\ProblemDuplicityException
      * @throws \Nette\Utils\JsonException
      * @throws \Exception
      */

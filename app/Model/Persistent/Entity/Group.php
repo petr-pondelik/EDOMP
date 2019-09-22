@@ -104,7 +104,9 @@ class Group extends BaseEntity
      */
     public function addCategory(Category $category): void
     {
-        if($this->categories->contains($category)) return;
+        if($this->categories->contains($category)){
+            return;
+        }
         $this->categories[] = $category;
     }
 

@@ -8,9 +8,17 @@
 
 namespace App\Model\Persistent\Functionality\ProblemFinal;
 
+use App\Helpers\FormatterHelper;
 use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Entity\ProblemFinal\GeometricSequenceFinal;
 use App\Model\Persistent\Functionality\BaseFunctionality;
+use App\Model\Persistent\Manager\ConstraintEntityManager;
+use App\Model\Persistent\Repository\DifficultyRepository;
+use App\Model\Persistent\Repository\ProblemConditionRepository;
+use App\Model\Persistent\Repository\ProblemFinal\GeometricSequenceFinalRepository;
+use App\Model\Persistent\Repository\ProblemRepository;
+use App\Model\Persistent\Repository\ProblemTypeRepository;
+use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Model\Persistent\Traits\ProblemFinalFunctionalityTrait;
 use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
@@ -24,13 +32,39 @@ class GeometricSequenceFinalFunctionality extends BaseFunctionality
     use ProblemFinalFunctionalityTrait;
 
     /**
+     * ArithmeticSequenceFinalFunctionality constructor.
+     * @param ConstraintEntityManager $entityManager
+     * @param GeometricSequenceFinalRepository $repository
+     * @param ProblemRepository $problemRepository
+     * @param ProblemTypeRepository $problemTypeRepository
+     * @param ProblemConditionRepository $problemConditionRepository
+     * @param DifficultyRepository $difficultyRepository
+     * @param SubCategoryRepository $subCategoryRepository
+     * @param FormatterHelper $formatterHelper
+     */
+    public function __construct
+    (
+        ConstraintEntityManager $entityManager,
+        GeometricSequenceFinalRepository $repository,
+        ProblemRepository $problemRepository,
+        ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
+        DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
+        FormatterHelper $formatterHelper
+    )
+    {
+        parent::__construct($entityManager);
+        $this->repository = $repository;
+        $this->injectRepositories($problemTypeRepository, $problemConditionRepository, $difficultyRepository, $subCategoryRepository, $problemRepository, $formatterHelper);
+    }
+
+    /**
      * @param ArrayHash $data
      * @param array|null $conditions
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, array $conditions = null, bool $flush = true): ?BaseEntity
+    public function create(ArrayHash $data, bool $flush = true, array $conditions = null): ?BaseEntity
     {
         $entity = new GeometricSequenceFinal();
         $entity = $this->setBasics($entity, $data);
@@ -61,7 +95,7 @@ class GeometricSequenceFinalFunctionality extends BaseFunctionality
      * @throws EntityNotFoundException
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data, array $conditions = null, bool $flush = true): ?BaseEntity
+    public function update(int $id, ArrayHash $data, bool $flush = true, array $conditions = null): ?BaseEntity
     {
         $entity = $this->repository->find($id);
         if(!$entity){

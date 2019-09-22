@@ -37,6 +37,7 @@ class ProblemTemplateSession
     public function erase(): void
     {
         $this->problemTemplateSession->problemTemplate = null;
+        $this->problemTemplateSession->defaultState = null;
     }
 
     /**

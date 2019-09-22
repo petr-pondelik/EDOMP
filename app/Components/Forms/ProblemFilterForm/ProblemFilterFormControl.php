@@ -106,7 +106,6 @@ class ProblemFilterFormControl extends FormControl
      */
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
-        //bdump($values);
         $this->presenter->setFilters($values);
         $this->onSuccess();
     }

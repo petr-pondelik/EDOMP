@@ -10,20 +10,17 @@ namespace App\AdminModule\Presenters;
 
 use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\ProblemGridFactory;
-use App\Components\Forms\ProblemFinalForm\ProblemFinalFormControl;
-use App\Components\Forms\ProblemFinalForm\ProblemFinalFormFactory;
+use App\Components\Forms\ProblemFinalForm\IProblemFinalFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
-use App\Components\SideBar\SideBarFactory;
+use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
-use App\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
 use App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
 use App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
 use App\Services\Authorizator;
 use App\Services\PluginContainer;
 use App\Services\NewtonApiClient;
 use App\Services\Validator;
-use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 
@@ -31,33 +28,8 @@ use Ublaboo\DataGrid\DataGrid;
  * Class ProblemFinalPresenter
  * @package App\AdminModule\Presenters
  */
-class ProblemFinalPresenter extends AdminPresenter
+class ProblemFinalPresenter extends EntityPresenter
 {
-    /**
-     * @var ProblemGridFactory
-     */
-    protected $problemGridFactory;
-
-    /**
-     * @var ProblemFinalFormFactory
-     */
-    protected $problemFinalFormFactory;
-
-    /**
-     * @var ProblemFinalRepository
-     */
-    protected $problemRepository;
-
-    /**
-     * @var ProblemFinalFunctionality
-     */
-    protected $problemFunctionality;
-
-    /**
-     * @var Validator
-     */
-    protected $validator;
-
     /**
      * @var PluginContainer
      */
@@ -66,87 +38,42 @@ class ProblemFinalPresenter extends AdminPresenter
     /**
      * ProblemFinalPresenter constructor.
      * @param Authorizator $authorizator
+     * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
-     * @param SideBarFactory $sideBarFactory
+     * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param ProblemGridFactory $problemGridFactory
-     * @param ProblemFinalFormFactory $problemFinalFormFactory
-     * @param ProblemFinalRepository $problemRepository
-     * @param ProblemFinalFunctionality $problemFunctionality
-     * @param Validator $validator
+     * @param IProblemFinalFormFactory $problemFinalFormFactory
+     * @param ProblemFinalRepository $problemFinalRepository
+     * @param ProblemFinalFunctionality $problemFinalFunctionality
      * @param PluginContainer $pluginContainer
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
-        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        ProblemGridFactory $problemGridFactory, ProblemFinalFormFactory $problemFinalFormFactory,
-        ProblemFinalRepository $problemRepository, ProblemFinalFunctionality $problemFunctionality,
-        Validator $validator, PluginContainer $pluginContainer,
+        Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
+        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        ProblemGridFactory $problemGridFactory, IProblemFinalFormFactory $problemFinalFormFactory,
+        ProblemFinalRepository $problemFinalRepository, ProblemFinalFunctionality $problemFinalFunctionality,
+        PluginContainer $pluginContainer,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
-        $this->problemGridFactory = $problemGridFactory;
-        $this->problemFinalFormFactory = $problemFinalFormFactory;
-        $this->problemRepository = $problemRepository;
-        $this->problemFunctionality = $problemFunctionality;
-        $this->validator = $validator;
+        parent::__construct(
+            $authorizator, $validator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory,
+            $problemFinalRepository, $problemFinalFunctionality, $problemGridFactory, $problemFinalFormFactory
+        );
         $this->pluginContainer = $pluginContainer;
-    }
-
-    /**
-     * @param int $id
-     * @throws \Exception
-     */
-    public function actionEdit(int $id): void
-    {
-        $form = $this['problemFinalEditForm']['form'];
-        if(!$form->isSubmitted()){
-            $record = $this->problemRepository->find($id);
-            $this->template->id = $id;
-            $this['problemFinalEditForm']->template->id = $id;
-            $this->setDefaults($form, $record);
-        }
-    }
-
-    /**
-     * @param IComponent $form
-     * @param ProblemFinal $record
-     */
-    private function setDefaults(IComponent $form, ProblemFinal $record): void
-    {
-        $form['id']->setDefaultValue($record->getId());
-        $form['idHidden']->setDefaultValue($record->getId());
-        $form['is_generatable_hidden']->setDefaultValue($record->isGenerated());
-        $form['textBefore']->setDefaultValue($record->getTextBefore());
-        $form['textAfter']->setDefaultValue($record->getTextAfter());
-        $form['result']->setDefaultValue($record->getResult());
-        $form['difficulty']->setDefaultValue($record->getDifficulty()->getId());
-        $form['subCategory']->setDefaultValue($record->getSubCategory()->getId());
-//        $conditions = $record->getConditions()->getValues();
-
-        if($record->isGenerated()){
-            $form['body']->setDisabled();
-        }
-
-        $form['body']->setDefaultValue($record->getBody());
-
-//        foreach($conditions as $condition){
-//            $form['condition_' . $condition->getProblemConditionType()->getId()]->setValue($condition->getAccessor());
-//        }
     }
 
     /**
      * @param $name
      * @return DataGrid
-     * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function createComponentProblemGrid($name): DataGrid
+    public function createComponentEntityGrid($name): DataGrid
     {
-        $grid = $this->problemGridFactory->create($this, $name);
+        $grid = $this->gridFactory->create($this, $name);
 
         $grid->addAction('delete', '', 'delete!')
             ->setTemplate(__DIR__ . '/templates/ProblemFinal/removeBtn.latte');
@@ -185,40 +112,16 @@ class ProblemFinalPresenter extends AdminPresenter
 
     /**
      * @param int $id
-     */
-    public function handleDelete(int $id): void
-    {
-        try{
-            $this->problemFunctionality->delete($id);
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('delete', true, 'error', $e));
-            return;
-        }
-        $this['problemGrid']->reload();
-        $this->informUser(new UserInformArgs('delete', true));
-    }
-
-    /**
-     * @param int $id
-     * @throws \Nette\Application\AbortException
-     */
-    public function handleUpdate(int $id): void
-    {
-        $this->redirect('edit', $id);
-    }
-
-    /**
-     * @param int $id
      * @param ArrayHash $data
      */
     public function handleInlineUpdate(int $id, ArrayHash $data): void
     {
         try{
-            $this->problemFunctionality->update($id, $data);
+            $this->functionality->update($id, $data);
         } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('edit', true, 'error', $e));
+            $this->informUser(new UserInformArgs('update', true,'error', $e, true));
         }
-        $this->informUser(new UserInformArgs('edit', true));
+        $this->informUser(new UserInformArgs('update', true, 'success', null, true));
     }
 
     /**
@@ -229,14 +132,12 @@ class ProblemFinalPresenter extends AdminPresenter
     public function handleSubCategoryUpdate(int $problemId, int $subCategoryId): void
     {
         try{
-            $this->problemFunctionality->update($problemId,
-                ArrayHash::from(['subCategory' => $subCategoryId]),false
-            );
+            $this->functionality->update($problemId, ArrayHash::from([ 'subCategory' => $subCategoryId ]),true, false);
         } catch (\Exception $e){
             $this->informUser(new UserInformArgs('subCategory', true, 'error', $e));
             return;
         }
-        $this['problemGrid']->reload();
+        $this['entityGrid']->reload();
         $this->informUser(new UserInformArgs('subCategory', true));
     }
 
@@ -247,14 +148,12 @@ class ProblemFinalPresenter extends AdminPresenter
     public function handleDifficultyUpdate(int $problemId, int $difficultyId): void
     {
         try{
-            $this->problemFunctionality->update($problemId,
-                ArrayHash::from(['difficulty' => $difficultyId]), false
-            );
+            $this->functionality->update($problemId, ArrayHash::from([ 'difficulty' => $difficultyId ]), true, false);
         } catch (\Exception $e){
             $this->informUser(new UserInformArgs('difficulty', true, 'error', $e));
             return;
         }
-        $this['problemGrid']->reload();
+        $this['entityGrid']->reload();
         $this->informUser(new UserInformArgs('difficulty', true));
     }
 
@@ -264,7 +163,7 @@ class ProblemFinalPresenter extends AdminPresenter
      */
     public function handleGetResult(int $id): void
     {
-        $problem = $this->problemRepository->find($id);
+        $problem = $this->repository->find($id);
         $result = null;
         try{
             $this->pluginContainer->getPlugin($problem->getProblemType()->getKeyLabel())->evaluate($problem);
@@ -272,42 +171,7 @@ class ProblemFinalPresenter extends AdminPresenter
             $this->informUser(new UserInformArgs('getRes', true, 'error', $e));
             return;
         }
-//        $this->problemFunctionality->storeResult($id, $result);
-        $this['problemGrid']->reload();
+        $this['entityGrid']->reload();
         $this->informUser(new UserInformArgs('getRes', true));
-    }
-
-    /**
-     * @return ProblemFinalFormControl
-     */
-    public function createComponentProblemFinalCreateForm(): ProblemFinalFormControl
-    {
-        $control = $this->problemFinalFormFactory->create();
-        $control->onSuccess[] = function (){
-            $this['problemGrid']->reload();
-            //bdump('SUCCESS');
-            $this->informUser(new UserInformArgs('create', true));
-        };
-        $control->onError[] = function ($e){
-            $this->informUser(new UserInformArgs('create', true, 'error', $e));
-        };
-        return $control;
-    }
-
-    /**
-     * @return ProblemFinalFormControl
-     */
-    public function createComponentProblemFinalEditForm(): ProblemFinalFormControl
-    {
-        $control= $this->problemFinalFormFactory->create(true);
-        $control->onSuccess[] = function (){
-            $this->informUser(new UserInformArgs('edit'));
-            $this->redirect('default');
-        };
-        $control->onError[] = function ($e){
-            $this->informUser(new UserInformArgs('edit', false, 'error', $e));
-            $this->redirect('default');
-        };
-        return $control;
     }
 }

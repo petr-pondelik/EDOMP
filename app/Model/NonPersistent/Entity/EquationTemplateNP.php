@@ -11,6 +11,7 @@ namespace App\Model\NonPersistent\Entity;
 use App\Model\NonPersistent\Math\GlobalDivider;
 use App\Model\NonPersistent\Math\NonDegradeCondition;
 use App\Model\NonPersistent\Math\VariableFraction;
+use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -52,11 +53,12 @@ abstract class EquationTemplateNP extends ProblemTemplateNP
     /**
      * EquationTemplateNP constructor.
      * @param ArrayHash $values
+     * @param ProblemTemplate|null $original
      */
-    public function __construct(ArrayHash $values)
+    public function __construct(ArrayHash $values, ProblemTemplate $original = null)
     {
         bdump('EQUATION CONSTRUCTOR');
-        parent::__construct($values);
+        parent::__construct($values, $original);
         $this->variableFractionsData = [];
         $this->varFractionsStatic = [];
         $this->varFractionsParametrized = [];

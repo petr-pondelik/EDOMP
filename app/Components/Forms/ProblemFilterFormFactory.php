@@ -8,14 +8,13 @@
 
 namespace App\Components\Forms;
 
-use App\Model\Persistent\Managers\DifficultyManager;
 use App\Model\Persistent\Repository\DifficultyRepository;
+use App\Services\Validator;
 use Nette\Application\UI\Form;
-use Nette\Forms\Controls\Checkbox;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class ProblemFilterFormFactory
+ * Class IProblemFilterFormFactory
  * @package App\Components\Forms
  */
 class ProblemFilterFormFactory extends FormControl
@@ -26,14 +25,17 @@ class ProblemFilterFormFactory extends FormControl
     protected $difficultyRepository;
 
     /**
-     * ProblemFilterFormFactory constructor.
+     * IProblemFilterFormFactory constructor.
+     * @param Validator $validator
      * @param DifficultyRepository $difficultyRepository
      */
     public function __construct
     (
+        Validator $validator,
         DifficultyRepository $difficultyRepository
     )
     {
+        parent::__construct($validator);
         $this->difficultyRepository = $difficultyRepository;
     }
 
@@ -48,8 +50,6 @@ class ProblemFilterFormFactory extends FormControl
         $form->getElementPrototype()->class('border-light ajax');
 
         $difficultyOptions = $this->difficultyRepository->findAssoc([],"id");
-
-        //bdump($difficultyOptions);
 
         $form->addMultiSelect("difficulty", "Obtížnost", $difficultyOptions)
             ->setHtmlAttribute("class", "form-control selectpicker");
@@ -85,31 +85,13 @@ class ProblemFilterFormFactory extends FormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleCreateFormSuccess(Form $form, ArrayHash $values): void
+    public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
-        // TODO: Implement handleCreateFormSuccess() method.
-    }
-
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     */
-    public function handleEditFormSuccess(Form $form, ArrayHash $values): void
-    {
-        // TODO: Implement handleEditFormSuccess() method.
+        // TODO: Implement handleFormSuccess() method.
     }
 
     public function render(): void
     {
         // TODO: Implement render() method.
-    }
-
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     */
-    public function handleFormSuccess(Form $form, ArrayHash $values): void
-    {
-        // TODO: Implement handleFormSuccess() method.
     }
 }

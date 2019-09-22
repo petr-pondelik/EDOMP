@@ -63,10 +63,11 @@ class GroupFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data): ?BaseEntity
+    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $group = new Group();
         $group->setLabel($data->label);
@@ -78,17 +79,20 @@ class GroupFunctionality extends BaseFunctionality
             $group->setCreated($data->created);
         }
         $this->em->persist($group);
-        $this->em->flush();
+        if($flush){
+            $this->em->flush();
+        }
         return $group;
     }
 
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data): ?BaseEntity
+    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $group = $this->repository->find($id);
         if(isset($data->label)){
@@ -98,22 +102,27 @@ class GroupFunctionality extends BaseFunctionality
             $group->setSuperGroup($this->superGroupRepository->find($data->superGroup));
         }
         $this->em->persist($group);
-        $this->em->flush();
+        if($flush){
+            $this->em->flush();
+        }
         return $group;
     }
 
     /**
      * @param int $id
      * @param array $categories
-     * @throws \Exception
+     * @param bool $flush
+     * @throws \App\Exceptions\EntityException
      */
-    public function updatePermissions(int $id, array $categories): void
+    public function updatePermissions(int $id, array $categories, bool $flush = true): void
     {
         $group = $this->repository->find($id);
         $group->setCategories(new ArrayCollection());
         $group = $this->attachCategories($group, $categories);
         $this->em->persist($group);
-        $this->em->flush();
+        if($flush){
+            $this->em->flush();
+        }
     }
 
     /**

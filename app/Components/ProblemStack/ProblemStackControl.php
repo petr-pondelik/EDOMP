@@ -9,15 +9,15 @@
 namespace App\Components\ProblemStack;
 
 
+use App\Components\EDOMPControl;
 use App\Model\Persistent\Entity\Problem;
 use App\Model\Persistent\Repository\ProblemRepository;
-use Nette\Application\UI\Control;
 
 /**
  * Class ProblemStackControl
  * @package App\Components\ProblemStack
  */
-class ProblemStackControl extends Control
+class ProblemStackControl extends EDOMPControl
 {
     /**
      * @var ProblemRepository
@@ -35,14 +35,20 @@ class ProblemStackControl extends Control
     protected $selectedProblems;
 
     /**
+     * @var int
+     */
+    protected $id;
+
+    /**
      * ProblemStackControl constructor.
      * @param ProblemRepository $problemRepository
-     * @throws \Exception
+     * @param int $id
      */
-    public function __construct(ProblemRepository $problemRepository)
+    public function __construct(ProblemRepository $problemRepository, int $id)
     {
         parent::__construct();
         $this->problemRepository = $problemRepository;
+        $this->id = $id;
     }
 
     /**
@@ -77,6 +83,7 @@ class ProblemStackControl extends Control
 
     public function render(): void
     {
+        $this->template->id = $this->id;
         $this->template->problems = $this->problems;
         $this->template->selectedProblems = $this->selectedProblems;
         $this->template->render(__DIR__ . '/templates/default.latte');

@@ -9,7 +9,7 @@
 namespace App\FrontModule\Presenters;
 
 use App\Components\HeaderBar\HeaderBarFactory;
-use App\Components\SideBar\SideBarFactory;
+use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Presenters\BasePresenter;
 use App\Services\Authorizator;
@@ -29,13 +29,13 @@ class FrontPresenter extends BasePresenter
      * FrontPresenter constructor.
      * @param Authorizator $authorizator
      * @param HeaderBarFactory $headerBarFactory
-     * @param SideBarFactory $sideBarFactory
+     * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      */
     public function __construct
     (
         Authorizator $authorizator,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator
+        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator
     )
     {
         parent::__construct($headerBarFactory, $sideBarFactory, $flashesTranslator);

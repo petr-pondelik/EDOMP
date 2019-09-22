@@ -12,15 +12,16 @@ use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\GroupGridFactory;
 use App\Components\DataGrids\SuperGroupGridFactory;
 use App\Components\Forms\PermissionForm\PermissionFormControl;
-use App\Components\Forms\PermissionForm\PermissionFormFactory;
+use App\Components\Forms\PermissionForm\IPermissionIFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
-use App\Components\SideBar\SideBarFactory;
+use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Persistent\Repository\GroupRepository;
 use App\Model\Persistent\Repository\SuperGroupRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
+use App\Services\Validator;
 use Nette\ComponentModel\IComponent;
 use Ublaboo\DataGrid\DataGrid;
 
@@ -51,34 +52,35 @@ class SettingsPresenter extends AdminPresenter
     protected $superGroupGridFactory;
 
     /**
-     * @var PermissionFormFactory
+     * @var IPermissionIFormFactory
      */
     protected $permissionFormFactory;
 
     /**
      * SettingsPresenter constructor.
      * @param Authorizator $authorizator
+     * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
-     * @param SideBarFactory $sideBarFactory
+     * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param GroupRepository $groupRepository
      * @param SuperGroupRepository $superGroupRepository
      * @param GroupGridFactory $groupGridFactory
      * @param SuperGroupGridFactory $superGroupGridFactory
-     * @param PermissionFormFactory $permissionFormFactory
+     * @param IPermissionIFormFactory $permissionFormFactory
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
-        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
+        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         GroupRepository $groupRepository, SuperGroupRepository $superGroupRepository,
-        GroupGridFactory $groupGridFactory, SuperGroupGridFactory $superGroupGridFactory, PermissionFormFactory $permissionFormFactory,
+        GroupGridFactory $groupGridFactory, SuperGroupGridFactory $superGroupGridFactory, IPermissionIFormFactory $permissionFormFactory,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
+        parent::__construct($authorizator, $validator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->groupRepository = $groupRepository;
         $this->superGroupRepository = $superGroupRepository;
         $this->groupGridFactory = $groupGridFactory;
@@ -93,16 +95,14 @@ class SettingsPresenter extends AdminPresenter
     public function actionGroupPermissionEdit(int $id): void
     {
         $group = $this->groupRepository->find($id);
-        if($this->user->isInRole("teacher") && !$this->authorizator->isGroupAllowed($this->user->identity, $group)){
-            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
-            $this->redirect("Homepage:default");
+        if($this->user->isInRole('teacher') && !$this->authorizator->isEntityAllowed($this->user->identity, $group)){
+            $this->flashMessage('Nedostatečná přístupová práva.', 'danger');
+            $this->redirect('Homepage:default');
         }
-        $form = $this['groupPermissionForm']['form'];
-        if(!$form->isSubmitted()){
-            $this->template->entityLabel = $group->getLabel();
-            $this['groupPermissionForm']->template->entityLabel = $group->getLabel();
-            $categories = $group->getCategoriesId();
-            $this->setDefaults($form, $id, $categories);
+        $formControl = $this['groupPermissionForm'];
+        $formControl->setEntity($group);
+        if(!$formControl->isSubmitted()){
+            $this->template->entity = $group;
         }
     }
 
@@ -113,28 +113,15 @@ class SettingsPresenter extends AdminPresenter
     public function actionSuperGroupPermissionEdit(int $id): void
     {
         $superGroup = $this->superGroupRepository->find($id);
-        if($this->user->isInRole("teacher") && !$this->authorizator->isSuperGroupAllowed($this->user->identity, $superGroup)){
-            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
-            $this->redirect("Homepage:default");
+        if($this->user->isInRole('teacher') && !$this->authorizator->isEntityAllowed($this->user->identity, $superGroup)){
+            $this->flashMessage('Nedostatečná přístupová práva.', 'danger');
+            $this->redirect('Homepage:default');
         }
-        $form = $this["superGroupPermissionForm"]['form'];
-        if(!$form->isSubmitted()){
-            $this->template->entityLabel = $superGroup->getLabel();
-            $this['superGroupPermissionForm']->template->entityLabel = $superGroup->getLabel();
-            $categories = $superGroup->getCategoriesId();
-            $this->setDefaults($form, $id, $categories);
+        $formControl = $this['superGroupPermissionForm'];
+        $formControl->setEntity($superGroup);
+        if(!$formControl->isSubmitted()){
+            $this->template->entity = $superGroup;
         }
-    }
-
-    /**
-     * @param IComponent $form
-     * @param int $id
-     * @param array $categories
-     */
-    public function setDefaults(IComponent $form, int $id, array $categories)
-    {
-        $form["id"]->setDefaultValue($id);
-        $form["categories"]->setDefaultvalue($categories);
     }
 
     /**
@@ -146,24 +133,26 @@ class SettingsPresenter extends AdminPresenter
     public function createComponentGroupGrid($name): DataGrid
     {
         $grid = $this->groupGridFactory->create($this, $name, true);
-        $grid->addAction("editPermissions", "", "groupPermissionEdit")
-            ->setIcon("key")
-            ->setTitle("Nastavit oprávnění")
-            ->setClass("btn btn-primary btn-sm");
+        $grid->addAction('editPermissions', '', 'groupPermissionEdit')
+            ->setIcon('key')
+            ->setTitle('Nastavit oprávnění')
+            ->setClass('btn btn-primary btn-sm');
         return $grid;
     }
 
     /**
      * @param $name
+     * @return DataGrid
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function createComponentSuperGroupGrid($name)
+    public function createComponentSuperGroupGrid($name): DataGrid
     {
         $grid = $this->superGroupGridFactory->create($this, $name);
-        $grid->addAction("editPermission", "", "superGroupPermissionEdit")
-            ->setIcon("key")
-            ->setTitle("Nastavit oprávnění")
-            ->setClass("btn btn-primary btn-sm");
+        $grid->addAction('editPermission', '', 'superGroupPermissionEdit')
+            ->setIcon('key')
+            ->setTitle('Nastavit oprávnění')
+            ->setClass('btn btn-primary btn-sm');
+        return $grid;
     }
 
     /**

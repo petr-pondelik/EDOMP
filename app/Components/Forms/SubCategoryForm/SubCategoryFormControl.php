@@ -33,16 +33,14 @@ class SubCategoryFormControl extends EntityFormControl
      * @param Validator $validator
      * @param SubCategoryFunctionality $subCategoryFunctionality
      * @param CategoryRepository $categoryRepository
-     * @param bool $edit
      */
     public function __construct
     (
         Validator $validator,
-        SubCategoryFunctionality $subCategoryFunctionality, CategoryRepository $categoryRepository,
-        bool $edit = false
+        SubCategoryFunctionality $subCategoryFunctionality, CategoryRepository $categoryRepository
     )
     {
-        parent::__construct($validator, $edit);
+        parent::__construct($validator);
         $this->functionality = $subCategoryFunctionality;
         $this->categoryRepository = $categoryRepository;
     }
@@ -78,6 +76,7 @@ class SubCategoryFormControl extends EntityFormControl
         $validateFields['category'] = new ValidatorArgument($values->category, 'notEmpty');
         $this->validator->validate($form, $validateFields);
         $this->redrawErrors();
+        $this->redrawFlashes();
     }
 
     /**
@@ -91,7 +90,7 @@ class SubCategoryFormControl extends EntityFormControl
             $this->onSuccess();
         } catch (\Exception $e) {
             // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException){
+            if ($e instanceof AbortException) {
                 return;
             }
             $this->onError($e);
@@ -105,24 +104,24 @@ class SubCategoryFormControl extends EntityFormControl
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
         try {
-            $this->functionality->update($values->idHidden, $values);
+            $this->functionality->update($this->entity->getId(), $values);
             $this->onSuccess();
         } catch (\Exception $e) {
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException){
+            if ($e instanceof AbortException) {
                 return;
             }
             $this->onError($e);
         }
     }
 
-    public function render(): void
+    public function setDefaults(): void
     {
-        if ($this->edit){
-            $this->template->render(__DIR__ . '/templates/edit.latte');
+        if(!$this->entity){
+            return;
         }
-        else{
-            $this->template->render(__DIR__ . '/templates/create.latte');
-        }
+        $this['form']['id']->setDefaultValue($this->entity->getId());
+        $this['form']['label']->setDefaultValue($this->entity->getLabel());
+        $this['form']['category']->setDefaultValue($this->entity->getCategory()->getId());
     }
 }

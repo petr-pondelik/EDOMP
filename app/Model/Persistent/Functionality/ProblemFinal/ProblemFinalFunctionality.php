@@ -59,43 +59,42 @@ class ProblemFinalFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @param bool $flush
      * @return Object|null
      * @throws \App\Exceptions\EntityException
-     * @throws \Exception
      */
-    public function create(ArrayHash $data): ?BaseEntity
+    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $problemFinal = new ProblemFinal();
         $problemFinal = $this->setBasics($problemFinal, $data);
         $this->em->persist($problemFinal);
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
         return $problemFinal;
     }
 
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws EntityNotFoundException
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data): ?BaseEntity
+    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $problemFinal = $this->repository->find($id);
         if(!$problemFinal){
             throw new EntityNotFoundException('Entity for update not found.');
         }
-
         $this->setBasics($problemFinal, $data);
-
-//        if($updateConditions && isset($data->problemType)){
-//            $problem->setConditions(new ArrayCollection());
-//            $this->attachConditions($problem, $data);
-//        }
-
         $this->em->persist($problemFinal);
-        $this->em->flush();
-
+        if ($flush) {
+            $this->em->flush();
+        }
         return $problemFinal;
     }
+
+    // TODO: ALL THE CREATE AND UPDATE METHOD OF CHILDREN CLASSES WAS MODIFIED!!! FIX IT!!!
 }

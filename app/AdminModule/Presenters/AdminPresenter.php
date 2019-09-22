@@ -12,11 +12,12 @@ namespace App\AdminModule\Presenters;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SectionHelpModal\SectionHelpModalControl;
-use App\Components\SideBar\SideBarFactory;
+use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Presenters\BasePresenter;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
+use App\Services\Validator;
 
 /**
  * Class AdminPresenter
@@ -28,6 +29,11 @@ abstract class AdminPresenter extends BasePresenter
      * @var Authorizator
      */
     protected $authorizator;
+
+    /**
+     * @var Validator
+     */
+    protected $validator;
 
     /**
      * @var NewtonApiClient
@@ -42,21 +48,23 @@ abstract class AdminPresenter extends BasePresenter
     /**
      * AdminPresenter constructor.
      * @param Authorizator $authorizator
+     * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
-     * @param SideBarFactory $sideBarFactory
+     * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
-        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
+        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
         parent::__construct($headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->authorizator = $authorizator;
+        $this->validator = $validator;
         $this->newtonApiClient = $newtonApiClient;
         $this->sectionHelpModalFactory = $sectionHelpModalFactory;
     }

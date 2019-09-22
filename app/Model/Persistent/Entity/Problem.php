@@ -132,6 +132,17 @@ abstract class Problem extends BaseEntity
     protected $conditions;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Assert\Type(
+     *     type="bool",
+     *     message="IsGeneratable must be {{ type }}."
+     * )
+     *
+     * @var bool
+     */
+    protected $isGenerated = false;
+
+    /**
      * Problem constructor.
      */
     public function __construct()
@@ -295,5 +306,21 @@ abstract class Problem extends BaseEntity
     public function setIsTemplate(bool $isTemplate): void
     {
         $this->isTemplate = $isTemplate;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGenerated(): bool
+    {
+        return $this->isGenerated;
+    }
+
+    /**
+     * @param bool $isGenerated
+     */
+    public function setIsGenerated(bool $isGenerated): void
+    {
+        $this->isGenerated = $isGenerated;
     }
 }

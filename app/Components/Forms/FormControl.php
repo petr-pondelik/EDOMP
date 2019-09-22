@@ -8,9 +8,9 @@
 
 namespace App\Components\Forms;
 
+use App\Components\EDOMPControl;
 use App\Model\Persistent\Functionality\BaseFunctionality;
 use App\Services\Validator;
-use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -18,7 +18,7 @@ use Nette\Utils\ArrayHash;
  * Class BaseFormControl
  * @package App\Components\Forms
  */
-abstract class FormControl extends Control
+abstract class FormControl extends EDOMPControl
 {
     /**
      * @var BaseFunctionality
@@ -68,8 +68,8 @@ abstract class FormControl extends Control
 
         $form->getElementPrototype()->class('form-horizontal ajax');
 
-        $form->addSubmit("submit", "Vytvořit")
-            ->setHtmlAttribute("class", "btn btn-primary btn-sm");
+        $form->addSubmit('submit', 'Vytvořit')
+            ->setHtmlAttribute('class', 'btn btn-primary btn-sm');
 
         $form->onValidate[] = [$this, 'handleFormValidate'];
 
@@ -91,6 +91,35 @@ abstract class FormControl extends Control
         else{
             foreach ($values as $key => $value) { $this->redrawControl($key . 'ErrorSnippet'); }
         }
+    }
+
+    public function redrawFlashes(): void
+    {
+        $this->redrawControl('flashesSnippet');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSubmitted(): bool
+    {
+        return (bool) $this['form']->isSubmitted();
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction(): string
+    {
+        return $this->presenter->getAction();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUpdate(): bool
+    {
+        return $this->getAction() === 'update';
     }
 
     /**

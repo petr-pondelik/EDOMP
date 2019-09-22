@@ -1,7 +1,7 @@
 (($) => {
 
     $(document).ready(() => {
-        //Admin section: prototypes conditions validations
+        //Admin section: templates conditions validations
         $(document).on('click', '.condition-validation-btn', (e) => {
 
             let body = $(document).find('#body').val();

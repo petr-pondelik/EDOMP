@@ -44,30 +44,35 @@ abstract class BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      */
-    abstract public function create(ArrayHash $data): ?BaseEntity;
+    abstract public function create(ArrayHash $data, bool $flush = true): ?BaseEntity;
 
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      */
-    abstract public function update(int $id, ArrayHash $data): ?BaseEntity;
+    abstract public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity;
 
     /**
      * @param int $id
+     * @param bool $flush
      * @return bool
-     * @throws \Exception
+     * @throws EntityNotFoundException
      */
-    public function delete(int $id): bool
+    public function delete(int $id, bool $flush = true): bool
     {
         $category = $this->repository->find($id);
         if(!$category){
             throw new EntityNotFoundException('Entity for deletion was not found.');
         }
         $this->em->remove($category);
-        $this->em->flush();
+        if($flush){
+            $this->em->flush();
+        }
         return true;
     }
 }

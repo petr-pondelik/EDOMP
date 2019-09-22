@@ -35,17 +35,17 @@ class ProblemTemplate extends Problem
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMatches(): string
+    public function getMatches(): ?string
     {
         return $this->matches;
     }
 
     /**
-     * @param string $matches
+     * @param string|null $matches
      */
-    public function setMatches(string $matches): void
+    public function setMatches(?string $matches): void
     {
         $this->matches = $matches;
     }

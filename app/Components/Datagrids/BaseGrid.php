@@ -8,7 +8,7 @@
 
 namespace App\Components\DataGrids;
 
-use Nette\Application\UI\Control;
+use App\Components\EDOMPControl;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Localization\SimpleTranslator;
 
@@ -16,7 +16,7 @@ use Ublaboo\DataGrid\Localization\SimpleTranslator;
  * Class BaseGrid
  * @package app\components\datagrids
  */
-abstract class BaseGrid extends Control
+abstract class BaseGrid extends EDOMPControl
 {
 
     /**
@@ -24,7 +24,7 @@ abstract class BaseGrid extends Control
      * @param $name
      * @return DataGrid
      */
-    public function create($container, $name)
+    public function create($container, $name): DataGrid
     {
         $grid = new DataGrid($container, $name);
 

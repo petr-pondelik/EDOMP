@@ -17,7 +17,7 @@ use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class CategoryFormFactory
+ * Class ICategoryFormFactory
  * @package App\Components\Forms
  */
 class CategoryFormControl extends EntityFormControl
@@ -26,16 +26,14 @@ class CategoryFormControl extends EntityFormControl
      * CategoryFormControl constructor.
      * @param Validator $validator
      * @param CategoryFunctionality $categoryFunctionality
-     * @param bool $edit
      */
     public function __construct
     (
         Validator $validator,
-        CategoryFunctionality $categoryFunctionality,
-        bool $edit = false
+        CategoryFunctionality $categoryFunctionality
     )
     {
-        parent::__construct($validator, $edit);
+        parent::__construct($validator);
         $this->functionality = $categoryFunctionality;
     }
 
@@ -60,6 +58,7 @@ class CategoryFormControl extends EntityFormControl
         $validateFields['label'] = new ValidatorArgument($values->label, 'stringNotEmpty');
         $this->validator->validate($form, $validateFields);
         $this->redrawErrors();
+        $this->redrawFlashes();
     }
 
     /**
@@ -72,9 +71,10 @@ class CategoryFormControl extends EntityFormControl
             $this->functionality->create($values);
             $this->onSuccess();
         } catch (\Exception $e) {
-            //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException)
+            // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
+            if ($e instanceof AbortException) {
                 return;
+            }
             $this->onError($e);
         }
     }
@@ -86,21 +86,23 @@ class CategoryFormControl extends EntityFormControl
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
         try {
-            $this->functionality->update($values->idHidden, $values);
+            $this->functionality->update($this->entity->getId(), $values);
             $this->onSuccess();
         } catch (\Exception $e) {
             //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException)
+            if ($e instanceof AbortException) {
                 return;
+            }
             $this->onError($e);
         }
     }
 
-    public function render(): void
+    public function setDefaults(): void
     {
-        if ($this->edit)
-            $this->template->render(__DIR__ . '/templates/edit.latte');
-        else
-            $this->template->render(__DIR__ . '/templates/create.latte');
+        if(!$this->entity){
+            return;
+        }
+        $this['form']['id']->setDefaultValue($this->entity->getId());
+        $this['form']['label']->setDefaultValue($this->entity->getLabel());
     }
 }

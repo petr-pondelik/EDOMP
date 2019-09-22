@@ -62,10 +62,11 @@ class SuperGroupFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data): ?BaseEntity
+    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $superGroup = new SuperGroup();
         $superGroup->setLabel($data->label);
@@ -73,31 +74,37 @@ class SuperGroupFunctionality extends BaseFunctionality
             $superGroup->setCreatedBy($this->userRepository->find($data->user_id));
         }
         $this->em->persist($superGroup);
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
         return $superGroup;
     }
 
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data): ?BaseEntity
+    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $superGroup = $this->repository->find($id);
         $superGroup->setLabel($data->label);
         $this->em->persist($superGroup);
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
         return $superGroup;
     }
 
     /**
      * @param int $id
      * @param $categories
-     * @throws \Exception
+     * @param bool $flush
+     * @throws \App\Exceptions\EntityException
      */
-    public function updatePermissions(int $id, $categories): void
+    public function updatePermissions(int $id, $categories, bool $flush = true): void
     {
         $superGroup = $this->repository->find($id);
         $superGroup->setCategories(new ArrayCollection());
@@ -106,7 +113,9 @@ class SuperGroupFunctionality extends BaseFunctionality
             $this->groupFunctionality->updatePermissions($group->getId(), $categories);
         }
         $this->em->persist($superGroup);
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
     }
 
     /**

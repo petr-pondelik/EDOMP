@@ -10,6 +10,7 @@ namespace App\Components\DataGrids;
 
 use App\Model\Persistent\Repository\GroupRepository;
 use App\Model\Persistent\Repository\TestRepository;
+use App\Services\TestGeneratorService;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
@@ -75,6 +76,14 @@ class TestGridFactory extends BaseGrid
 
         $grid->addColumnNumber('testNumber', 'Číslo testu')
             ->setFilterText();
+
+        $grid->addColumnNumber('isClosed', 'Uzavřený')
+            ->addAttributes(['class' => 'text-center'])
+            ->setTemplateEscaping(false)
+            ->setReplacement([
+                0 => "<i class='fa fa-times text-danger'></i>",
+                1 => "<i class='fa fa-check text-success'></i>"
+            ]);
 
         return $grid;
     }

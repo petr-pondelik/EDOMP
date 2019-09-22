@@ -46,27 +46,31 @@ class SubCategoryFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data): ?BaseEntity
+    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $subcategory = new SubCategory();
         $category = $this->categoryRepository->find($data->category);
         $subcategory->setLabel($data->label);
         $subcategory->setCategory($category);
         $this->em->persist($subcategory);
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
         return $subcategory;
     }
 
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data): ?BaseEntity
+    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $subcategory = $this->repository->find($id);
         if(!empty($data->label)){
@@ -77,7 +81,9 @@ class SubCategoryFunctionality extends BaseFunctionality
             $subcategory->setCategory($category);
         }
         $this->em->persist($subcategory);
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
         return $subcategory;
     }
 }

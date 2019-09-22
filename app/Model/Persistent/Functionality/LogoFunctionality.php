@@ -38,27 +38,31 @@ class LogoFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data): ?BaseEntity
+    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $logo = new Logo();
         $logo->setExtensionTmp($data->extension_tmp);
         $logo->setLabel('label');
         $this->em->persist($logo);
-        $this->em->flush();
+        if($flush){
+            $this->em->flush();
+        }
         return $logo;
     }
 
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws EntityNotFoundException
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data): ?BaseEntity
+    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $logo = $this->repository->find($id);
         if(!$logo){
@@ -77,7 +81,9 @@ class LogoFunctionality extends BaseFunctionality
             $logo->setLabel($data->label);
         }
         $this->em->persist($logo);
-        $this->em->flush();
+        if($flush){
+            $this->em->flush();
+        }
         return $logo;
     }
 

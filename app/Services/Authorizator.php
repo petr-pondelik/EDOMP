@@ -9,6 +9,7 @@
 namespace App\Services;
 
 
+use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Entity\Group;
 use App\Model\Persistent\Entity\SuperGroup;
 use App\Model\Persistent\Entity\User;
@@ -49,41 +50,54 @@ class Authorizator implements IAuthorizator
     }
 
     /**
-     * @param IIdentity $userIdentity
-     * @param User $user
+     * @param IIdentity $user
+     * @param BaseEntity $entity
      * @return bool
      */
-    public function isUserAllowed(IIdentity $userIdentity, User $user): bool
+    public function isEntityAllowed(IIdentity $user, BaseEntity $entity): bool
     {
-        if($createdBy = $user->getCreatedBy()){
-            return $userIdentity->getId() === $createdBy->getId();
+        if($createdBy = $entity->getCreatedBy()){
+            return $user->getId() === $createdBy->getId();
         }
         return false;
     }
 
-    /**
-     * @param IIdentity $userIdentity
-     * @param Group $group
-     * @return bool
-     */
-    public function isGroupAllowed(IIdentity $userIdentity, Group $group): bool
-    {
-        if($createdBy = $group->getCreatedBy()){
-            return $userIdentity->getId() === $createdBy->getId();
-        }
-        return false;
-    }
-
-    /**
-     * @param IIdentity $userIdentity
-     * @param SuperGroup $superGroup
-     * @return bool
-     */
-    public function isSuperGroupAllowed(IIdentity $userIdentity, SuperGroup $superGroup): bool
-    {
-        if($createdBy = $superGroup->getCreatedBy()){
-            return $userIdentity->getId() === $createdBy->getId();
-        }
-        return false;
-    }
+//    /**
+//     * @param IIdentity $userIdentity
+//     * @param User $user
+//     * @return bool
+//     */
+//    public function isUserAllowed(IIdentity $userIdentity, User $user): bool
+//    {
+//        if($createdBy = $user->getCreatedBy()){
+//            return $userIdentity->getId() === $createdBy->getId();
+//        }
+//        return false;
+//    }
+//
+//    /**
+//     * @param IIdentity $userIdentity
+//     * @param Group $group
+//     * @return bool
+//     */
+//    public function isGroupAllowed(IIdentity $userIdentity, Group $group): bool
+//    {
+//        if($createdBy = $group->getCreatedBy()){
+//            return $userIdentity->getId() === $createdBy->getId();
+//        }
+//        return false;
+//    }
+//
+//    /**
+//     * @param IIdentity $userIdentity
+//     * @param SuperGroup $superGroup
+//     * @return bool
+//     */
+//    public function isSuperGroupAllowed(IIdentity $userIdentity, SuperGroup $superGroup): bool
+//    {
+//        if($createdBy = $superGroup->getCreatedBy()){
+//            return $userIdentity->getId() === $createdBy->getId();
+//        }
+//        return false;
+//    }
 }

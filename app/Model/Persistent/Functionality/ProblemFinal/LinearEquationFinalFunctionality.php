@@ -64,7 +64,7 @@ class LinearEquationFinalFunctionality extends BaseFunctionality
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, array $conditions = null, bool $flush = true): ?BaseEntity
+    public function create(ArrayHash $data, bool $flush = true, array $conditions = null): ?BaseEntity
     {
         $entity = new LinearEquationFinal();
         $entity = $this->setBasics($entity, $data);
@@ -94,7 +94,7 @@ class LinearEquationFinalFunctionality extends BaseFunctionality
      * @throws EntityNotFoundException
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data, array $conditions = null, bool $flush = true): ?BaseEntity
+    public function update(int $id, ArrayHash $data, bool $flush = true, array $conditions = null): ?BaseEntity
     {
         $entity = $this->repository->find($id);
         if(!$entity){

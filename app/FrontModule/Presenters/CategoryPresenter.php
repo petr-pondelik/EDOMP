@@ -9,9 +9,9 @@
 namespace App\FrontModule\Presenters;
 
 use App\Components\Forms\ProblemFilterForm\ProblemFilterFormControl;
-use App\Components\Forms\ProblemFilterForm\ProblemFilterFormFactory;
+use App\Components\Forms\ProblemFilterForm\IProblemFilterFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
-use App\Components\SideBar\SideBarFactory;
+use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Persistent\Repository\CategoryRepository;
 use App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
@@ -36,7 +36,7 @@ class CategoryPresenter extends FrontPresenter
     protected $problemFinalRepository;
 
     /**
-     * @var ProblemFilterFormFactory
+     * @var IProblemFilterFormFactory
      */
     protected $problemFilterFormFactory;
 
@@ -59,18 +59,18 @@ class CategoryPresenter extends FrontPresenter
      * CategoryPresenter constructor.
      * @param Authorizator $authorizator
      * @param HeaderBarFactory $headerBarFactory
-     * @param SideBarFactory $sideBarFactory
+     * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param CategoryRepository $categoryRepository
      * @param ProblemFinalRepository $problemFinalRepository
-     * @param ProblemFilterFormFactory $problemFilterFormFactory
+     * @param IProblemFilterFormFactory $problemFilterFormFactory
      */
     public function __construct
     (
         Authorizator $authorizator,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         CategoryRepository $categoryRepository, ProblemFinalRepository $problemFinalRepository,
-        ProblemFilterFormFactory $problemFilterFormFactory
+        IProblemFilterFormFactory $problemFilterFormFactory
     )
     {
         parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);

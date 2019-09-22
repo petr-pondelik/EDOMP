@@ -45,13 +45,15 @@ interface IProblemPlugin
 
     /**
      * @param ProblemTemplate $problemTemplate
+     * @param array|null $usedMatchesInx
      * @return ArrayHash
      */
-    public function constructProblemFinalData(ProblemTemplate $problemTemplate): ArrayHash;
+    public function constructProblemFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash;
 
     /**
      * @param ProblemTemplate $problemTemplate
+     * @param array|null $usedMatchesInx
      * @return ProblemFinal
      */
-    public function constructProblemFinal(ProblemTemplate $problemTemplate): ProblemFinal;
+    public function constructProblemFinal(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ProblemFinal;
 }

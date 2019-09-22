@@ -13,6 +13,7 @@ use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\RegularExpressions;
 use App\Helpers\StringsHelper;
+use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
 use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use App\Model\Persistent\Functionality\BaseFunctionality;
@@ -160,12 +161,14 @@ abstract class ProblemPlugin implements IProblemPlugin
 
     /**
      * @param ProblemTemplate $problemTemplate
+     * @param array|null $usedMatchesInx
      * @return ArrayHash
+     * @throws \App\Exceptions\GeneratorException
      * @throws \Nette\Utils\JsonException
      */
-    public function constructProblemFinalData(ProblemTemplate $problemTemplate): ArrayHash
+    public function constructProblemFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash
     {
-        $finalBody = $this->generatorService->generateProblemFinalBody($problemTemplate);
+        [$finalBody, $matchesIndex] = $this->generatorService->generateProblemFinalBody($problemTemplate, $usedMatchesInx);
         bdump($finalBody);
         $finalData = ArrayHash::from([
             'textBefore' => $problemTemplate->getTextBefore(),
@@ -175,6 +178,7 @@ abstract class ProblemPlugin implements IProblemPlugin
             'problemType' => $problemTemplate->getProblemType()->getId(),
             'subCategory' => $problemTemplate->getSubCategory()->getId(),
             'problemTemplateId' => $problemTemplate->getId(),
+            'matchesIndex' => $matchesIndex,
             'isGenerated' => true
         ]);
         return $finalData;
@@ -182,15 +186,23 @@ abstract class ProblemPlugin implements IProblemPlugin
 
     /**
      * @param ProblemTemplate $problemTemplate
+     * @param array|null $usedMatchesInx
      * @return ProblemFinal
+     * @throws \App\Exceptions\GeneratorException
      * @throws \Nette\Utils\JsonException
      */
-    public function constructProblemFinal(ProblemTemplate $problemTemplate): ProblemFinal
+    public function constructProblemFinal(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ProblemFinal
     {
-        $finalData = $this->constructProblemFinalData($problemTemplate);
+        $finalData = $this->constructProblemFinalData($problemTemplate, $usedMatchesInx);
         $conditions = $problemTemplate->getConditions()->getValues();
         $problemFinal = $this->functionality->create($finalData, $conditions, false);
         $problemFinal->setBody($this->latexHelper->postprocessProblemFinalBody($problemFinal->getBody()));
         return $problemFinal;
     }
+
+    /**
+     * @param ProblemTemplateNP $data
+     * @return bool
+     */
+    abstract public function validateType(ProblemTemplateNP $data): bool;
 }

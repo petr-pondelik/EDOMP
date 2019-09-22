@@ -9,9 +9,9 @@
 namespace App\Components\Forms;
 
 use App\Model\Persistent\Entity\BaseEntity;
-use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+use ReflectionClass;
 
 /**
  * Class EntityFormControl
@@ -20,25 +20,9 @@ use Nette\Utils\ArrayHash;
 abstract class EntityFormControl extends FormControl
 {
     /**
-     * @var bool
-     */
-    protected $edit;
-
-    /**
      * @var BaseEntity|null
      */
     protected $entity;
-
-    /**
-     * EntityFormControl constructor.
-     * @param Validator $validator
-     * @param bool $edit
-     */
-    public function __construct(Validator $validator, bool $edit = false)
-    {
-        parent::__construct($validator);
-        $this->edit = $edit;
-    }
 
     /**
      * @return Form
@@ -47,13 +31,10 @@ abstract class EntityFormControl extends FormControl
     {
         $form = parent::createComponentForm();
 
-        if ($this->edit) {
+        if ($this->isUpdate()) {
             $form->addInteger('id', 'ID')
                 ->setHtmlAttribute('class', 'form-control')
                 ->setDisabled();
-
-            $form->addHidden('idHidden');
-
             $form->onSuccess[] = [$this, 'handleEditFormSuccess'];
         }
         else{
@@ -64,10 +45,37 @@ abstract class EntityFormControl extends FormControl
     }
 
     /**
+     * @return string
+     * @throws \ReflectionException
+     */
+    public function getDir(): string
+    {
+        return dirname((new ReflectionClass(static::class))->getFileName());
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplateName(): string
+    {
+        return $this->isUpdate() ? 'update' : 'create';
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    public function render(): void
+    {
+        $this->template->render($this->getDir() . '/templates/' . $this->getTemplateName() . '.latte');
+    }
+
+    /**
      * @param Form $form
      * @param ArrayHash $values
      */
     abstract public function handleEditFormSuccess(Form $form, ArrayHash $values): void;
+
+    abstract public function setDefaults(): void;
 
     /**
      * @param BaseEntity $entity
@@ -75,6 +83,7 @@ abstract class EntityFormControl extends FormControl
     public function setEntity(BaseEntity $entity): void
     {
         $this->entity = $entity;
+        $this->template->entity = $entity;
     }
 
     /**

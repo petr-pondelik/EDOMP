@@ -10,7 +10,7 @@ import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 
     let href = $(location).attr('href');
 
-    if(href.includes('/logo/edit')) {
+    if(href.includes('/logo/update')) {
         let logoId = $(document).find("#logo-id").val();
         $.fn.filepond.setOptions({
             allowMultiple: false,

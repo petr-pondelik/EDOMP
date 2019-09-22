@@ -34,16 +34,14 @@ class GroupFormControl extends EntityFormControl
      * @param Validator $validator
      * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupRepository $superGroupRepository
-     * @param bool $edit
      */
     public function __construct
     (
         Validator $validator,
-        GroupFunctionality $groupFunctionality, SuperGroupRepository $superGroupRepository,
-        bool $edit = false
+        GroupFunctionality $groupFunctionality, SuperGroupRepository $superGroupRepository
     )
     {
-        parent::__construct($validator, $edit);
+        parent::__construct($validator);
         $this->functionality = $groupFunctionality;
         $this->superGroupRepository = $superGroupRepository;
     }
@@ -107,7 +105,7 @@ class GroupFormControl extends EntityFormControl
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
-            $this->functionality->update($values->idHidden, ArrayHash::from([
+            $this->functionality->update($this->entity->getId(), ArrayHash::from([
                 'label' => $values->label,
                 'superGroup' => $values->superGroup
             ]));
@@ -121,13 +119,10 @@ class GroupFormControl extends EntityFormControl
         }
     }
 
-    public function render(): void
+    public function setDefaults(): void
     {
-        if ($this->edit){
-            $this->template->render(__DIR__ . '/templates/edit.latte');
-        }
-        else{
-            $this->template->render(__DIR__ . '/templates/create.latte');
-        }
+        $this['form']['id']->setDefaultValue($this->entity->getId());
+        $this['form']['label']->setDefaultValue($this->entity->getLabel());
+        $this['form']['superGroup']->setDefaultValue($this->entity->getSuperGroup()->getId());
     }
 }

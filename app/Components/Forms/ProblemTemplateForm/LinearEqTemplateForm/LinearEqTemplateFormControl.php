@@ -14,13 +14,12 @@ use App\Helpers\ConstHelper;
 use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\Entity\LinearEquationTemplateNP;
 use App\Model\NonPersistent\Entity\ProblemTemplateNP;
-use App\Model\Persistent\Functionality\BaseFunctionality;
+use App\Model\Persistent\Functionality\ProblemTemplate\LinearEquationTemplateFunctionality;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Plugins\ProblemPlugin;
 use App\Services\PluginContainer;
 use App\Services\ProblemTemplateSession;
 use App\Services\Validator;
@@ -73,40 +72,37 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
     /**
      * LinearEqTemplateFormControl constructor.
      * @param Validator $validator
-     * @param BaseFunctionality $functionality
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param SubCategoryRepository $subCategoryRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
-     * @param ProblemPlugin $problemTemplatePlugin
      * @param PluginContainer $pluginContainer
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param ProblemTemplateSession $problemTemplateSession
-     * @param bool $edit
+     * @param LinearEquationTemplateFunctionality $functionality
      */
     public function __construct
     (
-        Validator $validator, BaseFunctionality $functionality, DifficultyRepository $difficultyRepository,
+        Validator $validator, DifficultyRepository $difficultyRepository,
         ProblemTypeRepository $problemTypeRepository, SubCategoryRepository $subCategoryRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        ProblemPlugin $problemTemplatePlugin, PluginContainer $pluginContainer,
+        PluginContainer $pluginContainer,
         StringsHelper $stringsHelper, ConstHelper $constHelper,
         ProblemTemplateSession $problemTemplateSession,
-        bool $edit = false
+        LinearEquationTemplateFunctionality $functionality
     )
     {
         parent::__construct
         (
-            $validator, $functionality, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
+            $validator, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
             $problemConditionTypeRepository, $problemConditionRepository,
-            $problemTemplatePlugin,
             $pluginContainer,
             $stringsHelper, $constHelper,
-            $problemTemplateSession,
-            $edit
+            $problemTemplateSession
         );
+        $this->functionality = $functionality;
         $this->attachEntities($this->constHelper::LINEAR_EQ);
     }
 
@@ -136,7 +132,7 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
      */
     protected function createNonPersistentEntity(ArrayHash $values): ProblemTemplateNP
     {
-        return new LinearEquationTemplateNP($values);
+        return new LinearEquationTemplateNP($values, $this->entity);
     }
 
     /**
@@ -152,5 +148,14 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
             return null;
         }
         return $standardized;
+    }
+
+    public function setDefaults(): void
+    {
+        if(!$this->isUpdate()){
+            return;
+        }
+        parent::setDefaults();
+        $this['form']['variable']->setDefaultValue($this->entity->getVariable());
     }
 }

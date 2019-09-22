@@ -8,10 +8,12 @@
 
 namespace App\Services;
 
+use App\Model\Persistent\Entity\Logo;
 use App\Model\Persistent\Entity\Test;
 use App\Model\Persistent\Functionality\LogoFunctionality;
 use App\Model\Persistent\Repository\LogoRepository;
 use App\Model\Persistent\Repository\TestRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Nette\FileNotFoundException;
 use Nette\Http\IRequest;
 use Nette\IOException;
@@ -132,11 +134,16 @@ class FileService
     {
         $id = $httpRequest->getRawBody();
 
-        //Delete logo temporary directory
+        // Delete logo temporary directory
         FileSystem::delete($this->logosTmpDir . DIRECTORY_SEPARATOR . $id);
 
-        //Delete logo from DB based on it's ID
-        $this->logoFunctionality->delete($id);
+        // Delete logo from DB based on it's ID
+        try {
+            $this->logoFunctionality->delete($id);
+        }
+        catch (EntityNotFoundException $e){
+            return '';
+        }
 
         return '';
     }
@@ -181,17 +188,18 @@ class FileService
 
     /**
      * @param int $id
+     * @return Logo
      * @throws \Exception
      */
-    public function finalStore(int $id): void
+    public function finalStore(int $id): Logo
     {
         FileSystem::copy($this->logosTmpDir . DIRECTORY_SEPARATOR . $id, $this->logosDir . DIRECTORY_SEPARATOR . $id);
         FileSystem::delete($this->logosTmpDir . DIRECTORY_SEPARATOR . $id);
 
         $fileRecord = $this->logoRepository->find($id);
 
-        //Set logo it's final path
-        $this->logoFunctionality->update(
+        // Set logo it's final path
+        return $this->logoFunctionality->update(
             $id,
             ArrayHash::from([
                 'extension' => $fileRecord->getExtensionTmp(),

@@ -39,30 +39,36 @@ class CategoryFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data): ?BaseEntity
+    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $category = new Category();
         $category->setLabel($data->label);
         $this->em->persist($category);
-        $this->em->flush();
+        if($flush){
+            $this->em->flush();
+        }
         return $category;
     }
 
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data): ?BaseEntity
+    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $category = $this->repository->find($id);
         $category->setLabel($data->label);
         $this->em->persist($category);
-        $this->em->flush();
+        if($flush){
+            $this->em->flush();
+        }
         return $category;
     }
 }

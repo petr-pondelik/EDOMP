@@ -8,6 +8,8 @@
 
 namespace App\Services;
 
+use App\Exceptions\GeneratorException;
+use App\Exceptions\ProblemDuplicityException;
 use App\Helpers\ConstHelper;
 use App\Helpers\StringsHelper;
 use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
@@ -109,15 +111,19 @@ class GeneratorService
     /**
      * @param int $min
      * @param int $max
-     * @param array $without
+     * @param array|null $without
      * @return int|null
      */
-    public function generateIntegerWithout(int $min, int $max, array $without = []): ?int
+    public function generateIntegerWithout(int $min, int $max, array $without = null): ?int
     {
         //bdump('GENERATE INTEGER WITHOUT');
 
         if(!isset($min, $max) || $min > $max){
             return null;
+        }
+
+        if(!$without){
+            return $this->generateInteger($min, $max);
         }
 
         $res = null;
@@ -235,26 +241,35 @@ class GeneratorService
 
     /**
      * @param ProblemTemplate $problemTemplate
-     * @return string
+     * @param array|null $usedMatchesInx
+     * @return array
+     * @throws GeneratorException
      * @throws \Nette\Utils\JsonException
      */
-    public function generateProblemFinalBody(ProblemTemplate $problemTemplate): string
+    public function generateProblemFinalBody(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): array
     {
+        bdump('GENERATE PROBLEM FINAL BODY');
+        bdump($usedMatchesInx);
+
         $parametrized = $this->stringsHelper::getParametrized($problemTemplate->getBody());
 
         // Use JSON matches array of problemPrototype
         $matchesJson = $this->problemTemplateRepository->find($problemTemplate->getId())->getMatches();
         $matchesArr = null;
-
-        bdump($this->problemTemplateRepository->find($problemTemplate->getId()));
-        bdump($matchesJson);
+        $matchesIndex = null;
 
         if($matchesJson){
             // Generate params matching the conditions
-            //bdump($matchesJson);
             $matchesArr = Json::decode($matchesJson, Json::FORCE_ARRAY);
             $matchesCnt = count($matchesArr);
-            $params = $matchesArr[$this->generateInteger(0, $matchesCnt - 1)];
+
+            $matchesIndex = $this->generateIntegerWithout(0, $matchesCnt - 1, $usedMatchesInx);
+
+            if($matchesIndex === null){
+                throw new GeneratorException("Can't generate problem final body - matchesArr exhausted.");
+            }
+
+            $params = $matchesArr[$matchesIndex];
         }
         else{
             // Generate params without conditions
@@ -263,6 +278,6 @@ class GeneratorService
 
         bdump($params);
 
-        return $this->stringsHelper::passValues($parametrized->expression, $params);
+        return [$this->stringsHelper::passValues($parametrized->expression, $params), $matchesIndex];
     }
 }

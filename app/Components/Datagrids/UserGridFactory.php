@@ -11,6 +11,7 @@ namespace App\Components\DataGrids;
 use App\Helpers\ConstHelper;
 use App\Model\Persistent\Repository\RoleRepository;
 use App\Model\Persistent\Repository\UserRepository;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class UserGridFactory
@@ -58,7 +59,7 @@ class UserGridFactory extends BaseGrid
      * @throws \Doctrine\ORM\Query\QueryException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function create($container, $name)
+    public function create($container, $name): DataGrid
     {
         $grid = parent::create($container, $name);
         $roleOptions = $this->roleRepository->findAllowed($container->user);

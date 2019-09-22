@@ -11,173 +11,100 @@ namespace App\AdminModule\Presenters;
 
 use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\GroupGridFactory;
-use App\Components\Forms\GroupForm\GroupFormControl;
-use App\Components\Forms\GroupForm\GroupFormFactory;
+use App\Components\Forms\GroupForm\IGroupIFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
-use App\Components\SideBar\SideBarFactory;
+use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
-use App\Model\Persistent\Entity\Group;
+use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Functionality\GroupFunctionality;
 use App\Model\Persistent\Repository\GroupRepository;
 use App\Model\Persistent\Repository\SuperGroupRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use App\Services\Validator;
-use Nette\ComponentModel\IComponent;
 use Nette\Utils\ArrayHash;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class GroupPresenter
  * @package App\AdminModule\Presenters
  */
-class GroupPresenter extends AdminPresenter
+class GroupPresenter extends EntityPresenter
 {
-    /**
-     * @var GroupRepository
-     */
-    protected $groupRepository;
-
-    /**
-     * @var GroupFunctionality
-     */
-    protected $groupFunctionality;
-
     /**
      * @var SuperGroupRepository
      */
     protected $superGroupRepository;
 
     /**
-     * @var Validator
-     */
-    protected $validator;
-
-    /**
-     * @var GroupGridFactory
-     */
-    protected $groupGridFactory;
-
-    /**
-     * @var GroupFormFactory
-     */
-    protected $groupFormFactory;
-
-    /**
      * GroupPresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
-     * @param SideBarFactory $sideBarFactory
+     * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param GroupRepository $groupRepository
      * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupRepository $superGroupRepository
      * @param Validator $validator
      * @param GroupGridFactory $groupGridFactory
-     * @param GroupFormFactory $groupFormFactory
+     * @param IGroupIFormFactory $groupFormFactory
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         GroupRepository $groupRepository, GroupFunctionality $groupFunctionality, SuperGroupRepository $superGroupRepository,
         Validator $validator,
-        GroupGridFactory $groupGridFactory, GroupFormFactory $groupFormFactory,
+        GroupGridFactory $groupGridFactory, IGroupIFormFactory $groupFormFactory,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
-        $this->groupRepository = $groupRepository;
-        $this->groupFunctionality = $groupFunctionality;
+        parent::__construct(
+            $authorizator, $validator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory,
+            $groupRepository, $groupFunctionality, $groupGridFactory, $groupFormFactory
+        );
         $this->superGroupRepository = $superGroupRepository;
-        $this->validator = $validator;
-        $this->groupGridFactory = $groupGridFactory;
-        $this->groupFormFactory = $groupFormFactory;
     }
 
     /**
-     * @param int $id
-     * @throws \Nette\Application\AbortException
+     * @param BaseEntity $entity
+     * @return bool
      */
-    public function actionEdit(int $id): void
+    public function isEntityAllowed(BaseEntity $entity): bool
     {
-        $record = $this->groupRepository->find($id);
-        if($this->user->isInRole("teacher") && !$this->authorizator->isGroupAllowed($this->user->identity, $record)){
-            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
-            $this->redirect("Homepage:default");
-        }
-        $form = $this["groupEditForm"]["form"];
-        if(!$form->isSubmitted()){
-            $this->template->entityLabel = $record->getLabel();
-            $this["groupEditForm"]->template->entityLabel = $record->getLabel();
-            $this->setDefaults($form, $record);
-        }
-    }
-
-    /**
-     * @param IComponent $form
-     * @param Group $record
-     */
-    public function setDefaults(IComponent $form, Group $record): void
-    {
-        $form["id"]->setDefaultValue($record->getId());
-        $form["idHidden"]->setDefaultValue($record->getId());
-        $form["label"]->setDefaultValue($record->getLabel());
-        $form["superGroup"]->setDefaultValue($record->getSuperGroup()->getId());
+        return $this->user->isInRole('admin') || $this->authorizator->isEntityAllowed($this->user->identity, $entity);
     }
 
     /**
      * @param $name
-     * @throws \Ublaboo\DataGrid\Exception\DataGridException
+     * @return DataGrid
      */
-    public function createComponentGroupGrid($name)
+    public function createComponentEntityGrid($name): DataGrid
     {
-        $grid = $this->groupGridFactory->create($this, $name);
-        $grid->addAction("delete", "", "delete!")
-            ->setIcon("trash")
-            ->setClass("btn btn-danger btn-sm ajax");
-        $grid->addAction("edit", "", "edit!")
-            ->setIcon("edit")
-            ->setClass("btn btn-primary btn-sm");
+        $grid = $this->gridFactory->create($this, $name);
+        $grid->addAction('delete', '', 'delete!')
+            ->setIcon('trash')
+            ->setClass('btn btn-danger btn-sm ajax');
+        $grid->addAction('edit', '', 'update!')
+            ->setIcon('edit')
+            ->setClass('btn btn-primary btn-sm');
         $grid->addInlineEdit()
             ->setIcon('pencil-alt')
             ->setTitle('Upravit inline')
             ->setClass('btn btn-primary btn-sm ajax')
-            ->onControlAdd[] = function($container) {
+            ->onControlAdd[] = static function ($container) {
             $container->addText('label', '');
         };
-        $grid->getInlineEdit()->onSetDefaults[] = function($cont, $item) {
-            $cont->setDefaults([
-                "label" => $item->getLabel()
+        $grid->getInlineEdit()->onSetDefaults[] = static function ($container, $item) {
+            $container->setDefaults([
+                'label' => $item->getLabel()
             ]);
         };
         $grid->getInlineEdit()->onSubmit[] = [$this, 'handleInlineUpdate'];
-    }
-
-    /**
-     * @param int $id
-     * @throws \Exception
-     */
-    public function handleDelete(int $id): void
-    {
-        try{
-            $this->groupFunctionality->delete($id);
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('delete', true,'error', $e));
-        }
-        $this["groupGrid"]->reload();
-        $this->informUser(new UserInformArgs('delete', true));
-    }
-
-    /**
-     * @param int $id
-     * @throws \Nette\Application\AbortException
-     */
-    public function handleEdit(int $id): void
-    {
-        $this->redirect("edit", $id);
+        return $grid;
     }
 
     /**
@@ -188,11 +115,11 @@ class GroupPresenter extends AdminPresenter
     public function handleInlineUpdate(int $id, $row): void
     {
         try{
-            $this->groupFunctionality->update($id, $row);
+            $this->functionality->update($id, $row);
         } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('edit', true,'error', $e));
+            $this->informUser(new UserInformArgs('update', true,'error', $e, true));
         }
-        $this->informUser(new UserInformArgs('edit', true));
+        $this->informUser(new UserInformArgs('update', true, 'success', null, true));
     }
 
     /**
@@ -203,47 +130,14 @@ class GroupPresenter extends AdminPresenter
     public function handleSuperGroupUpdate(int $groupId, int $superGroupId): void
     {
         try{
-            $this->groupFunctionality->update($groupId, ArrayHash::from([
-                "superGroup" => $superGroupId
+            $this->functionality->update($groupId, ArrayHash::from([
+                'superGroup' => $superGroupId
             ]));
         }
         catch (\Exception $e){
-            $this->informUser(new UserInformArgs('superGroup', true, 'error', $e));
+            $this->informUser(new UserInformArgs('superGroup', true, 'error', $e, true));
         }
-        $this->informUser(new UserInformArgs('superGroup', true));
-        $this["groupGrid"]->reload();
-    }
-
-    /**
-     * @return GroupFormControl
-     */
-    public function createComponentGroupCreateForm(): GroupFormControl
-    {
-        $control = $this->groupFormFactory->create();
-        $control->onSuccess[] = function (){
-            $this["groupGrid"]->reload();
-            $this->informUser(new UserInformArgs('create', true));
-        };
-        $control->onError[] = function ($e){
-            $this->informUser(new UserInformArgs('create', true,'error', $e));
-        };
-        return $control;
-    }
-
-    /**
-     * @return GroupFormControl
-     */
-    public function createComponentGroupEditForm(): GroupFormControl
-    {
-        $control = $this->groupFormFactory->create(true);
-        $control->onSuccess[] = function (){
-            $this->informUser(new UserInformArgs('edit'));
-            $this->redirect('default');
-        };
-        $control->onError[] = function ($e){
-            $this->informUser(new UserInformArgs('edit', false,'error', $e));
-            $this->redirect('default');
-        };
-        return $control;
+        $this->informUser(new UserInformArgs('superGroup', true, 'success', null, true));
+        $this['entityGrid']->reload();
     }
 }

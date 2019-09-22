@@ -9,7 +9,7 @@
 namespace App\Helpers;
 
 use App\Exceptions\InvalidParameterException;
-use App\Exceptions\ProblemFinalCollisionException;
+use App\Exceptions\ProblemDuplicityException;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 
 /**
@@ -26,16 +26,16 @@ class FlashesTranslator
         'Admin:LinearEqTemplate' => [
 
             'success' => [
-                'create' => 'Šablona úspěšně vytvořena.',
-                'edit' => 'Šablona úspěšně editována.',
+                'default' => 'Šablona úspěšně vytvořena.',
+                'update' => 'Šablona úspěšně editována.',
                 'delete' => 'Šablona úspěšně odstraněna.',
                 'difficulty' => 'Obtížnost úspěšně změněna.',
                 'subCategory' => 'Téma úspěšně změněno.'
             ],
 
             'error' => [
-                'create' => 'Chyba při vytváření šablony.',
-                'edit' => 'Chyba při editaci šablony.',
+                'default' => 'Chyba při vytváření šablony.',
+                'update' => 'Chyba při editaci šablony.',
                 'delete' => 'Chyba při odstraňování šablony.',
                 'difficulty' => 'Chyba při změně obtížnosti.',
                 'subCategory' => 'Chyba při změně tématu.'
@@ -47,16 +47,16 @@ class FlashesTranslator
         'Admin:QuadraticEqTemplate' => [
 
             'success' => [
-                'create' => 'Šablona úspěšně vytvořena.',
-                'edit' => 'Šablona úspěšně editována.',
+                'default' => 'Šablona úspěšně vytvořena.',
+                'update' => 'Šablona úspěšně editována.',
                 'delete' => 'Šablona úspěšně odstraněna.',
                 'difficulty' => 'Obtížnost úspěšně změněna.',
                 'subCategory' => 'Téma úspěšně změněno.'
             ],
 
             'error' => [
-                'create' => 'Chyba při vytváření šablony.',
-                'edit' => 'Chyba při editaci šablony.',
+                'default' => 'Chyba při vytváření šablony.',
+                'update' => 'Chyba při editaci šablony.',
                 'delete' => 'Chyba při odstraňování šablony.',
                 'difficulty' => 'Chyba při změně obtížnosti.',
                 'subCategory' => 'Chyba při změně tématu.'
@@ -68,16 +68,16 @@ class FlashesTranslator
         'Admin:ArithmeticSeqTemplate' => [
 
             'success' => [
-                'create' => 'Šablona úspěšně vytvořena.',
-                'edit' => 'Šablona úspěšně editována.',
+                'default' => 'Šablona úspěšně vytvořena.',
+                'update' => 'Šablona úspěšně editována.',
                 'delete' => 'Šablona úspěšně odstraněna.',
                 'difficulty' => 'Obtížnost úspěšně změněna.',
                 'subCategory' => 'Téma úspěšně změněno.'
             ],
 
             'error' => [
-                'create' => 'Chyba při vytváření šablony.',
-                'edit' => 'Chyba při editaci šablony.',
+                'default' => 'Chyba při vytváření šablony.',
+                'update' => 'Chyba při editaci šablony.',
                 'delete' => 'Chyba při odstraňování šablony.',
                 'difficulty' => 'Chyba při změně obtížnosti.',
                 'subCategory' => 'Chyba při změně tématu.'
@@ -89,16 +89,16 @@ class FlashesTranslator
         'Admin:GeometricSeqTemplate' => [
 
             'success' => [
-                'create' => 'Šablona úspěšně vytvořena.',
-                'edit' => 'Šablona úspěšně editována.',
+                'default' => 'Šablona úspěšně vytvořena.',
+                'update' => 'Šablona úspěšně editována.',
                 'delete' => 'Šablona úspěšně odstraněna.',
                 'difficulty' => 'Obtížnost úspěšně změněna.',
                 'subCategory' => 'Téma úspěšně změněno.'
             ],
 
             'error' => [
-                'create' => 'Chyba při vytváření šablony.',
-                'edit' => 'Chyba při editaci šablony.',
+                'default' => 'Chyba při vytváření šablony.',
+                'update' => 'Chyba při editaci šablony.',
                 'delete' => 'Chyba při odstraňování šablony.',
                 'difficulty' => 'Chyba při změně obtížnosti.',
                 'subCategory' => 'Chyba při změně tématu.'
@@ -110,8 +110,8 @@ class FlashesTranslator
         'Admin:ProblemFinal' => [
 
             'success' => [
-                'create' => 'Příklad úspěšně vytvořen.',
-                'edit' => 'Příklad úspěšně editován.',
+                'default' => 'Příklad úspěšně vytvořen.',
+                'update' => 'Příklad úspěšně editován.',
                 'delete' => 'Příklad úspěšně odstraněn.',
                 'difficulty' => 'Obtížnost úspěšně změněna.',
                 'subCategory' => 'Téma úspěšně změněno.',
@@ -119,8 +119,8 @@ class FlashesTranslator
             ],
 
             'error' => [
-                'create' => 'Chyba při vytváření příkladu.',
-                'edit' => 'Chyba při editaci příkladu.',
+                'default' => 'Chyba při vytváření příkladu.',
+                'update' => 'Chyba při editaci příkladu.',
                 'delete' => 'Chyba při odstraňování příkladu.',
                 'difficulty' => 'Chyba při změně obtížnosti.',
                 'subCategory' => 'Chyba při změně tématu.',
@@ -134,14 +134,14 @@ class FlashesTranslator
         'Admin:ProblemType' => [
 
             'success' => [
-                'create' => 'Typ úlohy úspěšně vytvořen.',
-                'edit' => 'Typ úlohy úspěšně editován.',
+                'default' => 'Typ úlohy úspěšně vytvořen.',
+                'update' => 'Typ úlohy úspěšně editován.',
                 'delete' => 'Typ úlohy úspěšně odstraněn.',
             ],
 
             'error' => [
-                'create' => 'Chyba při vytváření typu úlohy.',
-                'edit' => 'Chyba při editaci typu úlohy.',
+                'default' => 'Chyba při vytváření typu úlohy.',
+                'update' => 'Chyba při editaci typu úlohy.',
                 'delete' => 'Chyba při odstraňování typu úlohy.',
             ]
 
@@ -150,14 +150,14 @@ class FlashesTranslator
         'Admin:Category' => [
 
             'success' => [
-                'create' => 'Kategorie úspěšně vytvořena.',
-                'edit' => 'Kategorie úspěšně editována.',
+                'default' => 'Kategorie úspěšně vytvořena.',
+                'update' => 'Kategorie úspěšně editována.',
                 'delete' => 'Kategorie úspěšně odstraněna.',
             ],
 
             'error' => [
-                'create' => 'Chyba při vytváření kategorie.',
-                'edit' => 'Chyba při editaci kategorie.',
+                'default' => 'Chyba při vytváření kategorie.',
+                'update' => 'Chyba při editaci kategorie.',
                 'delete' => 'Chyba při odstraňování kategorie.',
             ],
 
@@ -168,15 +168,15 @@ class FlashesTranslator
         'Admin:SubCategory' => [
 
             'success' => [
-                'create' => 'Podkategorie úspěšně vytvořena.',
-                'edit' => 'Podkategorie úspěšně editována.',
+                'default' => 'Podkategorie úspěšně vytvořena.',
+                'update' => 'Podkategorie úspěšně editována.',
                 'delete' => 'Podkategorie úspěšně odstraněna.',
                 'category' => 'Kategorie úspěšně změněna.'
             ],
 
             'error' => [
-                'create' => 'Chyba při vytváření podkategorie.',
-                'edit' => 'Chyba při editaci podkategorie.',
+                'default' => 'Chyba při vytváření podkategorie.',
+                'update' => 'Chyba při editaci podkategorie.',
                 'delete' => 'Chyba při odstraňování podkategorie.',
                 'category' => 'Chybě při změně kategorie.'
             ],
@@ -188,14 +188,14 @@ class FlashesTranslator
         'Admin:SuperGroup' => [
 
             'success' => [
-                'create' => 'Superskupina úspěšně vytvořena.',
-                'edit' => 'Superskupina úspěšně editována.',
+                'default' => 'Superskupina úspěšně vytvořena.',
+                'update' => 'Superskupina úspěšně editována.',
                 'delete' => 'Superskupina úspěšně odstraněna.',
             ],
 
             'error' => [
-                'create' => 'Chyba při vytváření superskupiny.',
-                'edit' => 'Chyba při editaci superskupiny.',
+                'default' => 'Chyba při vytváření superskupiny.',
+                'update' => 'Chyba při editaci superskupiny.',
                 'delete' => 'Chyba při odstraňování superskupiny.',
             ]
 
@@ -204,15 +204,15 @@ class FlashesTranslator
         'Admin:Group' => [
 
             'success' => [
-                'create' => 'Skupina úspěšně vytvořena.',
-                'edit' => 'Skupina úspěšně editována.',
+                'default' => 'Skupina úspěšně vytvořena.',
+                'update' => 'Skupina úspěšně editována.',
                 'delete' => 'Skupina úspěšně odstraněna.',
                 'superGroup' => 'Superskupina úspěšně změněna.'
             ],
 
             'error' => [
-                'create' => 'Chyba při vytváření skupiny.',
-                'edit' => 'Chyba při editaci skupiny.',
+                'default' => 'Chyba při vytváření skupiny.',
+                'update' => 'Chyba při editaci skupiny.',
                 'delete' => 'Chyba při odstraňování skupiny.',
                 'superGroup' => 'Chyba při změně superskupiny.'
             ]
@@ -222,14 +222,14 @@ class FlashesTranslator
         'Admin:User' => [
 
             'success' => [
-                'create' => 'Uživatel úspěšně vytvořen.',
-                'edit' => 'Uživatel úspěšně editován.',
+                'default' => 'Uživatel úspěšně vytvořen.',
+                'update' => 'Uživatel úspěšně editován.',
                 'delete' => 'Uživatel úspěšně odstraněn.',
             ],
 
             'error' => [
-                'create' => 'Chyba při vytváření uživatele.',
-                'edit' => 'Chyba při editaci uživatele.',
+                'default' => 'Chyba při vytváření uživatele.',
+                'update' => 'Chyba při editaci uživatele.',
                 'delete' => 'Chyba při odstraňování uživatele.',
             ]
 
@@ -238,14 +238,14 @@ class FlashesTranslator
         'Admin:Logo' => [
 
             'success' => [
-                'create' => 'Logo úspěšně vytvořeno.',
-                'edit' => 'Logo úspěšně editováno.',
+                'default' => 'Logo úspěšně vytvořeno.',
+                'update' => 'Logo úspěšně editováno.',
                 'delete' => 'Logo úspěšně odstraněno.',
             ],
 
             'error' => [
-                'create' => 'Chyba při vytváření loga.',
-                'edit' => 'Chyba při editaci loga.',
+                'default' => 'Chyba při vytváření loga.',
+                'update' => 'Chyba při editaci loga.',
                 'delete' => 'Chyba při odstraňování loga.',
             ],
 
@@ -270,15 +270,19 @@ class FlashesTranslator
         'Admin:Test' => [
 
             'success' => [
+                'close' => 'Test úspěšně uzavřen.',
                 'create' => 'Test úspěšně vytvořen.',
+                'update' => 'Test úspěšně editován.',
                 'delete' => 'Test úspěšně odstraněn.',
-                'statistics' => 'Statistika testu úspěšně editována.'
+//                'statistics' => 'Statistika testu úspěšně editována.'
             ],
 
             'error' => [
+                'close' => 'Test úspěšně uzavřen.',
                 'create' => 'Chyba při tvorbě testu.',
+                'update' => 'Chyba při editaci testu.',
                 'delete' => 'Chyba při odstraňování testu.',
-                'statistics' => 'Chyba při editaci statistiky testu.'
+//                'statistics' => 'Chyba při editaci statistiky testu.'
             ]
 
         ],
@@ -294,11 +298,12 @@ class FlashesTranslator
      */
     public static function translate(string $operation, string $presenterName, string $type = null, \Exception $e = null): string
     {
+        bdump('TRANSLATE');
         if($e instanceof ForeignKeyConstraintViolationException){
             return self::$presenterMessages[$presenterName]['constraintViolation'];
         }
 
-        if($e instanceof ProblemFinalCollisionException || $e instanceof InvalidParameterException){
+        if($e instanceof ProblemDuplicityException || $e instanceof InvalidParameterException){
             return $e->getMessage();
         }
 

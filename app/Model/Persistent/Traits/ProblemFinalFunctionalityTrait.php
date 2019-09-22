@@ -106,6 +106,10 @@ trait ProblemFinalFunctionalityTrait
 
         $entity->setIsGenerated( isset($data->isGenerated) && $data->isGenerated );
 
+        if(isset($data->matchesIndex)){
+            $entity->setMatchesIndex($data->matchesIndex);
+        }
+
         return $entity;
     }
 

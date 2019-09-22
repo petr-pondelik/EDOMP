@@ -8,14 +8,14 @@
 
 namespace App\Components\LogoDragAndDrop;
 
+use App\Components\EDOMPControl;
 use App\Model\Persistent\Repository\LogoRepository;
-use Nette\Application\UI\Control;
 
 /**
  * Class LogoDragAndDropControl
  * @package App\Components\LogoDragAndDrop
  */
-class LogoDragAndDropControl extends Control
+class LogoDragAndDropControl extends EDOMPControl
 {
     /**
      * @var LogoRepository
@@ -28,6 +28,7 @@ class LogoDragAndDropControl extends Control
      */
     public function __construct(LogoRepository $logoRepository)
     {
+        parent::__construct();
         $this->logoRepository = $logoRepository;
     }
 

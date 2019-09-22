@@ -12,7 +12,7 @@ use App\Arguments\UserInformArgs;
 use App\Components\HeaderBar\HeaderBarControl;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SideBar\SideBarControl;
-use App\Components\SideBar\SideBarFactory;
+use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
 use Nette\Application\UI\Presenter;
 
@@ -29,7 +29,7 @@ class BasePresenter extends Presenter
     protected $headerBarFactory;
 
     /**
-     * @var SideBarFactory
+     * @var ISideBarFactory
      */
     protected $sideBarFactory;
 
@@ -41,12 +41,12 @@ class BasePresenter extends Presenter
     /**
      * BasePresenter constructor.
      * @param HeaderBarFactory $headerBarFactory
-     * @param SideBarFactory $sideBarFactory
+     * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      */
     public function __construct
     (
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator
+        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator
     )
     {
         parent::__construct();
@@ -102,22 +102,24 @@ class BasePresenter extends Presenter
         }
 
         if($args->ajax){
-            if($args->main){
+//            if($args->main){
                 if(!$args->component){
                     $this->redrawControl('mainFlashesSnippet');
-                }
-                else{
-                    $this[$args->component]->redrawControl('mainFlashesSnippet');
-                }
-            }
-            else{
-                if(!$args->component){
                     $this->redrawControl('flashesSnippet');
                 }
                 else{
+                    $this[$args->component]->redrawControl('mainFlashesSnippet');
                     $this[$args->component]->redrawControl('flashesSnippet');
                 }
-            }
+//            }
+//            else{
+//                if(!$args->component){
+//                    $this->redrawControl('flashesSnippet');
+//                }
+//                else{
+//                    $this[$args->component]->redrawControl('flashesSnippet');
+//                }
+//            }
         }
     }
 

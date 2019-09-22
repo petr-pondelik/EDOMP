@@ -14,6 +14,8 @@ $$ \frac{<par min="-3" max="3"/>x}{<par min="-3" max="3"/>} + \frac{<par min="-3
 
 $$ x + <par min="0" max="0"/> \big( 5 x + 4 \big) + <par min="0" max="0"/> = - <par min="0" max="0"/> $$
 
+$$ 5 x = 15 + <par min="-5" max="5"/> + 2 $$
+
 ## Testing Quadratic Equations templates with variable fractions
 
 $$ \frac{x}{x - <par min="-5" max="5"/>} + \frac{x - <par min="-5" max="5"/>}{6} = \frac{4}{2} $$
@@ -46,7 +48,7 @@ $$ <par min="-2" max="2"/> \big( 4x - <par min="-3" max="3"/> \big) \big( x + 1 
 
 ## Testing Arithmetic Sequences
 
-$$ a_n = <par min="-5" max="5"/> $$
+    $$ a_n = <par min="-5" max="5"/> $$
 
 ## Testing Geometric Sequences
 

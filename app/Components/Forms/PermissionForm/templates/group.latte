@@ -2,7 +2,7 @@
 
     <div class="card-header edit-card-header d-lg-flex justify-content-between">
         <h1 class="mb-0 font-weight-bold card-heading">
-            <i class="fas fa-cog mr-3"></i>{$entityLabel}
+            <i class="fas fa-cog mr-3"></i>{$entity}
         </h1>
         <div class="d-inline">
             <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
@@ -11,14 +11,10 @@
     </div>
 
     <div class="card-body">
-
-        {input id}
-
         <div class="form-group">
             {label categories}
             {input categories}
         </div>
-
     </div>
 
 {/form}

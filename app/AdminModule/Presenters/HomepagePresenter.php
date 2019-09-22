@@ -4,7 +4,7 @@ namespace App\AdminModule\Presenters;
 
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
-use App\Components\SideBar\SideBarFactory;
+use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Persistent\Entity\Category;
 use App\Model\Persistent\Entity\Group;
@@ -25,6 +25,7 @@ use App\Model\Persistent\Repository\TestRepository;
 use App\Model\Persistent\Repository\UserRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
+use App\Services\Validator;
 use Nette;
 
 /**
@@ -76,9 +77,10 @@ final class HomepagePresenter extends AdminPresenter
     /**
      * HomepagePresenter constructor.
      * @param Authorizator $authorizator
+     * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
-     * @param SideBarFactory $sideBarFactory
+     * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param ProblemTemplateRepository $problemTemplateRepository
      * @param ProblemFinalRepository $problemFinalRepository
@@ -91,15 +93,15 @@ final class HomepagePresenter extends AdminPresenter
      */
     public function __construct
     (
-        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
+        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemFinalRepository,
         CategoryRepository $categoryRepository, SubCategoryRepository $subCategoryRepository,
         TestRepository $testRepository, UserRepository $userRepository, HomepageStatisticsManager $homepageStatisticsManager,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
+        parent::__construct($authorizator, $validator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->problemTemplateRepository = $problemTemplateRepository;
         $this->problemFinalRepository = $problemFinalRepository;
         $this->categoryRepository = $categoryRepository;

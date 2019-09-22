@@ -14,6 +14,7 @@ use App\Helpers\LatexHelper;
 use App\Helpers\RegularExpressions;
 use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\Entity\LinearEquationTemplateNP;
+use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
 use App\Model\Persistent\Functionality\ProblemFinal\LinearEquationFinalFunctionality;
 use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
@@ -60,16 +61,15 @@ class LinearEquationPlugin extends EquationPlugin
     }
 
     /**
-     * @param LinearEquationTemplateNP $data
+     * @param ProblemTemplateNP $data
      * @return bool
      * @throws ProblemTemplateException
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      */
-    public function validateType(LinearEquationTemplateNP $data): bool
+    public function validateType(ProblemTemplateNP $data): bool
     {
         bdump('VALIDATE LINEAR EQUATION');
-
         bdump($data->getStandardized());
 
         // Remove all the spaces
@@ -80,7 +80,6 @@ class LinearEquationPlugin extends EquationPlugin
             throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat lineární rovnici.');
         }
 
-//        $parametersInfo = $this->stringsHelper::extractParametersInfo($problemTemplate->body);
         $data->setLinearVariableExpression($this->stringsHelper::getLinearVariableExpresion($data->getStandardized(), $data->getVariable()));
 
         // Match string against the linear expression regexp
@@ -91,8 +90,6 @@ class LinearEquationPlugin extends EquationPlugin
         if($matches[0] !== $standardized){
             throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat lineární rovnici.');
         }
-
-        //bdump($data);
 
         try{
             $matches = $this->conditionService->findConditionsMatches([
@@ -115,7 +112,7 @@ class LinearEquationPlugin extends EquationPlugin
         $matchesJson = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $matchesJson
-        ]), $data->getIdHidden());
+        ]), true, $data->getIdHidden());
 
         return true;
     }
@@ -180,7 +177,7 @@ class LinearEquationPlugin extends EquationPlugin
         $jsonData = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $jsonData
-        ]), $data->getIdHidden(), $data->getConditionType());
+        ]), true, $data->getIdHidden(), $data->getConditionType());
 
         return true;
     }

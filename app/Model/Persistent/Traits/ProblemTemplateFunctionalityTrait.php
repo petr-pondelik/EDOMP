@@ -112,36 +112,53 @@ trait ProblemTemplateFunctionalityTrait
             $attached = $this->attachConditions($template, $data);
             $template = $attached->template;
 
+            bdump($templateId);
+
             if(!$templateId){
                 $templateId = $this->repository->getSequenceVal();
             }
 
             $templateJsonData = [];
+            $hasCondition = false;
 
             bdump('BEFORE TEMPLATE MATCHES INTERSECT');
+            bdump($templateId);
+
             if($templateJsons = $this->templateJsonDataRepository->findBy(['templateId' => $templateId])){
+
                 $templateJsonData = Json::decode($templateJsons[0]->getJsonData());
+                bdump($templateJsonData);
+
                 // Unset picked template JSON
                 unset($templateJsons[0]);
+
                 // Make merge of all template recorded JSONs
                 foreach ($templateJsons as $json){
                     $problemConditionTypeId = $json->getProblemConditionType()->getId();
                     if( isset($data->{'condition_' . $problemConditionTypeId}) && $data->{'condition_' . $problemConditionTypeId} !== 0) {
+                        $hasCondition = true;
                         $arr = Json::decode($json->getJsonData());
+                        bdump($arr);
                         $templateJsonData = $this->intersectJsonDataArrays($templateJsonData, $arr);
                     }
                 }
+
             }
 
-            // Reindex array key to start from 0 (array_values) and encode data to JSON string
             if($templateJsonData){
+                // Reindex array key to start from 0 (array_values) and encode data to JSON string
                 $templateJsonData = Json::encode(array_values($templateJsonData));
+                bdump($templateJsonData);
+                $template->setMatches($templateJsonData);
             }
 
-            $template->setMatches($templateJsonData);
+            if(!$hasCondition){
+                $template->setMatches(null);
+            }
 
             // Comment this for testing purposes
             $this->templateJsonDataFunctionality->deleteByTemplate($templateId);
+
         }
 
         return $template;

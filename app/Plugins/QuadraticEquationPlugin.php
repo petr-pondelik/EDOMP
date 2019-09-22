@@ -13,6 +13,7 @@ use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\RegularExpressions;
 use App\Helpers\StringsHelper;
+use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\NonPersistent\Entity\QuadraticEquationTemplateNP;
 use App\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
 use App\Model\Persistent\Functionality\ProblemFinal\QuadraticEquationFinalFunctionality;
@@ -207,13 +208,13 @@ class QuadraticEquationPlugin extends EquationPlugin
     }
 
     /**
-     * @param QuadraticEquationTemplateNP $data
+     * @param ProblemTemplateNP $data
      * @return bool
      * @throws ProblemTemplateException
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      */
-    public function validateType(QuadraticEquationTemplateNP $data): bool
+    public function validateType(ProblemTemplateNP $data): bool
     {
         bdump('VALIDATE QUADRATIC EQUATION');
 
@@ -261,9 +262,7 @@ class QuadraticEquationPlugin extends EquationPlugin
         }
 
         $matchesJson = Json::encode($matches);
-        $this->templateJsonDataFunctionality->create(ArrayHash::from([
-            'jsonData' => $matchesJson
-        ]), $data->getIdHidden());
+        $this->templateJsonDataFunctionality->create(ArrayHash::from([ 'jsonData' => $matchesJson ]), true, $data->getIdHidden());
 
         return true;
     }
@@ -353,9 +352,7 @@ class QuadraticEquationPlugin extends EquationPlugin
         }
 
         $jsonData = Json::encode($matches);
-        $this->templateJsonDataFunctionality->create(ArrayHash::from([
-            'jsonData' => $jsonData
-        ]), $data->getIdHidden(), $data->getConditionType());
+        $this->templateJsonDataFunctionality->create(ArrayHash::from([ 'jsonData' => $jsonData ]), true, $data->getIdHidden(), $data->getConditionType());
 
         return true;
     }

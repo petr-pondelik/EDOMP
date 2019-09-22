@@ -4,6 +4,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // DIRECTORY_SEPARATOR is PHP constant holding system dir. separator (\ for Win and / for Linux)
 define('APP_DIR', __DIR__);
+define('TEMPLATES_DIR', APP_DIR . DIRECTORY_SEPARATOR . 'templates');
 define('DATA_DIR', APP_DIR . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data');
 define('WWW_DIR', APP_DIR . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'www');
 define('DATA_PUBLIC_DIR', WWW_DIR . DIRECTORY_SEPARATOR . 'data_public');
@@ -43,9 +44,10 @@ else{
 // Load configurations based on environment
 $configurator->addConfig(__DIR__ . '/Config/config.neon');
 $configurator->addConfig(__DIR__ . '/Config/config.local.neon');
-$configurator->addConfig(__DIR__ . '/Config/config.' . ENVIRONMENT . '.neon');
+//$configurator->addConfig(__DIR__ . '/Config/config.' . ENVIRONMENT . '.neon');
 
 $configurator->addParameters([
+    'templatesDir' => TEMPLATES_DIR,
     'assetsDir' => ASSETS_DIR,
     'logosDir' => LOGOS_DIR,
     'logosTmpDir' => LOGOS_TMP_DIR,

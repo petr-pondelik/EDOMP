@@ -26,8 +26,6 @@ trait FilterTrait
     {
         $filterArr = [];
 
-        //bdump($filters);
-
         // Apply base filters
         if(isset($filters['is_template']) && $filters['is_template'] !== null){
             $filterArr['isTemplate'] = $filters['is_template'];
@@ -41,9 +39,11 @@ trait FilterTrait
         if(isset($filters['sub_category_id']) && count($filters['sub_category_id'])){
             $filterArr['subCategory'] = $filters['sub_category_id'];
         }
+        if(isset($filters['is_generated']) && $filters['is_generated'] !== null){
+            $filterArr['isGenerated'] = $filters['is_generated'];
+        }
 
         $filteredBase = $this->findAssoc($filterArr, 'id');
-        //bdump($filteredBase);
 
         if(isset($filters['problem_type_id'])){
 
@@ -80,8 +80,6 @@ trait FilterTrait
                             ->getQuery()
                             ->getResult();
 
-                        //bdump($filteredByCondition);
-
                         foreach ($filteredBase as $key => $item) {
                             if (!isset($filteredByCondition[$key]) && $problemConditionType->getId() === $item->getProblemType()->getId()) {
                                 unset($res[$key]);
@@ -91,17 +89,13 @@ trait FilterTrait
                 }
             }
 
-            //bdump($res);
-
             if($conditionFilter) {
                 return $res;
             }
 
-            //bdump($filteredBase);
             return $filteredBase;
         }
 
-        //bdump($filteredBase);
         return $filteredBase;
     }
 }

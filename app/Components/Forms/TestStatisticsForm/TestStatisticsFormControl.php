@@ -10,11 +10,10 @@ namespace App\Components\Forms\TestStatisticsForm;
 
 
 use App\Arguments\ValidatorArgument;
-use App\Components\Forms\FormControl;
+use App\Components\Forms\EntityFormControl;
 use App\Model\Persistent\Entity\Test;
 use App\Model\Persistent\Functionality\ProblemFunctionality;
 use App\Model\Persistent\Functionality\ProblemFinalTestVariantAssociationFunctionality;
-use App\Model\Persistent\Repository\TestRepository;
 use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -23,13 +22,8 @@ use Nette\Utils\ArrayHash;
  * Class TestStatisticsFormControl
  * @package App\Components\Forms\TestStatisticsForm
  */
-class TestStatisticsFormControl extends FormControl
+class TestStatisticsFormControl extends EntityFormControl
 {
-    /**
-     * @var TestRepository
-     */
-    protected $testRepository;
-
     /**
      * @var ProblemFinalTestVariantAssociationFunctionality
      */
@@ -45,23 +39,17 @@ class TestStatisticsFormControl extends FormControl
      * @param Validator $validator
      * @param ProblemFunctionality $problemFunctionality
      * @param ProblemFinalTestVariantAssociationFunctionality $problemFinalTestVariantAssociationFunctionality
-     * @param TestRepository $testRepository
-     * @param int $testId
      */
     public function __construct
     (
         Validator $validator,
         ProblemFunctionality $problemFunctionality,
-        ProblemFinalTestVariantAssociationFunctionality $problemFinalTestVariantAssociationFunctionality,
-        TestRepository $testRepository,
-        int $testId
+        ProblemFinalTestVariantAssociationFunctionality $problemFinalTestVariantAssociationFunctionality
     )
     {
         parent::__construct($validator);
         $this->functionality = $problemFunctionality;
         $this->problemFinalTestVariantAssociationFunctionality = $problemFinalTestVariantAssociationFunctionality;
-        $this->testRepository = $testRepository;
-        $this->test = $this->testRepository->find($testId);
     }
 
     /**
@@ -70,12 +58,9 @@ class TestStatisticsFormControl extends FormControl
     public function createComponentForm(): Form
     {
         $form = parent::createComponentForm();
-        $form->addHidden('test_id');
-        $form->addHidden('variants_cnt');
-        $form->addHidden('problems_per_variant');
         // TODO: Get maximal variants and problems cnt from config
         for ($i = 0; $i < 8; $i++) {
-                for($j = 0; $j < 20; $j++){
+            for($j = 0; $j < 20; $j++){
                 $form->addInteger('problem_final_id_disabled_' . $i . '_' . $j, 'ID příkladu')
                     ->setHtmlAttribute('class', 'form-control')
                     ->setDisabled();
@@ -99,13 +84,13 @@ class TestStatisticsFormControl extends FormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->getValues();
-        for($i = 0; $i < $values->variants_cnt; $i++){
-            for($j = 0; $j < $values->problems_per_variant; $j++){
+        for($i = 0; $i < $this->test->getVariantsCnt(); $i++){
+            for($j = 0; $j < $this->test->getProblemsPerVariant(); $j++){
                 $validateFields['success_rate'] = new ValidatorArgument($values->{'success_rate_' . $i . '_' . $j}, 'range0to1', 'success_rate_' . $i . '_' . $j);
                 $this->validator->validate($form, $validateFields);
             }
         }
-        $this->redrawControl('successRateSnippetArea');
+        $this->redrawControl('formSnippetArea');
     }
 
     /**
@@ -118,8 +103,8 @@ class TestStatisticsFormControl extends FormControl
         $testVariants = $this->test->getTestVariants()->getValues();
 
         // Update success rates for in ProblemFinalTestVariantAssociations
-        for ($i = 0; $i < $values->variants_cnt; $i++) {
-            for($j = 0; $j < $values->problems_per_variant; $j++){
+        for ($i = 0; $i < $this->test->getVariantsCnt(); $i++) {
+            for($j = 0; $j < $this->test->getProblemsPerVariant(); $j++){
                 try{
                     $this->problemFinalTestVariantAssociationFunctionality->update(
                         $values->{'problem_final_id_' . $i . '_' . $j},
@@ -129,7 +114,7 @@ class TestStatisticsFormControl extends FormControl
                         ])
                     );
                 } catch (\Exception $e){
-                    //bdump($e->getMessage());
+                    bdump($e);
                     $this->onError($e);
                     return;
                 }
@@ -137,12 +122,12 @@ class TestStatisticsFormControl extends FormControl
         }
 
         // Recalculate success rates for associated ProblemFinals and ProblemTemplates entities
-        for ($i = 0; $i < $values->variants_cnt; $i++) {
-            for($j = 0; $j < $values->problems_per_variant; $j++){
+        for ($i = 0; $i < $this->test->getVariantsCnt(); $i++) {
+            for($j = 0; $j < $this->test->getProblemsPerVariant(); $j++){
                 try{
                     $this->functionality->calculateSuccessRate($values->{'problem_final_id_' . $i . '_' . $j});
                 } catch (\Exception $e){
-                    //bdump($e->getMessage());
+                    bdump($e);
                     $this->onError($e);
                     return;
                 }
@@ -150,19 +135,26 @@ class TestStatisticsFormControl extends FormControl
                     try{
                         $this->functionality->calculateSuccessRate($values->{'problem_template_id_' . $i . '_' . $j}, true);
                     } catch (\Exception $e){
+                        bdump($e);
                         $this->onError($e);
                         return;
                     }
                 }
             }
         }
-
-        $this->onSuccess();
     }
 
-    public function render(): void
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
-        $this->template->test = $this->test;
-        $this->template->render(__DIR__ . '/templates/default.latte');
+        // TODO: Implement handleEditFormSuccess() method.
+    }
+
+    public function setDefaults(): void
+    {
+        // TODO: Implement setDefaults() method.
     }
 }

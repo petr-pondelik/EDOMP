@@ -10,8 +10,11 @@ namespace App\Model\NonPersistent\Entity;
 
 use App\Model\NonPersistent\TemplateData\ParametersData;
 use App\Model\NonPersistent\TemplateData\ProblemTemplateState;
+use App\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
 use App\Model\NonPersistent\Traits\SetValuesTrait;
+use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Strings;
 
 /**
  * Class ProblemTemplate
@@ -92,14 +95,61 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     protected $state;
 
     /**
-     * LinearEquationTemplate constructor.
+     * ProblemTemplateNP constructor.
      * @param ArrayHash $values
+     * @param ProblemTemplate $original
      */
-    public function __construct(ArrayHash $values)
+    public function __construct(ArrayHash $values, ProblemTemplate $original = null)
     {
+        bdump('PROBLEM TEMPLATE NP CONSTRUCTOR');
+        bdump($values);
         $this->setValues($values);
         $this->conditionValidateItem = 'standardized';
         $this->state = new ProblemTemplateState();
+
+        bdump('ORIGINAL');
+        bdump($original);
+
+        // Initialize ProblemTemplate state based on action (create or update)
+        if($original){
+            $this->state->update(new ProblemTemplateStateItem('type', true, true));
+            $originalConditions = $original->getConditions()->getValues();
+            foreach ($originalConditions as $originalCondition){
+                $problemConditionTypeId = $originalCondition->getProblemConditionType()->getId();
+                $rule = 'condition_' . $problemConditionTypeId;
+                $originalValue = $originalCondition->getAccessor();
+                $newValue = $values->{$rule} ?? $values->conditionAccessor;
+                bdump([$originalValue, $newValue]);
+                if((int) $originalValue !== (int) $newValue){
+                    $this->state->update(new ProblemTemplateStateItem($rule, $newValue, false));
+                }
+                else{
+                    $this->state->update(new ProblemTemplateStateItem($rule, $newValue, true));
+                }
+            }
+//            foreach ($values as $key => $value){
+//                if ($value !== 0 && Strings::match($key, '~condition_\d~') && $value !== (int) $stateItems[$key]->getValue()) {
+//                    $this->state->update(new ProblemTemplateStateItem($key, $value, false));
+//                }
+//                else{
+//                    $this->state->update(new ProblemTemplateStateItem($key, $value, true));
+//                }
+//            }
+        }
+        else{
+            $this->state->update(new ProblemTemplateStateItem('type', false, false));
+            foreach ($values as $key => $value){
+                if(Strings::match($key, '~condition_\d~')){
+                    if($value === 0){
+                        $this->state->update(new ProblemTemplateStateItem($key, $value, true));
+                    }
+                    else{
+                        $this->state->update(new ProblemTemplateStateItem($key, $value, false));
+                    }
+                }
+            }
+        }
+
     }
 
     /**

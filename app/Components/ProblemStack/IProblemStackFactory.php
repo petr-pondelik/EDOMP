@@ -8,6 +8,7 @@
 
 namespace App\Components\ProblemStack;
 
+
 /**
  * Interface IProblemStackFactory
  * @package App\Components\ProblemStack
@@ -15,7 +16,8 @@ namespace App\Components\ProblemStack;
 interface IProblemStackFactory
 {
     /**
+     * @param int $id
      * @return ProblemStackControl
      */
-    public function create(): ProblemStackControl;
+    public function create(int $id): ProblemStackControl;
 }

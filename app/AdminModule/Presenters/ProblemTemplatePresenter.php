@@ -10,21 +10,17 @@ namespace App\AdminModule\Presenters;
 
 use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\TemplateGridFactory;
-use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormControl;
-use App\Components\Forms\ProblemTemplateForm\ProblemTemplateFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
-use App\Components\SideBar\SideBarFactory;
+use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\ConstHelper;
 use App\Helpers\FlashesTranslator;
-use App\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
-use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use App\Model\Persistent\Functionality\BaseFunctionality;
 use App\Model\Persistent\Repository\BaseRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use App\Services\ProblemTemplateSession;
-use Nette\ComponentModel\IComponent;
+use App\Services\Validator;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 
@@ -32,28 +28,8 @@ use Ublaboo\DataGrid\DataGrid;
  * Class ProblemTemplatePresenter
  * @package App\AdminModule\Presenters
  */
-abstract class ProblemTemplatePresenter extends AdminPresenter
+abstract class ProblemTemplatePresenter extends EntityPresenter
 {
-    /**
-     * @var BaseRepository
-     */
-    protected $repository;
-
-    /**
-     * @var BaseFunctionality
-     */
-    protected $functionality;
-
-    /**
-     * @var TemplateGridFactory
-     */
-    protected $templateGridFactory;
-
-    /**
-     * @var ProblemTemplateFormFactory
-     */
-    protected $problemTemplateFormFactory;
-
     /**
      * @var ConstHelper
      */
@@ -77,26 +53,33 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     /**
      * ProblemTemplatePresenter constructor.
      * @param Authorizator $authorizator
+     * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
-     * @param SideBarFactory $sideBarFactory
+     * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param TemplateGridFactory $templateGridFactory
      * @param ConstHelper $constHelper
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
      * @param ProblemTemplateSession $problemTemplateSession
+     * @param BaseRepository $repository
+     * @param BaseFunctionality $functionality
+     * @param $formFactory
      */
     public function __construct
     (
-        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
+        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         TemplateGridFactory $templateGridFactory,
         ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory,
-        ProblemTemplateSession $problemTemplateSession
+        ProblemTemplateSession $problemTemplateSession,
+        BaseRepository $repository, BaseFunctionality $functionality, $formFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
-        $this->templateGridFactory = $templateGridFactory;
+        parent::__construct(
+            $authorizator, $validator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory,
+            $repository, $functionality, $templateGridFactory, $formFactory
+        );
         $this->constHelper = $constHelper;
         $this->problemTemplateSession = $problemTemplateSession;
     }
@@ -104,74 +87,37 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     public function actionDefault(): void
     {
         bdump('ACTION DEFAULT');
-        bdump($this->getParameters());
         if($this->getParameter('do') === null && $this->getParameter('preserveValidation') === null){
             $this->problemTemplateSession->erase();
         }
-        bdump($this->problemTemplateSession->getProblemTemplate());
     }
 
     /**
      * @param int $id
      * @throws \Exception
      */
-    public function actionEdit(int $id): void
+    public function actionUpdate(int $id): void
     {
-        $form = $this['problemTemplateEditForm']['form'];
-
-        bdump($this->getParameters());
-
-        $record = $this->repository->find($id);
-        $this['problemTemplateEditForm']->setEntity($record);
-
-        if(!$form->isSubmitted()){
-
-            $conditions = $record->getConditions()->getValues();
-
+        bdump('ACTION UPDATE');
+        $formControl = $this['entityForm'];
+        $entity = $this->repository->find($id);
+        $formControl->setEntity($entity);
+        $this->template->entity = $entity;
+        if(!$formControl->isSubmitted()){
             if($this->getParameter('do') === null && $this->getParameter('preserveValidation') === null){
-                $this->problemTemplateSession->addDefaultStateItem(new ProblemTemplateStateItem('type', true, true));
-                foreach ($conditions as $condition){
-                    $this->problemTemplateSession->addDefaultStateItem(new ProblemTemplateStateItem('condition_' . $condition->getProblemConditionType()->getId(), $condition->getAccessor(), true));
-                }
+                $this->problemTemplateSession->erase();
             }
-
-            bdump($this->problemTemplateSession->getDefaultState());
-
-            $this->template->id = $id;
-            $this->setDefaults($form, $record);
-
-        }
-    }
-
-    /**
-     * @param IComponent $form
-     * @param ProblemTemplate $record
-     */
-    protected function setDefaults(IComponent $form, ProblemTemplate $record): void
-    {
-        $form['id']->setDefaultValue($record->getId());
-        $form['idHidden']->setDefaultValue($record->getId());
-        $form['subCategory']->setDefaultValue($record->getSubCategory()->getId());
-        $form['textBefore']->setDefaultValue($record->getTextBefore());
-        $form['body']->setDefaultValue($record->getBody());
-        $form['textAfter']->setDefaultValue($record->getTextAfter());
-        $form['difficulty']->setDefaultVAlue($record->getDifficulty()->getId());
-
-        $conditions = $record->getConditions()->getValues();
-
-        foreach($conditions as $condition){
-            $form['condition_' . $condition->getProblemConditionType()->getId()]->setValue($condition->getAccessor());
+            $formControl->setDefaults();
         }
     }
 
     /**
      * @param $name
      * @return DataGrid
-     * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function createComponentTemplateGrid($name): DataGrid
+    public function createComponentEntityGrid($name): DataGrid
     {
-        $grid = $this->templateGridFactory->create($this, $name, $this->repository, $this->typeId);
+        $grid = $this->gridFactory->create($this, $name, $this->repository, $this->typeId);
 
         $grid->addAction('delete', '', 'delete!')
             ->setIcon('trash')
@@ -206,40 +152,16 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
 
     /**
      * @param int $id
-     */
-    public function handleDelete(int $id): void
-    {
-        try{
-            $this->functionality->delete($id);
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('delete', true, 'error', $e, true));
-            return;
-        }
-        $this['templateGrid']->reload();
-        $this->informUser(new UserInformArgs('delete', true, 'success', null, true));
-    }
-
-    /**
-     * @param int $id
-     * @throws \Nette\Application\AbortException
-     */
-    public function handleUpdate(int $id): void
-    {
-        $this->redirect('edit', $id);
-    }
-
-    /**
-     * @param int $id
      * @param ArrayHash $data
      */
     public function handleInlineUpdate(int $id, ArrayHash $data): void
     {
         try{
-            $this->functionality->update($id, $data, true);
+            $this->functionality->update($id, $data, true, true);
         } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('edit', true, 'error', $e));
+            $this->informUser(new UserInformArgs('update', true,'error', $e));
         }
-        $this->informUser(new UserInformArgs('edit', true));
+        $this->informUser(new UserInformArgs('update', true, 'success', null, true));
     }
 
     /**
@@ -249,12 +171,11 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     public function handleSubCategoryUpdate(int $templateId, int $subCategoryId): void
     {
         try{
-            $this->functionality->update($templateId, ArrayHash::from(['subCategory' => $subCategoryId]), true
-            );
+            $this->functionality->update($templateId, ArrayHash::from([ 'subCategory' => $subCategoryId ]), true, true);
         } catch (\Exception $e){
             $this->informUser(new UserInformArgs('subCategory', true, 'error', $e, true));
         }
-        $this['templateGrid']->reload();
+        $this['entityGrid']->reload();
         $this->informUser(new UserInformArgs('subCategory', true, 'success', null, true));
     }
 
@@ -265,50 +186,13 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
     public function handleDifficultyUpdate(int $templateId, int $difficultyId): void
     {
         try{
-            $this->functionality->update($templateId,
-                ArrayHash::from(['difficulty' => $difficultyId]), true
-            );
+            $this->functionality->update($templateId, ArrayHash::from(['difficulty' => $difficultyId]), true, true);
         } catch (\Exception $e){
             $this->informUser(new UserInformArgs('difficulty', true, 'error', $e, true));
             return;
         }
-        $this['templateGrid']->reload();
+        $this['entityGrid']->reload();
         $this->informUser(new UserInformArgs('difficulty', true, 'success', null, true));
-    }
-
-    /**
-     * @return ProblemTemplateFormControl
-     */
-    public function createComponentProblemTemplateCreateForm(): ProblemTemplateFormControl
-    {
-        $control = $this->problemTemplateFormFactory->create();
-        $control->onSuccess[] = function () {
-            $this['templateGrid']->reload();
-            $this['problemTemplateCreateForm']->restoreDefaults();
-            $this->redrawControl('problemTemplateCreateFormSnippet');
-            $this->informUser(new UserInformArgs('create', true, 'success', null, true));
-        };
-        $control->onError[] = function ($e){
-            $this->informUser(new UserInformArgs('create', true, 'error', $e, true));
-        };
-        return $control;
-    }
-
-    /**
-     * @return ProblemTemplateFormControl
-     */
-    public function createComponentProblemTemplateEditForm(): ProblemTemplateFormControl
-    {
-        $control = $this->problemTemplateFormFactory->create(true);
-        $control->onSuccess[] = function () {
-            $this->informUser(new UserInformArgs('edit', true, 'success', null, true));
-            $this->redirect('default');
-        };
-        $control->onError[] = function ($e){
-            $this->informUser(new UserInformArgs('edit', true, 'error', $e, true));
-            $this->redirect('default');
-        };
-        return $control;
     }
 
     /**
@@ -316,8 +200,7 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
      */
     public function handleTypeValidation(array $data): void
     {
-        $form = !empty($data['idHidden']) ? 'problemTemplateEditForm' : 'problemTemplateCreateForm';
-        $this[$form]->handleTypeValidation($data);
+        $this['entityForm']->handleTypeValidation($data);
     }
 
     /**
@@ -325,9 +208,6 @@ abstract class ProblemTemplatePresenter extends AdminPresenter
      */
     public function handleCondValidation(array $data): void
     {
-        //bdump($data);
-        $form = !empty($data['idHidden']) ? 'problemTemplateEditForm' : 'problemTemplateCreateForm';
-        $this[$form]->handleCondValidation($data);
+        $this['entityForm']->handleCondValidation($data);
     }
-
 }

@@ -1,0 +1,13 @@
+{if $logo->getExtension() === ".pdf"}
+
+    <div class="text-center embed-responsive embed-responsive-16by9">
+        <embed class="embed-responsive-item" alt="{$logo->getPath()}" src="{$logo->getPath()}"/>
+    </div>
+
+{else}
+
+    <div class="text-center">
+        <img class="img-fluid" style="height: auto; width: 65%" alt="{$logo->getPath()}" src="{$logo->getPath()}"/>
+    </div>
+
+{/if}

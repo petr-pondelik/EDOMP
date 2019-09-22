@@ -33,9 +33,10 @@ class ProblemFinalTestVariantAssociationFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      */
-    public function create(ArrayHash $data): ?BaseEntity
+    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         return null;
     }
@@ -43,10 +44,11 @@ class ProblemFinalTestVariantAssociationFunctionality extends BaseFunctionality
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data): ?BaseEntity
+    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $association = $this->repository->findOneBy([
             'problemFinal.id' => $id,
@@ -59,7 +61,9 @@ class ProblemFinalTestVariantAssociationFunctionality extends BaseFunctionality
             $association->setSuccessRate(Strings::replace($data->success_rate, '~,~', '.'));
         }
         $this->em->persist($association);
-        $this->em->flush();
+        if($flush) {
+            $this->em->flush();
+        }
         return $association;
     }
 }

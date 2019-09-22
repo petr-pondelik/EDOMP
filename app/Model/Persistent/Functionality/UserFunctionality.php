@@ -56,10 +56,11 @@ class UserFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data): ?BaseEntity
+    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $user = new User();
         $user->setUsername($data->username);
@@ -75,18 +76,21 @@ class UserFunctionality extends BaseFunctionality
             $user->setCreated($data->created);
         }
         $this->em->persist($user);
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
         return $user;
     }
 
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      * @throws EntityNotFoundException
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data): ?BaseEntity
+    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         $user = $this->repository->find($id);
         if(!$user){
@@ -102,7 +106,9 @@ class UserFunctionality extends BaseFunctionality
         $user->setGroups(new ArrayCollection());
         $user = $this->attachGroups($user, $data->groups);
         $this->em->persist($user);
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
         return $user;
     }
 

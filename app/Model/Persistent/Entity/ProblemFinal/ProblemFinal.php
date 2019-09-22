@@ -24,6 +24,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ProblemFinal extends Problem
 {
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Assert\Type(
+     *     type="integer",
+     *     message="matchesIndex must be {{ type }}."
+     * )
+     *
+     * @var int|null
+     */
+    protected $matchesIndex;
+
+    /**
      * @ORM\Column(type="text", nullable=true)
      * @Assert\Type(
      *     type="string",
@@ -33,17 +44,6 @@ class ProblemFinal extends Problem
      * @var string
      */
     protected $result;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     * @Assert\Type(
-     *     type="bool",
-     *     message="IsGeneratable must be {{ type }}."
-     * )
-     *
-     * @var bool
-     */
-    protected $isGenerated = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate", cascade={"persist", "merge"})
@@ -86,22 +86,6 @@ class ProblemFinal extends Problem
     }
 
     /**
-     * @return bool
-     */
-    public function isGenerated(): bool
-    {
-        return $this->isGenerated;
-    }
-
-    /**
-     * @param bool $isGenerated
-     */
-    public function setIsGenerated(bool $isGenerated): void
-    {
-        $this->isGenerated = $isGenerated;
-    }
-
-    /**
      * @return ProblemTemplate|null
      */
     public function getProblemTemplate(): ?ProblemTemplate
@@ -131,6 +115,22 @@ class ProblemFinal extends Problem
     public function setTestVariantAssociations(array $testVariantAssociations): void
     {
         $this->testVariantAssociations = $testVariantAssociations;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getMatchesIndex(): ?int
+    {
+        return $this->matchesIndex;
+    }
+
+    /**
+     * @param int|null $matchesIndex
+     */
+    public function setMatchesIndex(?int $matchesIndex): void
+    {
+        $this->matchesIndex = $matchesIndex;
     }
 
 }

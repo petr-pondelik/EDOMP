@@ -116,12 +116,14 @@ abstract class EquationPlugin extends ProblemPlugin
 
     /**
      * @param ProblemTemplate $problemTemplate
+     * @param array|null $usedMatchesInx
      * @return ArrayHash
+     * @throws \App\Exceptions\GeneratorException
      * @throws \Nette\Utils\JsonException
      */
-    public function constructProblemFinalData(ProblemTemplate $problemTemplate): ArrayHash
+    public function constructProblemFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash
     {
-        $finalData = parent::constructProblemFinalData($problemTemplate);
+        $finalData = parent::constructProblemFinalData($problemTemplate, $usedMatchesInx);
         $finalData->variable = $problemTemplate->getVariable();
         return $finalData;
     }

@@ -69,6 +69,34 @@ class Test extends BaseEntity
     protected $testNumber;
 
     /**
+     * @ORM\Column(type="integer", nullable=false)
+     * @Assert\NotBlank(
+     *     message="VariantsCnt can't be blank."
+     * )
+     * @Assert\Type(
+     *     type="int",
+     *     message="VariantsCnt must be {{ type }}."
+     * )
+     *
+     * @var int
+     */
+    protected $variantsCnt;
+
+    /**
+     * @ORM\Column(type="integer", nullable=false)
+     * @Assert\NotBlank(
+     *     message="ProblemsPerVariant can't be blank."
+     * )
+     * @Assert\Type(
+     *     type="int",
+     *     message="ProblemsPerVariant must be {{ type }}."
+     * )
+     *
+     * @var int
+     */
+    protected $problemsPerVariant;
+
+    /**
      * @ORM\Column(type="string", nullable=false)
      * @Assert\NotBlank(
      *     message="Term can't be blank."
@@ -77,6 +105,17 @@ class Test extends BaseEntity
      * @var string
      */
     protected $term;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Assert\Type(
+     *     type="boolean",
+     *     message="IsClosed must be {{ type }}."
+     * )
+     *
+     * @var bool
+     */
+    protected $isClosed;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Model\Persistent\Entity\Group", cascade={"persist", "merge"})
@@ -115,6 +154,7 @@ class Test extends BaseEntity
     public function __construct()
     {
         parent::__construct();
+        $this->isClosed = false;
         $this->groups = new ArrayCollection();
         $this->testVariants = new ArrayCollection();
     }
@@ -251,5 +291,53 @@ class Test extends BaseEntity
             return;
         }
         $this->testVariants[] = $testVariant;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVariantsCnt(): int
+    {
+        return $this->variantsCnt;
+    }
+
+    /**
+     * @param int $variantsCnt
+     */
+    public function setVariantsCnt(int $variantsCnt): void
+    {
+        $this->variantsCnt = $variantsCnt;
+    }
+
+    /**
+     * @return int
+     */
+    public function getProblemsPerVariant(): int
+    {
+        return $this->problemsPerVariant;
+    }
+
+    /**
+     * @param int $problemsPerVariant
+     */
+    public function setProblemsPerVariant(int $problemsPerVariant): void
+    {
+        $this->problemsPerVariant = $problemsPerVariant;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isClosed(): bool
+    {
+        return $this->isClosed;
+    }
+
+    /**
+     * @param bool $isClosed
+     */
+    public function setIsClosed(bool $isClosed): void
+    {
+        $this->isClosed = $isClosed;
     }
 }

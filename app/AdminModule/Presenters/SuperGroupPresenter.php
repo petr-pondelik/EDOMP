@@ -11,169 +11,97 @@ namespace App\AdminModule\Presenters;
 
 use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\SuperGroupGridFactory;
-use App\Components\Forms\SuperGroupForm\SuperGroupFormControl;
-use App\Components\Forms\SuperGroupForm\SuperGroupFormFactory;
+use App\Components\Forms\SuperGroupForm\ISuperGroupIFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
-use App\Components\SideBar\SideBarFactory;
+use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
-use App\Model\Persistent\Entity\SuperGroup;
+use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Functionality\SuperGroupFunctionality;
 use App\Model\Persistent\Repository\SuperGroupRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use App\Services\Validator;
-use Nette\ComponentModel\IComponent;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class SuperGroupPresenter
  * @package App\AdminModule\Presenters
  */
-class SuperGroupPresenter extends AdminPresenter
+class SuperGroupPresenter extends EntityPresenter
 {
-    /**
-     * @var SuperGroupRepository
-     */
-    protected $superGroupRepository;
-
-    /**
-     * @var SuperGroupFunctionality
-     */
-    protected $superGroupFunctionality;
-
-    /**
-     * @var SuperGroupGridFactory
-     */
-    protected $superGroupGridFactory;
-
-    /**
-     * @var SuperGroupFormFactory
-     */
-    protected $superGroupFormFactory;
-
-    /**
-     * @var Validator
-     */
-    protected $validator;
-
     /**
      * SuperGroupPresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
      * @param HeaderBarFactory $headerBarFactory
-     * @param SideBarFactory $sideBarFactory
+     * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param SuperGroupRepository $superGroupRepository
      * @param SuperGroupFunctionality $superGroupFunctionality
      * @param SuperGroupGridFactory $superGroupGridFactory
-     * @param SuperGroupFormFactory $superGroupFormFactory
+     * @param ISuperGroupIFormFactory $superGroupFormFactory
      * @param Validator $validator
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, SideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         SuperGroupRepository $superGroupRepository, SuperGroupFunctionality $superGroupFunctionality,
-        SuperGroupGridFactory $superGroupGridFactory, SuperGroupFormFactory $superGroupFormFactory,
+        SuperGroupGridFactory $superGroupGridFactory, ISuperGroupIFormFactory $superGroupFormFactory,
         Validator $validator,
         ISectionHelpModalFactory $sectionHelpModalFactory
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
-        $this->superGroupRepository = $superGroupRepository;
-        $this->superGroupFunctionality = $superGroupFunctionality;
-        $this->superGroupGridFactory = $superGroupGridFactory;
-        $this->superGroupFormFactory = $superGroupFormFactory;
-        $this->validator = $validator;
+        parent::__construct(
+            $authorizator, $validator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory,
+            $superGroupRepository, $superGroupFunctionality, $superGroupGridFactory, $superGroupFormFactory
+        );
     }
 
     /**
-     * @param int $id
-     * @throws \Nette\Application\AbortException
+     * @param BaseEntity $entity
+     * @return bool
      */
-    public function actionEdit(int $id): void
+    public function isEntityAllowed(BaseEntity $entity): bool
     {
-        $record = $this->superGroupRepository->find($id);
-        if($this->user->isInRole("teacher") && !$this->authorizator->isSuperGroupAllowed($this->user->identity, $record)){
-            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
-            $this->redirect("Homepage:default");
-        }
-        $form = $this["superGroupEditForm"]["form"];
-        if(!$form->isSubmitted()){
-            $record = $this->superGroupRepository->find($id);
-            $this["superGroupEditForm"]->template->entityLabel = $record->getLabel();
-            $this->template->entityLabel = $record->getLabel();
-            $this->setDefaults($form, $record);
-        }
-    }
-
-    /**
-     * @param IComponent $form
-     * @param SuperGroup $record
-     */
-    private function setDefaults(IComponent $form, SuperGroup $record): void
-    {
-        $form["id"]->setDefaultValue($record->getId());
-        $form["idHidden"]->setDefaultValue($record->getId());
-        $form["label"]->setDefaultValue($record->getLabel());
+        return $this->user->isInRole('admin') || $this->authorizator->isEntityAllowed($this->user->identity, $entity);
     }
 
     /**
      * @param $name
-     * @throws \Ublaboo\DataGrid\Exception\DataGridException
+     * @return DataGrid
      */
-    public function createComponentSuperGroupGrid($name)
+    public function createComponentEntityGrid($name): DataGrid
     {
-        $grid = $this->superGroupGridFactory->create($this, $name);
+        $grid = $this->gridFactory->create($this, $name);
 
-        $grid->addAction("delete", "", "delete!")
-            ->setIcon("trash")
-            ->setClass("btn btn-danger btn-sm ajax");
+        $grid->addAction('delete', '', 'delete!')
+            ->setIcon('trash')
+            ->setClass('btn btn-danger btn-sm ajax');
 
-        $grid->addAction("edit", "", "edit!")
-            ->setIcon("edit")
-            ->setClass("btn btn-primary btn-sm");
+        $grid->addAction('edit', '', 'update!')
+            ->setIcon('edit')
+            ->setClass('btn btn-primary btn-sm');
 
         $grid->addInlineEdit()
             ->setIcon('pencil-alt')
             ->setTitle('Upravit inline')
             ->setClass('btn btn-primary btn-sm ajax')
-            ->onControlAdd[] = function($container) {
+            ->onControlAdd[] = static function ($container) {
             $container->addText('label', '');
         };
 
-        $grid->getInlineEdit()->onSetDefaults[] = function($cont, $item) {
-            $cont->setDefaults([
-                "label" => $item->getLabel()
+        $grid->getInlineEdit()->onSetDefaults[] = static function ($container, $item) {
+            $container->setDefaults([
+                'label' => $item->getLabel()
             ]);
         };
 
         $grid->getInlineEdit()->onSubmit[] = [$this, 'handleInlineUpdate'];
-    }
 
-    /**
-     * @param int $id
-     * @throws \Exception
-     */
-    public function handleDelete(int $id): void
-    {
-        try{
-            $this->superGroupFunctionality->delete($id);
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('delete', true,'error', $e));
-        }
-        $this["superGroupGrid"]->reload();
-        $this->informUser(new UserInformArgs('delete', true));
-    }
-
-    /**
-     * @param int $id
-     * @throws \Nette\Application\AbortException
-     */
-    public function handleEdit(int $id): void
-    {
-        $this->redirect("edit", (int) $id);
+        return $grid;
     }
 
     /**
@@ -184,43 +112,10 @@ class SuperGroupPresenter extends AdminPresenter
     public function handleInlineUpdate(int $id, $row): void
     {
         try{
-            $this->superGroupFunctionality->update($id, $row);
+            $this->functionality->update($id, $row);
         } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('edit', true,'error', $e));
+            $this->informUser(new UserInformArgs('update', true,'error', $e, true));
         }
-        $this->informUser(new UserInformArgs('edit', true));
-    }
-
-    /**
-     * @return SuperGroupFormControl
-     */
-    public function createComponentSuperGroupCreateForm(): SuperGroupFormControl
-    {
-        $control = $this->superGroupFormFactory->create();
-        $control->onSuccess[] = function (){
-            $this['superGroupGrid']->reload();
-            $this->informUser(new UserInformArgs('create', true));
-        };
-        $control->onError[] = function ($e){
-            $this->informUser(new UserInformArgs('create', true,'error', $e));
-        };
-        return $control;
-    }
-
-    /**
-     * @return SuperGroupFormControl
-     */
-    public function createComponentSuperGroupEditForm(): SuperGroupFormControl
-    {
-        $control = $this->superGroupFormFactory->create(true);
-        $control->onSuccess[] = function (){
-            $this->informUser(new UserInformArgs('edit'));
-            $this->redirect("default");
-        };
-        $control->onError[] = function ($e){
-            $this->informUser(new UserInformArgs('edit', false, 'error', $e));
-            $this->redirect("default");
-        };
-        return $control;
+        $this->informUser(new UserInformArgs('update', true, 'success',null, true));
     }
 }

@@ -11,6 +11,7 @@ namespace App\Components\DataGrids;
 use App\Helpers\ConstHelper;
 use App\Model\Persistent\Repository\GroupRepository;
 use App\Model\Persistent\Repository\SuperGroupRepository;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class GroupGridFactory
@@ -58,7 +59,7 @@ class GroupGridFactory extends BaseGrid
      * @throws \Doctrine\ORM\Query\QueryException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
-    public function create($container, $name, bool $isPermissions = false)
+    public function create($container, $name, bool $isPermissions = false): DataGrid
     {
         $grid = parent::create($container, $name);
 

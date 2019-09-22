@@ -81,7 +81,6 @@ class ProblemGridFactory extends BaseGrid
         $grid = parent::create($container, $name);
 
         $difficultyOptions = $this->difficultyRepository->findAssoc([], 'id');
-        $typeOptions = $this->problemTypeRepository->findAssoc([], 'id');
         $subCategoryOptions = $this->subCategoryRepository->findAssoc([], 'id');
 
         $grid->setPrimaryKey('id');

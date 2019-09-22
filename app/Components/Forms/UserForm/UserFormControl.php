@@ -41,17 +41,15 @@ class UserFormControl extends EntityFormControl
      * @param UserFunctionality $userFunctionality
      * @param GroupRepository $groupRepository
      * @param RoleRepository $roleRepository
-     * @param bool $edit
      */
     public function __construct
     (
         Validator $validator,
         UserFunctionality $userFunctionality,
-        GroupRepository $groupRepository, RoleRepository $roleRepository,
-        bool $edit = false
+        GroupRepository $groupRepository, RoleRepository $roleRepository
     )
     {
-        parent::__construct($validator, $edit);
+        parent::__construct($validator);
         $this->functionality = $userFunctionality;
         $this->groupRepository = $groupRepository;
         $this->roleRepository = $roleRepository;
@@ -96,7 +94,7 @@ class UserFormControl extends EntityFormControl
             ->setHtmlAttribute('class', 'form-control selectpicker')
             ->setHtmlAttribute('title', 'Zvolte skupiny');
 
-        if($this->edit){
+        if($this->isUpdate()){
             $form->addSelect('changePassword', 'Změnit heslo', [
                 0 => 'Ne',
                 1 => 'Ano'
@@ -114,39 +112,26 @@ class UserFormControl extends EntityFormControl
     {
         $values = $form->values;
 
+        // TODO: DO NOT VALIDATE USER DUPLICITY BY SELECT -> INSTEAD CATCH CONSTRAINT ERROR
         $validateFields['username'] = new ValidatorArgument([
             'username' => $values->username,
-            'edit' => $this->edit,
-            'userId' => $values->idHidden ?? null
+            'edit' => $this->isUpdate(),
+            'userId' => $this->entity ? $this->entity->getId() : null
         ], 'username');
-
-//            ArrayHash::from([
-//            'data' => $values->username,
-//            'validation' => 'notEmpty'
-//        ]);
 
         if(!isset($values->changePassword) || $values->changePassword){
             $validateFields['passwordConfirm'] = new ValidatorArgument([
                 'password' => $values->password, 'passwordConfirm' => $values->passwordConfirm
             ],'passwordConfirm');
         }
+
         $validateFields['role'] = new ValidatorArgument($values->role, 'notEmpty');
-
-//            ArrayHash::from([
-//            'data' => $values->role,
-//            'validation' => 'notEmpty'
-//        ]);
-
         $validateFields['groups'] = new ValidatorArgument($values->groups, 'arrayNotEmpty');
-
-//            ArrayHash::from([
-//            'data' => $values->groups,
-//            'validation' => 'arrayNotEmpty'
-//        ]);
 
         $this->validator->validate($form, $validateFields);
 
         $this->redrawErrors();
+        $this->redrawFlashes();
     }
 
     /**
@@ -156,11 +141,12 @@ class UserFormControl extends EntityFormControl
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
+            // Get ID of logged user
             $values->userId = $this->presenter->user->id;
             $this->functionality->create($values);
             $this->onSuccess();
         } catch (\Exception $e){
-            //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
+            // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
             if ($e instanceof AbortException){
                 return;
             }
@@ -175,10 +161,10 @@ class UserFormControl extends EntityFormControl
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
-            $this->functionality->update($values->idHidden, $values);
+            $this->functionality->update($this->entity->getId(), $values);
             $this->onSuccess();
         } catch (\Exception $e){
-            //The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
+            // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
             if ($e instanceof AbortException){
                 return;
             }
@@ -186,13 +172,13 @@ class UserFormControl extends EntityFormControl
         }
     }
 
-    public function render(): void
+    public function setDefaults(): void
     {
-        if ($this->edit){
-            $this->template->render(__DIR__ . '/templates/edit.latte');
-        }
-        else{
-            $this->template->render(__DIR__ . '/templates/create.latte');
-        }
+        $this['form']['id']->setDefaultValue($this->entity->getId());
+        $this['form']['username']->setDefaultValue($this->entity->getUsername());
+        $this['form']['firstName']->setDefaultValue($this->entity->getFirstName());
+        $this['form']['lastName']->setDefaultValue($this->entity->getLastName());
+        $this['form']['role']->setDefaultValue($this->entity->getRole()->getId());
+        $this['form']['groups']->setDefaultValue($this->entity->getGroupsId());
     }
 }

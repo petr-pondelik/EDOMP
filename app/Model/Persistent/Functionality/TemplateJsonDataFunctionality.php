@@ -54,12 +54,13 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
 
     /**
      * @param ArrayHash $data
+     * @param bool $flush
      * @param int|null $templateId
      * @param int|null $conditionTypeId
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, int $templateId = null, int $conditionTypeId = null): ?BaseEntity
+    public function create(ArrayHash $data, bool $flush = true, int $templateId = null, int $conditionTypeId = null): ?BaseEntity
     {
         if(!$templateId){
             $templateId = $this->problemTemplateRepository->getSequenceVal();
@@ -80,32 +81,38 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
             $jsonData->setCreated($data->created);
         }
         $this->em->persist($jsonData);
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
         return $jsonData;
     }
 
     /**
      * @param int $id
      * @param ArrayHash $data
+     * @param bool $flush
      * @return BaseEntity|null
      */
-    public function update(int $id, ArrayHash $data): ?BaseEntity
+    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
     {
         return null;
     }
 
     /**
      * @param int $templateId
+     * @param bool $flush
      * @return bool
      * @throws \Exception
      */
-    public function deleteByTemplate(int $templateId): bool
+    public function deleteByTemplate(int $templateId, bool $flush = true): bool
     {
         $toBeDeleted = $this->repository->findBy(['templateId' => $templateId]);
         foreach ($toBeDeleted as $item) {
             $this->em->remove($item);
         }
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
         return true;
     }
 }

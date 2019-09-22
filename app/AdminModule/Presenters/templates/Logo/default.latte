@@ -28,9 +28,9 @@
 
         <div id="ublaboo-datagrid" class="table-responsive">
 
-            {snippet flashesSnippet}
+            {snippet mainFlashesSnippet}
                 <div class="mt-3">
-                    <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} border-0 alert-dismissible fade show" role="alert"">
+                    <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} border-0 alert-dismissible fade show" role="alert">
                         {$flash->message}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -39,7 +39,7 @@
                 </div>
             {/snippet}
 
-            {control logoGrid}
+            {control entityGrid}
         </div>
 
     </div>
@@ -60,7 +60,7 @@
                     </button>
                 </div>
 
-                {control logoCreateForm}
+                {control entityForm}
 
             </div>
         </div>

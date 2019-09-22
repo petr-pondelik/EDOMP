@@ -94,7 +94,7 @@
         // Function that sets test's logo input
         function setLogo() {
             console.log("SETTING TEST'S LOGO");
-            let logoId = $logoDropArea.find('img').data('logoId');
+            let logoId = $logoDropArea.find('.test-logo').data('logoId');
             $testLogo.val(logoId);
             console.log($testLogo.val());
         }
