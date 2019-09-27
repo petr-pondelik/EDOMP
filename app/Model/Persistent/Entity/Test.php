@@ -149,6 +149,13 @@ class Test extends BaseEntity
     protected $testVariants;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Model\Persistent\Entity\Filter", mappedBy="test", cascade={"all"})
+     *
+     * @var ArrayCollection
+     */
+    protected $filters;
+
+    /**
      * Test constructor.
      */
     public function __construct()
@@ -157,6 +164,7 @@ class Test extends BaseEntity
         $this->isClosed = false;
         $this->groups = new ArrayCollection();
         $this->testVariants = new ArrayCollection();
+        $this->filters = new ArrayCollection();
     }
 
     /**
@@ -339,5 +347,21 @@ class Test extends BaseEntity
     public function setIsClosed(bool $isClosed): void
     {
         $this->isClosed = $isClosed;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getFilters(): ArrayCollection
+    {
+        return $this->filters;
+    }
+
+    /**
+     * @param ArrayCollection $filters
+     */
+    public function setFilters(ArrayCollection $filters): void
+    {
+        $this->filters = $filters;
     }
 }

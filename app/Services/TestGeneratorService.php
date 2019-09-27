@@ -11,6 +11,7 @@ namespace App\Services;
 use App\Exceptions\GeneratorException;
 use App\Exceptions\ProblemDuplicityException;
 use App\Model\Persistent\Entity\Test;
+use App\Model\Persistent\Functionality\FilterFunctionality;
 use App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
 use App\Model\Persistent\Functionality\TestFunctionality;
 use App\Model\Persistent\Functionality\TestVariantFunctionality;
@@ -65,6 +66,11 @@ class TestGeneratorService
     protected $testVariantFunctionality;
 
     /**
+     * @var FilterFunctionality
+     */
+    protected $filterFunctionality;
+
+    /**
      * @var GeneratorService
      */
     protected $generatorService;
@@ -107,6 +113,7 @@ class TestGeneratorService
      * @param FileService $fileService
      * @param PluginContainer $pluginContainer
      * @param ProblemDuplicityModel $problemDuplicityModel
+     * @param FilterFunctionality $filterFunctionality
      */
     public function __construct
     (
@@ -117,7 +124,8 @@ class TestGeneratorService
         GeneratorService $generatorService,
         FileService $fileService,
         PluginContainer $pluginContainer,
-        ProblemDuplicityModel $problemDuplicityModel
+        ProblemDuplicityModel $problemDuplicityModel,
+        FilterFunctionality $filterFunctionality
     )
     {
         $this->entityManager = $entityManager;
@@ -131,6 +139,7 @@ class TestGeneratorService
         $this->fileService = $fileService;
         $this->pluginContainer = $pluginContainer;
         $this->problemDuplicityModel = $problemDuplicityModel;
+        $this->filterFunctionality = $filterFunctionality;
 
         $this->problemConditionTypesId = $this->problemConditionTypeRepository->findPairs([], 'id');
 
@@ -273,6 +282,7 @@ class TestGeneratorService
 
                 // Get applied filters and extend in by not-template condition
                 $filters = $this->getProblemFilters($i, $data);
+
                 $filters['is_template'] = 0;
 
                 // Get all final problem that match applied filters
@@ -330,8 +340,18 @@ class TestGeneratorService
 
             }
 
-            //Attach current problem to the created test
+            // Attach current problem to the created test
             $testVariant = $this->testVariantFunctionality->attachProblem($testVariant, $problem, $data->{'newpage_' . $i});
+
+            // Create persistent filter for currently attached problem
+            $this->filterFunctionality->create(
+                ArrayHash::from([
+                    'data' => $this->getProblemFilters($i, $data),
+                    'test' => $test,
+                    'seq' => $i
+                ]),
+                false
+            );
         }
 
         $test->addTestVariant($testVariant);
@@ -367,16 +387,7 @@ class TestGeneratorService
             }
         }
 
-//        if ($test) {
-//            $this->entityManager->flush();
-//            FileSystem::createDir(DATA_DIR . '/tests/' . $test->getId());
-//            $template->test = $test;
-//            foreach ($test->getTestVariants()->getValues() as $testVariant) {
-//                $template->testVariant = $testVariant;
-//                file_put_contents(DATA_DIR . '/tests/' . $test->getId() . '/variant_' . Strings::lower($testVariant->getLabel()) . '.tex', (string) $template);
-//            }
-//            $this->fileService->createTestZip($test);
-//        }
+        $this->entityManager->flush();
 
         return $test;
     }

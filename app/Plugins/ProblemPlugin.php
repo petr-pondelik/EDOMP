@@ -195,7 +195,7 @@ abstract class ProblemPlugin implements IProblemPlugin
     {
         $finalData = $this->constructProblemFinalData($problemTemplate, $usedMatchesInx);
         $conditions = $problemTemplate->getConditions()->getValues();
-        $problemFinal = $this->functionality->create($finalData, $conditions, false);
+        $problemFinal = $this->functionality->create($finalData, false, $conditions);
         $problemFinal->setBody($this->latexHelper->postprocessProblemFinalBody($problemFinal->getBody()));
         return $problemFinal;
     }

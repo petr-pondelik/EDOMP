@@ -129,6 +129,17 @@ class TestPresenter extends EntityPresenter
     }
 
     /**
+     * @param int $id
+     * @throws \Nette\Application\AbortException
+     */
+    public function actionRegenerate(int $id): void
+    {
+        bdump('ACTION REGENERATE');
+        $this->actionUpdate($id);
+        bdump($this['entityForm']->getEntity());
+    }
+
+    /**
      * @param array $filters
      * @throws \Exception
      */
@@ -243,6 +254,11 @@ class TestPresenter extends EntityPresenter
     }
 
     public function renderCreate(): void
+    {
+        $this['entityForm']->initComponents();
+    }
+
+    public function renderRegenerate(): void
     {
         $this['entityForm']->initComponents();
     }

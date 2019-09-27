@@ -92,7 +92,6 @@ abstract class EntityPresenter extends AdminPresenter
         $formControl = $this['entityForm'];
         $formControl->setEntity($entity);
         $this->template->entity = $entity;
-//        $formControl->initComponents();
         if(!$formControl->isSubmitted()){
             $formControl->setDefaults();
         }

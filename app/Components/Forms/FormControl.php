@@ -13,6 +13,7 @@ use App\Model\Persistent\Functionality\BaseFunctionality;
 use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+use ReflectionClass;
 
 /**
  * Class BaseFormControl
@@ -123,6 +124,47 @@ abstract class FormControl extends EDOMPControl
     }
 
     /**
+     * @return bool
+     */
+    public function isDefault(): bool
+    {
+        return $this->getAction() === 'default';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCreate(): bool
+    {
+        return $this->getAction() === 'create';
+    }
+
+    /**
+     * @return string
+     * @throws \ReflectionException
+     */
+    public function getDir(): string
+    {
+        return dirname((new ReflectionClass(static::class))->getFileName());
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplateName(): string
+    {
+        if($this->isDefault()){
+            return 'create';
+        }
+        return $this->getAction();
+    }
+
+    public function render(): void
+    {
+        $this->template->render($this->getDir() . '/templates/' . $this->getTemplateName() . '.latte');
+    }
+
+    /**
      * @param Form $form
      */
     abstract public function handleFormValidate(Form $form): void;
@@ -132,6 +174,4 @@ abstract class FormControl extends EDOMPControl
      * @param ArrayHash $values
      */
     abstract public function handleFormSuccess(Form $form, ArrayHash $values): void;
-
-    abstract public function render(): void;
 }

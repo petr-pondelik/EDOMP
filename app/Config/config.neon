@@ -165,6 +165,11 @@ services:
 	    tags:
 	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ValidationFunction
 
+	repository.filter:
+	    class: App\Model\Persistent\Repository\FilterRepository
+	    tags:
+	        doctrine.repositoryEntity: App\Model\Persistent\Entity\Filter
+
 	# Functionalities
 	functionality.user: App\Model\Persistent\Functionality\UserFunctionality
 	functionality.problem.final: App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality
@@ -187,6 +192,7 @@ services:
 	functionality.test: App\Model\Persistent\Functionality\TestFunctionality
 	functionality.test.variant: App\Model\Persistent\Functionality\TestVariantFunctionality
 	functionality.template.jsondata: App\Model\Persistent\Functionality\TemplateJsonDataFunctionality
+	functionality.filter: App\Model\Persistent\Functionality\FilterFunctionality
 
 	# Factories
 	factory.header.bar: App\Components\HeaderBar\HeaderBarFactory

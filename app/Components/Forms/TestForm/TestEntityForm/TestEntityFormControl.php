@@ -33,6 +33,7 @@ use Kdyby\Doctrine\EntityManager;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
+use Nette\Utils\Strings;
 
 /**
  * Class TestEntityFormControl
@@ -150,6 +151,14 @@ class TestEntityFormControl extends TestFormControl
     }
 
     /**
+     * @return bool
+     */
+    public function isRegenerate(): bool
+    {
+        return $this->getAction() === 'regenerate';
+    }
+
+    /**
      * @param array $params
      * @throws \Nette\Application\BadRequestException
      */
@@ -157,7 +166,8 @@ class TestEntityFormControl extends TestFormControl
     {
         parent::loadState($params);
 
-        if (!$this->isUpdate()) {
+        if ($this->isCreate()) {
+
             $this->maxProblems = $this->presenter->context->parameters['testMaxProblems'];
             $problems = $this->problemRepository->findAssoc(['isGenerated' => false], 'id');
 
@@ -168,7 +178,10 @@ class TestEntityFormControl extends TestFormControl
             for ($i = 0; $i < $this->maxProblems; $i++) {
                 $this['problemStack' . $i]->setProblems($problems);
             }
-        } else {
+
+        }
+
+        if (!$this->isCreate()) {
             $this->addComponent($this->logoViewFactory->create(), 'logoView');
         }
     }
@@ -176,8 +189,9 @@ class TestEntityFormControl extends TestFormControl
     public function initComponents(): void
     {
         parent::initComponents();
-        if ($this->isUpdate()) {
+        if (!$this->isCreate()) {
             $this['logoView']->setLogo($this->entity->getLogo());
+            bdump($this->entity->getLogo());
         }
     }
 
@@ -192,13 +206,12 @@ class TestEntityFormControl extends TestFormControl
     public function createComponentForm(): Form
     {
         $form = parent::createComponentForm();
-
-        if (!$this->isUpdate()) {
-            $form = $this->prepareCreateForm($form);
-        } else {
-            $form = $this->prepareUpdateForm($form);
-        }
-
+        $form = $this->{'prepare' . Strings::firstUpper($this->getAction()) . 'Form'}($form);
+//        if ($this-) {
+//            $form = $this->prepareCreateForm($form);
+//        } else {
+//            $form = $this->prepareUpdateForm($form);
+//        }
         return $form;
     }
 
@@ -210,8 +223,8 @@ class TestEntityFormControl extends TestFormControl
      */
     public function prepareCreateForm(Form $form): Form
     {
-        if ($this->isUpdate()) {
-            throw new ComponentException('Trying to prepare create form in update action.');
+        if (!$this->isCreate()) {
+            throw new ComponentException('Trying to prepare create form outside create action.');
         }
 
         $difficulties = $this->difficultyRepository->findAssoc([], 'id');
@@ -228,7 +241,7 @@ class TestEntityFormControl extends TestFormControl
 
         for ($i = 0; $i < $this->maxProblems; $i++) {
 
-            $form->addSelect('is_template_' . $i, 'Šablona', [
+            $form->addSelect('isTemplate_' . $i, 'Šablona', [
                 1 => 'Ano',
                 0 => 'Ne'
             ])
@@ -318,6 +331,26 @@ class TestEntityFormControl extends TestFormControl
 
         $form->onValidate = null;
         $form->onValidate[] = [$this, 'handleUpdateFormValidate'];
+
+        return $form;
+    }
+
+    /**
+     * @param Form $form
+     * @return Form
+     * @throws ComponentException
+     */
+    public function prepareRegenerateForm(Form $form): Form
+    {
+        if(!$this->isRegenerate()){
+            throw new ComponentException('Trying to prepare regenerate form outside of regenerate action.');
+        }
+
+        $form['variant']->setDisabled();
+
+        for ($i = 0; $i < $this->entity->getProblemsPerVariant(); $i++) {
+            $form->addCheckbox('regenerateProblem' . $i);
+        }
 
         return $form;
     }
@@ -429,6 +462,7 @@ class TestEntityFormControl extends TestFormControl
 
             $this['form']['problem_' . $problemKey]->setValue($valuesToSetArr);
             $this['problemStack' . $problemKey]->setProblems($filterRes, $valuesToSetObj);
+            $this['problemStack' . $problemKey]->redrawControl();
 
         }
     }
@@ -469,9 +503,8 @@ class TestEntityFormControl extends TestFormControl
 
     public function render(): void
     {
-        bdump('TST ENTITY FORM RENDER');
-        bdump($this->entity->getLogo()->getLabel());
-        if (!$this->isUpdate()) {
+        bdump('TEST ENTITY FORM RENDER');
+        if ($this->isCreate()) {
             $this->template->maxProblems = $this->maxProblems;
             $this->template->problemConditionTypes = $this->problemConditionTypes;
         }
