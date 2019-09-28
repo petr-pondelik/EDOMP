@@ -161,6 +161,7 @@ abstract class FormControl extends EDOMPControl
 
     public function render(): void
     {
+        bdump($this->getTemplateName());
         $this->template->render($this->getDir() . '/templates/' . $this->getTemplateName() . '.latte');
     }
 

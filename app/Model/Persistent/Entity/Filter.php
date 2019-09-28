@@ -8,7 +8,9 @@
 
 namespace App\Model\Persistent\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -20,11 +22,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Filter extends BaseEntity
 {
     /**
-     * @ORM\Column(type="json_array", nullable=true)
+     * @ORM\Column(type="json_array", nullable=false)
+     * @Assert\NotBlank(
+     *     message="SelectedFilters can't be blank."
+     * )
      *
-     * @var array|null
+     * @var iterable
      */
-    protected $data;
+    protected $selectedFilters;
+
+    /**
+     * @ORM\Column(type="json_array", nullable=false)
+     * @Assert\NotBlank(
+     *     message="SelectedProblems can't be blank."
+     * )
+     *
+     * @var iterable
+     */
+    protected $selectedProblems;
 
     /**
      * @ORM\Column(type="integer", nullable=false)
@@ -51,19 +66,47 @@ class Filter extends BaseEntity
     protected $test;
 
     /**
-     * @return array|null
+     * @ORM\ManyToMany(targetEntity="App\Model\Persistent\Entity\ProblemType")
+     * @ORM\JoinTable(name="filter_problem_type_rel")
+     *
+     * @var ArrayCollection|PersistentCollection
      */
-    public function getData(): ?array
-    {
-        return $this->data;
-    }
+    protected $problemTypes;
 
     /**
-     * @param iterable $data
+     * @ORM\ManyToMany(targetEntity="App\Model\Persistent\Entity\Difficulty")
+     * @ORM\JoinTable(name="filter_difficulty_rel")
+     *
+     * @var ArrayCollection|PersistentCollection
      */
-    public function setData(iterable $data): void
+    protected $difficulties;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Model\Persistent\Entity\SubCategory")
+     * @ORM\JoinTable(name="filter_sub_category_rel")
+     *
+     * @var ArrayCollection|PersistentCollection
+     */
+    protected $subCategories;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Model\Persistent\Entity\ProblemCondition")
+     * @ORM\JoinTable(name="filter_problem_condition_rel")
+     *
+     * @var ArrayCollection|PersistentCollection
+     */
+    protected $problemConditions;
+
+    /**
+     * Filter constructor.
+     */
+    public function __construct()
     {
-        $this->data = $data;
+        parent::__construct();
+        $this->problemTypes = new ArrayCollection();
+        $this->difficulties = new ArrayCollection();
+        $this->subCategories = new ArrayCollection();
+        $this->problemConditions = new ArrayCollection();
     }
 
     /**
@@ -96,5 +139,145 @@ class Filter extends BaseEntity
     public function setSeq(int $seq): void
     {
         $this->seq = $seq;
+    }
+
+    /**
+     * @return iterable
+     */
+    public function getSelectedFilters(): iterable
+    {
+        return $this->selectedFilters;
+    }
+
+    /**
+     * @param iterable $selectedFilters
+     */
+    public function setSelectedFilters(iterable $selectedFilters): void
+    {
+        $this->selectedFilters = $selectedFilters;
+    }
+
+    /**
+     * @return iterable
+     */
+    public function getSelectedProblems(): iterable
+    {
+        return $this->selectedProblems;
+    }
+
+    /**
+     * @param iterable $selectedProblems
+     */
+    public function setSelectedProblems(iterable $selectedProblems): void
+    {
+        $this->selectedProblems = $selectedProblems;
+    }
+
+    /**
+     * @return ArrayCollection|PersistentCollection
+     */
+    public function getProblemTypes()
+    {
+        return $this->problemTypes;
+    }
+
+    /**
+     * @param ArrayCollection|PersistentCollection $problemTypes
+     */
+    public function setProblemTypes($problemTypes): void
+    {
+        $this->problemTypes = $problemTypes;
+    }
+
+    /**
+     * @param ProblemType $problemType
+     */
+    public function addProblemType(ProblemType $problemType): void
+    {
+        if($this->problemTypes->contains($problemType)){
+            return;
+        }
+        $this->problemTypes[] = $problemType;
+    }
+
+    /**
+     * @return ArrayCollection|PersistentCollection
+     */
+    public function getDifficulties()
+    {
+        return $this->difficulties;
+    }
+
+    /**
+     * @param ArrayCollection|PersistentCollection $difficulties
+     */
+    public function setDifficulties($difficulties): void
+    {
+        $this->difficulties = $difficulties;
+    }
+
+    /**
+     * @param Difficulty $difficulty
+     */
+    public function addDifficulty(Difficulty $difficulty): void
+    {
+        if($this->difficulties->contains($difficulty)){
+            return;
+        }
+        $this->difficulties[] = $difficulty;
+    }
+
+    /**
+     * @return ArrayCollection|PersistentCollection
+     */
+    public function getSubCategories()
+    {
+        return $this->subCategories;
+    }
+
+    /**
+     * @param ArrayCollection|PersistentCollection $subCategories
+     */
+    public function setSubCategories($subCategories): void
+    {
+        $this->subCategories = $subCategories;
+    }
+
+    /**
+     * @param SubCategory $subCategory
+     */
+    public function addSubCategory(SubCategory $subCategory): void
+    {
+        if($this->subCategories->contains($subCategory)){
+            return;
+        }
+        $this->subCategories[] = $subCategory;
+    }
+
+    /**
+     * @return ArrayCollection|PersistentCollection
+     */
+    public function getProblemConditions()
+    {
+        return $this->problemConditions;
+    }
+
+    /**
+     * @param ArrayCollection|PersistentCollection $problemConditions
+     */
+    public function setProblemConditions($problemConditions): void
+    {
+        $this->problemConditions = $problemConditions;
+    }
+
+    /**
+     * @param ProblemCondition $problemCondition
+     */
+    public function addProblemCondition(ProblemCondition $problemCondition): void
+    {
+        if($this->problemConditions->contains($problemCondition)){
+            return;
+        }
+        $this->problemConditions[] = $problemCondition;
     }
 }

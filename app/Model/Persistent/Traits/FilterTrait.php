@@ -19,39 +19,46 @@ use App\Model\Persistent\Entity\ProblemType;
 trait FilterTrait
 {
     /**
-     * @param iterable $filters
+     * @param array $filters
      * @return array
      */
-    public function findFiltered(iterable $filters): array
+    public static function processFilters(array $filters): array
     {
-        $filterArr = [];
+        $res = [];
+        foreach ($filters as $filterKey => $filter) {
+            if($filterKey !== 'conditionType'){
+                if(is_array($filter)){
+                    if(count($filter)){
+                        $res[$filterKey] = $filter;
+                    }
+                }
+                else if($filter !== null){
+                    $res[$filterKey] = $filter;
+                }
+            }
+        }
+        return $res;
+    }
 
-        // Apply base filters
-        if(isset($filters['is_template']) && $filters['is_template'] !== null){
-            $filterArr['isTemplate'] = $filters['is_template'];
-        }
-        if(isset($filters['problem_type_id']) && count($filters['problem_type_id'])){
-            $filterArr['problemType'] = $filters['problem_type_id'];
-        }
-        if(isset($filters['difficulty_id']) && count($filters['difficulty_id'])){
-            $filterArr['difficulty'] = $filters['difficulty_id'];
-        }
-        if(isset($filters['sub_category_id']) && count($filters['sub_category_id'])){
-            $filterArr['subCategory'] = $filters['sub_category_id'];
-        }
-        if(isset($filters['is_generated']) && $filters['is_generated'] !== null){
-            $filterArr['isGenerated'] = $filters['is_generated'];
-        }
+    /**
+     * @param array $filters
+     * @return array
+     */
+    public function findFiltered(array $filters): array
+    {
+        bdump('FIND FILTERED');
+        bdump($filters);
 
-        $filteredBase = $this->findAssoc($filterArr, 'id');
+        $filtersProcessed = self::processFilters($filters);
+        $filteredBase = $this->findAssoc($filtersProcessed, 'id');
 
-        if(isset($filters['problem_type_id'])){
+        if(isset($filters['problemType'])){
 
             $problemTypes = $this->createQueryBuilder('er')
                 ->select('pt')
                 ->from(ProblemType::class, 'pt')
-                ->where('pt.id IN (:problemTypesId)')
-                ->setParameter('problemTypesId', $filters['problem_type_id'])
+                ->where('pt.id IN (:problemTypes)')
+                ->setParameter('problemTypes', $filters['problemType'])
                 ->getQuery()
                 ->getResult();
 
@@ -64,7 +71,9 @@ trait FilterTrait
 
                 foreach ($problemType->getConditionTypes()->getValues() as $problemConditionType){
 
-                    if(isset($filters['condition_type_id_' . $problemConditionType->getId()]) && count($filters['condition_type_id_' . $problemConditionType->getId()])) {
+                    if(isset($filters['conditionType' . $problemConditionType->getId()]) && count($filters['conditionType' . $problemConditionType->getId()])) {
+
+                        bdump('FILTERING BY CONDITION');
 
                         $conditionFilter = true;
 
@@ -76,7 +85,7 @@ trait FilterTrait
                             ->where('c.problemConditionType = :problemConditionTypeId')
                             ->andWhere('c.accessor IN (:problemConditionAccessor)')
                             ->setParameter('problemConditionTypeId', $problemConditionType->getId())
-                            ->setParameter('problemConditionAccessor', $filters['condition_type_id_' . $problemConditionType->getId()])
+                            ->setParameter('problemConditionAccessor', $filters['conditionType' . $problemConditionType->getId()])
                             ->getQuery()
                             ->getResult();
 

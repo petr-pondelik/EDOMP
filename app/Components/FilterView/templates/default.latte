@@ -1,0 +1,40 @@
+<div class="filter-view mt-5">
+
+    <h5>Přehled navolených filtrů</h5>
+
+    <table class="table table-striped table-hover mb-5">
+        <thead>
+            <tr>
+                <th>Filtr</th>
+                <th>Hodnota</th>
+            </tr>
+        </thead>
+        <tbody>
+        {foreach $filter->getSelectedFilters() as $key => $item}
+            <tr>
+                <td>{$key}</td>
+                <td>
+                    {if $item == null}
+                        Nezvoleno
+                        {else}
+                        {if !is_array($item)}
+                            {$item}
+                        {/if}
+                    {/if}
+                    {*{if !is_array($item)}*}
+                        {*{$item}*}
+                        {*{else}*}
+                    {*{/if}*}
+                </td>
+            </tr>
+            {dump $item}
+        {/foreach}
+        </tbody>
+    </table>
+
+    <h5>Přehled navolených úloh</h5>
+
+    {foreach $filter->getSelectedProblems() as $key => $item}
+        <p></p>
+    {/foreach}
+</div>

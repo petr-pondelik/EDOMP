@@ -24,8 +24,6 @@
                 </div>
             {/snippet}
 
-            {if !$entity->isClosed()}
-
                 <div class="card card-shadow border-light mb-5">
 
                     <div class="card-header">
@@ -189,9 +187,18 @@
 
                 </div>
 
-            {/if}
-
-            {* TODO: DISPLAY PERSISTENT FILTERS CHOICES *}
+            {foreach $entity->getFilters()->getValues() as $key => $filter}
+                <div class="card card-shadow border-light mb-4">
+                    <h4 class="card-header">Úloha {$key + 1}</h4>
+                    <div class="card-body">
+                        <div class="form-group">
+                            {label regenerateProblem{$key}}
+                            {input regenerateProblem{$key}}
+                        </div>
+                        {control filterView{$filter->getSeq()}}
+                    </div>
+                </div>
+            {/foreach}
 
         </div>
 

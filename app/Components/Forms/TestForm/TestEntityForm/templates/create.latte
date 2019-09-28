@@ -169,46 +169,46 @@
                             <div>
 
                                 <div class="form-group mt-3 mb-3">
-                                    {label 'is_template_'.$i}
-                                    {input 'is_template_'.$i}
+                                    {label 'isTemplate' . $i}
+                                    {input 'isTemplate' . $i}
                                 </div>
 
                                 <div class="form-group mt-3 mb-3">
-                                    {label 'problem_type_id_'.$i}
-                                    {input 'problem_type_id_'.$i}
+                                    {label 'problemType' . $i}
+                                    {input 'problemType' . $i}
                                 </div>
 
                                 <div class="form-group mt-3 mb-3">
-                                    {label 'difficulty_id_'.$i}
-                                    {input 'difficulty_id_'.$i}
+                                    {label 'difficulty' . $i}
+                                    {input 'difficulty' . $i}
                                 </div>
 
                                 <div class="form-group mt-3 mb-3">
-                                    {label 'sub_category_id_' . $i}
-                                    {input 'sub_category_id_' . $i}
+                                    {label 'subCategory' . $i}
+                                    {input 'subCategory' . $i}
                                 </div>
 
                                 {foreach $problemConditionTypes as $problemConditionType}
                                     <div class="form-group mt-3 mb-3 hidden condition-type-id"
                                          id="condition-type-id-{$problemConditionType->getId()}-{$i}">
-                                        {label 'condition_type_id_' . $problemConditionType->getId() . '_' . $i}
-                                        {input 'condition_type_id_' . $problemConditionType->getId() . '_' . $i}
+                                        {label 'conditionType' . $problemConditionType->getId() . $i}
+                                        {input 'conditionType' . $problemConditionType->getId() . $i}
                                     </div>
                                 {/foreach}
 
                                 <div n:snippet="snippetProblem-{$i}" class="form-group mt-3 mb-3">
 
-                                    {label 'problem_' . $i}
-                                    {input 'problem_' . $i, class => 'form-control filter problem-select hidden'}
+                                    {label 'problem' . $i}
+                                    {input 'problem' . $i, class => 'form-control filter problem-select'}
 
                                     {control problemStack$i}
 
                                 </div>
 
                                 <div class="form-group custom-control custom-checkbox">
-                                    <input n:name="newpage_$i" type="checkbox" class="custom-control-input"
+                                    <input n:name="newPage$i" type="checkbox" class="custom-control-input"
                                                                id="newpage-{$i}">
-                                    <label n:name="newpage_$i" for="newpage-{$i}" class="custom-control-label"/>
+                                    <label n:name="newPage$i" for="newpage-{$i}" class="custom-control-label"/>
                                 </div>
 
                             </div>
@@ -237,46 +237,46 @@
                             <div>
 
                                 <div class="form-group mt-3 mb-3">
-                                    {label 'is_template_' . $i}
-                                    {input 'is_template_' . $i}
+                                    {label 'isTemplate' . $i}
+                                    {input 'isTemplate' . $i}
                                 </div>
 
                                 <div class="form-group mt-3 mb-3">
-                                    {label 'problem_type_id_' . $i}
-                                    {input 'problem_type_id_' . $i}
+                                    {label 'problemType' . $i}
+                                    {input 'problemType' . $i}
                                 </div>
 
                                 <div class="form-group mt-3 mb-3">
-                                    {label 'difficulty_id_' . $i}
-                                    {input 'difficulty_id_' . $i}
+                                    {label 'difficulty' . $i}
+                                    {input 'difficulty' . $i}
                                 </div>
 
                                 <div class="form-group mt-3 mb-3">
-                                    {label "sub_category_id_" . $i}
-                                    {input "sub_category_id_" . $i}
+                                    {label "subCategory" . $i}
+                                    {input "subCategory" . $i}
                                 </div>
 
                                 {foreach $problemConditionTypes as $problemConditionType}
                                     <div class="form-group mt-3 mb-3 hidden condition-type-id"
                                          id="condition-type-id-{$problemConditionType->getId()}-{$i}">
-                                        {label 'condition_type_id_' . $problemConditionType->getId() . '_' . $i}
-                                        {input 'condition_type_id_' . $problemConditionType->getId() . '_' . $i}
+                                        {label 'conditionType' . $problemConditionType->getId() . $i}
+                                        {input 'conditionType' . $problemConditionType->getId() . $i}
                                     </div>
                                 {/foreach}
 
                                 <div n:snippet="snippetProblem-{$i}" class="form-group mt-3 mb-3">
 
-                                    {label 'problem_' . $i}
-                                    {input 'problem_' . $i, class => 'form-control filter problem-select hidden'}
+                                    {label 'problem' . $i}
+                                    {input 'problem' . $i, class => 'form-control filter problem-select'}
 
                                     {control problemStack$i}
 
                                 </div>
 
                                 <div class="form-group custom-control custom-checkbox">
-                                    <input n:name="newpage_$i" type="checkbox" class="custom-control-input"
-                                                               id="newpage-{$i}">
-                                    <label n:name="newpage_$i" for="newpage-{$i}" class="custom-control-label"/>
+                                    <input n:name="newPage$i" type="checkbox" class="custom-control-input"
+                                                               id="new-page-{$i}">
+                                    <label n:name="newPage$i" for="new-page-{$i}" class="custom-control-label"/>
                                 </div>
 
                             </div>

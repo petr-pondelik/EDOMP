@@ -9,7 +9,9 @@
 namespace App\Model\Persistent\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -151,7 +153,7 @@ class Test extends BaseEntity
     /**
      * @ORM\OneToMany(targetEntity="App\Model\Persistent\Entity\Filter", mappedBy="test", cascade={"all"})
      *
-     * @var ArrayCollection
+     * @var Collection
      */
     protected $filters;
 
@@ -350,17 +352,17 @@ class Test extends BaseEntity
     }
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection|Collection
      */
-    public function getFilters(): ArrayCollection
+    public function getFilters()
     {
         return $this->filters;
     }
 
     /**
-     * @param ArrayCollection $filters
+     * @param Collection $filters
      */
-    public function setFilters(ArrayCollection $filters): void
+    public function setFilters(Collection $filters): void
     {
         $this->filters = $filters;
     }

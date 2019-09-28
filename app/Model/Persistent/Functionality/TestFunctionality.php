@@ -154,10 +154,10 @@ class TestFunctionality extends BaseFunctionality
         for ($i = 0; $i < $entity->getVariantsCnt(); $i++) {
             for ($j = 0; $j < $entity->getProblemsPerVariant(); $j++) {
                 $this->problemFinalTestVariantAssociationFunctionality->update(
-                    $data->{'problem_final_id_' . $i . '_' . $j},
+                    $data->{'problemFinalId' . $i . $j},
                     ArrayHash::from([
-                        'test_variants_id' => $testVariants[$i]->getId(),
-                        'success_rate' => $data->{'success_rate_' . $i . '_' . $j}
+                        'testVariant' => $testVariants[$i]->getId(),
+                        'successRate' => $data->{'successRate' . $i . $j}
                     ]),
                     false
                 );
@@ -167,9 +167,9 @@ class TestFunctionality extends BaseFunctionality
         // Recalculate success rates for associated ProblemFinals and ProblemTemplates entities
         for ($i = 0; $i < $entity->getVariantsCnt(); $i++) {
             for ($j = 0; $j < $entity->getProblemsPerVariant(); $j++) {
-                $this->problemFunctionality->calculateSuccessRate($data->{'problem_final_id_' . $i . '_' . $j}, false, false);
-                if (!empty($data->{'problem_template_id_' . $i . '_' . $j})) {
-                    $this->problemFunctionality->calculateSuccessRate($data->{'problem_template_id_' . $i . '_' . $j}, true, false);
+                $this->problemFunctionality->calculateSuccessRate($data->{'problemFinalId' . $i . $j}, false, false);
+                if (!empty($data->{'problemTemplateId' . $i . $j})) {
+                    $this->problemFunctionality->calculateSuccessRate($data->{'problemTemplateId_' . $i . $j}, true, false);
                 }
             }
         }

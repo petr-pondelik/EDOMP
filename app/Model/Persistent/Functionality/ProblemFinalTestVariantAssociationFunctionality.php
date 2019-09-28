@@ -52,13 +52,13 @@ class ProblemFinalTestVariantAssociationFunctionality extends BaseFunctionality
     {
         $association = $this->repository->findOneBy([
             'problemFinal.id' => $id,
-            'testVariant.id' => $data->test_variants_id
+            'testVariant.id' => $data->testVariant
         ]);
-        if(empty($data->success_rate)){
+        if(empty($data->successRate)){
             $association->setSuccessRate(null);
         }
         else{
-            $association->setSuccessRate(Strings::replace($data->success_rate, '~,~', '.'));
+            $association->setSuccessRate(Strings::replace($data->successRate, '~,~', '.'));
         }
         $this->em->persist($association);
         if($flush) {

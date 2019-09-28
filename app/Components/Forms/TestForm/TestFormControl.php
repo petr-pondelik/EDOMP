@@ -143,6 +143,7 @@ abstract class TestFormControl extends EntityFormControl
     {
         bdump('HANDLE FORM VALIDATE');
         $values = $form->getValues();
+        bdump($values);
         $validateFields['logo'] = new ValidatorArgument($values->logo, 'notEmpty');
         $validateFields['groups'] = new ValidatorArgument($values->groups, 'arrayNotEmpty');
         $validateFields['schoolYear'] = new ValidatorArgument($values->schoolYear, 'schoolYear');

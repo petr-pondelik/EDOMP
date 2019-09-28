@@ -225,25 +225,25 @@
                                 <div class="card-body">
 
                                     <div class="form-group">
-                                        {label problem_final_id_disabled_{$i}_$j}
-                                        {input problem_final_id_disabled_{$i}_$j}
+                                        {label problemFinalIdDisabled{$i}{$j}}
+                                        {input problemFinalIdDisabled{$i}{$j}}
                                     </div>
 
                                     <div class="form-group">
-                                        {label problem_template_id_disabled_{$i}_$j}
-                                        {input problem_template_id_disabled_{$i}_$j}
+                                        {label problemTemplateIdDisabled{$i}{$j}}
+                                        {input problemTemplateIdDisabled{$i}{$j}}
                                     </div>
 
                                     <p class="text-center mt-5 mb-5">{$problemFinalAssociation->getProblemFinal()->getBody()}</p>
 
                                     <div class="form-group">
-                                        {label success_rate_{$i}_$j}
-                                        {input success_rate_{$i}_$j}
+                                        {label successRate{$i}{$j}}
+                                        {input successRate{$i}{$j}}
                                     </div>
 
                                     {snippet successRate{$i}{$j}ErrorSnippet}
                                         <div n:if="$control['form']->hasErrors()" class="mt-2">
-                                            <p n:foreach="$control['form']['success_rate_' . $i . '_' . $j]->errors as $error"
+                                            <p n:foreach="$control['form']['successRate' . $i . $j]->errors as $error"
                                                     class="alert alert-danger border-0 alert-dismissible fade show"
                                                     role="alert">
                                                 {$error}

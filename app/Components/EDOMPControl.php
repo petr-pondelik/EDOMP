@@ -18,4 +18,6 @@ use Nette\Application\UI\Control;
 abstract class EDOMPControl extends Control
 {
     public function initComponents(): void {}
+
+    public function fillComponents(): void {}
 }

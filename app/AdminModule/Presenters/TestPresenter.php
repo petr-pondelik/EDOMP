@@ -255,11 +255,13 @@ class TestPresenter extends EntityPresenter
 
     public function renderCreate(): void
     {
-        $this['entityForm']->initComponents();
+        if($this->getParameter('filters') === null){
+            $this->getEntityForm()->fillComponents();
+        }
     }
 
     public function renderRegenerate(): void
     {
-        $this['entityForm']->initComponents();
+        $this->getEntityForm()->fillComponents();
     }
 }

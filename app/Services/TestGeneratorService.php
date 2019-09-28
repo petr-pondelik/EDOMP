@@ -176,13 +176,13 @@ class TestGeneratorService
      */
     protected function getProblemFilters(int $id, ArrayHash $data): array
     {
-        $filters['is_generated'] = false;
-        $filters['is_template'] = $data['is_template_' . $id];
-        $filters['problem_type_id'] = $data['problem_type_id_' . $id];
-        $filters['difficulty_id'] = $data['difficulty_id_' . $id];
-        $filters['sub_category_id'] = $data['sub_category_id_' . $id];
+        $filters['isGenerated'] = false;
+        $filters['isTemplate'] = $data['isTemplate' . $id];
+        $filters['problemType'] = $data['problemType' . $id];
+        $filters['difficulty'] = $data['difficulty' . $id];
+        $filters['subCategory'] = $data['subCategory' . $id];
         foreach ($this->problemConditionTypesId as $item) {
-            $filters['condition_type_id_' . $item] = $data['condition_type_id_' . $item . '_' . $id];
+            $filters['conditionType' . $item] = $data['conditionType' . $item . $id];
         }
         return $filters;
     }
@@ -225,6 +225,7 @@ class TestGeneratorService
      * @throws ProblemDuplicityException
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
+     * @throws \ReflectionException
      */
     protected function generateTestVariant(Test $test, string $variantLabel, ArrayHash $data): Test
     {
@@ -241,7 +242,7 @@ class TestGeneratorService
         for ($i = 0; $i < $test->getProblemsPerVariant(); $i++) {
 
             $problemTemplate = null;
-            $selectedProblems = $data['problem_' . $i];
+            $selectedProblems = $data['problem' . $i];
 
             // In the case of random choice
             if (!$selectedProblems) {
@@ -251,7 +252,7 @@ class TestGeneratorService
                 $problems = $this->problemRepository->findFiltered($filters);
 
                 // Get final problems that match the filters
-                $filters['is_template'] = 0;
+                $filters['isTemplate'] = 0;
                 $finals = $this->problemRepository->findFiltered($filters);
 
                 $this->problemDuplicityModel->getFinalState()->setFree($finals);
@@ -277,13 +278,14 @@ class TestGeneratorService
                     }
 
                 }
-            } // If more problems was selected, pick one of them randomly
+            }
+            // If more problems was selected, pick one of them randomly
             else if (count($selectedProblems) > 1) {
 
                 // Get applied filters and extend in by not-template condition
                 $filters = $this->getProblemFilters($i, $data);
 
-                $filters['is_template'] = 0;
+                $filters['isTemplate'] = 0;
 
                 // Get all final problem that match applied filters
                 $finals = $this->problemRepository->findFiltered($filters);
@@ -341,17 +343,20 @@ class TestGeneratorService
             }
 
             // Attach current problem to the created test
-            $testVariant = $this->testVariantFunctionality->attachProblem($testVariant, $problem, $data->{'newpage_' . $i});
+            $testVariant = $this->testVariantFunctionality->attachProblem($testVariant, $problem, $data->{'newPage' . $i});
 
             // Create persistent filter for currently attached problem
-            $this->filterFunctionality->create(
-                ArrayHash::from([
-                    'data' => $this->getProblemFilters($i, $data),
-                    'test' => $test,
-                    'seq' => $i
-                ]),
-                false
-            );
+            if($variantLabel === 'A'){
+                $this->filterFunctionality->create(
+                    ArrayHash::from([
+                        'selectedFilters' => $this->getProblemFilters($i, $data),
+                        'selectedProblems' => $selectedProblems,
+                        'test' => $test,
+                        'seq' => $i
+                    ]),
+                    false
+                );
+            }
         }
 
         $test->addTestVariant($testVariant);
@@ -365,6 +370,7 @@ class TestGeneratorService
      * @throws ProblemDuplicityException
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
+     * @throws \ReflectionException
      */
     public function generateTest(ArrayHash $data): ?Test
     {
@@ -387,7 +393,7 @@ class TestGeneratorService
             }
         }
 
-        $this->entityManager->flush();
+//        $this->entityManager->flush();
 
         return $test;
     }

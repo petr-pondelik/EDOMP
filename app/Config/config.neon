@@ -227,7 +227,8 @@ services:
 	factory.logo.draganddrop: App\Components\LogoDragAndDrop\ILogoDragAndDropFactory
 	factory.problem.stack: App\Components\ProblemStack\IProblemStackFactory
 	factory.section.help.modal: App\Components\SectionHelpModal\ISectionHelpModalFactory
-	factory.logo.view: App\Components\LogoView\ILogoViewFactory
+	factory.view.logo: App\Components\LogoView\ILogoViewFactory
+	factory.view.filter: App\Components\FilterTable\IFilterViewFactory
 
 	# Services
 	service.newtopapi.client: App\Services\NewtonApiClient(%newtonApiHost%)
@@ -257,6 +258,7 @@ services:
 	helper.formatter: App\Helpers\FormatterHelper
 	helper.flashes.translator: App\Helpers\FlashesTranslator
 	helper.regular.expressions: App\Helpers\RegularExpressions
+	helper.filter.view: App\Helpers\FilterViewHelper
 
 	# Plugins
 	plugin.template.equation.linear: App\Plugins\LinearEquationPlugin
