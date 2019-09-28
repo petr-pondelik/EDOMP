@@ -48,7 +48,7 @@ $$ <par min="-2" max="2"/> \big( 4x - <par min="-3" max="3"/> \big) \big( x + 1 
 
 ## Testing Arithmetic Sequences
 
-    $$ a_n = <par min="-5" max="5"/> $$
+$$ a_n = <par min="-5" max="5"/> $$
 
 ## Testing Geometric Sequences
 

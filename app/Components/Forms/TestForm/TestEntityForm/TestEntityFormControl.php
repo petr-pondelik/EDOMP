@@ -431,6 +431,8 @@ class TestEntityFormControl extends TestFormControl
             $this['problemStack' . $problemKey]->setProblems($filterRes, $valuesToSetObj);
 
         }
+
+        $this->redrawControl('testCreateFormSnippet');
     }
 
     public function setDefaults(): void
@@ -469,8 +471,7 @@ class TestEntityFormControl extends TestFormControl
 
     public function render(): void
     {
-        bdump('TST ENTITY FORM RENDER');
-        bdump($this->entity->getLogo()->getLabel());
+        bdump('TEST ENTITY FORM RENDER');
         if (!$this->isUpdate()) {
             $this->template->maxProblems = $this->maxProblems;
             $this->template->problemConditionTypes = $this->problemConditionTypes;
