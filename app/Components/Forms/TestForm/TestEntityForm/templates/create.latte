@@ -12,8 +12,8 @@
 
                 <div class="d-flex justify-content-center mb-2 mt-2">
                     <div class="form-group col-12">
-                        {label variant}
-                        {input variant}
+                        {label variantsCnt}
+                        {input variantsCnt}
                     </div>
                 </div>
 
@@ -158,7 +158,7 @@
 
             {if $i === 0}
 
-                <div id="problem-{$i}">
+                <div id="problem-wrapper-{$i}">
 
                     <div class="card card-shadow border-light mb-4">
 
@@ -196,7 +196,7 @@
                                     </div>
                                 {/foreach}
 
-                                <div n:snippet="snippetProblem-{$i}" class="form-group mt-3 mb-3">
+                                <div n:snippet="snippetProblem{$i}" class="form-group mt-3 mb-3">
 
                                     {label 'problem' . $i}
                                     {input 'problem' . $i, class => 'form-control filter problem-select'}
@@ -226,9 +226,9 @@
 
             {else}
 
-                <div class="hidden" id="problem-{$i}">
+                <div class="hidden" id="problem-wrapper-{$i}">
 
-                    <div class="card card-shadow border-light mb-4" id="problem-{$i}">
+                    <div class="card card-shadow border-light mb-4">
 
                         <h4 class="card-header">Úloha č. {$i+1}</h4>
 

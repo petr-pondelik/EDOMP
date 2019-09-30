@@ -12,7 +12,7 @@ namespace App\Exceptions;
  * Class ComponentException
  * @package App\Exceptions
  */
-class ComponentException extends \Exception
+class ComponentException extends EDOMPException
 {
 
 }

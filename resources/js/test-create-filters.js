@@ -1,7 +1,7 @@
 (($) => {
 
     let filters = {};
-    let problemsCnt = 1;
+    let problemsPerVariant = 1;
 
     // Get values from HTML MultiSelect
     function getMultiSelectValues(element){
@@ -28,25 +28,25 @@
 
         $(document).on('click', '.btn-add', (e) => {
 
-            $('#problem-' + (parseInt(e.target.dataset.problemId) + 1)).slideToggle();
+            $('#problem-wrapper-' + (parseInt(e.target.dataset.problemId) + 1)).slideToggle();
             $('#btn-add-' + e.target.dataset.problemId).hide();
             $('#btn-remove-' + e.target.dataset.problemId).hide();
 
-            problemsCnt++;
+            problemsPerVariant++;
 
-            $('#problemsCnt').val(problemsCnt);
+            $('#problemsPerVariant').val(problemsPerVariant);
 
         });
 
         $(document).on('click', '.btn-remove', (e) => {
 
-            $('#problem-' + (e.target.dataset.problemId)).slideToggle();
+            $('#problem-wrapper-' + (e.target.dataset.problemId)).slideToggle();
             $('#btn-add-' + (parseInt(e.target.dataset.problemId) - 1)).show();
             $('#btn-remove-' + (parseInt(e.target.dataset.problemId) - 1)).show();
 
-            problemsCnt--;
+            problemsPerVariant--;
 
-            $('#problemsCnt').val(problemsCnt);
+            $('#problemsPerVariant').val(problemsPerVariant);
 
         });
 
@@ -79,9 +79,9 @@
 
             // console.log($('#problem_' + problemId).val());
 
-            filters[problemId]['selected'] = $('#problem' + problemId).val();
+            filters[problemId]['selected'] = $('#problem-' + problemId).val();
+            console.log($('#problem-' + problemId).val());
 
-            // console.log($('#problem_' + problemId).val());
             // console.log(filters);
 
             // Select problem doesn't have set filter type --> is should not trigger filter request
@@ -103,8 +103,7 @@
                     type: 'GET',
                     url: '?do=filterChange',
                     data: {
-                        'filters': filters,
-                        'problemsCnt': problemsCnt
+                        'filters': filters
                     },
                     success: () => {}
                 });

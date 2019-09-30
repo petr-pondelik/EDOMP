@@ -15,7 +15,6 @@ use App\Model\Persistent\Repository\CategoryRepository;
 use App\Model\Persistent\Repository\SuperGroupRepository;
 use App\Model\Persistent\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class SuperGroupFunctionality
@@ -61,12 +60,12 @@ class SuperGroupFunctionality extends BaseFunctionality
     }
 
     /**
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $superGroup = new SuperGroup();
         $superGroup->setLabel($data->label);
@@ -82,12 +81,12 @@ class SuperGroupFunctionality extends BaseFunctionality
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         $superGroup = $this->repository->find($id);
         $superGroup->setLabel($data->label);

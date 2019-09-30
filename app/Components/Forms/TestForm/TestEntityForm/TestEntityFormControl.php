@@ -16,6 +16,7 @@ use App\Components\LogoDragAndDrop\LogoDragAndDropControl;
 use App\Components\LogoView\ILogoViewFactory;
 use App\Components\ProblemStack\IProblemStackFactory;
 use App\Exceptions\ComponentException;
+use App\Exceptions\GeneratorException;
 use App\Model\Persistent\Entity\ProblemConditionType;
 use App\Model\Persistent\Functionality\TestFunctionality;
 use App\Model\Persistent\Repository\DifficultyRepository;
@@ -193,8 +194,10 @@ class TestEntityFormControl extends TestFormControl
         }
 
         if ($this->isCreate()) {
+            $problems = $this->problemRepository->findAssoc(['isGenerated' => false], 'id');
             for ($i = 0; $i < $this->maxProblems; $i++) {
                 $this->addComponent($this->problemStackFactory->create($i), 'problemStack' . $i);
+                $this['problemStack' . $i]->setProblems($problems);
             }
         }
 
@@ -213,17 +216,17 @@ class TestEntityFormControl extends TestFormControl
             $this['logoView']->setLogo($this->entity->getLogo());
         }
 
-        if ($this->isCreate()) {
-            $problems = $this->problemRepository->findAssoc(['isGenerated' => false], 'id');
-            for ($i = 0; $i < $this->maxProblems; $i++) {
-                $this['problemStack' . $i]->setProblems($problems);
-            }
-        }
+//        if ($this->isCreate()) {
+//            $problems = $this->problemRepository->findAssoc(['isGenerated' => false], 'id');
+//            for ($i = 0; $i < $this->maxProblems; $i++) {
+//                $this['problemStack' . $i]->setProblems($problems);
+//            }
+//        }
 
         if ($this->isRegenerate()) {
             $persistedFilters = $this->entity->getFilters()->getValues();
             foreach ($persistedFilters as $persistedFilter){
-                $this['filterView' . $persistedFilter->getSeq()]->setFilter($persistedFilter);
+                $this['filterView' . $persistedFilter->getSeq()]->setEntity($persistedFilter);
             }
         }
     }
@@ -320,7 +323,7 @@ class TestEntityFormControl extends TestFormControl
             $form->addMultiSelect('problem' . $i, 'Zvolené úlohy', $problems)
                 ->setHtmlAttribute('class', 'form-control filter problem-select')
                 ->setHtmlAttribute('data-problem-id', $i)
-                ->setHtmlId('problem_' . $i);
+                ->setHtmlId('problem-' . $i);
 
             $form->addCheckbox('newPage' . $i, 'Nová stránka');
 
@@ -343,7 +346,7 @@ class TestEntityFormControl extends TestFormControl
             throw new ComponentException('Trying to prepare update form outside of update action.');
         }
 
-        $form['variant']->setDisabled();
+        $form['variantsCnt']->setDisabled();
 
         for ($i = 0; $i < $this->entity->getVariantsCnt(); $i++) {
             for ($j = 0; $j < $this->entity->getProblemsPerVariant(); $j++) {
@@ -378,7 +381,7 @@ class TestEntityFormControl extends TestFormControl
             throw new ComponentException('Trying to prepare regenerate form outside of regenerate action.');
         }
 
-        $form['variant']->setDisabled();
+        $form['variantsCnt']->setDisabled();
 
         for ($i = 0; $i < $this->entity->getProblemsPerVariant(); $i++) {
             $form->addSelect('regenerateProblem' . $i, 'Přegenerovat úlohu', [
@@ -387,6 +390,9 @@ class TestEntityFormControl extends TestFormControl
             ])
                 ->setHtmlAttribute('class', 'form-control');
         }
+
+        $form->onSuccess = null;
+        $form->onSuccess[] = [$this, 'handleRegenerateFormSuccess'];
 
         return $form;
     }
@@ -453,6 +459,23 @@ class TestEntityFormControl extends TestFormControl
     }
 
     /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function handleRegenerateFormSuccess(Form $form, ArrayHash $values): void
+    {
+        bdump('HANDLE REGENERATE FORM SUCCESS');
+        try{
+            $this->testGeneratorService->regenerateTest($this->entity->getId(), $values);
+        } catch (\Exception $e){
+            bdump($e);
+            $this->onError($e);
+            return;
+        }
+        $this->onSuccess();
+    }
+
+    /**
      * @param array $filters
      */
     public function handleFilterChange(array $filters): void
@@ -475,25 +498,7 @@ class TestEntityFormControl extends TestFormControl
                 $filterRes = $this->problemFinalRepository->findFiltered($problemFilters['filters']);
             }
 
-            if (isset($problemFilters['filters'])) {
-                foreach ($problemFilters['filters'] as $filterType => $filterVal) {
-                    if ($filterType !== 'isGenerated') {
-                        if($filterType === 'conditionType'){
-//                            bdump($filterVal);
-//                            foreach ($filterVal as $val){
-//
-//                            }
-                        }
-                        else{
-//                            $this['form'][$filterType . $problemKey]->setValue($filterVal);
-                        }
-                    }
-                }
-            }
-
-            bdump($filterRes);
             $this['form']['problem' . $problemKey]->setItems($filterRes);
-            bdump($this['form']['problem' . $problemKey]);
 
             $valuesToSetArr = [];
             $valuesToSetObj = [];
@@ -506,20 +511,17 @@ class TestEntityFormControl extends TestFormControl
                     }
                 }
             }
-
-            bdump($valuesToSetArr);
             $this['form']['problem' . $problemKey]->setValue($valuesToSetArr);
-//            $this['problemStack' . $problemKey]->setProblems($filterRes, $valuesToSetObj);
-//            $this['problemStack' . $problemKey]->redrawControl();
-            $this->redrawControl('testCreateFormSnippet');
+            $this['problemStack' . $problemKey]->setProblems($filterRes, $valuesToSetObj);
         }
+        $this->redrawControl('testCreateFormSnippet');
     }
 
     public function setDefaults(): void
     {
         $this['form']->setDefaults([
-            'variant' => $this->entity->getVariantsCnt(),
-            'problemsCnt' => $this->entity->getProblemsPerVariant(),
+            'variantsCnt' => $this->entity->getVariantsCnt(),
+            'problemsPerVariant' => $this->entity->getProblemsPerVariant(),
             'groups' => $this->entity->getPropertyKeyArray('groups'),
             'testTerm' => $this->entity->getTerm(),
             'testNumber' => $this->entity->getTestNumber(),

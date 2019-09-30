@@ -70,12 +70,12 @@ class TestFunctionality extends BaseFunctionality
     }
 
     /**
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $test = new Test();
 
@@ -99,13 +99,13 @@ class TestFunctionality extends BaseFunctionality
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws EntityNotFoundException
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         bdump('TEST FUNCTIONALITY UPDATE');
         bdump($data);
@@ -139,13 +139,13 @@ class TestFunctionality extends BaseFunctionality
 
     /**
      * @param Test $entity
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return Test|null
      * @throws EntityNotFoundException
      * @throws \App\Exceptions\EntityException
      */
-    public function updateStatistics(Test $entity, ArrayHash $data, bool $flush = true): ?Test
+    public function updateStatistics(Test $entity, iterable $data, bool $flush = true): ?Test
     {
         // Get test variants
         $testVariants = $entity->getTestVariants()->getValues();
@@ -183,10 +183,10 @@ class TestFunctionality extends BaseFunctionality
 
     /**
      * @param Test $entity
-     * @param ArrayHash $groups
+     * @param iterable $groups
      * @return Test
      */
-    public function updateGroups(Test $entity, ArrayHash $groups): Test
+    public function updateGroups(Test $entity, iterable $groups): Test
     {
         $entity->setGroups(new ArrayCollection());
         return $this->attachGroups($entity, $groups);
@@ -194,10 +194,10 @@ class TestFunctionality extends BaseFunctionality
 
     /**
      * @param Test $entity
-     * @param ArrayHash $groups
+     * @param iterable $groups
      * @return Test
      */
-    public function attachGroups(Test $entity, ArrayHash $groups): Test
+    public function attachGroups(Test $entity, iterable $groups): Test
     {
         foreach ($groups as $groupId) {
             $entity->addGroup($this->groupRepository->find($groupId));

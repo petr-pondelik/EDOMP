@@ -1,17 +1,15 @@
 {snippet componentSnippet}
 
-    {dump $problems}
-
     <div>
 
-        <div id="problem-select-area-{$id}" class="problem-select-area justify-content-center align-items-center flex-wrap mb-4 px-3 px-lg-4 py-4 border">
+        <div id="problem-select-area-{$id}" class="problem-select-area justify-content-center align-items-center flex-wrap mb-4 px-4 px-lg-5 py-4 border">
             {ifset $selectedProblems}
 
                 <ul class="problem-select-list list-unstyled m-0">
                     <li n:foreach="$selectedProblems as $selectedProblem" class="col-12 d-inline-block mb-3 hover-pointer" data-problem-key="{$id}" data-problem-id="{$selectedProblem->getId()}">
-                        <div class="card card-shadow border-light">
+                        <div class="card card-shadow-light border-light">
                             <div class="d-flex align-items-center card-header py-0 problem-card-header">
-                                {$selectedProblem->getProblemType()->getLabel()} | ID: {$selectedProblem->getId()}
+                                {$selectedProblem->getSubcategory()->getLabel()} | ID: {$selectedProblem->getId()}
                             </div>
                             <div class="card-body py-3">
                                 {$selectedProblem->getBody()}
@@ -32,7 +30,7 @@
         <div class="d-flex justify-content-center align-items-center flex-wrap px-3 px-lg-4 py-4 border">
             <ul id="problem-stack-{$id}" class="problem-stack m-0 list-unstyled">
                 <li n:foreach="$problems as $problem" class="col-12 d-inline-block mt-3 hover-pointer" id="problem" data-problem-key="{$id}" data-problem-id="{$problem->getId()}">
-                    <div class="card card-shadow border-light">
+                    <div class="card card-shadow-light border-light">
                         <div class="d-flex align-items-center card-header py-0 problem-card-header">
                             {$problem->getSubcategory()->getLabel()} | ID: {$problem->getId()}
                         </div>

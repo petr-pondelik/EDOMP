@@ -71,7 +71,7 @@ trait FilterTrait
 
                 foreach ($problemType->getConditionTypes()->getValues() as $problemConditionType){
 
-                    if(isset($filters['conditionType' . $problemConditionType->getId()]) && count($filters['conditionType' . $problemConditionType->getId()])) {
+                    if(isset($filters['conditionType'][$problemConditionType->getId()]) && count($filters['conditionType'][$problemConditionType->getId()])) {
 
                         bdump('FILTERING BY CONDITION');
 
@@ -83,9 +83,9 @@ trait FilterTrait
                             ->indexBy('p', 'p.id')
                             ->innerJoin('p.conditions', 'c')
                             ->where('c.problemConditionType = :problemConditionTypeId')
-                            ->andWhere('c.accessor IN (:problemConditionAccessor)')
+                            ->andWhere('c.accessor IN (:problemConditionAccessors)')
                             ->setParameter('problemConditionTypeId', $problemConditionType->getId())
-                            ->setParameter('problemConditionAccessor', $filters['conditionType' . $problemConditionType->getId()])
+                            ->setParameter('problemConditionAccessors', $filters['conditionType'][$problemConditionType->getId()])
                             ->getQuery()
                             ->getResult();
 

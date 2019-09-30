@@ -14,7 +14,6 @@ use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Entity\Category;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\CategoryRepository;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class CategoryFunctionality
@@ -38,12 +37,12 @@ class CategoryFunctionality extends BaseFunctionality
     }
 
     /**
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $category = new Category();
         $category->setLabel($data->label);
@@ -56,12 +55,12 @@ class CategoryFunctionality extends BaseFunctionality
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         $category = $this->repository->find($id);
         $category->setLabel($data->label);

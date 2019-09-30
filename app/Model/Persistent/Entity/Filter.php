@@ -33,9 +33,6 @@ class Filter extends BaseEntity
 
     /**
      * @ORM\Column(type="json_array", nullable=false)
-     * @Assert\NotBlank(
-     *     message="SelectedProblems can't be blank."
-     * )
      *
      * @var iterable
      */
@@ -98,6 +95,11 @@ class Filter extends BaseEntity
     protected $problemConditions;
 
     /**
+     * @var Problem
+     */
+    protected $problems;
+
+    /**
      * Filter constructor.
      */
     public function __construct()
@@ -107,6 +109,18 @@ class Filter extends BaseEntity
         $this->difficulties = new ArrayCollection();
         $this->subCategories = new ArrayCollection();
         $this->problemConditions = new ArrayCollection();
+    }
+
+    /**
+     * @return array
+     */
+    public function getEntityFilters(): array
+    {
+        $res['Typ'] = $this->getProblemTypes()->getValues();
+        $res['Obtížnost'] = $this->getDifficulties()->getValues();
+        $res['Téma'] = $this->getSubCategories()->getValues();
+        $res['Podmínky'] = $this->getProblemConditions()->getValues();
+        return $res;
     }
 
     /**

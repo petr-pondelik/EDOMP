@@ -12,7 +12,7 @@ namespace App\Exceptions;
  * Class GeneratorException
  * @package App\Exceptions
  */
-class GeneratorException extends \Exception
+class GeneratorException extends EDOMPException
 {
 
 }

@@ -21,7 +21,6 @@ use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Model\Persistent\Traits\ProblemFinalFunctionalityTrait;
 use Doctrine\ORM\EntityNotFoundException;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class ProblemFinalFunctionality
@@ -58,12 +57,12 @@ class ProblemFinalFunctionality extends BaseFunctionality
     }
 
     /**
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
-     * @return Object|null
+     * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $problemFinal = new ProblemFinal();
         $problemFinal = $this->setBasics($problemFinal, $data);
@@ -76,13 +75,13 @@ class ProblemFinalFunctionality extends BaseFunctionality
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws EntityNotFoundException
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         $problemFinal = $this->repository->find($id);
         if(!$problemFinal){

@@ -43,8 +43,9 @@
         // Add problem to the corresponding multi-select
         function addProblem(problemKey, problemId) {
 
-            let $problemSelect = $('#problem_' + problemKey);
+            let $problemSelect = $('#problem-' + problemKey);
             let selectedProblems = $problemSelect.val();
+            console.log(selectedProblems);
 
             selectedProblems.push(problemId);
             $problemSelect.val(selectedProblems);
@@ -86,7 +87,7 @@
         // Remove problem from the corresponding multi-select
         function removeProblem(problemKey, problemId) {
 
-            let $problemSelect = $('#problem_' + problemKey);
+            let $problemSelect = $('#problem-' + problemKey);
             let selectedProblems = $problemSelect.val();
 
             let inx = getIndex(selectedProblems, problemId);

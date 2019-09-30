@@ -18,45 +18,24 @@ use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 class FilterViewHelper
 {
     /**
-     * @var ProblemConditionTypeRepository
-     */
-    protected $problemConditionTypeRepository;
-
-    /**
-     * @var ProblemConditionType[]
-     */
-    protected $problemConditionTypes;
-
-    /**
      * @var array
      */
     protected static $translationMap = [
         'isTemplate' => 'Šablona',
-        'problemType' => 'Typ úlohy',
-        'difficulty' => 'Obtížnost',
-        'subCategory' => 'Téma'
+//        'problemType' => 'Typ úlohy',
+//        'difficulty' => 'Obtížnost',
+//        'subCategory' => 'Téma'
     ];
 
-    /**
-     * FilterTranslator constructor.
-     * @param ProblemConditionTypeRepository $problemConditionTypeRepository
-     * @throws \Exception
-     */
-    public function __construct(ProblemConditionTypeRepository $problemConditionTypeRepository)
-    {
-        $this->problemConditionTypeRepository = $problemConditionTypeRepository;
-        $this->completeTranslationMap();
-    }
-
-    protected function completeTranslationMap(): void
-    {
-        $problemConditionTypes = $this->problemConditionTypeRepository->findAll();
-        foreach ($problemConditionTypes as $problemConditionType) {
-            if(!$problemConditionType->isValidation()){
-                self::$translationMap['conditionType' . $problemConditionType->getId()] = $problemConditionType->getLabel();
-            }
-        }
-    }
+//    protected function completeTranslationMap(): void
+//    {
+//        $problemConditionTypes = $this->problemConditionTypeRepository->findAll();
+//        foreach ($problemConditionTypes as $problemConditionType) {
+//            if(!$problemConditionType->isValidation()){
+//                self::$translationMap['conditionType' . $problemConditionType->getId()] = $problemConditionType->getLabel();
+//            }
+//        }
+//    }
 
     /**
      * @param iterable $filters
@@ -67,10 +46,13 @@ class FilterViewHelper
         $res = [];
         bdump(self::$translationMap);
         foreach ($filters as $key => $filter) {
-//            if(!Strings::match($key, '~conditionType\d~')){
-                if(isset(self::$translationMap[$key])){
-                    $res[self::$translationMap[$key]] = $filter;
-//                }
+            if($filter !== null && isset(self::$translationMap[$key])){
+                if($filter){
+                    $res[self::$translationMap[$key]] = $filter === 1 ? 'Ano' : $filter;
+                }
+                else{
+                    $res[self::$translationMap[$key]] = 'Ne';
+                }
             }
         }
         return $res;

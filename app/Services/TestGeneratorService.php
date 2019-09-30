@@ -10,13 +10,15 @@ namespace App\Services;
 
 use App\Exceptions\GeneratorException;
 use App\Exceptions\ProblemDuplicityException;
+use App\Helpers\TestGeneratorHelper;
+use App\Model\NonPersistent\Generator\Variant;
 use App\Model\Persistent\Entity\Test;
+use App\Model\Persistent\Entity\TestVariant;
 use App\Model\Persistent\Functionality\FilterFunctionality;
 use App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
 use App\Model\Persistent\Functionality\TestFunctionality;
 use App\Model\Persistent\Functionality\TestVariantFunctionality;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\Model\Persistent\Repository\ProblemRepository;
 use App\Model\Persistent\Repository\TestRepository;
 use Nette\Application\UI\ITemplate;
@@ -44,11 +46,6 @@ class TestGeneratorService
      * @var TestRepository
      */
     protected $testRepository;
-
-    /**
-     * @var ProblemConditionTypeRepository
-     */
-    protected $problemConditionTypeRepository;
 
     /**
      * @var ProblemFinalFunctionality
@@ -91,21 +88,15 @@ class TestGeneratorService
     protected $problemDuplicityModel;
 
     /**
-     * @var array
+     * @var TestGeneratorHelper
      */
-    protected $testVariantsLabels;
-
-    /**
-     * @var array
-     */
-    protected $problemConditionTypesId;
+    protected $testGeneratorHelper;
 
     /**
      * TestGeneratorService constructor.
      * @param ConstraintEntityManager $entityManager
      * @param ProblemRepository $problemRepository
      * @param TestRepository $testRepository
-     * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemFinalFunctionality $problemFinalFunctionality
      * @param TestFunctionality $testFunctionality
      * @param TestVariantFunctionality $testVariantFunctionality
@@ -114,24 +105,24 @@ class TestGeneratorService
      * @param PluginContainer $pluginContainer
      * @param ProblemDuplicityModel $problemDuplicityModel
      * @param FilterFunctionality $filterFunctionality
+     * @param TestGeneratorHelper $testGeneratorHelper
      */
     public function __construct
     (
         ConstraintEntityManager $entityManager,
         ProblemRepository $problemRepository, TestRepository $testRepository,
-        ProblemConditionTypeRepository $problemConditionTypeRepository,
         ProblemFinalFunctionality $problemFinalFunctionality, TestFunctionality $testFunctionality, TestVariantFunctionality $testVariantFunctionality,
         GeneratorService $generatorService,
         FileService $fileService,
         PluginContainer $pluginContainer,
         ProblemDuplicityModel $problemDuplicityModel,
-        FilterFunctionality $filterFunctionality
+        FilterFunctionality $filterFunctionality,
+        TestGeneratorHelper $testGeneratorHelper
     )
     {
         $this->entityManager = $entityManager;
         $this->problemRepository = $problemRepository;
         $this->testRepository = $testRepository;
-        $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->problemFinalFunctionality = $problemFinalFunctionality;
         $this->testFunctionality = $testFunctionality;
         $this->testVariantFunctionality = $testVariantFunctionality;
@@ -140,65 +131,7 @@ class TestGeneratorService
         $this->pluginContainer = $pluginContainer;
         $this->problemDuplicityModel = $problemDuplicityModel;
         $this->filterFunctionality = $filterFunctionality;
-
-        $this->problemConditionTypesId = $this->problemConditionTypeRepository->findPairs([], 'id');
-
-        $this->testVariantsLabels = [
-            0 => 'A',
-            1 => 'B',
-            2 => 'C',
-            3 => 'D',
-            4 => 'E',
-            5 => 'F',
-            6 => 'G',
-            7 => 'H',
-            8 => 'I'
-        ];
-    }
-
-    /**
-     * @param ArrayHash $data
-     * @return array
-     */
-    protected function testVariantsToArray(ArrayHash $data): array
-    {
-        $variants = [];
-        for ($i = 0; $i < $data->variant; $i++) {
-            $variants[] = $this->testVariantsLabels[$i];
-        }
-        return $variants;
-    }
-
-    /**
-     * @param int $id
-     * @param ArrayHash $data
-     * @return array
-     */
-    protected function getProblemFilters(int $id, ArrayHash $data): array
-    {
-        $filters['isGenerated'] = false;
-        $filters['isTemplate'] = $data['isTemplate' . $id];
-        $filters['problemType'] = $data['problemType' . $id];
-        $filters['difficulty'] = $data['difficulty' . $id];
-        $filters['subCategory'] = $data['subCategory' . $id];
-        foreach ($this->problemConditionTypesId as $item) {
-            $filters['conditionType' . $item] = $data['conditionType' . $item . $id];
-        }
-        return $filters;
-    }
-
-    /**
-     * @param array $arr
-     * @return bool
-     */
-    protected function hasFree(array $arr): bool
-    {
-        foreach ($arr as $item) {
-            if ($item) {
-                return true;
-            }
-        }
-        return false;
+        $this->testGeneratorHelper = $testGeneratorHelper;
     }
 
     /**
@@ -218,146 +151,255 @@ class TestGeneratorService
     }
 
     /**
-     * @param Test $test
-     * @param string $variantLabel
+     * @param int $seq
      * @param ArrayHash $data
-     * @return Test
+     * @param Test $original
+     * @return bool
+     */
+    protected static function isProblemToGenerate(int $seq, ArrayHash $data, Test $original = null): bool
+    {
+        return !$original || ($original && $data->regenerateProblem[$seq]);
+    }
+
+    /**
+     * @param Test $test
+     * @param Variant $variant
+     * @return TestVariant
+     * @throws \App\Exceptions\EntityException
+     */
+    protected function prepareTestVariant(Test $test, Variant $variant): TestVariant
+    {
+        // Prepare TestVariant entity
+        return $this->testVariantFunctionality->create(
+            ArrayHash::from([
+                'variantLabel' => $variant->getLabel(),
+                'test' => $test
+            ]),
+            false
+        );
+    }
+
+    /**
+     * @param Test $test
+     * @param ArrayHash $data
+     * @param array $selectedProblems
+     * @param int $problemSeq
+     * @param Test|null $original
+     * @throws \App\Exceptions\EntityException
+     * @throws \ReflectionException
+     */
+    protected function createPersistentFilter(Test $test, ArrayHash $data, array $selectedProblems, int $problemSeq, Test $original = null): void
+    {
+        $this->filterFunctionality->create(
+            [
+                'selectedFilters' => $this->testGeneratorHelper->getProblemFilters($problemSeq, $data, $original),
+                'selectedProblems' => $selectedProblems,
+                'test' => $test,
+                'seq' => $problemSeq
+            ],
+            false
+        );
+    }
+
+    /**
+     * @param Test $test
+     * @param Test $original
+     * @param int $seq
+     * @throws \App\Exceptions\EntityException
+     * @throws \ReflectionException
+     */
+    protected function recreatePersistentFilter(Test $test, Test $original, int $seq): void
+    {
+        $this->filterFunctionality->create(
+            [
+                'selectedFilters' => $original->getFilters()->getValues()[$seq]->getSelectedFilters(),
+                'selectedProblems' => $original->getFilters()->getValues()[$seq]->getSelectedProblems(),
+                'test' => $test,
+                'seq' => $seq
+            ],
+            false
+        );
+    }
+
+    /**
+     * @param Test $test
+     * @param TestVariant $testVariant
+     * @param Variant $variant
+     * @param ArrayHash $data
+     * @param int $problemSeq
+     * @param Test|null $original
+     * @return TestVariant
+     * @throws GeneratorException
      * @throws ProblemDuplicityException
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      * @throws \ReflectionException
      */
-    protected function generateTestVariant(Test $test, string $variantLabel, ArrayHash $data): Test
+    protected function generateProblemVariant
+    (
+        Test $test, TestVariant $testVariant, Variant $variant, ArrayHash $data, int $problemSeq, Test $original = null
+    ): TestVariant
+    {
+        bdump('GENERATE PROBLEM VARIANT: ' . $variant->getLabel() . ' - ' . $problemSeq);
+
+        $problemTemplate = null;
+        $selectedProblems = $this->testGeneratorHelper::getSelectedProblems($problemSeq, $data, $original);
+
+        // In the case of random choice
+        if (!$selectedProblems) {
+
+            // Get all problems that match the filters
+            $filters = $this->testGeneratorHelper->getProblemFilters($problemSeq, $data, $original);
+
+            $problems = $this->problemRepository->findFiltered($filters);
+
+            bdump('SHOW PROBLEMS');
+            bdump($problems);
+
+            if(!$problems){
+                throw new GeneratorException('V rámci ' . ($problemSeq + 1) . '. úlohy nejsou k dispozici žádné záznamy.');
+            }
+
+            // Get final problems that match the filters
+            $filters['isTemplate'] = 0;
+            $finals = $this->problemRepository->findFiltered($filters);
+
+            $this->problemDuplicityModel->getFinalState()->setFree($finals);
+
+            while (true) {
+
+                // Generate index
+                $index = $this->generatorService->generateInteger(0, count($problems) - 1);
+
+                // Pick up the problem from problems array at generated index
+                $problemKeys = array_keys($problems);
+                $problem = $problems[$problemKeys[$index]];
+
+                $this->problemDuplicityModel->checkFinalDuplicityState(count($problems), count($finals));
+
+                // If the problems isn't template, mark used final problem
+                if (!$problem->isTemplate()) {
+                    if ($this->problemDuplicityModel->getFinalState()->addUsed($problem)) {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+
+            }
+        } // If more problems was selected, pick one of them randomly
+        else if (count($selectedProblems) > 1) {
+
+            // Get applied filters and extend in by not-template condition
+            $filters = $this->testGeneratorHelper->getProblemFilters($problemSeq, $data, $original);
+
+            $filters['isTemplate'] = 0;
+
+            // Get all final problem that match applied filters
+            $finals = $this->problemRepository->findFiltered($filters);
+
+            // Conjunct selected problems with filtered final problems
+            $selectedFinals = $this->conjunctProblems($selectedProblems, $finals);
+
+            // Prepare bool array for selected final problems
+            $this->problemDuplicityModel->getFinalState()->setFree($selectedFinals);
+
+            while (true) {
+
+                // Generate index
+                $inx = $this->generatorService->generateInteger(0, count($selectedProblems) - 1);
+
+                // Pick up the problem from selected problems array
+                $problem = $this->problemRepository->find($selectedProblems[$inx]);
+
+                $this->problemDuplicityModel->checkFinalDuplicityState(count($selectedProblems), count($selectedFinals));
+
+                // If the problem isn't template, mak used final problem
+                if (!$problem->isTemplate()) {
+                    if ($this->problemDuplicityModel->getFinalState()->addUsed($problem)) {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+
+            }
+
+        } // If only one problem was selected, just pick it up
+        else {
+            $problem = $this->problemRepository->find($selectedProblems[0]);
+            $this->problemDuplicityModel->getFinalState()->addUsed($problem);
+        }
+
+        // If the problem is template, it needs to be generated to it's final form
+        if ($problem->isTemplate()) {
+
+            // Store generated final problem to DB and switch problemId to it's ID
+            $problemTemplate = $problem;
+
+            $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
+
+            try {
+                bdump($problemTemplate);
+                $problem = $this->pluginContainer->getPlugin($problemTypeKeyLabel)->constructProblemFinal($problemTemplate, $this->problemDuplicityModel->getTemplateState()->getTemplateUsed($problemTemplate));
+            } catch (GeneratorException $e) {
+                throw new ProblemDuplicityException('Test nelze vygenerovat bez opakujících se úloh.');
+            }
+
+
+            bdump('FINAL FROM TEMPLATE - ADD USED');
+            bdump($problem);
+            $this->problemDuplicityModel->getTemplateState()->addUsed($problem);
+
+        }
+
+        // Attach current problem to the created test
+        if ($original) {
+            $testVariant = $this->testVariantFunctionality->attachProblem($testVariant, $problem, $original->isNewlineAfterProblem($problemSeq));
+        } else {
+            $testVariant = $this->testVariantFunctionality->attachProblem($testVariant, $problem, $data->{'newPage' . $problemSeq});
+        }
+
+        // Create persistent filter for currently attached problem
+        // Create each filter only once
+        if ($variant->getId() === 0) {
+            $this->createPersistentFilter($test, $data, $selectedProblems, $problemSeq, $original);
+        }
+
+        return $testVariant;
+    }
+
+    /**
+     * @param Test $test
+     * @param Variant $variant
+     * @param ArrayHash $data
+     * @param Test|null $original
+     * @return Test
+     * @throws GeneratorException
+     * @throws ProblemDuplicityException
+     * @throws \App\Exceptions\EntityException
+     * @throws \Nette\Utils\JsonException
+     * @throws \ReflectionException
+     */
+    protected function generateTestVariant(Test $test, Variant $variant, ArrayHash $data, Test $original = null): Test
     {
         // Prepare TestVariant entity
-        $testVariant = $this->testVariantFunctionality->create(
-            ArrayHash::from([
-                'variantLabel' => $variantLabel,
-                'test' => $test
-            ]),
-            false
-        );
+        $testVariant = $this->prepareTestVariant($test, $variant);
 
         // Iterate every added problem
-        for ($i = 0; $i < $test->getProblemsPerVariant(); $i++) {
-
-            $problemTemplate = null;
-            $selectedProblems = $data['problem' . $i];
-
-            // In the case of random choice
-            if (!$selectedProblems) {
-
-                // Get all problems that match the filters
-                $filters = $this->getProblemFilters($i, $data);
-                $problems = $this->problemRepository->findFiltered($filters);
-
-                // Get final problems that match the filters
-                $filters['isTemplate'] = 0;
-                $finals = $this->problemRepository->findFiltered($filters);
-
-                $this->problemDuplicityModel->getFinalState()->setFree($finals);
-
-                while (true) {
-
-                    // Generate index
-                    $index = $this->generatorService->generateInteger(0, count($problems) - 1);
-
-                    // Pick up the problem from problems array at generated index
-                    $problemKeys = array_keys($problems);
-                    $problem = $problems[$problemKeys[$index]];
-
-                    $this->problemDuplicityModel->checkFinalDuplicityState(count($problems), count($finals));
-
-                    // If the problems isn't template, mark used final problem
-                    if (!$problem->isTemplate()) {
-                        if ($this->problemDuplicityModel->getFinalState()->addUsed($problem)) {
-                            break;
-                        }
-                    } else {
-                        break;
-                    }
-
+        for ($seq = 0; $seq < $test->getProblemsPerVariant(); $seq++) {
+            if (self::isProblemToGenerate($seq, $data, $original)) {
+                $testVariant = $this->generateProblemVariant($test, $testVariant, $variant, $data, $seq, $original);
+            } else {
+                bdump($variant);
+                $testVariant = $this->testVariantFunctionality->attachAssociationFromOriginal($testVariant, $original->getProblemFinalAssociation($variant->getId(), $seq));
+                if ($variant->getId() === 0) {
+                    $this->recreatePersistentFilter($test, $original, $seq);
                 }
-            }
-            // If more problems was selected, pick one of them randomly
-            else if (count($selectedProblems) > 1) {
-
-                // Get applied filters and extend in by not-template condition
-                $filters = $this->getProblemFilters($i, $data);
-
-                $filters['isTemplate'] = 0;
-
-                // Get all final problem that match applied filters
-                $finals = $this->problemRepository->findFiltered($filters);
-
-                // Conjunct selected problems with filtered final problems
-                $selectedFinals = $this->conjunctProblems($selectedProblems, $finals);
-
-                // Prepare bool array for selected final problems
-                $this->problemDuplicityModel->getFinalState()->setFree($selectedFinals);
-
-                while (true) {
-
-                    // Generate index
-                    $inx = $this->generatorService->generateInteger(0, count($selectedProblems) - 1);
-
-                    // Pick up the problem from selected problems array
-                    $problem = $this->problemRepository->find($selectedProblems[$inx]);
-
-                    $this->problemDuplicityModel->checkFinalDuplicityState(count($selectedProblems), count($selectedFinals));
-
-                    // If the problem isn't template, mak used final problem
-                    if (!$problem->isTemplate()) {
-                        if ($this->problemDuplicityModel->getFinalState()->addUsed($problem)) {
-                            break;
-                        }
-                    } else {
-                        break;
-                    }
-
-                }
-
-            } // If only one problem was selected, just pick it up
-            else {
-                $problem = $this->problemRepository->find($selectedProblems[0]);
-                $this->problemDuplicityModel->getFinalState()->addUsed($problem);
-            }
-
-            // If the problem is template, it needs to be generated to it's final form
-            if ($problem->isTemplate()) {
-
-                // Store generated final problem to DB and switch problemId to it's ID
-                $problemTemplate = $problem;
-
-                $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
-
-                try {
-                    bdump($problemTemplate);
-                    $problem = $this->pluginContainer->getPlugin($problemTypeKeyLabel)->constructProblemFinal($problemTemplate, $this->problemDuplicityModel->getTemplateState()->getTemplateUsed($problemTemplate));
-                } catch (GeneratorException $e) {
-                    throw new ProblemDuplicityException('Test nelze vygenerovat bez opakujících se úloh.');
-                }
-
-                $this->problemDuplicityModel->getTemplateState()->addUsed($problem);
-
-            }
-
-            // Attach current problem to the created test
-            $testVariant = $this->testVariantFunctionality->attachProblem($testVariant, $problem, $data->{'newPage' . $i});
-
-            // Create persistent filter for currently attached problem
-            if($variantLabel === 'A'){
-                $this->filterFunctionality->create(
-                    ArrayHash::from([
-                        'selectedFilters' => $this->getProblemFilters($i, $data),
-                        'selectedProblems' => $selectedProblems,
-                        'test' => $test,
-                        'seq' => $i
-                    ]),
-                    false
-                );
             }
         }
+
+        bdump($testVariant);
 
         $test->addTestVariant($testVariant);
 
@@ -367,6 +409,7 @@ class TestGeneratorService
     /**
      * @param ArrayHash $data
      * @return Test|null
+     * @throws GeneratorException
      * @throws ProblemDuplicityException
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
@@ -374,18 +417,12 @@ class TestGeneratorService
      */
     public function generateTest(ArrayHash $data): ?Test
     {
-        $variants = $this->testVariantsToArray($data);
+        bdump('GENERATE TEST');
+        bdump($data);
 
-        $test = $this->testFunctionality->create(ArrayHash::from([
-            'logo' => $data->logo,
-            'term' => $data->testTerm,
-            'schoolYear' => $data->schoolYear,
-            'testNumber' => (int)$data->testNumber,
-            'groups' => $data->groups,
-            'introductionText' => $data->introductionText,
-            'variantsCnt' => $data->variant,
-            'problemsPerVariant' => $data->problemsCnt,
-        ]), false);
+        $variants = $this->testGeneratorHelper::getVariants($data);
+
+        $test = $this->testFunctionality->create($this->testGeneratorHelper::preprocessTestBasicData($data), false);
 
         if ($test) {
             foreach ($variants as $variant) {
@@ -393,20 +430,38 @@ class TestGeneratorService
             }
         }
 
-//        $this->entityManager->flush();
+        $this->entityManager->flush();
 
         return $test;
     }
 
     /**
-     * @param Test $test
-     * @param ITemplate $template
+     * @param int $id
      * @param ArrayHash $data
      * @return Test|null
+     * @throws GeneratorException
+     * @throws ProblemDuplicityException
+     * @throws \App\Exceptions\EntityException
+     * @throws \Nette\Utils\JsonException
+     * @throws \ReflectionException
      */
-    public function regenerateTest(Test $test, ITemplate $template, ArrayHash $data): ?Test
+    public function regenerateTest(int $id, ArrayHash $data): ?Test
     {
-        return $test;
+        bdump('REGENERATE TEST');
+        $original = $this->testRepository->find($id);
+        $data = $this->testGeneratorHelper::preprocessTestBasicData($data, $original);
+        $variants = $this->testGeneratorHelper::getVariants($data);
+        $test = $this->testFunctionality->create($data, false);
+
+        if ($test) {
+            foreach ($variants as $variant) {
+                $test = $this->generateTestVariant($test, $variant, $data, $original);
+            }
+        }
+
+        $this->entityManager->flush();
+
+        return null;
     }
 
     /**
@@ -419,7 +474,7 @@ class TestGeneratorService
         $template->test = $test;
         foreach ($test->getTestVariants()->getValues() as $testVariant) {
             $template->testVariant = $testVariant;
-            file_put_contents(DATA_DIR . '/tests/' . $test->getId() . '/variant_' . Strings::lower($testVariant->getLabel()) . '.tex', (string) $template);
+            file_put_contents(DATA_DIR . '/tests/' . $test->getId() . '/variant_' . Strings::lower($testVariant->getLabel()) . '.tex', (string)$template);
         }
         $this->fileService->createTestZip($test);
     }

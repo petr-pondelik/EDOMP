@@ -170,6 +170,25 @@ class Test extends BaseEntity
     }
 
     /**
+     * @param int $seq
+     * @return bool
+     */
+    public function isNewlineAfterProblem(int $seq): bool
+    {
+        return $this->getTestVariants()->getValues()[0]->getProblemFinalAssociations()->getValues()[$seq]->isNextPage();
+    }
+
+    /**
+     * @param int $variantId
+     * @param int $associationId
+     * @return ProblemFinalTestVariantAssociation
+     */
+    public function getProblemFinalAssociation(int $variantId, int $associationId): ProblemFinalTestVariantAssociation
+    {
+        return $this->getTestVariants()->getValues()[$variantId]->getProblemFinalAssociations()->getValues()[$associationId];
+    }
+
+    /**
      * @return string
      */
     public function getIntroductionText(): string

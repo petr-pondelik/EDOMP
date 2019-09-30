@@ -8,13 +8,11 @@
 
 namespace App\Exceptions;
 
-use Nette\InvalidArgumentException;
-
 /**
  * Class StringFormatException
  * @package App\Exceptions
  */
-class StringFormatException extends InvalidArgumentException
+class StringFormatException extends EDOMPException
 {
 
 }

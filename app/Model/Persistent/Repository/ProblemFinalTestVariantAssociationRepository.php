@@ -22,7 +22,7 @@ class ProblemFinalTestVariantAssociationRepository extends BaseRepository
     {
         $associations = $this->findBy(['test' => $testId]);
         $res = [];
-        foreach ($associations as $association){
+        foreach ($associations as $association) {
             $res[$association->getVariant()][] = $association;
         }
         return $res;

@@ -232,6 +232,7 @@ services:
 
 	# Services
 	service.newtopapi.client: App\Services\NewtonApiClient(%newtonApiHost%)
+	service.mail: App\Services\MailService(..., ..., %templatesDir%)
 	service.validator: App\Services\Validator
 	service.container.plugin: App\Services\PluginContainer
 	service.generator: App\Services\GeneratorService
@@ -259,6 +260,7 @@ services:
 	helper.flashes.translator: App\Helpers\FlashesTranslator
 	helper.regular.expressions: App\Helpers\RegularExpressions
 	helper.filter.view: App\Helpers\FilterViewHelper
+	helper.generator.test: App\Helpers\TestGeneratorHelper
 
 	# Plugins
 	plugin.template.equation.linear: App\Plugins\LinearEquationPlugin

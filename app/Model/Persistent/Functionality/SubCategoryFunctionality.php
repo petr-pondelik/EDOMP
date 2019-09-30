@@ -13,7 +13,6 @@ use App\Model\Persistent\Entity\SubCategory;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\CategoryRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class SubCategoryFunctionality
@@ -45,12 +44,12 @@ class SubCategoryFunctionality extends BaseFunctionality
     }
 
     /**
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $subcategory = new SubCategory();
         $category = $this->categoryRepository->find($data->category);
@@ -65,12 +64,12 @@ class SubCategoryFunctionality extends BaseFunctionality
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         $subcategory = $this->repository->find($id);
         if(!empty($data->label)){

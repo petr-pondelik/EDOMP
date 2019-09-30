@@ -12,7 +12,7 @@ namespace App\Exceptions;
  * Class EquationException
  * @package App\Exceptions
  */
-class EquationException extends \Exception
+class EquationException extends EDOMPException
 {
 
 }

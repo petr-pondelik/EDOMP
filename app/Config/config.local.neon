@@ -25,3 +25,9 @@ doctrine:
 	dbname: edomp
 	metadata:
 		App: %appDir%
+
+mail:
+    smtp: true
+    port: 1025
+    host: localhost
+    username: test@local

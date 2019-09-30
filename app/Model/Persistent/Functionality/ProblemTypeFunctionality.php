@@ -13,7 +13,6 @@ use App\Model\Persistent\Entity\ProblemType;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
 use Doctrine\ORM\EntityNotFoundException;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class ProblemTypeFunctionality
@@ -37,12 +36,12 @@ class ProblemTypeFunctionality extends BaseFunctionality
     }
 
     /**
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $problemType = new ProblemType();
         $problemType->setLabel($data->label);
@@ -55,13 +54,13 @@ class ProblemTypeFunctionality extends BaseFunctionality
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws EntityNotFoundException
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         $problemType = $this->repository->find($id);
         if(!$problemType){

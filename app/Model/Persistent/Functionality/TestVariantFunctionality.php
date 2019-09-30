@@ -11,11 +11,9 @@ namespace App\Model\Persistent\Functionality;
 use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
 use App\Model\Persistent\Entity\ProblemFinalTestVariantAssociation;
-use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use App\Model\Persistent\Entity\TestVariant;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\TestVariantRepository;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class TestVariantFunctionality
@@ -38,12 +36,12 @@ class TestVariantFunctionality extends BaseFunctionality
     }
 
     /**
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $entity = new TestVariant();
         $entity->setLabel($data->variantLabel);
@@ -54,11 +52,11 @@ class TestVariantFunctionality extends BaseFunctionality
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      */
-    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         return null;
     }
@@ -76,6 +74,25 @@ class TestVariantFunctionality extends BaseFunctionality
         $association->setTestVariant($testVariant);
         $association->setProblemFinal($problemFinal);
         $association->setNextPage($newPage);
+        $this->em->persist($association);
+        $testVariant->addProblemFinalAssociation($association);
+        $this->em->persist($testVariant);
+        return $testVariant;
+    }
+
+    /**
+     * @param TestVariant $testVariant
+     * @param ProblemFinalTestVariantAssociation $original
+     * @return TestVariant
+     * @throws \App\Exceptions\EntityException
+     */
+    public function attachAssociationFromOriginal(TestVariant $testVariant, ProblemFinalTestVariantAssociation $original): TestVariant
+    {
+        bdump('ATTACH ASSOCIATION FROM ORIGINAL');
+        $association = new ProblemFinalTestVariantAssociation();
+        $association->setTestVariant($testVariant);
+        $association->setProblemFinal($original->getProblemFinal());
+        $association->setNextPage($original->isNextPage());
         $this->em->persist($association);
         $testVariant->addProblemFinalAssociation($association);
         $this->em->persist($testVariant);

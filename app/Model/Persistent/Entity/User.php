@@ -147,10 +147,11 @@ class User extends BaseEntity
 
     /**
      * @param string $password
+     * @param bool $hash
      */
-    public function setPassword(string $password): void
+    public function setPassword(string $password, bool $hash = true): void
     {
-        $this->password = Passwords::hash($password);
+        $this->password = $hash ? Passwords::hash($password) : $password;
     }
 
     /**

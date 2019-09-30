@@ -16,7 +16,6 @@ use App\Model\Persistent\Repository\GroupRepository;
 use App\Model\Persistent\Repository\SuperGroupRepository;
 use App\Model\Persistent\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class GroupFunctionality
@@ -62,12 +61,12 @@ class GroupFunctionality extends BaseFunctionality
     }
 
     /**
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $group = new Group();
         $group->setLabel($data->label);
@@ -87,12 +86,12 @@ class GroupFunctionality extends BaseFunctionality
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         $group = $this->repository->find($id);
         if(isset($data->label)){

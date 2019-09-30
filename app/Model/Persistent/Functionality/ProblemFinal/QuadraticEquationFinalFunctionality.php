@@ -21,7 +21,6 @@ use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Model\Persistent\Traits\ProblemFinalFunctionalityTrait;
 use Doctrine\ORM\EntityNotFoundException;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class QuadraticEquationFinalFunctionality
@@ -58,13 +57,13 @@ class QuadraticEquationFinalFunctionality extends BaseFunctionality
     }
 
     /**
-     * @param ArrayHash $data
-     * @param array|null $conditions
+     * @param iterable $data
      * @param bool $flush
+     * @param array|null $conditions
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, bool $flush = true, array $conditions = null): ?BaseEntity
+    public function create(iterable $data, bool $flush = true, array $conditions = null): ?BaseEntity
     {
         $entity = new QuadraticEquationFinal();
         $entity = $this->setBasics($entity, $data);
@@ -87,14 +86,14 @@ class QuadraticEquationFinalFunctionality extends BaseFunctionality
 
     /**
      * @param int $id
-     * @param ArrayHash $data
-     * @param array|null $conditions
+     * @param iterable $data
      * @param bool $flush
+     * @param array|null $conditions
      * @return BaseEntity|null
      * @throws EntityNotFoundException
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data, bool $flush = true, array $conditions = null): ?BaseEntity
+    public function update(int $id, iterable $data, bool $flush = true, array $conditions = null): ?BaseEntity
     {
         $entity = $this->repository->find($id);
         if(!$entity){

@@ -16,8 +16,6 @@ use App\Model\Persistent\Repository\RoleRepository;
 use App\Model\Persistent\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityNotFoundException;
-use Nette\Security\Passwords;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class UserFunctionality
@@ -55,12 +53,12 @@ class UserFunctionality extends BaseFunctionality
     }
 
     /**
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $user = new User();
         $user->setUsername($data->username);
@@ -84,13 +82,13 @@ class UserFunctionality extends BaseFunctionality
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws EntityNotFoundException
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         $user = $this->repository->find($id);
         if(!$user){

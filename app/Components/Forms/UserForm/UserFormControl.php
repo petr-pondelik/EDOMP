@@ -14,6 +14,7 @@ use App\Components\Forms\EntityFormControl;
 use App\Model\Persistent\Functionality\UserFunctionality;
 use App\Model\Persistent\Repository\GroupRepository;
 use App\Model\Persistent\Repository\RoleRepository;
+use App\Services\MailService;
 use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
@@ -25,6 +26,11 @@ use Nette\Utils\ArrayHash;
  */
 class UserFormControl extends EntityFormControl
 {
+    /**
+     * @var MailService
+     */
+    protected $mailService;
+
     /**
      * @var GroupRepository
      */
@@ -38,6 +44,7 @@ class UserFormControl extends EntityFormControl
     /**
      * UserFormControl constructor.
      * @param Validator $validator
+     * @param MailService $mailService
      * @param UserFunctionality $userFunctionality
      * @param GroupRepository $groupRepository
      * @param RoleRepository $roleRepository
@@ -45,11 +52,14 @@ class UserFormControl extends EntityFormControl
     public function __construct
     (
         Validator $validator,
+        MailService $mailService,
         UserFunctionality $userFunctionality,
-        GroupRepository $groupRepository, RoleRepository $roleRepository
+        GroupRepository $groupRepository,
+        RoleRepository $roleRepository
     )
     {
         parent::__construct($validator);
+        $this->mailService = $mailService;
         $this->functionality = $userFunctionality;
         $this->groupRepository = $groupRepository;
         $this->roleRepository = $roleRepository;
@@ -143,7 +153,10 @@ class UserFormControl extends EntityFormControl
         try{
             // Get ID of logged user
             $values->userId = $this->presenter->user->id;
-            $this->functionality->create($values);
+            $values->password = 'TESTPASSWORD';
+            $user = $this->functionality->create($values);
+            $user->setPassword($values->password, false);
+            $this->mailService->sendInvitationEmail($user);
             $this->onSuccess();
         } catch (\Exception $e){
             // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.

@@ -27,7 +27,7 @@ class FilterViewControl extends EDOMPControl
     /**
      * @var Filter
      */
-    protected $filter;
+    protected $entity;
 
     /**
      * FilterViewControl constructor.
@@ -41,24 +41,24 @@ class FilterViewControl extends EDOMPControl
 
     public function render(): void
     {
-        $this->template->filter = $this->filter;
+        $this->template->entity = $this->entity;
+        $this->template->processedFilters = $this->filterViewHelper->preprocessFilters($this->entity->getSelectedFilters());
         $this->template->render(__DIR__ . '/templates/default.latte');
     }
 
     /**
      * @return Filter
      */
-    public function getFilter(): Filter
+    public function getEntity(): Filter
     {
-        return $this->filter;
+        return $this->entity;
     }
 
     /**
-     * @param Filter $filter
+     * @param Filter $entity
      */
-    public function setFilter(Filter $filter): void
+    public function setEntity(Filter $entity): void
     {
-        $filter->setSelectedFilters($this->filterViewHelper->preprocessFilters($filter->getSelectedFilters()));
-        $this->filter = $filter;
+        $this->entity = $entity;
     }
 }

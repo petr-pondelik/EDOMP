@@ -29,6 +29,17 @@ class ProblemCondition extends BaseEntity
     protected $toStringAttr = 'label';
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     * @Assert\Type(
+     *     type="string",
+     *     message="LabelFull must be {{ type }}."
+     * )
+     *
+     * @var string|null
+     */
+    protected $labelFull;
+
+    /**
      * @ORM\Column(type="integer", nullable=false)
      * @Assert\NotBlank(
      *     message="Accessor can't be blank."
@@ -134,5 +145,21 @@ class ProblemCondition extends BaseEntity
     public function setValidationFunction(?ValidationFunction $validationFunction): void
     {
         $this->validationFunction = $validationFunction;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLabelFull(): ?string
+    {
+        return $this->labelFull;
+    }
+
+    /**
+     * @param string|null $labelFull
+     */
+    public function setLabelFull(?string $labelFull): void
+    {
+        $this->labelFull = $labelFull;
     }
 }
