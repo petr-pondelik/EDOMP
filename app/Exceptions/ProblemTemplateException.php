@@ -12,7 +12,7 @@ namespace App\Exceptions;
  * Class ProblemTemplateException
  * @package App\Exceptions
  */
-class ProblemTemplateException extends \Exception
+class ProblemTemplateException extends EDOMPException
 {
 
 }

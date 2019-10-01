@@ -5,6 +5,11 @@
         <div class="card-header d-flex justify-content-between">
             <h1 class="col-6 pl-0 mb-0 font-weight-bold card-heading">
                 <i class="fas fa-file-alt mr-3"></i>Test {$entity->getId()}
+                {if $entity->isClosed()}
+                    <span class="text-danger text-status ml-2">(Uzavřený)</span>
+                {else}
+                    <span class="text-success text-status ml-2">(Otevřený)</span>
+                {/if}
             </h1>
             <div>
                 <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
@@ -24,19 +29,6 @@
                 </div>
             {/snippet}
 
-            <div class="card card-shadow border-light mb-4">
-                <div class="card-header">
-                    <h4>Status</h4>
-                </div>
-                <div class="card-body text-center">
-                    {if $entity->isClosed()}
-                        <span class="text-danger text-status">Uzavřený</span>
-                        {else}
-                        <span class="text-success text-status">Otevřený</span>
-                    {/if}
-                </div>
-            </div>
-
             {if !$entity->isClosed()}
 
                 <div class="card card-shadow border-light mb-5">
@@ -49,8 +41,8 @@
 
                         <div class="d-flex justify-content-center mb-2 mt-2">
                             <div class="form-group col-12">
-                                {label variant}
-                                {input variant}
+                                {label variantsCnt}
+                                {input variantsCnt}
                             </div>
                         </div>
 
@@ -204,9 +196,7 @@
 
             {/if}
 
-            {var $i = 0}
-
-            {foreach $entity->getTestVariants()->getValues() as $variant}
+            {foreach $entity->getTestVariants()->getValues() as $i => $variant}
 
                 <div class="card card-shadow border-light mb-5">
 
@@ -216,34 +206,30 @@
 
                     <div class="card-body">
 
-                        {var $j = 0}
+                        {foreach $variant->getProblemFinalAssociations()->getValues() as $j => $problemFinalAssociation}
 
-                        {foreach $variant->getProblemFinalAssociations()->getValues() as $problemFinalAssociation}
-
-                            <div class="card card-shadow border-light mb-5">
-
-                                <div class="card-body">
+                            <div class="mb-5 {if $j !== 0}pt-5 border-top{/if}">
 
                                     <div class="form-group">
-                                        {label problem_final_id_disabled_{$i}_$j}
-                                        {input problem_final_id_disabled_{$i}_$j}
+                                        {label problemFinalIdDisabled{$i}{$j}}
+                                        {input problemFinalIdDisabled{$i}{$j}}
                                     </div>
 
                                     <div class="form-group">
-                                        {label problem_template_id_disabled_{$i}_$j}
-                                        {input problem_template_id_disabled_{$i}_$j}
+                                        {label problemTemplateIdDisabled{$i}{$j}}
+                                        {input problemTemplateIdDisabled{$i}{$j}}
                                     </div>
 
                                     <p class="text-center mt-5 mb-5">{$problemFinalAssociation->getProblemFinal()->getBody()}</p>
 
                                     <div class="form-group">
-                                        {label success_rate_{$i}_$j}
-                                        {input success_rate_{$i}_$j}
+                                        {label successRate{$i}{$j}}
+                                        {input successRate{$i}{$j}}
                                     </div>
 
                                     {snippet successRate{$i}{$j}ErrorSnippet}
                                         <div n:if="$control['form']->hasErrors()" class="mt-2">
-                                            <p n:foreach="$control['form']['success_rate_' . $i . '_' . $j]->errors as $error"
+                                            <p n:foreach="$control['form']['successRate' . $i . $j]->errors as $error"
                                                     class="alert alert-danger border-0 alert-dismissible fade show"
                                                     role="alert">
                                                 {$error}
@@ -255,19 +241,13 @@
                                         </div>
                                     {/snippet}
 
-                                </div>
-
                             </div>
-
-                            {var $j += 1}
 
                         {/foreach}
 
                     </div>
 
                 </div>
-
-                {var $i += 1}
 
             {/foreach}
 

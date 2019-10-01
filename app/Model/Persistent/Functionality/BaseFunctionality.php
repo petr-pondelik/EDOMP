@@ -12,7 +12,6 @@ use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\BaseRepository;
 use Doctrine\ORM\EntityNotFoundException;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class BaseFunctionality
@@ -43,19 +42,19 @@ abstract class BaseFunctionality
     }
 
     /**
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      */
-    abstract public function create(ArrayHash $data, bool $flush = true): ?BaseEntity;
+    abstract public function create(iterable $data, bool $flush = true): ?BaseEntity;
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      */
-    abstract public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity;
+    abstract public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity;
 
     /**
      * @param int $id

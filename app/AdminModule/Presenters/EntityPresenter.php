@@ -78,6 +78,19 @@ abstract class EntityPresenter extends AdminPresenter
     }
 
     /**
+     * @return EntityFormControl
+     */
+    public function getEntityForm(): EntityFormControl
+    {
+        return $this['entityForm'];
+    }
+
+    public function actionCreate(): void
+    {
+        $this->getEntityForm()->initComponents();
+    }
+
+    /**
      * @param int $id
      * @throws \Nette\Application\AbortException
      */
@@ -91,8 +104,8 @@ abstract class EntityPresenter extends AdminPresenter
         }
         $formControl = $this['entityForm'];
         $formControl->setEntity($entity);
+        $this->getEntityForm()->initComponents();
         $this->template->entity = $entity;
-//        $formControl->initComponents();
         if(!$formControl->isSubmitted()){
             $formControl->setDefaults();
         }
@@ -163,9 +176,13 @@ abstract class EntityPresenter extends AdminPresenter
         return $control;
     }
 
+    public function renderCreate(): void
+    {
+
+    }
+
     public function renderUpdate(): void
     {
-        $formControl = $this['entityForm'];
-        $formControl->initComponents();
+        $this->getEntityForm()->fillComponents();
     }
 }

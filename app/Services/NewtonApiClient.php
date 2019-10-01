@@ -113,9 +113,7 @@ class NewtonApiClient
      */
     public function factor(string $expression)
     {
-        //bdump('FACTOR');
         $expression = $this->newtonParser::newtonFormat($expression);
-        //bdump($expression);
 
         try{
             $res = $this->client->request('GET', $this->newtonApiHost . self::FACTOR . $expression);

@@ -13,7 +13,6 @@ use App\Model\Persistent\Entity\Logo;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\LogoRepository;
 use Doctrine\ORM\EntityNotFoundException;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class LogoFunctionality
@@ -37,12 +36,12 @@ class LogoFunctionality extends BaseFunctionality
     }
 
     /**
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $logo = new Logo();
         $logo->setExtensionTmp($data->extension_tmp);
@@ -56,13 +55,13 @@ class LogoFunctionality extends BaseFunctionality
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws EntityNotFoundException
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         $logo = $this->repository->find($id);
         if(!$logo){

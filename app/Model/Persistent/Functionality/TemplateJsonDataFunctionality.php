@@ -14,7 +14,6 @@ use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
 use App\Model\Persistent\Repository\TemplateJsonDataRepository;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class TemplateJsonDataFunctionality
@@ -53,14 +52,14 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
     }
 
     /**
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @param int|null $templateId
      * @param int|null $conditionTypeId
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      */
-    public function create(ArrayHash $data, bool $flush = true, int $templateId = null, int $conditionTypeId = null): ?BaseEntity
+    public function create(iterable $data, bool $flush = true, int $templateId = null, int $conditionTypeId = null): ?BaseEntity
     {
         if(!$templateId){
             $templateId = $this->problemTemplateRepository->getSequenceVal();
@@ -89,11 +88,11 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      */
-    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         return null;
     }

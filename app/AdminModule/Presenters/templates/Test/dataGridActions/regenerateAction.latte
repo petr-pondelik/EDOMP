@@ -1,0 +1,5 @@
+{if $item->isClosed()}
+    <a href="{plink Test:default do => regenerate, id => $item->getId()}" class="btn btn-primary btn-sm ajax" title="Přegenerovat test">
+        <i class="fa fa-sync-alt"></i>
+    </a>
+{/if}

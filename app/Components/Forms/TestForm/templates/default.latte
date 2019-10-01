@@ -12,8 +12,8 @@
 
                 <div class="d-flex justify-content-center mb-2 mt-2">
                     <div class="form-group col-12">
-                        {label variant}
-                        {input variant}
+                        {label variantsCnt}
+                        {input variantsCnt}
                     </div>
                 </div>
 
@@ -260,7 +260,7 @@
                                 <div n:snippet="snippetProblem-{$i}" class="form-group mt-3 mb-3">
 
                                     {label 'problem_' . $i}
-                                    {input 'problem_' . $i, class => 'form-control filter problem-select hidden'}
+                                    {input 'problem_' . $i, class => 'form-control filter problem-select'}
 
                                     {control problemStack$i}
 
@@ -326,7 +326,7 @@
                                 <div n:snippet="snippetProblem-{$i}" class="form-group mt-3 mb-3">
 
                                     {label 'problem_' . $i}
-                                    {input 'problem_' . $i, class => 'form-control filter problem-select hidden'}
+                                    {input 'problem_' . $i, class => 'form-control filter problem-select'}
 
                                     {control problemStack$i}
 

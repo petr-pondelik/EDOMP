@@ -23,7 +23,7 @@
     {control headerBar}
 {/if}
 
-<main id="content" class="mt-2">
+<main id="content" class="mt-2 pb-5">
 
     {if $presenter->name !== 'Admin:Sign'}
         {control sectionHelpModal}
@@ -40,7 +40,7 @@
         {if !$presenter->isLinkCurrent('Homepage:*')}
             <nav class="ml-4 mr-4 mt-3 {ifset isEdit}breadcrumb-edit{/ifset}"
                  id="breadcrumb-navigation" aria-label="breadcrumb">
-                <ol class="mb-0 pt-1 pb-1 breadcrumb bg-light">
+                <ol class="mb-0 pt-2 pb-2 breadcrumb bg-white">
                     <li class="breadcrumb-item"><a n:href="Homepage:default"><i class="fas fa-home"></i></a></li>
                     {ifset headingFirstLink}
                         {include headingFirstLink}

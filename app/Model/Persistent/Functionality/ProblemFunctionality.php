@@ -44,24 +44,24 @@ class ProblemFunctionality extends BaseFunctionality
     }
 
     /**
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      */
-    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         return null;
     }
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws EntityNotFoundException
      * @throws \App\Exceptions\EntityException
      */
-    public function update(int $id, ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         $problem = $this->repository->find($id);
         if(!$problem){

@@ -91,7 +91,7 @@ abstract class TestFormControl extends EntityFormControl
         $groups = $this->groupRepository->findAllowed($this->presenter->user);
         $logos = $this->logoRepository->findAssoc([], 'id');
 
-        $form->addSelect('variant', 'Počet variant *', [
+        $form->addSelect('variantsCnt', 'Počet variant *', [
             1 => 1,
             2 => 2,
             3 => 3,
@@ -104,8 +104,8 @@ abstract class TestFormControl extends EntityFormControl
             ->setHtmlAttribute('class', 'form-control col-12 selectpicker')
             ->setDefaultValue(true);
 
-        $form->addHidden('problemsCnt')->setDefaultValue(1)
-            ->setHtmlId('problemsCnt');
+        $form->addHidden('problemsPerVariant')->setDefaultValue(1)
+            ->setHtmlId('problemsPerVariant');
 
         $form->addSelect('logo', 'Logo *', $logos)
             ->setPrompt('Zvolte logo')
@@ -143,6 +143,7 @@ abstract class TestFormControl extends EntityFormControl
     {
         bdump('HANDLE FORM VALIDATE');
         $values = $form->getValues();
+        bdump($values);
         $validateFields['logo'] = new ValidatorArgument($values->logo, 'notEmpty');
         $validateFields['groups'] = new ValidatorArgument($values->groups, 'arrayNotEmpty');
         $validateFields['schoolYear'] = new ValidatorArgument($values->schoolYear, 'schoolYear');

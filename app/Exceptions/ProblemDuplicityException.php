@@ -13,7 +13,7 @@ namespace App\Exceptions;
  * Class ProblemDuplicityException
  * @package App\Exceptions
  */
-class ProblemDuplicityException extends \Exception
+class ProblemDuplicityException extends EDOMPException
 {
 
 }

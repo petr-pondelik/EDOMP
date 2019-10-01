@@ -44,30 +44,13 @@ abstract class EntityFormControl extends FormControl
         return $form;
     }
 
-    /**
-     * @return string
-     * @throws \ReflectionException
-     */
-    public function getDir(): string
-    {
-        return dirname((new ReflectionClass(static::class))->getFileName());
-    }
-
-    /**
-     * @return string
-     */
-    public function getTemplateName(): string
-    {
-        return $this->isUpdate() ? 'update' : 'create';
-    }
-
-    /**
-     * @throws \ReflectionException
-     */
-    public function render(): void
-    {
-        $this->template->render($this->getDir() . '/templates/' . $this->getTemplateName() . '.latte');
-    }
+//    /**
+//     * @return string
+//     */
+//    public function getTemplateName(): string
+//    {
+//        return $this->isUpdate() ? 'update' : 'create';
+//    }
 
     /**
      * @param Form $form

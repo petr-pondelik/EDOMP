@@ -17,6 +17,7 @@ use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
+use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Functionality\TestFunctionality;
 use App\Model\Persistent\Repository\LogoRepository;
 use App\Model\Persistent\Repository\ProblemRepository;
@@ -129,6 +130,33 @@ class TestPresenter extends EntityPresenter
     }
 
     /**
+     * @param int $id
+     * @throws \Nette\Application\AbortException
+     */
+    public function actionRegenerate(int $id): void
+    {
+        bdump('ACTION REGENERATE');
+        $entity = $this->repository->find($id);
+
+        if(!$entity->isClosed()){
+            $this->flashMessage('Pro přegenerování je nutné test nejprve uzavřít.', 'danger');
+            $this->redirect('default');
+        }
+
+        if(!$this->isEntityAllowed($entity)){
+            $this->flashMessage('Nedostatečná přístupová práva.', 'danger');
+            $this->redirect('default');
+        }
+        $formControl = $this['entityForm'];
+        $formControl->setEntity($entity);
+        $this->getEntityForm()->initComponents();
+        $this->template->entity = $entity;
+        if(!$formControl->isSubmitted()){
+            $formControl->setDefaults();
+        }
+    }
+
+    /**
      * @param array $filters
      * @throws \Exception
      */
@@ -148,20 +176,35 @@ class TestPresenter extends EntityPresenter
             ->setTemplate(__DIR__ . '/templates/Test/dataGridActions/closeAction.latte');
         $grid->addAction('delete', '', 'delete!')
             ->setIcon('trash')
-            ->setClass('btn btn-danger btn-sm ajax');
+            ->setClass('btn btn-danger btn-sm ajax')
+            ->setTitle('Odstranit test')
+            ->addAttributes([
+                'data-toggle' => 'tooltip'
+            ]);
         $grid->addAction('downloadSource', '', 'downloadSource!', ['id'])
             ->setIcon('download')
-            ->setClass('btn btn-primary btn-sm');
+            ->setClass('btn btn-primary btn-sm')
+            ->setTitle('Stáhnout archiv testu')
+            ->addAttributes([
+                'data-toggle' => 'tooltip'
+            ]);
         $grid->addAction('pdf', '', 'pdfOverleaf!', ['id'])
             ->setIcon('file-pdf')
             ->setClass('btn btn-primary btn-sm')
+            ->setTitle('Přesměrovat ke kompilaci')
             ->addAttributes([
-                'target' => '_blank'
+                'target' => '_blank',
+                'data-toggle' => 'tooltip'
             ]);
+        $grid->addAction('regenerate', '', 'regenerate!')
+            ->setTemplate(__DIR__ . '/templates/Test/dataGridActions/regenerateAction.latte');
         $grid->addAction('update', '', 'update!')
             ->setIcon('edit')
             ->setClass('btn btn-primary btn-sm')
-            ->setTitle('Editovat');
+            ->setTitle('Upravit test')
+            ->addAttributes([
+                'data-toggle' => 'tooltip'
+            ]);
         return $grid;
     }
 
@@ -193,6 +236,15 @@ class TestPresenter extends EntityPresenter
     {
         $this->fileService->moveTestDirToPublic($id);
         $this->redirectUrl('https://www.overleaf.com/docs?snip_uri=http://wiedzmin.4fan.cz/data_public/tests/test_' . $id . '.zip');
+    }
+
+    /**
+     * @param int $id
+     * @throws \Nette\Application\AbortException
+     */
+    public function handleRegenerate(int $id): void
+    {
+        $this->redirect('regenerate', $id);
     }
 
     /**
@@ -244,6 +296,13 @@ class TestPresenter extends EntityPresenter
 
     public function renderCreate(): void
     {
-        $this['entityForm']->initComponents();
+//        if($this->getParameter('filters') === null){
+            $this->getEntityForm()->fillComponents();
+//        }
+    }
+
+    public function renderRegenerate(): void
+    {
+        $this->getEntityForm()->fillComponents();
     }
 }

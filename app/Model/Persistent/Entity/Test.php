@@ -9,7 +9,9 @@
 namespace App\Model\Persistent\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -149,6 +151,13 @@ class Test extends BaseEntity
     protected $testVariants;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Model\Persistent\Entity\Filter", mappedBy="test", cascade={"all"})
+     *
+     * @var Collection
+     */
+    protected $filters;
+
+    /**
      * Test constructor.
      */
     public function __construct()
@@ -157,6 +166,26 @@ class Test extends BaseEntity
         $this->isClosed = false;
         $this->groups = new ArrayCollection();
         $this->testVariants = new ArrayCollection();
+        $this->filters = new ArrayCollection();
+    }
+
+    /**
+     * @param int $seq
+     * @return bool
+     */
+    public function isNewlineAfterProblem(int $seq): bool
+    {
+        return $this->getTestVariants()->getValues()[0]->getProblemFinalAssociations()->getValues()[$seq]->isNextPage();
+    }
+
+    /**
+     * @param int $variantId
+     * @param int $associationId
+     * @return ProblemFinalTestVariantAssociation
+     */
+    public function getProblemFinalAssociation(int $variantId, int $associationId): ProblemFinalTestVariantAssociation
+    {
+        return $this->getTestVariants()->getValues()[$variantId]->getProblemFinalAssociations()->getValues()[$associationId];
     }
 
     /**
@@ -339,5 +368,21 @@ class Test extends BaseEntity
     public function setIsClosed(bool $isClosed): void
     {
         $this->isClosed = $isClosed;
+    }
+
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getFilters()
+    {
+        return $this->filters;
+    }
+
+    /**
+     * @param Collection $filters
+     */
+    public function setFilters(Collection $filters): void
+    {
+        $this->filters = $filters;
     }
 }

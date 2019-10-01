@@ -13,7 +13,7 @@ namespace App\Exceptions;
  * Class EntityException
  * @package App\Exceptions
  */
-class EntityException extends \Exception
+class EntityException extends EDOMPException
 {
 
 }

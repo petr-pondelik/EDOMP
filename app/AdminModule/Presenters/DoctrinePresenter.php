@@ -16,11 +16,13 @@ use App\Helpers\FlashesTranslator;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
+use App\Model\Persistent\Functionality\FilterFunctionality;
 use App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
 use App\Model\Persistent\Functionality\TestFunctionality;
 use App\Model\Persistent\Functionality\TestVariantFunctionality;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\CategoryRepository;
+use App\Model\Persistent\Repository\FilterRepository;
 use App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
 use App\Model\Persistent\Repository\ProblemRepository;
 use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
@@ -33,6 +35,7 @@ use App\Services\GeneratorService;
 use App\Services\NewtonApiClient;
 use App\Services\PluginContainer;
 use App\Services\ProblemTemplateSession;
+use App\Services\Validator;
 use jlawrence\eos\Parser;
 use Nette\Utils\DateTime;
 use Nette\Utils\Strings;
@@ -141,6 +144,16 @@ class DoctrinePresenter extends AdminPresenter
     protected $problemFinalFunctionality;
 
     /**
+     * @var FilterRepository
+     */
+    protected $filterRepository;
+
+    /**
+     * @var FilterFunctionality
+     */
+    protected $filterFunctionality;
+
+    /**
      * DoctrinePresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
@@ -148,12 +161,12 @@ class DoctrinePresenter extends AdminPresenter
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param ConstraintEntityManager $em
-     * @param ProblemFinalRepository $problemRepository
+     * @param ProblemFinalRepository $problemFinalRepository
      * @param CategoryRepository $categoryRepository
      * @param TemplateJsonDataRepository $templateJsonDataRepository
      * @param ProblemTemplateRepository $problemTemplateRepository
      * @param QuadraticEquationTemplateRepository $quadraticEqTemplRepository
-     * @param ValidatorInterface $validator
+     * @param Validator $validator
      * @param LatexHelper $latexHelper
      * @param StringsHelper $stringsHelper
      * @param TestVariantFunctionality $testVariantFunctionality
@@ -166,6 +179,9 @@ class DoctrinePresenter extends AdminPresenter
      * @param ProblemTemplateSession $problemTemplateSession
      * @param PluginContainer $pluginContainer
      * @param ProblemFinalFunctionality $problemFinalFunctionality
+     * @param ProblemRepository $problemRepository
+     * @param FilterRepository $filterRepository
+     * @param FilterFunctionality $filterFunctionality
      */
     public function __construct
     (
@@ -174,7 +190,7 @@ class DoctrinePresenter extends AdminPresenter
         ConstraintEntityManager $em, ProblemFinalRepository $problemFinalRepository, CategoryRepository $categoryRepository,
         TemplateJsonDataRepository $templateJsonDataRepository,
         ProblemTemplateRepository $problemTemplateRepository, QuadraticEquationTemplateRepository $quadraticEqTemplRepository,
-        ValidatorInterface $validator,
+        Validator $validator,
         LatexHelper $latexHelper, StringsHelper $stringsHelper, TestVariantFunctionality $testVariantFunctionality,
         TestFunctionality $testFunctionality,
         TestRepository $testRepository,
@@ -185,10 +201,12 @@ class DoctrinePresenter extends AdminPresenter
         ProblemTemplateSession $problemTemplateSession,
         PluginContainer $pluginContainer,
         ProblemFinalFunctionality $problemFinalFunctionality,
-        ProblemRepository $problemRepository
+        ProblemRepository $problemRepository,
+        FilterRepository $filterRepository,
+        FilterFunctionality $filterFunctionality
     )
     {
-        parent::__construct($authorizator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
+        parent::__construct($authorizator, $validator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->problemFinalRepository = $problemFinalRepository;
         $this->categoryRepository = $categoryRepository;
         $this->templateJsonDataRepository = $templateJsonDataRepository;
@@ -208,6 +226,8 @@ class DoctrinePresenter extends AdminPresenter
         $this->pluginContainer = $pluginContainer;
         $this->problemFinalFunctionality = $problemFinalFunctionality;
         $this->problemRepository = $problemRepository;
+        $this->filterRepository = $filterRepository;
+        $this->filterFunctionality = $filterFunctionality;
     }
 
     /**
@@ -216,6 +236,7 @@ class DoctrinePresenter extends AdminPresenter
      * @throws \App\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Nette\Utils\JsonException
+     * @throws \App\Exceptions\GeneratorException
      */
     public function actionDefault()
     {
@@ -223,7 +244,9 @@ class DoctrinePresenter extends AdminPresenter
 //        bdump(new DateTime());
 //        bdump($this->parser::solve('e'));
 
-        bdump(array_keys($this->problemRepository->findAssoc([], 'id')));
+        bdump('TESTING FILTER ENTITY');
+        $filter = $this->filterRepository->find(1);
+        bdump($filter);
 
         bdump('Testing ProblemPlugin constructProblemFinalData');
 
@@ -231,25 +254,25 @@ class DoctrinePresenter extends AdminPresenter
         bdump($problemTemplate);
         $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
         $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
-        $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate);
+        $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate, []);
         bdump($linearEquationFinal);
 
         $problemTemplate = $this->problemTemplateRepository->find(12);
         $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
         $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
-        $quadraticEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate);
+        $quadraticEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate, []);
         bdump($quadraticEquationFinal);
 
         $problemTemplate = $this->problemTemplateRepository->find(18);
         $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
         $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
-        $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate);
+        $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate, []);
         bdump($linearEquationFinal);
 
         $problemTemplate = $this->problemTemplateRepository->find(22);
         $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
         $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
-        $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate);
+        $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate, []);
         bdump($linearEquationFinal);
 
         bdump($this->latexHelper->postprocessProblemFinalBody('0 \big[ 5x + 15 \big] + 4x + 0 \frac{5x}{2} + 0*5 + 0 - 0 + 2'));

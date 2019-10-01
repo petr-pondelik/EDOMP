@@ -12,7 +12,7 @@ namespace App\Exceptions;
  * Class NewtonApiException
  * @package App\Exceptions
  */
-class NewtonApiException extends \Exception
+class NewtonApiException extends EDOMPException
 {
 
 }

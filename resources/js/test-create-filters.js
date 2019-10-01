@@ -1,16 +1,7 @@
-// Import js-cookie library
-// import Cookies from 'js-cookie';
-
 (($) => {
 
-    // TODO: Make filters persistent and reset them on test create success !!!
-    // Set filters cookie
-    // if(!Cookies.get('test-create-filters')){
-    //     Cookies.set('test-create-filters', '{}');
-    // }
-
     let filters = {};
-    let problemsCnt = 1;
+    let problemsPerVariant = 1;
 
     // Get values from HTML MultiSelect
     function getMultiSelectValues(element){
@@ -37,40 +28,41 @@
 
         $(document).on('click', '.btn-add', (e) => {
 
-            $('#problem-' + (parseInt(e.target.dataset.problemId) + 1)).slideToggle();
+            $('#problem-wrapper-' + (parseInt(e.target.dataset.problemId) + 1)).slideToggle();
             $('#btn-add-' + e.target.dataset.problemId).hide();
             $('#btn-remove-' + e.target.dataset.problemId).hide();
 
-            problemsCnt++;
+            problemsPerVariant++;
 
-            $('#problemsCnt').val(problemsCnt);
+            $('#problemsPerVariant').val(problemsPerVariant);
 
         });
 
         $(document).on('click', '.btn-remove', (e) => {
 
-            $('#problem-' + (e.target.dataset.problemId)).slideToggle();
+            $('#problem-wrapper-' + (e.target.dataset.problemId)).slideToggle();
             $('#btn-add-' + (parseInt(e.target.dataset.problemId) - 1)).show();
             $('#btn-remove-' + (parseInt(e.target.dataset.problemId) - 1)).show();
 
-            problemsCnt--;
+            problemsPerVariant--;
 
-            $('#problemsCnt').val(problemsCnt);
+            $('#problemsPerVariant').val(problemsPerVariant);
 
         });
 
         $(document).on('change', '.filter', (e) => {
 
-            // let filters = JSON.parse(Cookies.get('test-create-filters'));
             let problemId = e.target.dataset.problemId;
             let filterType = e.target.dataset.filterType;
+            let filterTypeSecondary = e.target.dataset.filterTypeSecondary;
 
+            console.log(filterTypeSecondary);
             console.log(filters);
 
             // console.log(e.target);
 
             let filterVal = null;
-            if(e.target.dataset.filterType === 'is_template'){
+            if(e.target.dataset.filterType === 'isTemplate'){
                 filterVal = e.target.value;
             } else{
                 filterVal = getMultiSelectValues(e.target);
@@ -87,32 +79,35 @@
 
             // console.log($('#problem_' + problemId).val());
 
-            filters[problemId]['selected'] = $('#problem_' + problemId).val();
+            filters[problemId]['selected'] = $('#problem-' + problemId).val();
+            console.log($('#problem-' + problemId).val());
 
-            // console.log($('#problem_' + problemId).val());
             // console.log(filters);
 
             // Select problem doesn't have set filter type --> is should not trigger filter request
             if(filterType){
-                filters[problemId]['filters'][filterType] = filterVal;
+
+                if(filterTypeSecondary){
+                    if(!filters[problemId]['filters'][filterType]){
+                        filters[problemId]['filters'][filterType] = {};
+                    }
+                    filters[problemId]['filters'][filterType][filterTypeSecondary] = filterVal;
+                }
+                else{
+                    filters[problemId]['filters'][filterType] = filterVal;
+                }
+
                 console.log(filters);
+
                 $.nette.ajax({
                     type: 'GET',
                     url: '?do=filterChange',
                     data: {
-                        'filters': filters,
-                        'problemsCnt': problemsCnt
+                        'filters': filters
                     },
-                    success: () => {
-                        // Cookies.set('test-create-filters', filters);
-                        // console.log(Cookies.get('test-create-filters'));
-                    }
+                    success: () => {}
                 });
-                // return;
             }
-
-            // Cookies.set('test-create-filters', filters);
-            // console.log(Cookies.get('test-create-filters'));
 
         });
 

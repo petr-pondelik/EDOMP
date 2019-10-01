@@ -11,6 +11,7 @@ namespace App\Services;
 use App\Exceptions\GeneratorException;
 use App\Exceptions\ProblemDuplicityException;
 use App\Helpers\ConstHelper;
+use App\Helpers\RegularExpressions;
 use App\Helpers\StringsHelper;
 use App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
@@ -36,17 +37,17 @@ class GeneratorService
     /**
      * @var ConstHelper
      */
-    protected $conditionsHelper;
+    protected $constHelper;
+
+    /**
+     * @var RegularExpressions
+     */
+    protected $regularExpressions;
 
     /**
      * @var array
      */
-    private $generatorMarksMapping;
-
-    /**
-     * @var array
-     */
-    private $generatorAttrMapping;
+    protected $generatorMarksMapping;
 
     /**
      * @var array
@@ -58,26 +59,24 @@ class GeneratorService
      * @param ProblemTemplateRepository $problemTemplateRepository
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
+     * @param RegularExpressions $regularExpressions
      */
     public function __construct
     (
         ProblemTemplateRepository $problemTemplateRepository,
-        StringsHelper $stringsHelper, ConstHelper $constHelper
+        StringsHelper $stringsHelper,
+        ConstHelper $constHelper,
+        RegularExpressions $regularExpressions
     )
     {
         $this->problemTemplateRepository = $problemTemplateRepository;
         $this->stringsHelper = $stringsHelper;
-        $this->conditionsHelper = $constHelper;
+        $this->constHelper = $constHelper;
+        $this->regularExpressions = $regularExpressions;
 
         $this->generatorMarksMapping = [
             'integer' => 'integer',
             'float' => 'float'
-        ];
-
-        $this->generatorAttrMapping = [
-            'type' => 'type',
-            'min' => 'min',
-            'max' => 'max'
         ];
     }
 
@@ -89,9 +88,15 @@ class GeneratorService
      */
     protected function generatePar(String $type = null, int $min = null, int $max = null)
     {
-        if($type === null) { return $this->generateInteger($min, $max); }
-        if($this->generatorMarksMapping['integer'] === $type) { return $this->generateInteger($min, $max); }
-        if($this->generatorMarksMapping['float'] === $type) { return $this->generateFloat($min, $max); }
+        if ($type === null) {
+            return $this->generateInteger($min, $max);
+        }
+        if ($this->generatorMarksMapping['integer'] === $type) {
+            return $this->generateInteger($min, $max);
+        }
+        if ($this->generatorMarksMapping['float'] === $type) {
+            return $this->generateFloat($min, $max);
+        }
         return false;
     }
 
@@ -102,9 +107,15 @@ class GeneratorService
      */
     public function generateInteger($min, $max): int
     {
-        if(isset($min, $max)) { return mt_rand($min, $max); }
-        if($min !== null) { return mt_rand($min, PHP_INT_MAX); }
-        if($max !== null) { return mt_rand(0, $max); }
+        if (isset($min, $max)) {
+            return mt_rand($min, $max);
+        }
+        if ($min !== null) {
+            return mt_rand($min, PHP_INT_MAX);
+        }
+        if ($max !== null) {
+            return mt_rand(0, $max);
+        }
         return mt_rand();
     }
 
@@ -116,13 +127,11 @@ class GeneratorService
      */
     public function generateIntegerWithout(int $min, int $max, array $without = null): ?int
     {
-        //bdump('GENERATE INTEGER WITHOUT');
-
-        if(!isset($min, $max) || $min > $max){
+        if (!isset($min, $max) || $min > $max) {
             return null;
         }
 
-        if(!$without){
+        if (!$without) {
             return $this->generateInteger($min, $max);
         }
 
@@ -132,7 +141,7 @@ class GeneratorService
         do {
             $res = $this->generateInteger($min, $max);
             $used[$res] = $res;
-            if(count($used) > ($max - $min + 1)){
+            if (count($used) > ($max - $min + 1)) {
                 return null;
             }
         } while (in_array($res, $without, true));
@@ -146,17 +155,14 @@ class GeneratorService
      */
     public function generateArrayUnique(int $len): ?array
     {
-        //bdump('GENERATE ARRAY UNIQUE');
         $res = [];
-        for($i = 0; $i < $len; $i++){
+        for ($i = 0; $i < $len; $i++) {
             $tmp = $this->generateIntegerWithout(0, $len - 1, $res);
-            if($tmp === null){
+            if ($tmp === null) {
                 return null;
             }
             $res[] = $tmp;
         }
-        //bdump('GENERATE ARRAY UNIQUE RES');
-        //bdump($res);
         return $res;
     }
 
@@ -167,10 +173,16 @@ class GeneratorService
      */
     public function generateFloat($min, $max): int
     {
-        if(isset($min, $max)){ return mt_rand($min*10, $max*10)/10; }
-        if(isset($min)){ return mt_rand($min*10, PHP_INT_MAX)/10; }
-        if(isset($max)){ return mt_rand(0, $max*10)/10; }
-        return mt_rand()/10;
+        if (isset($min, $max)) {
+            return mt_rand($min * 10, $max * 10) / 10;
+        }
+        if (isset($min)) {
+            return mt_rand($min * 10, PHP_INT_MAX) / 10;
+        }
+        if (isset($max)) {
+            return mt_rand(0, $max * 10) / 10;
+        }
+        return mt_rand() / 10;
     }
 
     /**
@@ -181,7 +193,7 @@ class GeneratorService
     protected function getParAttr(String $xmpPar, String $attr): ?string
     {
         $start = Strings::indexOf($xmpPar, $attr);
-        if(!$start){
+        if (!$start) {
             return null;
         }
         $xmpPar = Strings::substring($xmpPar, $start);
@@ -198,7 +210,7 @@ class GeneratorService
         $type = $this->getParAttr($xmlPar, 'type');
         $min = $this->getParAttr($xmlPar, 'min');
         $max = $this->getParAttr($xmlPar, 'max');
-        return ' '.$this->generatePar($type, $min ?? null, $max ?? null);
+        return ' ' . $this->generatePar($type, $min ?? null, $max ?? null);
     }
 
     /**
@@ -208,31 +220,39 @@ class GeneratorService
     protected function processBlock(String $inputBlock): string
     {
         $processedBlock = Strings::trim($inputBlock);
-        if(Strings::match($processedBlock, '~(<par.*\/>)~')){
+        if (Strings::match($processedBlock, '~(<par.*\/>)~')) {
             $processedBlock = $this->processPar($processedBlock);
         }
         return $processedBlock;
     }
 
     /**
-     * Process input problem prototype. Find parameters for generating, replace them with generated numbers and return final string.
+     * Process input problem template. Find parameters for generating, replace them with generated numbers and return final string.
      * @param string $expression
      * @return array
      */
     protected function generateParams(string $expression): array
     {
         $expressionSplit = $this->stringsHelper::splitByParameters($expression);
+        bdump($expressionSplit);
 
         $parameters = [];
         $paramsCnt = 0;
 
         //Check if split item is parameter. If true, trim this item and generate corresponding value.
-        foreach($expressionSplit as $splitKey => $splitItem){
+        foreach ($expressionSplit as $splitKey => $splitItem) {
             $expressionSplit[$splitKey] = $this->processBlock($splitItem);
-            if($splitItem !== ''){
-                if(Strings::match($splitItem, '~(<par min="[0-9]+" max="[0-9]+"\/>)~')){
-                    $parameters['p'.$paramsCnt++] = Strings::trim($expressionSplit[$splitKey]);
+            if ($splitItem !== '') {
+
+                if (Strings::match($splitItem, '~' . $this->regularExpressions::RE_PARAMETER_VALID . '~')) {
+                    $parameters['p' . $paramsCnt++] = Strings::trim($expressionSplit[$splitKey]);
                 }
+
+//                if(Strings::match($splitItem, '~(<par min="[0-9]+" max="[0-9]+"\/>)~')){
+//                    $parameters['p' . $paramsCnt++] = Strings::trim($expressionSplit[$splitKey]);
+//                }
+
+
             }
         }
 
@@ -258,24 +278,25 @@ class GeneratorService
         $matchesArr = null;
         $matchesIndex = null;
 
-        if($matchesJson){
+        if ($matchesJson) {
             // Generate params matching the conditions
             $matchesArr = Json::decode($matchesJson, Json::FORCE_ARRAY);
             $matchesCnt = count($matchesArr);
 
             $matchesIndex = $this->generateIntegerWithout(0, $matchesCnt - 1, $usedMatchesInx);
 
-            if($matchesIndex === null){
-                throw new GeneratorException("Can't generate problem final body - matchesArr exhausted.");
+            if ($matchesIndex === null) {
+                throw new GeneratorException("Can't generate problem final body - matchesArr exhausted.", false);
             }
 
             $params = $matchesArr[$matchesIndex];
-        }
-        else{
+        } else {
             // Generate params without conditions
+            bdump($problemTemplate->getBody());
             $params = $this->generateParams($problemTemplate->getBody());
         }
 
+        bdump('GENERATED PARAMETERS');
         bdump($params);
 
         return [$this->stringsHelper::passValues($parametrized->expression, $params), $matchesIndex];

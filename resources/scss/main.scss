@@ -6,6 +6,7 @@
 
 @import "includes/common";
 
+@import "includes/card";
 @import "includes/bootstrap-scrollbar";
 @import "includes/pdf";
 
@@ -72,14 +73,6 @@ a.disabled{
 
 #page-header{
     font-size: 2em;
-}
-
-.card-header{
-    min-height: 56px;
-}
-
-.card-header p{
-    line-height: 31px;
 }
 
 .datagrid{
@@ -172,12 +165,6 @@ body {
     display: none;
 }
 
-.card.card-shadow, .header-bar-content, #sidebar, #breadcrumb-navigation, #newton-unreachable{
-    box-shadow: 1px 0 20px rgba(0,0,0,.08);
-    -webkit-box-shadow: 1px 0 20px rgba(0,0,0,.08);
-    -moz-box-shadow: 1px 0 20px rgba(0,0,0,.08);
-    -o-box-shadow: 1px 0 20px rgba(0,0,0,.08);
-}
 
 .panel-card{
 
@@ -198,10 +185,11 @@ body {
 }
 
 .panel-card:hover{
-    box-shadow: 1px 0 20px rgba(0,0,0,.08);
-    -webkit-box-shadow: 1px 0 20px rgba(0,0,0,.08);
-    -moz-box-shadow: 1px 0 20px rgba(0,0,0,.08);
-    -o-box-shadow: 1px 0 20px rgba(0,0,0,.08);
+    //box-shadow: 1px 0 20px rgba(0,0,0,.08);
+    //-webkit-box-shadow: 1px 0 20px rgba(0,0,0,.08);
+    //-moz-box-shadow: 1px 0 20px rgba(0,0,0,.08);
+    //-o-box-shadow: 1px 0 20px rgba(0,0,0,.08);
+    @include shadow-3;
     transform: scale(1.005);
 }
 

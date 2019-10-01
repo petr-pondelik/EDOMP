@@ -8,6 +8,7 @@
 
 namespace App\Helpers;
 
+use App\Exceptions\GeneratorException;
 use App\Exceptions\InvalidParameterException;
 use App\Exceptions\ProblemDuplicityException;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
@@ -274,7 +275,6 @@ class FlashesTranslator
                 'create' => 'Test úspěšně vytvořen.',
                 'update' => 'Test úspěšně editován.',
                 'delete' => 'Test úspěšně odstraněn.',
-//                'statistics' => 'Statistika testu úspěšně editována.'
             ],
 
             'error' => [
@@ -282,7 +282,6 @@ class FlashesTranslator
                 'create' => 'Chyba při tvorbě testu.',
                 'update' => 'Chyba při editaci testu.',
                 'delete' => 'Chyba při odstraňování testu.',
-//                'statistics' => 'Chyba při editaci statistiky testu.'
             ]
 
         ],
@@ -304,6 +303,10 @@ class FlashesTranslator
         }
 
         if($e instanceof ProblemDuplicityException || $e instanceof InvalidParameterException){
+            return $e->getMessage();
+        }
+
+        if($e instanceof GeneratorException && $e->isVisible()){
             return $e->getMessage();
         }
 

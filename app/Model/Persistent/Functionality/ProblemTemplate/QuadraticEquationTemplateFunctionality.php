@@ -21,7 +21,6 @@ use App\Model\Persistent\Repository\ProblemTemplate\QuadraticEquationTemplateRep
 use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Model\Persistent\Repository\TemplateJsonDataRepository;
 use App\Model\Persistent\Traits\ProblemTemplateFunctionalityTrait;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class QuadraticEquationTemplateFunctionality
@@ -65,13 +64,13 @@ class QuadraticEquationTemplateFunctionality extends BaseFunctionality
     }
 
     /**
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      */
-    public function create(ArrayHash $data, bool $flush = true): ?BaseEntity
+    public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $entity = new QuadraticEquationTemplate();
         $entity = $this->setBasics($entity, $data);
@@ -85,14 +84,14 @@ class QuadraticEquationTemplateFunctionality extends BaseFunctionality
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $flush
      * @param bool $fromDataGrid
      * @return BaseEntity|null
      * @throws \App\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      */
-    public function update(int $id, ArrayHash $data, bool $flush = true, bool $fromDataGrid = false): ?BaseEntity
+    public function update(int $id, iterable $data, bool $flush = true, bool $fromDataGrid = false): ?BaseEntity
     {
         $entity = $this->baseUpdate($id, $data, $fromDataGrid);
         if(!empty($data->variable)){
