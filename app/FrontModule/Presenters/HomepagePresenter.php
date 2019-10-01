@@ -12,6 +12,6 @@ namespace App\FrontModule\Presenters;
  * Class HomepagePresenter
  * @package app\FrontModule\presenters
  */
-final class HomepagePresenter extends FrontPresenter
+class HomepagePresenter extends FrontPresenter
 {
 }

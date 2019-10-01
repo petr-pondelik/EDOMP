@@ -23,7 +23,7 @@
     {control headerBar}
 {/if}
 
-<main id="content" class="mt-2">
+<main id="content" class="mt-2 pb-5">
 
     {if $user->isLoggedIn()}
 
@@ -68,6 +68,9 @@
 
 <script src="{webpack vendors.js}"></script>
 <script src="{webpack front.js}"></script>
+{if $presenter->getName() === 'Front:Category'}
+    <script src="{webpack netteAjaxHistory.js}"></script>
+{/if}
 
 <!-- MathJax Library -->
 <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML'></script>

@@ -12,6 +12,7 @@ namespace App\Components\Forms\SuperGroupForm;
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Persistent\Functionality\SuperGroupFunctionality;
+use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
@@ -26,15 +27,17 @@ class SuperGroupFormControl extends EntityFormControl
     /**
      * SuperGroupFormControl constructor.
      * @param Validator $validator
+     * @param ConstraintEntityManager $entityManager
      * @param SuperGroupFunctionality $superGroupFunctionality
      */
     public function __construct
     (
         Validator $validator,
+        ConstraintEntityManager $entityManager,
         SuperGroupFunctionality $superGroupFunctionality
     )
     {
-        parent::__construct($validator);
+        parent::__construct($validator, $entityManager);
         $this->functionality = $superGroupFunctionality;
     }
 

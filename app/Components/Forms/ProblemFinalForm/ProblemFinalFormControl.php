@@ -13,6 +13,7 @@ use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Helpers\ConstHelper;
 use App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
+use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
@@ -62,6 +63,7 @@ class ProblemFinalFormControl extends EntityFormControl
     /**
      * ProblemFinalFormControl constructor.
      * @param Validator $validator
+     * @param ConstraintEntityManager $entityManager
      * @param ProblemFinalFunctionality $problemFinalFunctionality
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
@@ -73,14 +75,17 @@ class ProblemFinalFormControl extends EntityFormControl
     public function __construct
     (
         Validator $validator,
+        ConstraintEntityManager $entityManager,
         ProblemFinalFunctionality $problemFinalFunctionality,
-        DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
+        DifficultyRepository $difficultyRepository,
+        ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository,
-        ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
+        ProblemConditionTypeRepository $problemConditionTypeRepository,
+        ProblemConditionRepository $problemConditionRepository,
         ConstHelper $constHelper
     )
     {
-        parent::__construct($validator);
+        parent::__construct($validator, $entityManager);
         $this->functionality = $problemFinalFunctionality;
         $this->difficultyRepository = $difficultyRepository;
         $this->problemTypeRepository = $problemTypeRepository;

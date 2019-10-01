@@ -9,9 +9,10 @@
 namespace App\Components\Forms;
 
 use App\Model\Persistent\Entity\BaseEntity;
+use App\Model\Persistent\Manager\ConstraintEntityManager;
+use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
-use ReflectionClass;
 
 /**
  * Class EntityFormControl
@@ -20,9 +21,29 @@ use ReflectionClass;
 abstract class EntityFormControl extends FormControl
 {
     /**
+     * @var ConstraintEntityManager
+     */
+    protected $entityManager;
+
+    /**
      * @var BaseEntity|null
      */
     protected $entity;
+
+    /**
+     * EntityFormControl constructor.
+     * @param Validator $validator
+     * @param ConstraintEntityManager $entityManager
+     */
+    public function __construct
+    (
+        Validator $validator,
+        ConstraintEntityManager $entityManager
+    )
+    {
+        parent::__construct($validator);
+        $this->entityManager = $entityManager;
+    }
 
     /**
      * @return Form
@@ -43,14 +64,6 @@ abstract class EntityFormControl extends FormControl
 
         return $form;
     }
-
-//    /**
-//     * @return string
-//     */
-//    public function getTemplateName(): string
-//    {
-//        return $this->isUpdate() ? 'update' : 'create';
-//    }
 
     /**
      * @param Form $form

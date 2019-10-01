@@ -29,6 +29,22 @@
         </div>
 
         <div class="form-group">
+            {label email}
+            {input email}
+            {snippet emailErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['email']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
+                        {$error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </p>
+                </div>
+            {/snippet}
+        </div>
+
+        <div class="form-group">
             {label username}
             {input username}
             {snippet usernameErrorSnippet}
@@ -52,36 +68,6 @@
         <div class="form-group">
             {label lastName}
             {input lastName}
-        </div>
-
-        <div class="form-group">
-            {label changePassword}
-            {input changePassword, "id" => "change-password-switch"}
-        </div>
-
-        <div id="change-password-wrapper">
-
-            <div class="form-group">
-                {label password}
-                {input password}
-            </div>
-
-            <div class="form-group">
-                {label passwordConfirm}
-                {input passwordConfirm}
-                {snippet passwordConfirmErrorSnippet}
-                    {var $form = $control['form']}
-                    <div n:if="$form->hasErrors()" class="mt-2">
-                        <p n:foreach="$form['passwordConfirm']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
-                            {$error}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </p>
-                    </div>
-                {/snippet}
-            </div>
-
         </div>
 
         <div class="form-group">

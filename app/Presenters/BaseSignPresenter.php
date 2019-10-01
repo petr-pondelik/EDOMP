@@ -71,7 +71,7 @@ abstract class BaseSignPresenter extends BasePresenter
     public function createComponentSignForm(): SignFormControl
     {
         $control = $this->signFormFactory->create($this->admin);
-        $control->onSuccess[] = function (){
+        $control->onSuccess[] = function () {
             if($this->user->identity->firstName || $this->user->identity->lastName){
                 $this->flashMessage('Vítejte, ' . $this->user->identity->firstName . ' ' . $this->user->identity->lastName . '.');
             }
@@ -80,12 +80,22 @@ abstract class BaseSignPresenter extends BasePresenter
             }
             $this->redirect('Homepage:default');
         };
-        $control->onError[] = function ($e){};
+        $control->onError[] = static function ($e) {
+            bdump('ON ERROR');
+            bdump($e);
+        };
         return $control;
     }
 
     public function handleLogout(): void
     {
         $this->user->logout(true);
+    }
+
+    public function renderIn(): void
+    {
+        if($this->user->isLoggedIn()){
+            $this->redirect('Homepage:default');
+        }
     }
 }

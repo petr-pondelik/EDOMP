@@ -39,47 +39,55 @@ class MailService
     protected $templateDir;
 
     /**
+     * @var string
+     */
+    protected $loginURL;
+
+    /**
      * MailService constructor.
      * @param IMailer $mailer
      * @param ITemplateFactory $templateFactory
      * @param string $templateDir
+     * @param string $loginURL
      */
     public function __construct
     (
         IMailer $mailer,
         ITemplateFactory $templateFactory,
-        string $templateDir
+        string $templateDir,
+        string $loginURL
     )
     {
         $this->mailer = $mailer;
         $this->templateFactory = $templateFactory;
         $this->templateDir = $templateDir;
+        $this->loginURL = $loginURL;
     }
 
     /**
-     * @param User $user
      * @return \Nette\Application\UI\ITemplate
      */
-    public function createTemplate(User $user): ITemplate
+    public function createTemplate(): ITemplate
     {
-        $template = $this->templateFactory->createTemplate();
-        $template->setFile($this->templateDir . '/mail/invitation.latte');
-        $template->user = $user;
-        return $template;
+        return $this->templateFactory->createTemplate();
     }
 
     /**
      * @param User $user
+     * @param string $password
      */
-    public function sendInvitationEmail(User $user): void
+    public function sendInvitationEmail(User $user, string $password): void
     {
-        $template = $this->createTemplate($user);
+        $template = $this->createTemplate();
+        $template->setFile($this->templateDir . '/mail/invitation.latte');
+        $template->user = $user;
+        $template->password = $password;
+        $template->loginURL = $this->loginURL;
         $message = new Message();
         $message->setFrom('EDOMP <edomp@wiedzmin.4fan.cz>')
             ->setSubject('Pozvání do aplikace')
             ->setHtmlBody($template);
-        // TODO: REPLACE USERNAME WITH EMAIL !!!
-        $this->sendEmailTo($message, $user->getUsername());
+        $this->sendEmailTo($message, $user->getEmail());
     }
 
     /**

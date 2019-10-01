@@ -59,7 +59,7 @@ abstract class FormControl extends EDOMPControl
         $form = new Form();
 
         $renderer = $form->getRenderer();
-        $renderer->wrappers['controls']['container'] = NULL;
+        $renderer->wrappers['controls']['container'] = null;
         $renderer->wrappers['pair']['container'] = 'div class=form-group';
         $renderer->wrappers['pair']['.error'] = 'has-error';
         $renderer->wrappers['control']['container'] = 'div class=col-md-12';

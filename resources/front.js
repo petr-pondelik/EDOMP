@@ -20,7 +20,7 @@ import 'nette-forms';
 
 // Import Nette Ajax modules
 import 'nette.ajax.js';
-import './../vendor/vojtech-dobes/nette-ajax-history/client-side/history.ajax';
+// import './../vendor/vojtech-dobes/nette-ajax-history/client-side/history.ajax';
 import './js/nette.ajax.init';
 import './js/spinner.ajax';
 

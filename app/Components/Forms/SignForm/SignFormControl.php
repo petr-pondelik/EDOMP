@@ -69,16 +69,19 @@ class SignFormControl extends FormControl
     /**
      * @param Form $form
      * @param ArrayHash $values
+     * @throws AbortException
      */
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
-        try{
+        try {
             $this->presenter->user->login($values->username, $values->password, $this->admin);
             $this->onSuccess();
-        } catch(\Exception $e){
-            if ($e instanceof AbortException){
-                return;
+        } catch (\Exception $e) {
+            bdump($e);
+            if ($e instanceof AbortException) {
+                throw $e;
             }
+            bdump($e);
             $form['signIn']->addError($e->getMessage());
             $this->redrawControl('signInErrorSnippet');
             $this->onError($e);

@@ -11,6 +11,7 @@ namespace App\Components\Forms\SubCategoryForm;
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Persistent\Functionality\SubCategoryFunctionality;
+use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\CategoryRepository;
 use App\Services\Validator;
 use Nette\Application\AbortException;
@@ -31,16 +32,19 @@ class SubCategoryFormControl extends EntityFormControl
     /**
      * SubCategoryFormControl constructor.
      * @param Validator $validator
+     * @param ConstraintEntityManager $entityManager
      * @param SubCategoryFunctionality $subCategoryFunctionality
      * @param CategoryRepository $categoryRepository
      */
     public function __construct
     (
         Validator $validator,
-        SubCategoryFunctionality $subCategoryFunctionality, CategoryRepository $categoryRepository
+        ConstraintEntityManager $entityManager,
+        SubCategoryFunctionality $subCategoryFunctionality,
+        CategoryRepository $categoryRepository
     )
     {
-        parent::__construct($validator);
+        parent::__construct($validator, $entityManager);
         $this->functionality = $subCategoryFunctionality;
         $this->categoryRepository = $categoryRepository;
     }

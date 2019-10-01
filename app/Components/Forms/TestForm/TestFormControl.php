@@ -12,6 +12,7 @@ namespace App\Components\Forms\TestForm;
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Persistent\Functionality\TestFunctionality;
+use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\GroupRepository;
 use App\Model\Persistent\Repository\LogoRepository;
 use App\Services\FileService;
@@ -26,11 +27,6 @@ use Nette\Application\UI\Form;
  */
 abstract class TestFormControl extends EntityFormControl
 {
-    /**
-     * @var EntityManager
-     */
-    protected $entityManager;
-
     /**
      * @var LogoRepository
      */
@@ -54,7 +50,7 @@ abstract class TestFormControl extends EntityFormControl
     /**
      * TestFormControl constructor.
      * @param Validator $validator
-     * @param EntityManager $entityManager
+     * @param ConstraintEntityManager $entityManager
      * @param LogoRepository $logoRepository
      * @param GroupRepository $groupRepository
      * @param TestGeneratorService $testGeneratorService
@@ -63,15 +59,15 @@ abstract class TestFormControl extends EntityFormControl
      */
     public function __construct
     (
-        Validator $validator, EntityManager $entityManager,
+        Validator $validator,
+        ConstraintEntityManager $entityManager,
         LogoRepository $logoRepository, GroupRepository $groupRepository,
         TestGeneratorService $testGeneratorService, FileService $fileService,
         TestFunctionality $testFunctionality
     )
     {
-        parent::__construct($validator);
+        parent::__construct($validator, $entityManager);
 
-        $this->entityManager = $entityManager;
         $this->logoRepository = $logoRepository;
         $this->groupRepository = $groupRepository;
         $this->testGeneratorService = $testGeneratorService;

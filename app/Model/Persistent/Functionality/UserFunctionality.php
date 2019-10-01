@@ -61,6 +61,7 @@ class UserFunctionality extends BaseFunctionality
     public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $user = new User();
+        $user->setEmail($data->email);
         $user->setUsername($data->username);
         $user->setPassword($data->password);
         $user->setFirstName($data->firstName);
@@ -91,15 +92,13 @@ class UserFunctionality extends BaseFunctionality
     public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         $user = $this->repository->find($id);
-        if(!$user){
+        if (!$user) {
             throw new EntityNotFoundException('Entity for update not found.');
         }
+        $user->setEmail($data->email);
         $user->setUsername($data->username);
         $user->setFirstName($data->firstName);
         $user->setLastName($data->lastName);
-        if($data->changePassword){
-            $user->setPassword($data->password);
-        }
         $user->setRole($this->roleRepository->find($data->role));
         $user->setGroups(new ArrayCollection());
         $user = $this->attachGroups($user, $data->groups);

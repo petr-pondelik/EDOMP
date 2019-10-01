@@ -20,6 +20,7 @@ use App\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
 use App\Model\NonPersistent\TemplateData\ParametersData;
 use App\Model\Persistent\Entity\ProblemConditionType;
 use App\Model\Persistent\Entity\ProblemType;
+use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
@@ -120,6 +121,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     /**
      * ProblemTemplateFormControl constructor.
      * @param Validator $validator
+     * @param ConstraintEntityManager $entityManager
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param SubCategoryRepository $subCategoryRepository
@@ -133,15 +135,19 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     public function __construct
     (
         Validator $validator,
-        DifficultyRepository $difficultyRepository, ProblemTypeRepository $problemTypeRepository,
+        ConstraintEntityManager $entityManager,
+        DifficultyRepository $difficultyRepository,
+        ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository,
-        ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
+        ProblemConditionTypeRepository $problemConditionTypeRepository,
+        ProblemConditionRepository $problemConditionRepository,
         PluginContainer $pluginContainer,
-        StringsHelper $stringsHelper, ConstHelper $constHelper,
+        StringsHelper $stringsHelper,
+        ConstHelper $constHelper,
         ProblemTemplateSession $problemTemplateSession
     )
     {
-        parent::__construct($validator);
+        parent::__construct($validator, $entityManager);
         $this->difficultyRepository = $difficultyRepository;
         $this->problemTypeRepository = $problemTypeRepository;
         $this->subCategoryRepository = $subCategoryRepository;

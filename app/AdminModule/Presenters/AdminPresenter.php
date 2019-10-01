@@ -76,13 +76,13 @@ abstract class AdminPresenter extends BasePresenter
     public function startup(): void
     {
         parent::startup();
-        if(!($this->user->isInRole("admin") || $this->user->isInRole("teacher"))){
+        if(!($this->user->isInRole('admin') || $this->user->isInRole("teacher"))){
             if($this->user->isLoggedIn()){
                 $this->flashMessage("Nedostatečná přístupová práva.", "danger");
             }
             $this->redirect('Sign:in');
         }
-        $this->template->newtonApiConnection = $this->newtonApiClient->ping() ;
+        $this->template->newtonApiConnection = $this->newtonApiClient->ping();
     }
 
     /**

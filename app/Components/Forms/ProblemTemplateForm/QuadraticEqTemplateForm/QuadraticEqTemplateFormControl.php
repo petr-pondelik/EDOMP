@@ -14,6 +14,7 @@ use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\NonPersistent\Entity\QuadraticEquationTemplateNP;
 use App\Model\Persistent\Functionality\ProblemTemplate\QuadraticEquationTemplateFunctionality;
+use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
@@ -71,6 +72,7 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
     /**
      * QuadraticEqTemplateFormControl constructor.
      * @param Validator $validator
+     * @param ConstraintEntityManager $entityManager
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param SubCategoryRepository $subCategoryRepository
@@ -84,18 +86,24 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
      */
     public function __construct
     (
-        Validator $validator, DifficultyRepository $difficultyRepository,
-        ProblemTypeRepository $problemTypeRepository, SubCategoryRepository $subCategoryRepository,
-        ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
+        Validator $validator,
+        ConstraintEntityManager $entityManager,
+        DifficultyRepository $difficultyRepository,
+        ProblemTypeRepository $problemTypeRepository,
+        SubCategoryRepository $subCategoryRepository,
+        ProblemConditionTypeRepository $problemConditionTypeRepository,
+        ProblemConditionRepository $problemConditionRepository,
         PluginContainer $pluginContainer,
-        StringsHelper $stringsHelper, ConstHelper $constHelper,
+        StringsHelper $stringsHelper,
+        ConstHelper $constHelper,
         ProblemTemplateSession $problemTemplateSession,
         QuadraticEquationTemplateFunctionality $functionality
     )
     {
         parent::__construct
         (
-            $validator, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
+            $validator, $entityManager,
+            $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
             $problemConditionTypeRepository, $problemConditionRepository,
             $pluginContainer,
             $stringsHelper, $constHelper,

@@ -12,6 +12,7 @@ use App\Exceptions\GeneratorException;
 use App\Exceptions\InvalidParameterException;
 use App\Exceptions\ProblemDuplicityException;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 /**
  * Class ExceptionTranslator
@@ -232,7 +233,9 @@ class FlashesTranslator
                 'default' => 'Chyba při vytváření uživatele.',
                 'update' => 'Chyba při editaci uživatele.',
                 'delete' => 'Chyba při odstraňování uživatele.',
-            ]
+            ],
+
+            'uniqueConstraintViolation' => 'Uživatel se zadanným e-mailem či uživatelským jménem již existuje.'
 
         ],
 
@@ -298,15 +301,20 @@ class FlashesTranslator
     public static function translate(string $operation, string $presenterName, string $type = null, \Exception $e = null): string
     {
         bdump('TRANSLATE');
+
         if($e instanceof ForeignKeyConstraintViolationException){
             return self::$presenterMessages[$presenterName]['constraintViolation'];
         }
 
-        if($e instanceof ProblemDuplicityException || $e instanceof InvalidParameterException){
-            return $e->getMessage();
+        if($e instanceof UniqueConstraintViolationException){
+            return self::$presenterMessages[$presenterName]['uniqueConstraintViolation'];
         }
 
-        if($e instanceof GeneratorException && $e->isVisible()){
+        if (
+            $e instanceof ProblemDuplicityException ||
+            $e instanceof InvalidParameterException ||
+            ($e instanceof GeneratorException && $e->isVisible())
+        ){
             return $e->getMessage();
         }
 

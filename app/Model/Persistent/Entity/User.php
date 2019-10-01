@@ -27,14 +27,33 @@ class User extends BaseEntity
     protected $toStringAttr = 'username';
 
     /**
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(type="string", nullable=false, unique=true, length=128)
      * @Assert\NotBlank(
      *     message="Username can't be blank."
+     * )
+     * @Assert\Length(
+     *     max=128,
+     *     maxMessage="Username can't be longer then 128 chars."
      * )
      *
      * @var string
      */
     protected $username;
+
+    /**
+     * @ORM\Column(type="string", nullable=false, unique=true, length=128)
+     * @Assert\NotBlank(
+     *     message="Email can't be blank."
+     * )
+     * @Assert\Length(
+     *     max=128,
+     *     maxMessage="Email can't be longer then 128 chars."
+     * )
+     *
+     *
+     * @var string
+     */
+    protected $email;
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -333,6 +352,22 @@ class User extends BaseEntity
     public function setLastName(string $lastName = null): void
     {
         $this->lastName = $lastName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
     }
 
 }

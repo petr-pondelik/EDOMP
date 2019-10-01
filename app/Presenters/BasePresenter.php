@@ -102,24 +102,14 @@ class BasePresenter extends Presenter
         }
 
         if($args->ajax){
-//            if($args->main){
-                if(!$args->component){
-                    $this->redrawControl('mainFlashesSnippet');
-                    $this->redrawControl('flashesSnippet');
-                }
-                else{
-                    $this[$args->component]->redrawControl('mainFlashesSnippet');
-                    $this[$args->component]->redrawControl('flashesSnippet');
-                }
-//            }
-//            else{
-//                if(!$args->component){
-//                    $this->redrawControl('flashesSnippet');
-//                }
-//                else{
-//                    $this[$args->component]->redrawControl('flashesSnippet');
-//                }
-//            }
+            if(!$args->component){
+                $this->redrawControl('mainFlashesSnippet');
+                $this->redrawControl('flashesSnippet');
+            }
+            else{
+                $this[$args->component]->redrawControl('mainFlashesSnippet');
+                $this[$args->component]->redrawControl('flashesSnippet');
+            }
         }
     }
 

@@ -27,6 +27,7 @@ use Nette\Application\UI\Form;
 use Nette\NotSupportedException;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
+use Nette\Utils\Validators;
 
 /**
  * Class Validator
@@ -112,6 +113,7 @@ class Validator
     /**
      * Validator constructor.
      * @param NewtonApiClient $newtonApiClient
+     * @param Validators $validators
      * @param UserRepository $userRepository
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param ConstHelper $constHelper
@@ -126,7 +128,8 @@ class Validator
     public function __construct
     (
         NewtonApiClient $newtonApiClient,
-        UserRepository $userRepository, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
+        UserRepository $userRepository,
+        TemplateJsonDataFunctionality $templateJsonDataFunctionality,
         ConstHelper $constHelper, StringsHelper $stringsHelper, LatexHelper $latexHelper,
         LinearEquationPlugin $linearEquationPlugin,
         QuadraticEquationPlugin $quadraticEquationPlugin,
@@ -193,20 +196,22 @@ class Validator
                 return -1;
             },
 
-            'username' => function ($data) {
-                if (empty($data->username)) {
+            'email' => static function ($data) {
+                if (empty($data->email)) {
                     return 0;
                 }
-                if (strlen($data->username) > 64) {
+                if (strlen($data->email) > 128) {
                     return 1;
                 }
-                if ($data->edit) {
-                    $user = $this->userRepository->findOneBy(['username' => $data->username]);
-                    if ($user->getId() !== (int)$data->userId) {
-                        return 2;
-                    }
-                } else if ($this->userRepository->findOneBy(['username' => $data->username])) {
+                if(!Validators::isEmail($data->email)){
                     return 2;
+                }
+                return -1;
+            },
+
+            'username' => static function ($data) {
+                if (strlen($data->username) > 128) {
+                    return 0;
                 }
                 return -1;
             },
@@ -322,10 +327,14 @@ class Validator
 
         $this->validationMessages = [
 
+            'email' => [
+                0 => 'Zadejte e-mail',
+                1 => 'E-mail nesmí být delší než 128 znaků.',
+                2 => 'Zadejte validní e-mail.'
+            ],
+
             'username' => [
-                0 => 'Zadejte uživatelské jméno.',
-                1 => 'Uživatelské jméno nesmí být delší než 64 znaků.',
-                2 => 'Zadané uživatelské jméno již existuje.'
+                0 => 'Uživatelské jméno nesmí být delší než 128 znaků.',
             ],
 
             'password' => [

@@ -52,19 +52,18 @@ class Authenticator implements IAuthenticator
     {
         [$username, $password, $admin] = $credentials;
 
-        if(!$admin){
+        if (!$admin) {
             $user = $this->userRepository->findOneBy([
                 'username' => $username
             ]);
-        }
-        else{
+        } else {
             $user = $this->userRepository->findOneBy([
                 'username' => $username,
-                'role' => [1,2]
+                'role' => [1, 2]
             ]);
         }
 
-        if(!$user || !Passwords::verify($password, $user->getPassword())){
+        if (!$user || !Passwords::verify($password, $user->getPassword())) {
             throw new AuthenticationException('Zadáno neplatné uživatelské jméno nebo heslo.');
         }
 
@@ -72,13 +71,12 @@ class Authenticator implements IAuthenticator
 
         $categories = [];
 
-        if(!strcmp('student', $role->getKey())){
+        if (!strcmp('student', $role->getKey())) {
             $categoryIds = $user->getCategoriesId();
-            foreach ($categoryIds as $categoryId){
+            foreach ($categoryIds as $categoryId) {
                 $categories[$categoryId] = $this->categoryRepository->find($categoryId)->getLabel();
             }
-        }
-        else{
+        } else {
             $categories = $this->categoryRepository->findPairs([], 'label');
         }
 

@@ -210,7 +210,6 @@ services:
 	factory.form.logo: App\Components\Forms\LogoForm\ILogoIFormFactory
 	factory.form.group: App\Components\Forms\GroupForm\IGroupIFormFactory
 	factory.form.test.create: App\Components\Forms\TestForm\TestEntityForm\ITestEntityFormFactory
-	factory.form.test.statistics: App\Components\Forms\TestStatisticsForm\ITestStatisticsIFormFactory
 	factory.form.permission: App\Components\Forms\PermissionForm\IPermissionIFormFactory
 	factory.form.sign: App\Components\Forms\SignForm\ISignIFormFactory
 	factory.form.problem.filter: App\Components\Forms\ProblemFilterForm\IProblemFilterFormFactory
@@ -232,7 +231,7 @@ services:
 
 	# Services
 	service.newtopapi.client: App\Services\NewtonApiClient(%newtonApiHost%)
-	service.mail: App\Services\MailService(..., ..., %templatesDir%)
+	service.mail: App\Services\MailService(..., ..., %templatesDir%, %loginURL%)
 	service.validator: App\Services\Validator
 	service.container.plugin: App\Services\PluginContainer
 	service.generator: App\Services\GeneratorService

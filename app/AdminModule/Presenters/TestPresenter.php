@@ -12,12 +12,10 @@ use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\TestGridFactory;
 use App\Components\Forms\EntityFormControl;
 use App\Components\Forms\TestForm\TestEntityForm\ITestEntityFormFactory;
-use App\Components\Forms\TestStatisticsForm\ITestStatisticsIFormFactory;
 use App\Components\HeaderBar\HeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
-use App\Model\Persistent\Entity\BaseEntity;
 use App\Model\Persistent\Functionality\TestFunctionality;
 use App\Model\Persistent\Repository\LogoRepository;
 use App\Model\Persistent\Repository\ProblemRepository;
@@ -62,11 +60,6 @@ class TestPresenter extends EntityPresenter
     protected $problemTestAssociationRepository;
 
     /**
-     * @var ITestStatisticsIFormFactory
-     */
-    protected $testStatisticsFormFactory;
-
-    /**
      * @var FileService
      */
     protected $fileService;
@@ -96,7 +89,6 @@ class TestPresenter extends EntityPresenter
      * @param LogoRepository $logoRepository
      * @param ProblemFinalTestVariantAssociationRepository $problemTestAssociationRepository
      * @param ITestEntityFormFactory $testCreateFormFactory
-     * @param ITestStatisticsIFormFactory $testStatisticsFormFactory
      * @param TestGridFactory $testGridFactory
      * @param FileService $fileService
      * @param TestGeneratorService $testGeneratorService
@@ -109,7 +101,7 @@ class TestPresenter extends EntityPresenter
         TestRepository $testRepository, TestFunctionality $testFunctionality,
         ProblemTemplateRepository $problemTemplateRepository, ProblemRepository $problemRepository, LogoRepository $logoRepository,
         ProblemFinalTestVariantAssociationRepository $problemTestAssociationRepository,
-        ITestEntityFormFactory $testCreateFormFactory, ITestStatisticsIFormFactory $testStatisticsFormFactory, TestGridFactory $testGridFactory,
+        ITestEntityFormFactory $testCreateFormFactory, TestGridFactory $testGridFactory,
         FileService $fileService,
         TestGeneratorService $testGeneratorService,
         ISectionHelpModalFactory $sectionHelpModalFactory
@@ -123,7 +115,6 @@ class TestPresenter extends EntityPresenter
         $this->problemRepository = $problemRepository;
         $this->logoRepository = $logoRepository;
         $this->problemTestAssociationRepository = $problemTestAssociationRepository;
-        $this->testStatisticsFormFactory = $testStatisticsFormFactory;
         $this->fileService = $fileService;
         $this->validator = $validator;
         $this->testGeneratorService = $testGeneratorService;

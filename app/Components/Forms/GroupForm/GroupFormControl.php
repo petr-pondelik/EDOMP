@@ -12,6 +12,7 @@ namespace App\Components\Forms\GroupForm;
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Persistent\Functionality\GroupFunctionality;
+use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\SuperGroupRepository;
 use App\Services\Validator;
 use Nette\Application\AbortException;
@@ -32,16 +33,19 @@ class GroupFormControl extends EntityFormControl
     /**
      * GroupFormControl constructor.
      * @param Validator $validator
+     * @param ConstraintEntityManager $entityManager
      * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupRepository $superGroupRepository
      */
     public function __construct
     (
         Validator $validator,
-        GroupFunctionality $groupFunctionality, SuperGroupRepository $superGroupRepository
+        ConstraintEntityManager $entityManager,
+        GroupFunctionality $groupFunctionality,
+        SuperGroupRepository $superGroupRepository
     )
     {
-        parent::__construct($validator);
+        parent::__construct($validator, $entityManager);
         $this->functionality = $groupFunctionality;
         $this->superGroupRepository = $superGroupRepository;
     }

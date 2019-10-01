@@ -16,10 +16,12 @@ use App\Helpers\FlashesTranslator;
 use App\Helpers\LatexHelper;
 use App\Helpers\StringsHelper;
 use App\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
+use App\Model\Persistent\Entity\User;
 use App\Model\Persistent\Functionality\FilterFunctionality;
 use App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
 use App\Model\Persistent\Functionality\TestFunctionality;
 use App\Model\Persistent\Functionality\TestVariantFunctionality;
+use App\Model\Persistent\Functionality\UserFunctionality;
 use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\CategoryRepository;
 use App\Model\Persistent\Repository\FilterRepository;
@@ -37,6 +39,7 @@ use App\Services\PluginContainer;
 use App\Services\ProblemTemplateSession;
 use App\Services\Validator;
 use jlawrence\eos\Parser;
+use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
 use Nette\Utils\Strings;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -154,6 +157,11 @@ class DoctrinePresenter extends AdminPresenter
     protected $filterFunctionality;
 
     /**
+     * @var UserFunctionality
+     */
+    protected $userFunctionality;
+
+    /**
      * DoctrinePresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
@@ -182,6 +190,7 @@ class DoctrinePresenter extends AdminPresenter
      * @param ProblemRepository $problemRepository
      * @param FilterRepository $filterRepository
      * @param FilterFunctionality $filterFunctionality
+     * @param UserFunctionality $userFunctionality
      */
     public function __construct
     (
@@ -203,7 +212,8 @@ class DoctrinePresenter extends AdminPresenter
         ProblemFinalFunctionality $problemFinalFunctionality,
         ProblemRepository $problemRepository,
         FilterRepository $filterRepository,
-        FilterFunctionality $filterFunctionality
+        FilterFunctionality $filterFunctionality,
+        UserFunctionality $userFunctionality
     )
     {
         parent::__construct($authorizator, $validator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
@@ -228,6 +238,7 @@ class DoctrinePresenter extends AdminPresenter
         $this->problemRepository = $problemRepository;
         $this->filterRepository = $filterRepository;
         $this->filterFunctionality = $filterFunctionality;
+        $this->userFunctionality = $userFunctionality;
     }
 
     /**
@@ -243,6 +254,22 @@ class DoctrinePresenter extends AdminPresenter
 //        bdump(DateTime::from(''));
 //        bdump(new DateTime());
 //        bdump($this->parser::solve('e'));
+
+        bdump('TESTING USER ENTITY');
+        $data = ArrayHash::from([
+            'username' => 'TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME',
+            'password' => 'TEST PASSWORD',
+            'role' => 3,
+            'groups' => [28],
+            'firstName' => '',
+            'lastName' => ''
+        ]);
+        $data->groups = [28];
+
+        $user = $this->userFunctionality->create($data);
+
+        $this->em->persist($user);
+
 
         bdump('TESTING FILTER ENTITY');
         $filter = $this->filterRepository->find(1);

@@ -17,6 +17,7 @@ use App\Model\NonPersistent\Entity\GeometricSequenceTemplateNP;
 use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\Persistent\Functionality\BaseFunctionality;
 use App\Model\Persistent\Functionality\ProblemTemplate\GeometricSequenceTemplateFunctionality;
+use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\DifficultyRepository;
 use App\Model\Persistent\Repository\ProblemConditionRepository;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
@@ -80,6 +81,7 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
     /**
      * GeometricSeqTemplateFormControl constructor.
      * @param Validator $validator
+     * @param ConstraintEntityManager $entityManager
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param SubCategoryRepository $subCategoryRepository
@@ -93,18 +95,24 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
      */
     public function __construct
     (
-        Validator $validator, DifficultyRepository $difficultyRepository,
-        ProblemTypeRepository $problemTypeRepository, SubCategoryRepository $subCategoryRepository,
-        ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
+        Validator $validator,
+        ConstraintEntityManager $entityManager,
+        DifficultyRepository $difficultyRepository,
+        ProblemTypeRepository $problemTypeRepository,
+        SubCategoryRepository $subCategoryRepository,
+        ProblemConditionTypeRepository $problemConditionTypeRepository,
+        ProblemConditionRepository $problemConditionRepository,
         PluginContainer $pluginContainer,
-        StringsHelper $stringsHelper, ConstHelper $constHelper,
+        StringsHelper $stringsHelper,
+        ConstHelper $constHelper,
         ProblemTemplateSession $problemTemplateSession,
         GeometricSequenceTemplateFunctionality $functionality
     )
     {
         parent::__construct
         (
-            $validator, $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
+            $validator, $entityManager,
+            $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
             $problemConditionTypeRepository, $problemConditionRepository,
             $pluginContainer,
             $stringsHelper, $constHelper,

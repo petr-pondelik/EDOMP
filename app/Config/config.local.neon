@@ -1,5 +1,6 @@
 parameters:
     newtonApiHost: localhost:3000/
+    loginURL: http://mathematicalproblems.localhost/sign/in
 
 webpack:
 	build:

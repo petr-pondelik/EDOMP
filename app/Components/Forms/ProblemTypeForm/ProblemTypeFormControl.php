@@ -12,6 +12,7 @@ namespace App\Components\Forms\ProblemTypeForm;
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Persistent\Functionality\ProblemTypeFunctionality;
+use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
@@ -26,16 +27,17 @@ class ProblemTypeFormControl extends EntityFormControl
     /**
      * ProblemTypeFormControl constructor.
      * @param Validator $validator
+     * @param ConstraintEntityManager $entityManager
      * @param ProblemTypeFunctionality $problemTypeFunctionality
-     * @param bool $edit
      */
     public function __construct
     (
         Validator $validator,
+        ConstraintEntityManager $entityManager,
         ProblemTypeFunctionality $problemTypeFunctionality
     )
     {
-        parent::__construct($validator);
+        parent::__construct($validator, $entityManager);
         $this->functionality = $problemTypeFunctionality;
     }
 

@@ -13,6 +13,7 @@ use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Components\LogoView\ILogoViewFactory;
 use App\Model\Persistent\Functionality\LogoFunctionality;
+use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\LogoRepository;
 use App\Services\FileService;
 use App\Services\Validator;
@@ -44,13 +45,21 @@ class LogoFormControl extends EntityFormControl
     /**
      * LogoFormControl constructor.
      * @param Validator $validator
+     * @param ConstraintEntityManager $entityManager
      * @param LogoFunctionality $logoFunctionality
      * @param FileService $fileService
      * @param ILogoViewFactory $logoViewFactory
      */
-    public function __construct(Validator $validator, LogoFunctionality $logoFunctionality, FileService $fileService, ILogoViewFactory $logoViewFactory)
+    public function __construct
+    (
+        Validator $validator,
+        ConstraintEntityManager $entityManager,
+        LogoFunctionality $logoFunctionality,
+        FileService $fileService,
+        ILogoViewFactory $logoViewFactory
+    )
     {
-        parent::__construct($validator);
+        parent::__construct($validator, $entityManager);
         $this->functionality = $logoFunctionality;
         $this->fileService = $fileService;
         $this->logoViewFactory = $logoViewFactory;

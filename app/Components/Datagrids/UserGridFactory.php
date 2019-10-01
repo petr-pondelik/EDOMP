@@ -88,6 +88,9 @@ class UserGridFactory extends BaseGrid
             ->setFormat('d.m.Y H:i:s')
             ->setSortable();
 
+        $grid->addColumnText('email', 'E-mail')
+            ->setFilterText();
+
         $grid->addColumnText('username', 'Uživatelské jméno')
             ->setFilterText();
 

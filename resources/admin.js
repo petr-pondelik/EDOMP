@@ -14,6 +14,7 @@ import '@fortawesome/fontawesome-free';
 // Import Bootstrap modules
 import 'bootstrap';
 import 'bootstrap-select';
+// import './js/bootstrap-tooltip-init';
 
 // Import Nette Forms module
 import 'nette-forms';

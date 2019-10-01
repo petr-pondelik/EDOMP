@@ -12,13 +12,16 @@ namespace App\Components\Forms\UserForm;
 use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
 use App\Model\Persistent\Functionality\UserFunctionality;
+use App\Model\Persistent\Manager\ConstraintEntityManager;
 use App\Model\Persistent\Repository\GroupRepository;
 use App\Model\Persistent\Repository\RoleRepository;
 use App\Services\MailService;
 use App\Services\Validator;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Random;
 
 /**
  * Class UserFormControl
@@ -44,6 +47,7 @@ class UserFormControl extends EntityFormControl
     /**
      * UserFormControl constructor.
      * @param Validator $validator
+     * @param ConstraintEntityManager $entityManager
      * @param MailService $mailService
      * @param UserFunctionality $userFunctionality
      * @param GroupRepository $groupRepository
@@ -52,13 +56,14 @@ class UserFormControl extends EntityFormControl
     public function __construct
     (
         Validator $validator,
+        ConstraintEntityManager $entityManager,
         MailService $mailService,
         UserFunctionality $userFunctionality,
         GroupRepository $groupRepository,
         RoleRepository $roleRepository
     )
     {
-        parent::__construct($validator);
+        parent::__construct($validator, $entityManager);
         $this->mailService = $mailService;
         $this->functionality = $userFunctionality;
         $this->groupRepository = $groupRepository;
@@ -76,25 +81,21 @@ class UserFormControl extends EntityFormControl
         $groupOptions = $this->groupRepository->findAllowed($this->presenter->user);
         $roleOptions = $this->roleRepository->findAllowed($this->presenter->user);
 
-        $form->addText('username', 'Uživatelské jméno *')
+        $form->addText('email', 'E-mail *')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Zadejte login uživatele.');
+            ->setHtmlAttribute('placeholder', 'Zadejte e-mail uživatele');
 
-        $form->addPassword('password', 'Heslo *')
+        $form->addText('username', 'Uživatelské jméno')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Zadejte heslo uživatele. (min. 8 znaků)');
-
-        $form->addPassword('passwordConfirm', 'Potvrzení hesla *')
-            ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Zopakujte heslo uživatele. (min. 8 znaků)');
+            ->setHtmlAttribute('placeholder', 'Zadejte uživatelské jméno');
 
         $form->addText('firstName', 'Jméno')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Zadejte jméno uživatele.');
+            ->setHtmlAttribute('placeholder', 'Zadejte jméno uživatele');
 
         $form->addText('lastName', 'Příjmení')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Zadejte příjmení uživatele.');
+            ->setHtmlAttribute('placeholder', 'Zadejte příjmení uživatele');
 
         $form->addSelect('role', 'Role *', $roleOptions)
             ->setPrompt('Zvolte roli')
@@ -103,14 +104,6 @@ class UserFormControl extends EntityFormControl
         $form->addMultiSelect('groups', 'Skupiny *', $groupOptions)
             ->setHtmlAttribute('class', 'form-control selectpicker')
             ->setHtmlAttribute('title', 'Zvolte skupiny');
-
-        if($this->isUpdate()){
-            $form->addSelect('changePassword', 'Změnit heslo', [
-                0 => 'Ne',
-                1 => 'Ano'
-            ])
-                ->setHtmlAttribute('class', 'form-control');
-        }
 
         return $form;
     }
@@ -123,18 +116,8 @@ class UserFormControl extends EntityFormControl
         $values = $form->values;
 
         // TODO: DO NOT VALIDATE USER DUPLICITY BY SELECT -> INSTEAD CATCH CONSTRAINT ERROR
-        $validateFields['username'] = new ValidatorArgument([
-            'username' => $values->username,
-            'edit' => $this->isUpdate(),
-            'userId' => $this->entity ? $this->entity->getId() : null
-        ], 'username');
-
-        if(!isset($values->changePassword) || $values->changePassword){
-            $validateFields['passwordConfirm'] = new ValidatorArgument([
-                'password' => $values->password, 'passwordConfirm' => $values->passwordConfirm
-            ],'passwordConfirm');
-        }
-
+        $validateFields['email'] = new ValidatorArgument(['email' => $values->email], 'email');
+        $validateFields['username'] = new ValidatorArgument(['username' => $values->username,], 'username');
         $validateFields['role'] = new ValidatorArgument($values->role, 'notEmpty');
         $validateFields['groups'] = new ValidatorArgument($values->groups, 'arrayNotEmpty');
 
@@ -147,20 +130,27 @@ class UserFormControl extends EntityFormControl
     /**
      * @param Form $form
      * @param ArrayHash $values
+     * @throws UniqueConstraintViolationException
      */
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
-        try{
+        try {
             // Get ID of logged user
             $values->userId = $this->presenter->user->id;
-            $values->password = 'TESTPASSWORD';
-            $user = $this->functionality->create($values);
-            $user->setPassword($values->password, false);
-            $this->mailService->sendInvitationEmail($user);
+            $values->password = Random::generate(8);
+            // If username wasn't entered, set email as username
+            if (!$values->username) {
+                $values->username = $values->email;
+            }
+            $user = $this->functionality->create($values, false);
+            bdump($values);
+            $this->mailService->sendInvitationEmail($user, $values->password);
+            $this->entityManager->flush();
             $this->onSuccess();
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
+            bdump($e);
             // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException){
+            if ($e instanceof AbortException) {
                 return;
             }
             $this->onError($e);
@@ -173,12 +163,18 @@ class UserFormControl extends EntityFormControl
      */
     public function handleEditFormSuccess(Form $form, ArrayHash $values): void
     {
-        try{
+        bdump('HANDLE EDIT FORM SUCCESS');
+        try {
+            // If username wasn't entered, set email as username
+            if (!$values->username) {
+                $values->username = $values->email;
+            }
             $this->functionality->update($this->entity->getId(), $values);
+            bdump('TEST');
             $this->onSuccess();
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
-            if ($e instanceof AbortException){
+            if ($e instanceof AbortException) {
                 return;
             }
             $this->onError($e);
@@ -187,7 +183,9 @@ class UserFormControl extends EntityFormControl
 
     public function setDefaults(): void
     {
+        bdump($this->entity);
         $this['form']['id']->setDefaultValue($this->entity->getId());
+        $this['form']['email']->setDefaultValue($this->entity->getEmail());
         $this['form']['username']->setDefaultValue($this->entity->getUsername());
         $this['form']['firstName']->setDefaultValue($this->entity->getFirstName());
         $this['form']['lastName']->setDefaultValue($this->entity->getLastName());
