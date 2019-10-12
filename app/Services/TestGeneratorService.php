@@ -470,6 +470,8 @@ class TestGeneratorService
      */
     public function createTestData(Test $test, ITemplate $template): void
     {
+        // TODO: INJECT TEMPLATE FACTORY AND CREATE TEMPLATE HERE
+        // TODO: MOVE INTO FILE SERVICE
         FileSystem::createDir(DATA_DIR . '/tests/' . $test->getId());
         $template->test = $test;
         foreach ($test->getTestVariants()->getValues() as $testVariant) {

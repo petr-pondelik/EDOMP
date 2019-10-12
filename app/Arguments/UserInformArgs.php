@@ -45,6 +45,11 @@ class UserInformArgs
     public $component;
 
     /**
+     * @var string
+     */
+    public $message;
+
+    /**
      * UserInformArgs constructor.
      * @param string|null $operation
      * @param bool $ajax
@@ -52,11 +57,12 @@ class UserInformArgs
      * @param \Exception|null $exception
      * @param bool $main
      * @param string|null $component
+     * @param string|null $message
      */
     public function __construct
     (
         string $operation = null, bool $ajax = false, string $type = 'success', \Exception $exception = null,
-        bool $main = false, string $component = null
+        bool $main = false, string $component = null, string $message = null
     )
     {
         $this->operation = $operation;
@@ -65,5 +71,6 @@ class UserInformArgs
         $this->exception = $exception;
         $this->main = $main;
         $this->component = $component;
+        $this->message = $message;
     }
 }

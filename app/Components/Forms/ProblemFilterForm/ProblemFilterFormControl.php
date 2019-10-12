@@ -65,7 +65,7 @@ class ProblemFilterFormControl extends FormControl
     {
         $form = parent::createComponentForm();
 
-        $form->getElementPrototype()->class('border-light ajax');
+        $form->getElementPrototype()->class('border-0 ajax');
 
         $difficultyOptions = $this->difficultyRepository->findAssoc([],"id");
         $themeOptions = $this->subCategoryRepository->findAssoc(["category" => $this->categoryId], "id");
@@ -108,10 +108,5 @@ class ProblemFilterFormControl extends FormControl
     {
         $this->presenter->setFilters($values);
         $this->onSuccess();
-    }
-
-    public function render(): void
-    {
-        $this->template->render(__DIR__ . '/templates/default.latte');
     }
 }

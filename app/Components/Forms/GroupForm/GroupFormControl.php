@@ -73,6 +73,7 @@ class GroupFormControl extends EntityFormControl
 
     /**
      * @param Form $form
+     * @throws \App\Exceptions\ValidatorException
      */
     public function handleFormValidate(Form $form): void
     {

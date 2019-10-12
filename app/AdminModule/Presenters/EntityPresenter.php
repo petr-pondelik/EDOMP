@@ -10,8 +10,9 @@ namespace App\AdminModule\Presenters;
 
 
 use App\Arguments\UserInformArgs;
+use App\Arguments\ValidatorArgument;
 use App\Components\Forms\EntityFormControl;
-use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\HeaderBar\IHeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
@@ -21,6 +22,7 @@ use App\Model\Persistent\Repository\BaseRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use App\Services\Validator;
+use Nette\Utils\ArrayHash;
 
 /**
  * Class EntityPresenter
@@ -47,7 +49,7 @@ abstract class EntityPresenter extends AdminPresenter
      * @param Authorizator $authorizator
      * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
-     * @param HeaderBarFactory $headerBarFactory
+     * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
@@ -61,7 +63,7 @@ abstract class EntityPresenter extends AdminPresenter
         Authorizator $authorizator,
         Validator $validator,
         NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory,
+        IHeaderBarFactory $headerBarFactory,
         ISideBarFactory $sideBarFactory,
         FlashesTranslator $flashesTranslator, ISectionHelpModalFactory $sectionHelpModalFactory,
         BaseRepository $repository,
@@ -97,7 +99,11 @@ abstract class EntityPresenter extends AdminPresenter
     public function actionUpdate(int $id): void
     {
         bdump('ACTION UPDATE');
-        $entity = $this->repository->find($id);
+
+        if(!$entity = $this->safeFind($id)){
+            $this->redirect('default');
+        }
+
         if(!$this->isEntityAllowed($entity)){
             $this->flashMessage('Nedostatečná přístupová práva.', 'danger');
             $this->redirect('default');
@@ -159,6 +165,37 @@ abstract class EntityPresenter extends AdminPresenter
     }
 
     /**
+     * @param int $id
+     * @param ArrayHash $row
+     * @throws \Exception
+     */
+    public function handleInlineUpdate(int $id, ArrayHash $row): void
+    {
+        try{
+            $errors = $this->validateInlineUpdate($row);
+            if ($errors) {
+                bdump($errors);
+                $this->informUser(new UserInformArgs('update', true, 'error', null, true, null, $errors[0]));
+                return;
+            }
+            $this->functionality->update($id, $row);
+        } catch (\Exception $e){
+            $this->informUser(new UserInformArgs('update', true,'error', $e, true));
+            return;
+        }
+        $this->informUser(new UserInformArgs('update', true, 'success', null, true));
+    }
+
+    /**
+     * @param ArrayHash $row
+     * @return ValidatorArgument[]
+     */
+    public function validateInlineUpdate(ArrayHash $row): array
+    {
+        return [];
+    }
+
+    /**
      * @return EntityFormControl
      */
     public function createComponentEntityForm(): EntityFormControl
@@ -184,5 +221,24 @@ abstract class EntityPresenter extends AdminPresenter
     public function renderUpdate(): void
     {
         $this->getEntityForm()->fillComponents();
+    }
+
+    /**
+     * @param int $id
+     * @param string $msg
+     * @return BaseEntity|null
+     */
+    public function safeFind(int $id, string $msg = 'Entita nenalezena.'): ?BaseEntity
+    {
+        $entity = $this->repository->find($id);
+        bdump($entity);
+
+        if (!$entity) {
+            $this->flashMessage($msg, 'danger');
+            $this->redrawControl('flashesSnippet');
+            return null;
+        }
+
+        return $entity;
     }
 }

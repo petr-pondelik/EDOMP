@@ -8,6 +8,8 @@
 
 namespace App\Services;
 
+use App\Arguments\ValidatorArgument;
+use App\Exceptions\ValidatorException;
 use App\Helpers\ConstHelper;
 use App\Helpers\LatexHelper;
 use App\Helpers\RegularExpressions;
@@ -152,6 +154,16 @@ class Validator
 
         $this->validationMapping = [
 
+            'login' => static function ($data) {
+                if (Validators::isNone($data)) {
+                    return 0;
+                }
+                if (!Validators::is($data, 'string:..128')) {
+                    return 1;
+                }
+                return -1;
+            },
+
             'notEmpty' => static function ($data) {
                 if (empty($data)) {
                     return 0;
@@ -170,7 +182,7 @@ class Validator
                 if (empty($data)) {
                     return 0;
                 }
-                if (strlen($data) > 64) {
+                if (strlen($data) > 128) {
                     return 1;
                 }
                 return -1;
@@ -197,20 +209,20 @@ class Validator
             },
 
             'email' => static function ($data) {
-                if (empty($data->email)) {
+                if (empty($data)) {
                     return 0;
                 }
-                if (strlen($data->email) > 128) {
+                if (strlen($data) > 128) {
                     return 1;
                 }
-                if(!Validators::isEmail($data->email)){
+                if (!Validators::isEmail($data)) {
                     return 2;
                 }
                 return -1;
             },
 
             'username' => static function ($data) {
-                if (strlen($data->username) > 128) {
+                if (strlen($data) > 128) {
                     return 0;
                 }
                 return -1;
@@ -254,34 +266,36 @@ class Validator
             },
 
             'body_' . $this->constHelper::LINEAR_EQ => function (LinearEquationTemplateNP $problemTemplate) {
-                if(empty($problemTemplate->getBody())){
+                if (empty($problemTemplate->getBody())) {
                     return 0;
                 }
                 return $this->linearEquationPlugin->validateBody($problemTemplate);
             },
 
             'body_' . $this->constHelper::QUADRATIC_EQ => function (QuadraticEquationTemplateNP $problemTemplate) {
-                if(empty($problemTemplate->getBody())){
+                if (empty($problemTemplate->getBody())) {
                     return 0;
                 }
                 return $this->linearEquationPlugin->validateBody($problemTemplate);
             },
 
             'body_' . $this->constHelper::ARITHMETIC_SEQ => function (ArithmeticSequenceTemplateNP $problemTemplate) {
-                if(empty($problemTemplate->getBody())){
+                if (empty($problemTemplate->getBody())) {
                     return 0;
                 }
                 return $this->arithmeticSequencePlugin->validateBody($problemTemplate);
             },
 
             'body_' . $this->constHelper::GEOMETRIC_SEQ => function (GeometricSequenceTemplateNP $problemTemplate) {
-                if(empty($problemTemplate->getBody())){
+                if (empty($problemTemplate->getBody())) {
                     return 0;
                 }
                 return $this->geometricSequencePlugin->validateBody($problemTemplate);
             },
 
-            'variable' => static function ($data) { return self::validVariable($data); },
+            'variable' => static function ($data) {
+                return self::validVariable($data);
+            },
 
             'notEmptyPositive' => static function ($filledVal) {
                 if (empty($filledVal)) {
@@ -309,7 +323,6 @@ class Validator
             },
 
             'condition_' . $this->constHelper::DISCRIMINANT => function (ProblemTemplateNP $data) {
-                //bdump('VALIDATE DISCRIMINANT CONDITION');
                 // Maximal number of parameters exceeded
                 if ($data->getParametersData()->getCount() > $this->constHelper::PARAMETERS_MAX) {
                     return 2;
@@ -323,18 +336,40 @@ class Validator
                 }
                 return -1;
             },
+
+            'testTemplateContent' => function (string $data) {
+
+                $data = $this->stringsHelper::removeWhiteSpaces($data);
+                bdump($data);
+
+                if (Validators::isNone($data)) {
+                    return 0;
+                }
+
+                if (!Strings::match($data, '~' . $this->regularExpressions::RE_TEST_TEMPLATE . '~')) {
+                    return 1;
+                }
+
+                return -1;
+
+            }
         ];
 
         $this->validationMessages = [
 
             'email' => [
-                0 => 'Zadejte e-mail',
+                0 => 'Zadejte e-mail.',
                 1 => 'E-mail nesmí být delší než 128 znaků.',
                 2 => 'Zadejte validní e-mail.'
             ],
 
             'username' => [
                 0 => 'Uživatelské jméno nesmí být delší než 128 znaků.',
+            ],
+
+            'login' => [
+                0 => 'Zadejte e-mail či uživatelské jméno.',
+                1 => 'Údaj nesmí být delší než 128 znaků.'
             ],
 
             'password' => [
@@ -346,14 +381,13 @@ class Validator
                 1 => 'Heslo musí mít délku alespoň 8 znaků.'
             ],
 
-
             'groups' => [
                 0 => 'Zvolte alespoň jednu skupinu.'
             ],
 
             'label' => [
                 0 => 'Název musí být vyplněn.',
-                1 => 'Název nesmí být delší než 64 znaků.'
+                1 => 'Název nesmí být delší než 128 znaků.'
             ],
 
             'logo' => [
@@ -377,7 +411,7 @@ class Validator
 
             'success_rate' => [
                 0 => 'Úspěšnost úlohy musí být číselná hodnota.',
-                1 => 'Úspěšnost úlohy musí být v intervalu <0; 1>'
+                1 => 'Úspěšnost úlohy musí být v intervalu <0; 1>.'
             ],
 
             'body' => self::$bodyMessages,
@@ -435,22 +469,18 @@ class Validator
 
             'condition_' . $this->constHelper::RESULT => [
                 0 => 'Struktura musí být vyplněna',
-                1 => 'Chybný formát vstupního LaTeXu',
-                2 => 'Překročen povolený počet parametrů. (maximálně ' . $this->constHelper::PARAMETERS_MAX . ')',
-                3 => 'Překročena povolená složitost parametrů. (maximálně ' . $this->constHelper::COMPLEXITY_MAX . ')',
+                1 => 'Chybný formát vstupního LaTeXu.',
+                2 => 'Překročen povolený počet parametrů. (maximálně ' . $this->constHelper::PARAMETERS_MAX . ')-',
+                3 => 'Překročena povolená složitost parametrů. (maximálně ' . $this->constHelper::COMPLEXITY_MAX . ').',
                 4 => 'Podmínka není splnitelná.'
             ],
 
             'condition_' . $this->constHelper::DISCRIMINANT => [
                 0 => 'Struktura úlohy musí být vyplněna.',
                 1 => 'Chybný formát vstupního LaTeXu.',
-                2 => 'Překročen povolený počet parametrů. (maximálně ' . $this->constHelper::PARAMETERS_MAX . ')',
-                3 => 'Překročena povolená složitost parametrů. (maximálně ' . $this->constHelper::COMPLEXITY_MAX . ')',
+                2 => 'Překročen povolený počet parametrů. (maximálně ' . $this->constHelper::PARAMETERS_MAX . ').',
+                3 => 'Překročena povolená složitost parametrů. (maximálně ' . $this->constHelper::COMPLEXITY_MAX . ').',
                 4 => 'Podmínka není splnitelná.'
-            ],
-
-            'conditions_valid' => [
-                0 => 'Některou ze zadaných podmínek nelze splnit.'
             ],
 
             'role' => [
@@ -459,6 +489,11 @@ class Validator
 
             'superGroup' => [
                 0 => 'Zvolte prosím superskupinu.'
+            ],
+
+            'templateContent' => [
+                0 => 'Obsah šablony nesmí být prázdný.',
+                1 => 'PHP kód šablony nesmí být změněn.'
             ]
 
         ];
@@ -477,7 +512,7 @@ class Validator
         if (!$matches || strlen($data) !== 1 || count($matches) !== 1) {
             return 1;
         }
-        if($data === 'e'){
+        if ($data === 'e') {
             return 2;
         }
         return -1;
@@ -485,12 +520,13 @@ class Validator
 
     /**
      * @param Form $form
-     * @param $fields
+     * @param ValidatorArgument[] $fields
      * @return Form
+     * @throws ValidatorException
      */
-    public function validate(Form $form, $fields): Form
+    public function validate(Form $form, array $fields): Form
     {
-        foreach ((array)$fields as $field => $item) {
+        foreach ($fields as $field => $item) {
 
             $validationRule = $item->validationRule;
             $data = $item->data;
@@ -501,6 +537,7 @@ class Validator
             }
 
             if (($validationRes = $this->validationMapping[$validationRule]($data)) !== -1) {
+
                 if (isset($this->validationMessages[$field][$validationRes])) {
                     if (isset($item->display)) {
                         $form[$item->display]->addError($this->validationMessages[$field][$validationRes]);
@@ -509,6 +546,9 @@ class Validator
                     }
                 } else {
                     if (isset($item->display)) {
+                        if (!isset($this->validationMessages[$validationRule][$validationRes])) {
+                            throw new ValidatorException('Zpráva pro validované pole nebyla definována.');
+                        }
                         $form[$item->display]->addError($this->validationMessages[$validationRule][$validationRes]);
                     } else {
                         $form[$field]->addError($this->validationMessages[$validationRule][$validationRes]);
@@ -518,5 +558,38 @@ class Validator
         }
 
         return $form;
+    }
+
+    /**
+     * @param ValidatorArgument[] $fields
+     * @return array
+     * @throws ValidatorException
+     */
+    public function validatePlain(array $fields): array
+    {
+        $errors = [];
+
+        foreach ($fields as $field => $item) {
+            $validationRule = $item->validationRule;
+            $data = $item->data;
+
+            // Check if the validator supports entered validation
+            if (!array_key_exists($validationRule, $this->validationMapping)) {
+                throw new NotSupportedException('Validátor: Požadavek obsahuje neočekávanou hodnotu.');
+            }
+
+            if (($validationRes = $this->validationMapping[$validationRule]($data)) !== -1) {
+                if (isset($this->validationMessages[$field][$validationRes])) {
+                    $errors[] = $this->validationMessages[$field][$validationRes];
+                } else {
+                    if (!isset($this->validationMessages[$validationRule][$validationRes])) {
+                        throw new ValidatorException('Zpráva pro validované pole nebyla definována.');
+                    }
+                    $errors[] = $this->validationMessages[$validationRule][$validationRes];
+                }
+            }
+        }
+
+        return $errors;
     }
 }

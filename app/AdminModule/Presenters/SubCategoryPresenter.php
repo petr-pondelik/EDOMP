@@ -9,10 +9,10 @@
 namespace App\AdminModule\Presenters;
 
 use App\Arguments\UserInformArgs;
+use App\Arguments\ValidatorArgument;
 use App\Components\DataGrids\SubCategoryGridFactory;
-use App\Components\Forms\SubCategoryForm\SubCategoryFormControl;
 use App\Components\Forms\SubCategoryForm\ISubCategoryFormFactory;
-use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\HeaderBar\IHeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
@@ -41,7 +41,7 @@ class SubCategoryPresenter extends EntityPresenter
      * @param Authorizator $authorizator
      * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
-     * @param HeaderBarFactory $headerBarFactory
+     * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param SubCategoryRepository $subCategoryRepository
@@ -54,7 +54,7 @@ class SubCategoryPresenter extends EntityPresenter
     public function __construct
     (
         Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         SubCategoryRepository $subCategoryRepository, SubCategoryFunctionality $subCategoryFunctionality,
         CategoryRepository $categoryRepository,
         SubCategoryGridFactory $subCategoryGridFactory, ISubCategoryFormFactory $subCategoryFormFactory,
@@ -116,5 +116,16 @@ class SubCategoryPresenter extends EntityPresenter
         }
         $this['entityGrid']->reload();
         $this->informUser(new UserInformArgs('category', true));
+    }
+
+    /**
+     * @param ArrayHash $row
+     * @return array
+     * @throws \App\Exceptions\ValidatorException
+     */
+    public function validateInlineUpdate(ArrayHash $row): array
+    {
+        $validationFields['label'] = new ValidatorArgument($row->label, 'notEmpty');
+        return $this->validator->validatePlain($validationFields);
     }
 }

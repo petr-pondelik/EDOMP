@@ -2,19 +2,18 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 25.5.19
- * Time: 17:40
+ * Date: 21.9.19
+ * Time: 11:20
  */
 
-namespace App\Components\Forms\TestForm;
+namespace App\Components\Forms\TestForm\TestEntityForm;
 
-use App\Components\Forms\IFormFactory;
 
 /**
- * Interface ITestFormFactory
- * @package App\Components\Forms\TestForm
+ * Interface ITestEntityFormFactory
+ * @package App\Components\Forms\TestForm\TestEntityForm
  */
-interface ITestFormFactory extends IFormFactory
+interface ITestFormFactory
 {
-
+    public function create(): TestFormControl;
 }

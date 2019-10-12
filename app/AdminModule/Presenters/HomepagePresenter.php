@@ -2,7 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\HeaderBar\IHeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
@@ -79,7 +79,7 @@ final class HomepagePresenter extends AdminPresenter
      * @param Authorizator $authorizator
      * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
-     * @param HeaderBarFactory $headerBarFactory
+     * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param ProblemTemplateRepository $problemTemplateRepository
@@ -94,7 +94,7 @@ final class HomepagePresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ProblemTemplateRepository $problemTemplateRepository, ProblemFinalRepository $problemFinalRepository,
         CategoryRepository $categoryRepository, SubCategoryRepository $subCategoryRepository,
         TestRepository $testRepository, UserRepository $userRepository, HomepageStatisticsManager $homepageStatisticsManager,

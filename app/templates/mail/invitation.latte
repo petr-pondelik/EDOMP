@@ -70,16 +70,16 @@
     <body>
         <h1>Pozvání do aplikace EDOMP</h1>
         <p class="lead">
-            Obdrželi jste pozvání do elektonické sbírky příkladů z matematiky. <br>
+            Obdrželi jste pozvání do elektronické sbírky příkladů z matematiky. <br>
             Pokud tento e-mail není cílený Vám, prosím, nereagujte na něj.
         </p>
         <p class="lead">
-            Pro aktivaci účtu se prosím přihlaste do aplikace pomocí hesla uvedeného níže. <br>
-            Po provedení aktivace můžete přidělené heslo změnit v rámci nastavení.
+            Do aplikace se můžete přihlásit pomocí hesla uvedeného níže. <br>
+            Přidělené heslo lze změnit v rámci nastavení.
         </p>
         <p class="lead">Vaše heslo: <strong>{$password}</strong></p>
         <div class="container">
-            <a class="btn btn-primary btn-lg" href="{$loginURL}?{$user->getEmail()}">Přihlášení</a>
+            <a class="btn btn-primary btn-lg" href="{$loginURL}?email={$user->getEmail()}">Přihlášení</a>
         </div>
     </body>
 </html>

@@ -66,14 +66,6 @@ abstract class EntityFormControl extends FormControl
     }
 
     /**
-     * @param Form $form
-     * @param ArrayHash $values
-     */
-    abstract public function handleEditFormSuccess(Form $form, ArrayHash $values): void;
-
-    abstract public function setDefaults(): void;
-
-    /**
      * @param BaseEntity $entity
      */
     public function setEntity(BaseEntity $entity): void
@@ -89,4 +81,23 @@ abstract class EntityFormControl extends FormControl
     {
         return $this->entity;
     }
+
+    /**
+     * @return string
+     */
+    public function getTemplateName(): string
+    {
+        if($this->isDefault()){
+            return 'create';
+        }
+        return $this->getAction();
+    }
+
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    abstract public function handleEditFormSuccess(Form $form, ArrayHash $values): void;
+
+    abstract public function setDefaults(): void;
 }

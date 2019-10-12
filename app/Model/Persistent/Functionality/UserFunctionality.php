@@ -60,24 +60,36 @@ class UserFunctionality extends BaseFunctionality
      */
     public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
+        bdump('CREATE USER');
+        bdump($data);
         $user = new User();
+
         $user->setEmail($data->email);
-        $user->setUsername($data->username);
+
+        if (!isset($data->username) || !$data->username) {
+            $user->setUsername($data->email);
+        } else {
+            $user->setUsername($data->username);
+        }
+
         $user->setPassword($data->password);
         $user->setFirstName($data->firstName);
         $user->setLastName($data->lastName);
         $user->setRole($this->roleRepository->find($data->role));
         $user = $this->attachGroups($user, $data->groups);
-        if(isset($data->userId)){
+
+        if (isset($data->userId)) {
             $user->setCreatedBy($this->repository->find($data->userId));
         }
-        if(isset($data->created)){
-            $user->setCreated($data->created);
-        }
+
+        bdump($user);
+
         $this->em->persist($user);
+
         if ($flush) {
             $this->em->flush();
         }
+
         return $user;
     }
 
@@ -92,20 +104,37 @@ class UserFunctionality extends BaseFunctionality
     public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         $user = $this->repository->find($id);
+
         if (!$user) {
             throw new EntityNotFoundException('Entity for update not found.');
         }
+
         $user->setEmail($data->email);
-        $user->setUsername($data->username);
+
+        if (!isset($data->username) || !$data->username) {
+            $user->setUsername($data->email);
+        } else {
+            $user->setUsername($data->username);
+        }
+
         $user->setFirstName($data->firstName);
         $user->setLastName($data->lastName);
-        $user->setRole($this->roleRepository->find($data->role));
-        $user->setGroups(new ArrayCollection());
-        $user = $this->attachGroups($user, $data->groups);
+
+        if (isset($data->role)) {
+            $user->setRole($this->roleRepository->find($data->role));
+        }
+
+        if (isset($data->groups)) {
+            $user->setGroups(new ArrayCollection());
+            $user = $this->attachGroups($user, $data->groups);
+        }
+
         $this->em->persist($user);
+
         if ($flush) {
             $this->em->flush();
         }
+
         return $user;
     }
 
@@ -116,8 +145,30 @@ class UserFunctionality extends BaseFunctionality
      */
     protected function attachGroups(User $user, array $groups): User
     {
-        foreach ($groups as $group){
+        foreach ($groups as $group) {
             $user->addGroup($this->groupRepository->find($group));
+        }
+        return $user;
+    }
+
+    /**
+     * @param int $id
+     * @param string $password
+     * @param bool $flush
+     * @return User
+     * @throws EntityNotFoundException
+     * @throws \App\Exceptions\EntityException
+     */
+    public function updatePassword(int $id, string $password, $flush = true): User
+    {
+        $user = $this->repository->find($id);
+        if (!$user) {
+            throw new EntityNotFoundException('Entity for update not found.');
+        }
+        $user->setPassword($password);
+        $this->em->persist($user);
+        if ($flush) {
+            $this->em->flush();
         }
         return $user;
     }

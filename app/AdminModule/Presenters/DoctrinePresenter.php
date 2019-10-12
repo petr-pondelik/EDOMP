@@ -9,7 +9,7 @@
 namespace App\AdminModule\Presenters;
 
 
-use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\HeaderBar\IHeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
@@ -165,7 +165,7 @@ class DoctrinePresenter extends AdminPresenter
      * DoctrinePresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
-     * @param HeaderBarFactory $headerBarFactory
+     * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param ConstraintEntityManager $em
@@ -195,7 +195,7 @@ class DoctrinePresenter extends AdminPresenter
     public function __construct
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ConstraintEntityManager $em, ProblemFinalRepository $problemFinalRepository, CategoryRepository $categoryRepository,
         TemplateJsonDataRepository $templateJsonDataRepository,
         ProblemTemplateRepository $problemTemplateRepository, QuadraticEquationTemplateRepository $quadraticEqTemplRepository,

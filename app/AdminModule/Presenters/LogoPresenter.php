@@ -9,10 +9,11 @@
 namespace App\AdminModule\Presenters;
 
 use App\Arguments\UserInformArgs;
+use App\Arguments\ValidatorArgument;
 use App\Components\DataGrids\LogoGridFactory;
 use App\Components\Forms\EntityFormControl;
 use App\Components\Forms\LogoForm\ILogoIFormFactory;
-use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\HeaderBar\IHeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
@@ -24,6 +25,7 @@ use App\Services\NewtonApiClient;
 use App\Services\Validator;
 use Nette\Application\Responses\TextResponse;
 use Nette\IOException;
+use Nette\Utils\ArrayHash;
 
 /**
  * Class LogoPresenter
@@ -41,7 +43,7 @@ class LogoPresenter extends EntityPresenter
      * @param Authorizator $authorizator
      * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
-     * @param HeaderBarFactory $headerBarFactory
+     * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param LogoRepository $logoRepository
@@ -54,7 +56,7 @@ class LogoPresenter extends EntityPresenter
     public function __construct
     (
         Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         LogoRepository $logoRepository, LogoFunctionality $logoFunctionality,
         FileService $fileService,
         LogoGridFactory $logoGridFactory, ILogoIFormFactory $logoFormFactory,
@@ -81,11 +83,17 @@ class LogoPresenter extends EntityPresenter
     public function createComponentEntityGrid($name): void
     {
         $grid = $this->gridFactory->create($this, $name);
+
         $grid->addAction('delete', '', 'delete!')
             ->setTemplate(__DIR__ . '/templates/Logo/delete_action.latte');
+
+        $grid->setItemsDetail(__DIR__ . '/templates/Logo/detail.latte')
+            ->setClass('btn btn-sm btn-primary ajax');
+
         $grid->addAction('edit', '', 'update!')
             ->setIcon('edit')
             ->setClass('btn btn-primary btn-sm');
+
         $grid->addInlineEdit()
             ->setIcon('pencil-alt')
             ->setTitle('Upravit inline')
@@ -93,29 +101,30 @@ class LogoPresenter extends EntityPresenter
             ->onControlAdd[] = static function ($container) {
             $container->addText('label', '');
         };
+
         $grid->getInlineEdit()->onSetDefaults[] = static function ($container, $item) {
             $container->setDefaults([
                 'label' => $item->getLabel()
             ]);
         };
+
         $grid->getInlineEdit()->onSubmit[] = [$this, 'handleInlineUpdate'];
-        $grid->setItemsDetail(__DIR__ . '/templates/Logo/detail.latte')
-            ->setClass('btn btn-sm btn-primary ajax');
+
     }
 
-    /**
-     * @param int $id
-     * @param $row
-     */
-    public function handleInlineUpdate(int $id, $row): void
-    {
-        try{
-            $this->functionality->update($id, $row);
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('update', true,'error', $e, true));
-        }
-        $this->informUser(new UserInformArgs('update', true, 'success',null, true));
-    }
+//    /**
+//     * @param int $id
+//     * @param $row
+//     */
+//    public function handleInlineUpdate(int $id, $row): void
+//    {
+//        try{
+//            $this->functionality->update($id, $row);
+//        } catch (\Exception $e){
+//            $this->informUser(new UserInformArgs('update', true,'error', $e, true));
+//        }
+//        $this->informUser(new UserInformArgs('update', true, 'success',null, true));
+//    }
 
     /**
      * @throws \Nette\Application\AbortException
@@ -150,6 +159,17 @@ class LogoPresenter extends EntityPresenter
     public function handleRevertFileUpdate(): void
     {
         $this->sendResponse( new TextResponse($this->fileService->revertFileUpdate($this->getHttpRequest())) );
+    }
+
+    /**
+     * @param ArrayHash $row
+     * @return array
+     * @throws \App\Exceptions\ValidatorException
+     */
+    public function validateInlineUpdate(ArrayHash $row): array
+    {
+        $validationFields['label'] = new ValidatorArgument($row->label, 'stringNotEmpty');
+        return $this->validator->validatePlain($validationFields);
     }
 
     /**

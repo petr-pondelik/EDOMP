@@ -94,6 +94,4 @@ class ProblemFinalFunctionality extends BaseFunctionality
         }
         return $problemFinal;
     }
-
-    // TODO: ALL THE CREATE AND UPDATE METHOD OF CHILDREN CLASSES WAS MODIFIED!!! FIX IT!!!
 }

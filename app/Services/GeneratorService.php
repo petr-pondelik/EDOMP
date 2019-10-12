@@ -248,11 +248,6 @@ class GeneratorService
                     $parameters['p' . $paramsCnt++] = Strings::trim($expressionSplit[$splitKey]);
                 }
 
-//                if(Strings::match($splitItem, '~(<par min="[0-9]+" max="[0-9]+"\/>)~')){
-//                    $parameters['p' . $paramsCnt++] = Strings::trim($expressionSplit[$splitKey]);
-//                }
-
-
             }
         }
 

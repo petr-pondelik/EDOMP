@@ -220,11 +220,6 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('difficulty');
 
-        //Field for storing all conditions final valid state
-        $form->addHidden('conditions_valid')
-            ->setDefaultValue(1)
-            ->setHtmlId('conditions_valid');
-
         // Attach corresponding ProblemTypeConditions
         foreach ($this->conditionTypes as $conditionType){
             $form->addSelect('condition_' . $conditionType->getId(), $conditionType->getLabel(), $conditionType->getProblemConditions()->getValues())

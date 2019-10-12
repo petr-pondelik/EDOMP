@@ -38,6 +38,6 @@ class LogoDragAndDropControl extends EDOMPControl
     public function render(): void
     {
         $this->template->logos = $this->logoRepository->findAssoc([], 'id');
-        $this->template->render(__DIR__ . '/templates/default.latte');
+        parent::render();
     }
 }

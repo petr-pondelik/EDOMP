@@ -18,7 +18,6 @@ use Ublaboo\DataGrid\Localization\SimpleTranslator;
  */
 abstract class BaseGrid extends EDOMPControl
 {
-
     /**
      * @param $container
      * @param $name
@@ -56,7 +55,8 @@ abstract class BaseGrid extends EDOMPControl
 
         $grid->setTranslator($translator);
 
-        $grid->setTemplateFile(APP_DIR . '/Presenters/Templates/UblabooDatagrid/datagridCustom.latte');
+        $grid->setTemplateFile(TEMPLATES_DIR . '/UblabooDatagrid/datagridCustom.latte');
+        $grid->setCustomPaginatortemplate(TEMPLATES_DIR . '/UblabooDatagrid/datagridPaginator.latte');
 
         $grid->setDefaultSort(['id' => 'DESC']);
 

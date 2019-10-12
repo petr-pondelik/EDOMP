@@ -16,7 +16,7 @@
             </h1>
         </div>
 
-        <div class="card-body pl-0 pr-0 pb-0">
+        <div class="card-body px-0 pb-0">
 
             <div class="col-12">
                 {snippet paginatorSnippet}
@@ -25,40 +25,29 @@
             </div>
 
             <div class="col-12">
-            <div class="card">
+                <div class="card card-shadow border-0">
 
-                <div
-                        class="card-header heading-filters pt-0 pr-0 pb-0 pl-0"
-                        id="filters-header"
-                        data-toggle="collapse"
-                        data-target="#filters-wrapper"
-                        aria-expanded="false"
-                        aria-controls="#filters-wrapper"
-                >
-                    <h5 class="mb-0">
-                        <button type="button"
-                                class="d-flex justify-content-between pt-3 pb-3 col-12 btn"
-                        >
-                            Filtr
-                            <i class="fas fa-chevron-down"></i>
-                            <i class="fas fa-chevron-up d-none"></i>
-                        </button>
-                    </h5>
-                </div>
+                    <div class="card-header card-header-toggle p-0"
+                            id="filters-header"
+                            data-toggle="collapse"
+                            data-target="#filters-wrapper"
+                            aria-expanded="false"
+                            aria-controls="#filters-wrapper"
+                    >
+                        <h5 class="mb-0">
+                            <button type="button" class="d-flex justify-content-between pt-3 pb-3 col-12 btn">
+                                Filtr
+                                <i class="fas fa-chevron-down"></i>
+                                <i class="fas fa-chevron-up d-none"></i>
+                            </button>
+                        </h5>
+                    </div>
 
-                <div
-                        class="card-body collapse"
-                        id="filters-wrapper"
-                        aria-labelledby="filters-header"
-                >
-
-                    {*{snippet filtersSnippet}*}
+                    <div class="card-body collapse" id="filters-wrapper" aria-labelledby="filters-header">
                         {control problemFilterForm}
-                    {*{/snippet}*}
+                    </div>
 
                 </div>
-
-            </div>
             </div>
 
             {snippet problemsSnippet}
@@ -67,19 +56,19 @@
 
                 {foreach $problems as $problem}
 
-                    <div class="col-12 mt-5 mb-5">
+                    <div class="col-12 my-5">
 
-                        <div class="text-center latex-wrapper mb-5 mt-5">
+                        <div class="text-center latex-wrapper my-5">
                             {$problem->getBody()}
                         </div>
 
-                        <div class="col-12 text-right pl-0 pr-0">
+                        <div class="col-12 text-right px-0">
                             <button type="button" class="btn btn-sm btn-primary" id="result-switch">
                                 <i class="fas fa-eye mr-2"></i>Zobrazit odpověď
                             </button>
                         </div>
 
-                        <div class="text-center bg-light mt-3 pt-4 pb-4" id="result-wrapper">
+                        <div class="text-center bg-light mt-3 py-4" id="result-wrapper">
                             {if $problem->getResult()}
                                 {$problem->getResult()}
                             {else}

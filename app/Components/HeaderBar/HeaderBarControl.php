@@ -8,20 +8,12 @@
 
 namespace App\Components\HeaderBar;
 
-use App\Components\Traits\DetectPresenterTrait;
-use Nette\Application\UI\Control;
+use App\Components\EDOMPControl;
 
 /**
  * Class HeaderBarControl
  * @package App\Components\HeaderBar
  */
-class HeaderBarControl extends Control
+class HeaderBarControl extends EDOMPControl
 {
-    use DetectPresenterTrait;
-
-    public function render(): void
-    {
-        $this->template->adminModule = $this->isAdminModule();
-        $this->template->render(__DIR__ . '/templates/headerBar.latte');
-    }
 }

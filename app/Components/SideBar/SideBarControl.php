@@ -9,7 +9,6 @@
 namespace App\Components\SideBar;
 
 use App\Components\EDOMPControl;
-use App\Components\Traits\DetectPresenterTrait;
 
 /**
  * Class SideBarControl
@@ -17,12 +16,4 @@ use App\Components\Traits\DetectPresenterTrait;
  */
 class SideBarControl extends EDOMPControl
 {
-    use DetectPresenterTrait;
-
-    public function render(): void
-    {
-        $this->template->adminModule = $this->isAdminModule();
-        $this->template->problemTemplatePresenter = $this->isProblemTemplatePresenter();
-        $this->template->render(__DIR__ . '/templates/sideBar.latte');
-    }
 }

@@ -227,12 +227,14 @@ class FlashesTranslator
                 'default' => 'Uživatel úspěšně vytvořen.',
                 'update' => 'Uživatel úspěšně editován.',
                 'delete' => 'Uživatel úspěšně odstraněn.',
+                'resendPassword' => 'Heslo úspěšně aktualizováno a odesláno.'
             ],
 
             'error' => [
                 'default' => 'Chyba při vytváření uživatele.',
                 'update' => 'Chyba při editaci uživatele.',
                 'delete' => 'Chyba při odstraňování uživatele.',
+                'resendPassword' => 'Chyba při aktualizaci hesla.'
             ],
 
             'uniqueConstraintViolation' => 'Uživatel se zadanným e-mailem či uživatelským jménem již existuje.'
@@ -262,11 +264,15 @@ class FlashesTranslator
             'success' => [
                 'groupPermissions' => 'Oprávnění skupiny úspěšně změněna.',
                 'superGroupPermissions' => 'Oprávnění superskupiny úspěšně změněna.',
+                'password' => 'Heslo úspěšně změněno.',
+                'testTemplate' => 'Šablona testu úspěšně upravena.'
             ],
 
             'error' => [
                 'groupPermissions' => 'Chyba při změně oprávnění skupiny.',
                 'superGroupPermissions' => 'Chyba při změně oprávnění superskupiny.',
+                'password' => 'Chyba při změně hesla.',
+                'testTemplate' => 'Chyba při úpravě šablony testu.'
             ]
 
         ],
@@ -278,6 +284,8 @@ class FlashesTranslator
                 'create' => 'Test úspěšně vytvořen.',
                 'update' => 'Test úspěšně editován.',
                 'delete' => 'Test úspěšně odstraněn.',
+                'regenerate' => 'Test úspěšně přegenerován.',
+                'downloadSource' => 'Archiv s testem stažen.'
             ],
 
             'error' => [
@@ -285,9 +293,23 @@ class FlashesTranslator
                 'create' => 'Chyba při tvorbě testu.',
                 'update' => 'Chyba při editaci testu.',
                 'delete' => 'Chyba při odstraňování testu.',
+                'regenerate' => 'Chyba během přegenerování testu.',
+                'downloadSource' => 'Chyba během stahování archivu s testem.'
             ]
 
         ],
+
+        'Front:Settings' => [
+
+            'success' => [
+                'password' => 'Heslo úspěšně změněno.'
+            ],
+
+            'error' => [
+                'password' => 'Chyba při změně hesla.'
+            ]
+
+        ]
 
     ];
 

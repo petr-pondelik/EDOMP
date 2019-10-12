@@ -10,9 +10,10 @@ namespace App\AdminModule\Presenters;
 
 
 use App\Arguments\UserInformArgs;
+use App\Arguments\ValidatorArgument;
 use App\Components\DataGrids\SuperGroupGridFactory;
 use App\Components\Forms\SuperGroupForm\ISuperGroupIFormFactory;
-use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\HeaderBar\IHeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
@@ -22,6 +23,7 @@ use App\Model\Persistent\Repository\SuperGroupRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use App\Services\Validator;
+use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
@@ -34,7 +36,7 @@ class SuperGroupPresenter extends EntityPresenter
      * SuperGroupPresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
-     * @param HeaderBarFactory $headerBarFactory
+     * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param SuperGroupRepository $superGroupRepository
@@ -47,7 +49,7 @@ class SuperGroupPresenter extends EntityPresenter
     public function __construct
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         SuperGroupRepository $superGroupRepository, SuperGroupFunctionality $superGroupFunctionality,
         SuperGroupGridFactory $superGroupGridFactory, ISuperGroupIFormFactory $superGroupFormFactory,
         Validator $validator,
@@ -105,17 +107,13 @@ class SuperGroupPresenter extends EntityPresenter
     }
 
     /**
-     * @param int $id
-     * @param $row
-     * @throws \Exception
+     * @param ArrayHash $row
+     * @return array
+     * @throws \App\Exceptions\ValidatorException
      */
-    public function handleInlineUpdate(int $id, $row): void
+    public function validateInlineUpdate(ArrayHash $row): array
     {
-        try{
-            $this->functionality->update($id, $row);
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('update', true,'error', $e, true));
-        }
-        $this->informUser(new UserInformArgs('update', true, 'success',null, true));
+        $validationFields['label'] = new ValidatorArgument($row->label, 'stringNotEmpty');
+        return $this->validator->validatePlain($validationFields);
     }
 }

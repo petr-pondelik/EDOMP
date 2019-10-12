@@ -10,9 +10,10 @@ namespace App\AdminModule\Presenters;
 
 
 use App\Arguments\UserInformArgs;
+use App\Arguments\ValidatorArgument;
 use App\Components\DataGrids\GroupGridFactory;
 use App\Components\Forms\GroupForm\IGroupIFormFactory;
-use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\HeaderBar\IHeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
@@ -41,7 +42,7 @@ class GroupPresenter extends EntityPresenter
      * GroupPresenter constructor.
      * @param Authorizator $authorizator
      * @param NewtonApiClient $newtonApiClient
-     * @param HeaderBarFactory $headerBarFactory
+     * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param GroupRepository $groupRepository
@@ -55,7 +56,7 @@ class GroupPresenter extends EntityPresenter
     public function __construct
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         GroupRepository $groupRepository, GroupFunctionality $groupFunctionality, SuperGroupRepository $superGroupRepository,
         Validator $validator,
         GroupGridFactory $groupGridFactory, IGroupIFormFactory $groupFormFactory,
@@ -85,12 +86,15 @@ class GroupPresenter extends EntityPresenter
     public function createComponentEntityGrid($name): DataGrid
     {
         $grid = $this->gridFactory->create($this, $name);
+
         $grid->addAction('delete', '', 'delete!')
             ->setIcon('trash')
             ->setClass('btn btn-danger btn-sm ajax');
+
         $grid->addAction('edit', '', 'update!')
             ->setIcon('edit')
             ->setClass('btn btn-primary btn-sm');
+
         $grid->addInlineEdit()
             ->setIcon('pencil-alt')
             ->setTitle('Upravit inline')
@@ -98,28 +102,14 @@ class GroupPresenter extends EntityPresenter
             ->onControlAdd[] = static function ($container) {
             $container->addText('label', '');
         };
-        $grid->getInlineEdit()->onSetDefaults[] = static function ($container, $item) {
-            $container->setDefaults([
-                'label' => $item->getLabel()
-            ]);
-        };
-        $grid->getInlineEdit()->onSubmit[] = [$this, 'handleInlineUpdate'];
-        return $grid;
-    }
 
-    /**
-     * @param int $id
-     * @param $row
-     * @throws \Exception
-     */
-    public function handleInlineUpdate(int $id, $row): void
-    {
-        try{
-            $this->functionality->update($id, $row);
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('update', true,'error', $e, true));
-        }
-        $this->informUser(new UserInformArgs('update', true, 'success', null, true));
+        $grid->getInlineEdit()->onSetDefaults[] = static function ($container, $item) {
+            $container->setDefaults([ 'label' => $item->getLabel() ]);
+        };
+
+        $grid->getInlineEdit()->onSubmit[] = [$this, 'handleInlineUpdate'];
+
+        return $grid;
     }
 
     /**
@@ -139,5 +129,16 @@ class GroupPresenter extends EntityPresenter
         }
         $this->informUser(new UserInformArgs('superGroup', true, 'success', null, true));
         $this['entityGrid']->reload();
+    }
+
+    /**
+     * @param ArrayHash $row
+     * @return array
+     * @throws \App\Exceptions\ValidatorException
+     */
+    public function validateInlineUpdate(ArrayHash $row): array
+    {
+        $validationFields['label'] = new ValidatorArgument($row->label, 'stringNotEmpty');
+        return $this->validator->validatePlain($validationFields);
     }
 }

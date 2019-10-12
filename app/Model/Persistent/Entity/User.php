@@ -10,6 +10,7 @@ namespace App\Model\Persistent\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Nette\Security\Passwords;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -62,7 +63,7 @@ class User extends BaseEntity
      * )
      * @Assert\Length(
      *     min="8",
-     *     exactMessage="Password must be at least 8 chars long."
+     *     minMessage="Password must be at least 8 chars long."
      * )
      *
      * @var string
@@ -89,6 +90,16 @@ class User extends BaseEntity
      * @var string
      */
     protected $lastName;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Model\Persistent\Entity\Role", inversedBy="users", cascade={"persist", "merge"})
+     * @Assert\NotBlank(
+     *     message="Role can't be blank."
+     * )
+     *
+     * @var Role
+     */
+    protected $role;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Persistent\Entity\User", inversedBy="usersCreated", cascade={"persist", "merge"})
@@ -119,16 +130,6 @@ class User extends BaseEntity
     protected $usersCreated;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Model\Persistent\Entity\Role", inversedBy="users", cascade={"persist", "merge"})
-     * @Assert\NotBlank(
-     *     message="Role can't be blank."
-     * )
-     *
-     * @var Role
-     */
-    protected $role;
-
-    /**
      * User constructor.
      */
     public function __construct()
@@ -138,6 +139,34 @@ class User extends BaseEntity
         $this->groupsCreated = new ArrayCollection();
         $this->superGroupsCreated = new ArrayCollection();
         $this->usersCreated = new ArrayCollection();
+    }
+
+    /**
+     * @return array
+     */
+    public function getCategoriesId(): array
+    {
+        $res = [];
+        foreach($this->groups as $groupKey => $group) {
+            foreach ($group->getCategories() as $catKey => $category) {
+                if(!in_array($category->getId(), $res)){
+                    $res[] = $category->getId();
+                }
+            }
+        }
+        return $res;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGroupsId(): array
+    {
+        $res = [];
+        foreach ($this->getGroups()->getValues() as $key => $group){
+            $res[] = $group->getId();
+        }
+        return $res;
     }
 
     /**
@@ -194,7 +223,9 @@ class User extends BaseEntity
      */
     public function addGroup(Group $group): void
     {
-        if($this->groups->contains($group)) return;
+        if($this->groups->contains($group)){
+            return;
+        }
         $this->groups[] = $group;
     }
 
@@ -228,34 +259,6 @@ class User extends BaseEntity
     public function setRole(Role $role): void
     {
         $this->role = $role;
-    }
-
-    /**
-     * @return array
-     */
-    public function getCategoriesId(): array
-    {
-        $res = [];
-        foreach($this->groups as $groupKey => $group) {
-            foreach ($group->getCategories() as $catKey => $category) {
-                if(!in_array($category->getId(), $res)){
-                    $res[] = $category->getId();
-                }
-            }
-        }
-        return $res;
-    }
-
-    /**
-     * @return array
-     */
-    public function getGroupsId(): array
-    {
-        $res = [];
-        foreach ($this->getGroups()->getValues() as $key => $group){
-            $res[] = $group->getId();
-        }
-        return $res;
     }
 
     /**
@@ -369,5 +372,4 @@ class User extends BaseEntity
     {
         $this->email = $email;
     }
-
 }

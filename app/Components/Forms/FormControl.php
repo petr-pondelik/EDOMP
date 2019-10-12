@@ -140,32 +140,6 @@ abstract class FormControl extends EDOMPControl
     }
 
     /**
-     * @return string
-     * @throws \ReflectionException
-     */
-    public function getDir(): string
-    {
-        return dirname((new ReflectionClass(static::class))->getFileName());
-    }
-
-    /**
-     * @return string
-     */
-    public function getTemplateName(): string
-    {
-        if($this->isDefault()){
-            return 'create';
-        }
-        return $this->getAction();
-    }
-
-    public function render(): void
-    {
-        bdump($this->getTemplateName());
-        $this->template->render($this->getDir() . '/templates/' . $this->getTemplateName() . '.latte');
-    }
-
-    /**
      * @param Form $form
      */
     abstract public function handleFormValidate(Form $form): void;

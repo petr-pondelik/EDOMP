@@ -39,6 +39,11 @@ class FileService
     protected $logosTmpDir;
 
     /**
+     * @var string
+     */
+    protected $templatesDir;
+
+    /**
      * @var TestRepository
      */
     protected $testRepository;
@@ -57,21 +62,53 @@ class FileService
      * FileService constructor.
      * @param string $logosDir
      * @param string $logosTmpDir
+     * @param string $templatesDir
      * @param TestRepository $testRepository
      * @param LogoRepository $logoRepository
      * @param LogoFunctionality $logoFunctionality
      */
     public function __construct
     (
-        string $logosDir, string $logosTmpDir,
-        TestRepository $testRepository, LogoRepository $logoRepository, LogoFunctionality $logoFunctionality
+        string $logosDir,
+        string $logosTmpDir,
+        string $templatesDir,
+        TestRepository $testRepository,
+        LogoRepository $logoRepository,
+        LogoFunctionality $logoFunctionality
     )
     {
         $this->logosDir = $logosDir;
         $this->logosTmpDir = $logosTmpDir;
+        $this->templatesDir = $templatesDir;
         $this->testRepository = $testRepository;
         $this->logoRepository = $logoRepository;
         $this->logoFunctionality = $logoFunctionality;
+    }
+
+    /**
+     * @param string $file
+     * @return string
+     */
+    public function read(string $file): string
+    {
+        return FileSystem::read($file);
+    }
+
+    /**
+     * @param string $templateStr
+     */
+    public function updateTestTemplate(string $templateStr): void
+    {
+        FileSystem::write($this->templatesDir . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR . 'testPdf' . DIRECTORY_SEPARATOR . 'active.latte', $templateStr);
+    }
+
+    public function resetTestTemplate(): void
+    {
+        FileSystem::copy
+        (
+            $this->templatesDir . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR . 'testPdf' . DIRECTORY_SEPARATOR . 'default.latte',
+            $this->templatesDir . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR . 'testPdf' . DIRECTORY_SEPARATOR . 'active.latte'
+        );
     }
 
     public function clearLogosTmpDir(): void
@@ -257,5 +294,4 @@ class FileService
             DATA_PUBLIC_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'test_' . $testId . '.zip'
             );
     }
-
 }

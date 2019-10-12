@@ -26,13 +26,12 @@ trait FilterTrait
     {
         $res = [];
         foreach ($filters as $filterKey => $filter) {
-            if($filterKey !== 'conditionType'){
-                if(is_array($filter)){
-                    if(count($filter)){
+            if ($filterKey !== 'conditionType') {
+                if (is_array($filter)) {
+                    if (count($filter)) {
                         $res[$filterKey] = $filter;
                     }
-                }
-                else if($filter !== null){
+                } else if ($filter !== null && $filter !== '') {
                     $res[$filterKey] = $filter;
                 }
             }
@@ -42,17 +41,21 @@ trait FilterTrait
 
     /**
      * @param array $filters
+     * @param int $limit
      * @return array
      */
-    public function findFiltered(array $filters): array
+    public function findFiltered(array $filters, int $limit): array
     {
         bdump('FIND FILTERED');
         bdump($filters);
+        bdump($limit);
 
         $filtersProcessed = self::processFilters($filters);
+        bdump($filtersProcessed);
+
         $filteredBase = $this->findAssoc($filtersProcessed, 'id');
 
-        if(isset($filters['problemType'])){
+        if (isset($filters['problemType'])) {
 
             $problemTypes = $this->createQueryBuilder('er')
                 ->select('pt')
@@ -67,11 +70,11 @@ trait FilterTrait
             $conditionFilter = false;
 
             // Apply filters by problem conditions
-            foreach ($problemTypes as $problemType){
+            foreach ($problemTypes as $problemType) {
 
-                foreach ($problemType->getConditionTypes()->getValues() as $problemConditionType){
+                foreach ($problemType->getConditionTypes()->getValues() as $problemConditionType) {
 
-                    if(isset($filters['conditionType'][$problemConditionType->getId()]) && count($filters['conditionType'][$problemConditionType->getId()])) {
+                    if (isset($filters['conditionType'][$problemConditionType->getId()]) && count($filters['conditionType'][$problemConditionType->getId()])) {
 
                         bdump('FILTERING BY CONDITION');
 
@@ -98,7 +101,7 @@ trait FilterTrait
                 }
             }
 
-            if($conditionFilter) {
+            if ($conditionFilter) {
                 return $res;
             }
 

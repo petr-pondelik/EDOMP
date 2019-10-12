@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="cs">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
@@ -10,13 +10,13 @@
                 - {include titleSecond}
             {/ifset} |
         {/ifset}
-        Elektronická sbírka
+        EDOMP
     </title>
     <link rel="stylesheet" type="text/css" href="{webpack vendors.css}">
     <link rel="stylesheet" type="text/css" href="{webpack front.css}">
 </head>
 
-<body>
+<body class="bg-grey-light">
 
 {if $user->isLoggedIn()}
     {control sideBar}
@@ -45,7 +45,7 @@
         {/if}
 
         <div class="ml-4 mr-4 mt-4">
-            <div class="card card-shadow border-light">
+            <div class="card card-shadow border-0">
                 {ifset content}
                     {include content}
                 {/ifset}

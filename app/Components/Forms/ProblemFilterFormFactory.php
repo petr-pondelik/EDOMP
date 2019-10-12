@@ -47,7 +47,7 @@ class ProblemFilterFormFactory extends FormControl
     {
         $form = parent::create();
 
-        $form->getElementPrototype()->class('border-light ajax');
+        $form->getElementPrototype()->class('border-0 ajax');
 
         $difficultyOptions = $this->difficultyRepository->findAssoc([],"id");
 

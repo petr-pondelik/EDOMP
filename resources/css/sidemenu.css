@@ -23,6 +23,7 @@
 .jquery-accordion-menu .jquery-accordion-menu-header{
     height: 80px;
     line-height: 80px;
+    font-size: 1rem;
 }
 
 .jquery-accordion-menu-header a{
@@ -65,7 +66,7 @@
 .jquery-accordion-menu ul li a{
     width:100%;
     float:left;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     padding:14px 22px;
     text-decoration:none;
     color: #4f5467;

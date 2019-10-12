@@ -520,7 +520,6 @@ class LatexHelper
      */
     public function postprocessProblemFinalBody(string $body): string
     {
-        // TODO: POSTPROCESS PROBLEM FINAL BODY
         $body = $this->removeZeroMultipliedBrackets($body);
         $body = $this->removeZeroMultipliedFractions($body);
         $body = $this->removeZeroMultipliedValues($body);

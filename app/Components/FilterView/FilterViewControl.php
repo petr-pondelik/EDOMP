@@ -43,7 +43,7 @@ class FilterViewControl extends EDOMPControl
     {
         $this->template->entity = $this->entity;
         $this->template->processedFilters = $this->filterViewHelper->preprocessFilters($this->entity->getSelectedFilters());
-        $this->template->render(__DIR__ . '/templates/default.latte');
+        parent::render();
     }
 
     /**

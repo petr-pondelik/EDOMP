@@ -57,6 +57,13 @@ class ProblemFinalTestVariantAssociation extends BaseEntity
     protected $problemFinal;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate")
+     *
+     * @var ProblemTemplate|null
+     */
+    protected $problemTemplate;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Model\Persistent\Entity\TestVariant", inversedBy="problemFinalAssociations", cascade={"persist", "merge"})
      * @Assert\NotBlank(
      *     message="TestVariant can't be blank."
@@ -128,5 +135,21 @@ class ProblemFinalTestVariantAssociation extends BaseEntity
     public function setTestVariant(TestVariant $testVariant): void
     {
         $this->testVariant = $testVariant;
+    }
+
+    /**
+     * @return ProblemTemplate|null
+     */
+    public function getProblemTemplate(): ?ProblemTemplate
+    {
+        return $this->problemTemplate;
+    }
+
+    /**
+     * @param ProblemTemplate|null $problemTemplate
+     */
+    public function setProblemTemplate(?ProblemTemplate $problemTemplate): void
+    {
+        $this->problemTemplate = $problemTemplate;
     }
 }

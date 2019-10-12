@@ -32,6 +32,6 @@ class SectionHelpModalControl extends EDOMPControl
     public function render(): void
     {
         $this->template->type = $this->getHelpContentName($this->presenter->name);
-        $this->template->render(__DIR__ . '/templates/problemTemplateHelp.latte');
+        parent::render();
     }
 }

@@ -1,0 +1,54 @@
+<header id="header-bar">
+    <div class="header-bar-content">
+        <a href="#" id="sidebar-collapse" class="font-weight-lighter">
+            <i class="fas fa-bars"></i>
+        </a>
+        <div id="header-bar-right">
+            <div class="btn-group">
+                {if $user->isInRole('teacher') || $user->isInRole('admin')}
+                    {if $presenter->isAdminModule()}
+                        <a href="{plink :Front:Homepage:default}" class="admin mr-3" title="Cvičebnice">
+                            Cvičebnice
+                        </a>
+                        <a href="#" class="admin mr-3" data-toggle="modal" data-target="#sectionHelpModal">
+                            <i class="far fa-question-circle"></i>
+                        </a>
+                        {else}
+                        <a href="{plink :Admin:Homepage:default}" class="admin mr-3" title="Administrace">
+                            Administrace
+                        </a>
+                    {/if}
+                {/if}
+            </div>
+            <div class="btn-group">
+                <a href="#" class="user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user"></i>
+                </a>
+                <div class="dropdown-menu">
+                    <h6 class="dropdown-header">
+                        Uživatel: <br>
+                        <span class="text-dark">{$user->getIdentity()->username}</span>
+                    </h6>
+                    {if $user->isInRole('admin') || $user->isInRole('teacher')}
+                        <h6 class="dropdown-header">
+                            Role: <br>
+                            <span class="text-dark">{$user->getIdentity()->roleLabel}</span>
+                        </h6>
+                    {/if}
+                    <div class="dropdown-divider"></div>
+                    {if $presenter->isAdminModule()}
+                        <a href="{plink :Admin:Settings:default}" class="dropdown-item">Nastavení</a>
+                    {else}
+                        <a href="{plink :Front:Settings:default}" class="dropdown-item">Nastavení</a>
+                    {/if}
+                    <div class="dropdown-divider"></div>
+                    {if $presenter->isAdminModule()}
+                        <a href="{plink :Admin:Sign:in do => logout}" class="dropdown-item">Odhlásit</a>
+                        {else}
+                        <a href="{plink :Front:Sign:in do => logout}" class="dropdown-item">Odhlásit</a>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

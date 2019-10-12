@@ -44,9 +44,9 @@ class SignFormControl extends FormControl
     public function createComponentForm(): Form
     {
         $form = parent::createComponentForm();
-        $form->addText('username', 'Uživatelské jméno')
+        $form->addText('login', 'E-mail / Uživatelské jméno *')
             ->setHtmlAttribute('class', 'form-control');
-        $form->addPassword('password', 'Heslo')
+        $form->addPassword('password', 'Heslo *')
             ->setHtmlAttribute('class', 'form-control');
         $form->addSubmit('signIn', 'Přihlásit se')
             ->setHtmlAttribute('class', 'btn btn-primary col-12 btn-lg');
@@ -60,8 +60,8 @@ class SignFormControl extends FormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->getValues();
-        $validateFields['username'] = new ValidatorArgument($values->username, 'notEmpty');
-        $validateFields['password'] = new ValidatorArgument($values->username, 'notEmpty');
+        $validateFields['login'] = new ValidatorArgument($values->login, 'login');
+        $validateFields['password'] = new ValidatorArgument($values->password, 'notEmpty');
         $this->validator->validate($form, $validateFields);
         $this->redrawErrors();
     }
@@ -74,7 +74,7 @@ class SignFormControl extends FormControl
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try {
-            $this->presenter->user->login($values->username, $values->password, $this->admin);
+            $this->presenter->user->login($values->login, $values->password, $this->admin);
             $this->onSuccess();
         } catch (\Exception $e) {
             bdump($e);
@@ -88,8 +88,11 @@ class SignFormControl extends FormControl
         }
     }
 
-    public function render(): void
+    /**
+     * @param string $login
+     */
+    public function setLogin(string $login): void
     {
-        $this->template->render(__DIR__ . '/templates/in.latte');
+        $this['form']['login']->setValue($login);
     }
 }

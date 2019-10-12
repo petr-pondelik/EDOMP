@@ -80,6 +80,9 @@ class RegularExpressions
     // Match zero values
     public const RE_ZERO_VALUES = '[\+\-]\s*0\s*';
 
+    // Match test template content
+    public const RE_TEST_TEMPLATE = '.*\{if\$test->getLogo\(\)!==null\}.*\{\$test->getSchoolYear\(\)\}.*\{\$test->getTerm\(\)\}.*\{\$test->getTestNumber\(\)\}.*\{\$testVariant\}.*\{foreach\$test->getGroups\(\)->getValues\(\)as\$group\}.*\{\$group->getLabel\(\)\}\{if\$group->getId\(\)!==\$test->getGroups\(\)->last\(\)->getId\(\)\}.*\{\/if\}\{\/foreach\}.*\{\$test->getIntroductionText\(\)\}.*\{foreach\$testVariant->getProblemFinalAssociations\(\)->getValues\(\)as\$key=>\$problemFinalAssociation\}.*\{\$problemFinalAssociation->getProblemFinal\(\)->getTextBefore\(\)\}\{\$problemFinalAssociation->getProblemFinal\(\)->getBody\(\)\}\{\$problemFinalAssociation->getProblemFinal\(\)->getTextAfter\(\)\}\{if\$problemFinalAssociation->isNextPage\(\)\}.*\{\/if}\{\/foreach\}.*';
+
     /**
      * @param string $variable
      * @return string

@@ -4,9 +4,9 @@
     let problemsPerVariant = 1;
 
     // Get values from HTML MultiSelect
-    function getMultiSelectValues(element){
+    function getMultiSelectValues(element) {
         let values = [];
-        for(let i = 0; i < element.selectedOptions.length; i++){
+        for (let i = 0; i < element.selectedOptions.length; i++) {
             values.push(parseInt(element.selectedOptions[i].value));
         }
         return values;
@@ -59,16 +59,12 @@
             console.log(filterTypeSecondary);
             console.log(filters);
 
-            // console.log(e.target);
-
             let filterVal = null;
-            if(e.target.dataset.filterType === 'isTemplate'){
+            if (e.target.dataset.filterType === 'isTemplate') {
                 filterVal = e.target.value;
-            } else{
+            } else {
                 filterVal = getMultiSelectValues(e.target);
             }
-
-            // console.log(filterVal);
 
             console.log(filters);
 
@@ -77,35 +73,31 @@
                 filters[problemId]['filters'] = {};
             }
 
-            // console.log($('#problem_' + problemId).val());
-
             filters[problemId]['selected'] = $('#problem-' + problemId).val();
             console.log($('#problem-' + problemId).val());
 
-            // console.log(filters);
-
             // Select problem doesn't have set filter type --> is should not trigger filter request
-            if(filterType){
+            if (filterType) {
 
-                if(filterTypeSecondary){
-                    if(!filters[problemId]['filters'][filterType]){
+                if (filterTypeSecondary) {
+                    if (!filters[problemId]['filters'][filterType]) {
                         filters[problemId]['filters'][filterType] = {};
                     }
                     filters[problemId]['filters'][filterType][filterTypeSecondary] = filterVal;
-                }
-                else{
+                } else {
                     filters[problemId]['filters'][filterType] = filterVal;
                 }
 
                 console.log(filters);
 
                 $.nette.ajax({
-                    type: 'GET',
+                    type: 'POST',
                     url: '?do=filterChange',
                     data: {
                         'filters': filters
                     },
-                    success: () => {}
+                    success: () => {
+                    }
                 });
             }
 
@@ -119,12 +111,11 @@
             let conditionTypes = JSON.parse(e.target.dataset.conditionTypes);
 
             // Display corresponding condition filters
-            for (let key in conditionTypes){
-                if(conditionTypes.hasOwnProperty(key)){
-                    if(selectedOptions.indexOf(parseInt(key)) !== -1){
+            for (let key in conditionTypes) {
+                if (conditionTypes.hasOwnProperty(key)) {
+                    if (selectedOptions.indexOf(parseInt(key)) !== -1) {
                         $('#condition-type-id-' + conditionTypes[key] + '-' + problemInx).show();
-                    }
-                    else{
+                    } else {
                         $('#condition-type-id-' + conditionTypes[key] + '-' + problemInx).hide();
                     }
                 }

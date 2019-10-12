@@ -10,7 +10,7 @@ namespace App\AdminModule\Presenters;
 
 use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\TemplateGridFactory;
-use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\HeaderBar\IHeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\ConstHelper;
@@ -55,7 +55,7 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
      * @param Authorizator $authorizator
      * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
-     * @param HeaderBarFactory $headerBarFactory
+     * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param TemplateGridFactory $templateGridFactory
@@ -69,7 +69,7 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
     public function __construct
     (
         Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         TemplateGridFactory $templateGridFactory,
         ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory,
         ProblemTemplateSession $problemTemplateSession,
@@ -87,7 +87,7 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
     public function actionDefault(): void
     {
         bdump('ACTION DEFAULT');
-        if($this->getParameter('do') === null && $this->getParameter('preserveValidation') === null){
+        if ($this->getParameter('do') === null && $this->getParameter('preserveValidation') === null) {
             $this->problemTemplateSession->erase();
         }
     }
@@ -99,12 +99,16 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
     public function actionUpdate(int $id): void
     {
         bdump('ACTION UPDATE');
+
+        if (!$entity = $this->safeFind($id)) {
+            $this->redirect('default');
+        }
+
         $formControl = $this['entityForm'];
-        $entity = $this->repository->find($id);
         $formControl->setEntity($entity);
         $this->template->entity = $entity;
-        if(!$formControl->isSubmitted()){
-            if($this->getParameter('do') === null && $this->getParameter('preserveValidation') === null){
+        if (!$formControl->isSubmitted()) {
+            if ($this->getParameter('do') === null && $this->getParameter('preserveValidation') === null) {
                 $this->problemTemplateSession->erase();
             }
             $formControl->setDefaults();
@@ -133,12 +137,12 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
             ->setIcon('pencil-alt')
             ->setTitle('Upravit inline')
             ->setClass('btn btn-primary btn-sm ajax')
-            ->onControlAdd[] = static function($container) {
+            ->onControlAdd[] = static function ($container) {
             $container->addText('textBefore', '');
             $container->addText('textAfter', '');
         };
 
-        $grid->getInlineEdit()->onSetDefaults[] = static function($cont, $item) {
+        $grid->getInlineEdit()->onSetDefaults[] = static function ($cont, $item) {
             $cont->setDefaults([
                 'textBefore' => $item->getTextBefore(),
                 'textAfter' => $item->getTextAfter(),
@@ -152,14 +156,20 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param ArrayHash $row
      */
-    public function handleInlineUpdate(int $id, ArrayHash $data): void
+    public function handleInlineUpdate(int $id, ArrayHash $row): void
     {
         try{
-            $this->functionality->update($id, $data, true, true);
+            $errors = $this->validateInlineUpdate($row);
+            if ($errors) {
+                $this->informUser(new UserInformArgs('update', true, 'error', null, true, null, $errors[0]));
+                return;
+            }
+            $this->functionality->update($id, $row, true, true);
         } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('update', true,'error', $e));
+            $this->informUser(new UserInformArgs('update', true,'error', $e, true));
+            return;
         }
         $this->informUser(new UserInformArgs('update', true, 'success', null, true));
     }
@@ -170,9 +180,9 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
      */
     public function handleSubCategoryUpdate(int $templateId, int $subCategoryId): void
     {
-        try{
-            $this->functionality->update($templateId, ArrayHash::from([ 'subCategory' => $subCategoryId ]), true, true);
-        } catch (\Exception $e){
+        try {
+            $this->functionality->update($templateId, ArrayHash::from(['subCategory' => $subCategoryId]), true, true);
+        } catch (\Exception $e) {
             $this->informUser(new UserInformArgs('subCategory', true, 'error', $e, true));
         }
         $this['entityGrid']->reload();
@@ -185,9 +195,9 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
      */
     public function handleDifficultyUpdate(int $templateId, int $difficultyId): void
     {
-        try{
+        try {
             $this->functionality->update($templateId, ArrayHash::from(['difficulty' => $difficultyId]), true, true);
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->informUser(new UserInformArgs('difficulty', true, 'error', $e, true));
             return;
         }

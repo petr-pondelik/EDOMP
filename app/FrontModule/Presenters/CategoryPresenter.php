@@ -10,7 +10,7 @@ namespace App\FrontModule\Presenters;
 
 use App\Components\Forms\ProblemFilterForm\ProblemFilterFormControl;
 use App\Components\Forms\ProblemFilterForm\IProblemFilterFormFactory;
-use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\HeaderBar\IHeaderBarFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Model\Persistent\Repository\CategoryRepository;
@@ -58,7 +58,7 @@ class CategoryPresenter extends FrontPresenter
     /**
      * CategoryPresenter constructor.
      * @param Authorizator $authorizator
-     * @param HeaderBarFactory $headerBarFactory
+     * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param CategoryRepository $categoryRepository
@@ -68,7 +68,7 @@ class CategoryPresenter extends FrontPresenter
     public function __construct
     (
         Authorizator $authorizator,
-        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         CategoryRepository $categoryRepository, ProblemFinalRepository $problemFinalRepository,
         IProblemFilterFormFactory $problemFilterFormFactory
     )
@@ -108,6 +108,11 @@ class CategoryPresenter extends FrontPresenter
     public function renderDefault(int $id): void
     {
         $category = $this->categoryRepository->find($id);
+
+        if(!$category){
+
+        }
+
         $this->template->label = $category->getLabel();
 
         $problemsCnt = $this->problemFinalRepository->getFilteredCnt($id, $this->filters);
@@ -167,7 +172,7 @@ class CategoryPresenter extends FrontPresenter
     {
         $paginator = new VisualPaginator\Control;
         $paginator->enableAjax();
-        $paginator->setTemplateFile(__DIR__ . '/../../Presenters/Templates/VisualPaginator/bootstrap.latte');
+        $paginator->setTemplateFile(TEMPLATES_DIR . '/VisualPaginator/bootstrap.latte');
         $paginator->onShowPage[] = function() {
             $this->redrawControl('paginatorSnippet');
             $this->redrawControl('problemsSnippet');

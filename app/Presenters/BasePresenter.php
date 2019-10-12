@@ -10,11 +10,13 @@ namespace App\Presenters;
 
 use App\Arguments\UserInformArgs;
 use App\Components\HeaderBar\HeaderBarControl;
-use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\HeaderBar\IHeaderBarFactory;
 use App\Components\SideBar\SideBarControl;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
+use Nette\Application\Helpers;
 use Nette\Application\UI\Presenter;
+use Nette\Utils\Strings;
 
 
 /**
@@ -24,7 +26,7 @@ use Nette\Application\UI\Presenter;
 class BasePresenter extends Presenter
 {
     /**
-     * @var HeaderBarFactory
+     * @var IHeaderBarFactory
      */
     protected $headerBarFactory;
 
@@ -40,19 +42,43 @@ class BasePresenter extends Presenter
 
     /**
      * BasePresenter constructor.
-     * @param HeaderBarFactory $headerBarFactory
+     * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      */
     public function __construct
     (
-        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator
+        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator
     )
     {
         parent::__construct();
         $this->headerBarFactory = $headerBarFactory;
         $this->sideBarFactory = $sideBarFactory;
         $this->flashesTranslator = $flashesTranslator;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModuleName(): string
+    {
+        return Helpers::splitName($this->getName())[0];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdminModule(): bool
+    {
+        return $this->getModuleName() === 'Admin';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isProblemTemplatePresenter(): bool
+    {
+        return (bool)Strings::match($this->getName(), '~^Admin:.*Template$~');
     }
 
     public function beforeRender(): void
@@ -82,31 +108,31 @@ class BasePresenter extends Presenter
      */
     public function informUser(UserInformArgs $args): void
     {
-        $message = $this->flashesTranslator::translate($args->operation, $this->getName(), $args->type, $args->exception);
+        if (!$args->message) {
+            $message = $this->flashesTranslator::translate($args->operation, $this->getName(), $args->type, $args->exception);
+        } else {
+            $message = $args->message;
+        }
 
-        if($args->type === 'success'){
-            if(!$args->component) {
+        if ($args->type === 'success') {
+            if (!$args->component) {
                 $this->flashMessage($message, 'success');
-            }
-            else{
+            } else {
                 $this[$args->component]->flashMessage($message, 'success');
             }
-        }
-        else{
-            if(!$args->component) {
+        } else {
+            if (!$args->component) {
                 $this->flashMessage($message, 'danger');
-            }
-            else{
+            } else {
                 $this[$args->component]->flashMessage($message, 'danger');
             }
         }
 
-        if($args->ajax){
-            if(!$args->component){
+        if ($args->ajax) {
+            if (!$args->component) {
                 $this->redrawControl('mainFlashesSnippet');
                 $this->redrawControl('flashesSnippet');
-            }
-            else{
+            } else {
                 $this[$args->component]->redrawControl('mainFlashesSnippet');
                 $this[$args->component]->redrawControl('flashesSnippet');
             }

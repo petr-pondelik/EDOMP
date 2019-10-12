@@ -195,7 +195,7 @@ services:
 	functionality.filter: App\Model\Persistent\Functionality\FilterFunctionality
 
 	# Factories
-	factory.header.bar: App\Components\HeaderBar\HeaderBarFactory
+	factory.header.bar: App\Components\HeaderBar\IHeaderBarFactory
 	factory.side.bar: App\Components\SideBar\ISideBarFactory
 	factory.form.user: App\Components\Forms\UserForm\IUserIFormFactory
 	factory.form.category: App\Components\Forms\CategoryForm\ICategoryFormFactory
@@ -209,7 +209,7 @@ services:
 	factory.form.supergroup: App\Components\Forms\SuperGroupForm\ISuperGroupIFormFactory
 	factory.form.logo: App\Components\Forms\LogoForm\ILogoIFormFactory
 	factory.form.group: App\Components\Forms\GroupForm\IGroupIFormFactory
-	factory.form.test.create: App\Components\Forms\TestForm\TestEntityForm\ITestEntityFormFactory
+	factory.form.test: App\Components\Forms\TestForm\TestEntityForm\ITestFormFactory
 	factory.form.permission: App\Components\Forms\PermissionForm\IPermissionIFormFactory
 	factory.form.sign: App\Components\Forms\SignForm\ISignIFormFactory
 	factory.form.problem.filter: App\Components\Forms\ProblemFilterForm\IProblemFilterFormFactory
@@ -228,6 +228,8 @@ services:
 	factory.section.help.modal: App\Components\SectionHelpModal\ISectionHelpModalFactory
 	factory.view.logo: App\Components\LogoView\ILogoViewFactory
 	factory.view.filter: App\Components\FilterTable\IFilterViewFactory
+	factory.form.password: App\Components\Forms\PasswordForm\IPasswordFormFactory
+	factory.form.test.template: App\Components\Forms\TestTemplateForm\ITestTemplateFormFactory
 
 	# Services
 	service.newtopapi.client: App\Services\NewtonApiClient(%newtonApiHost%)
@@ -236,7 +238,7 @@ services:
 	service.container.plugin: App\Services\PluginContainer
 	service.generator: App\Services\GeneratorService
 	service.condition: App\Services\ConditionService
-	service.file: App\Services\FileService(%logosDir%, %logosTmpDir%)
+	service.file: App\Services\FileService(%logosDir%, %logosTmpDir%, %templatesDir%)
 	service.test.generator: App\Services\TestGeneratorService
 	service.authenticator: App\Services\Authenticator
 	service.authorizator: App\Services\Authorizator

@@ -33,8 +33,7 @@ class LogoViewControl extends EDOMPControl
     public function render(): void
     {
         bdump('RENDER LOGO VIEW');
-        bdump($this->logo);
         $this->template->logo = $this->logo;
-        $this->template->render(__DIR__ . '/templates/default.latte');
+        parent::render();
     }
 }

@@ -17,7 +17,6 @@ use App\Model\Persistent\Repository\GroupRepository;
 use App\Model\Persistent\Repository\RoleRepository;
 use App\Services\MailService;
 use App\Services\Validator;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -110,14 +109,15 @@ class UserFormControl extends EntityFormControl
 
     /**
      * @param Form $form
+     * @throws \App\Exceptions\ValidatorException
      */
     public function handleFormValidate(Form $form): void
     {
         $values = $form->values;
 
         // TODO: DO NOT VALIDATE USER DUPLICITY BY SELECT -> INSTEAD CATCH CONSTRAINT ERROR
-        $validateFields['email'] = new ValidatorArgument(['email' => $values->email], 'email');
-        $validateFields['username'] = new ValidatorArgument(['username' => $values->username,], 'username');
+        $validateFields['email'] = new ValidatorArgument($values->email, 'email');
+        $validateFields['username'] = new ValidatorArgument($values->username, 'username');
         $validateFields['role'] = new ValidatorArgument($values->role, 'notEmpty');
         $validateFields['groups'] = new ValidatorArgument($values->groups, 'arrayNotEmpty');
 
@@ -130,7 +130,6 @@ class UserFormControl extends EntityFormControl
     /**
      * @param Form $form
      * @param ArrayHash $values
-     * @throws UniqueConstraintViolationException
      */
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
@@ -144,8 +143,8 @@ class UserFormControl extends EntityFormControl
             }
             $user = $this->functionality->create($values, false);
             bdump($values);
-            $this->mailService->sendInvitationEmail($user, $values->password);
             $this->entityManager->flush();
+            $this->mailService->sendInvitationEmail($user, $values->password);
             $this->onSuccess();
         } catch (\Exception $e) {
             bdump($e);

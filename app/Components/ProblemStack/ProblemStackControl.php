@@ -86,6 +86,6 @@ class ProblemStackControl extends EDOMPControl
         $this->template->id = $this->id;
         $this->template->problems = $this->problems;
         $this->template->selectedProblems = $this->selectedProblems;
-        $this->template->render(__DIR__ . '/templates/default.latte');
+        parent::render();
     }
 }

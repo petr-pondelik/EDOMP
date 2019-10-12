@@ -11,7 +11,7 @@ namespace App\AdminModule\Presenters;
 use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\ProblemGridFactory;
 use App\Components\Forms\ProblemFinalForm\IProblemFinalFormFactory;
-use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\HeaderBar\IHeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
@@ -40,7 +40,7 @@ class ProblemFinalPresenter extends EntityPresenter
      * @param Authorizator $authorizator
      * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
-     * @param HeaderBarFactory $headerBarFactory
+     * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param ProblemGridFactory $problemGridFactory
@@ -53,7 +53,7 @@ class ProblemFinalPresenter extends EntityPresenter
     public function __construct
     (
         Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         ProblemGridFactory $problemGridFactory, IProblemFinalFormFactory $problemFinalFormFactory,
         ProblemFinalRepository $problemFinalRepository, ProblemFinalFunctionality $problemFinalFunctionality,
         PluginContainer $pluginContainer,
@@ -108,20 +108,6 @@ class ProblemFinalPresenter extends EntityPresenter
         $grid->getInlineEdit()->onSubmit[] = [$this, 'handleInlineUpdate'];
 
         return $grid;
-    }
-
-    /**
-     * @param int $id
-     * @param ArrayHash $data
-     */
-    public function handleInlineUpdate(int $id, ArrayHash $data): void
-    {
-        try{
-            $this->functionality->update($id, $data);
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('update', true,'error', $e, true));
-        }
-        $this->informUser(new UserInformArgs('update', true, 'success', null, true));
     }
 
     /**

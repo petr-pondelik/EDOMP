@@ -1,0 +1,5 @@
+{if $item->isClosed()}
+    <a href="{plink Test:default do => downloadSource, id => $item->getId()}" class="btn btn-primary btn-sm" title="Stáhnout archiv testu">
+        <i class="fa fa-download"></i>
+    </a>
+{/if}

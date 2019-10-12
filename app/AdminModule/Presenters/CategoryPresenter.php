@@ -8,9 +8,10 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Arguments\ValidatorArgument;
 use App\Components\DataGrids\CategoryGridFactory;
 use App\Components\Forms\CategoryForm\ICategoryFormFactory;
-use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\HeaderBar\IHeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
@@ -20,6 +21,7 @@ use App\Model\Persistent\Repository\CategoryRepository;
 use App\Services\Authorizator;
 use App\Services\NewtonApiClient;
 use App\Services\Validator;
+use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
@@ -33,7 +35,7 @@ class CategoryPresenter extends EntityPresenter
      * @param Authorizator $authorizator
      * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
-     * @param HeaderBarFactory $headerBarFactory
+     * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param CategoryRepository $categoryRepository
@@ -45,7 +47,7 @@ class CategoryPresenter extends EntityPresenter
     public function __construct
     (
         Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         CategoryRepository $categoryRepository, CategoryFunctionality $categoryFunctionality,
         CategoryGridFactory $categoryGridFactory, ICategoryFormFactory $categoryFormFactory,
         ISectionHelpModalFactory $sectionHelpModalFactory
@@ -82,11 +84,24 @@ class CategoryPresenter extends EntityPresenter
             ->onControlAdd[] = static function ($container) {
                 $container->addText('label', '');
             };
+
         $grid->getInlineEdit()->onSetDefaults[] = static function ($cont, Category $item) {
             $cont->setDefaults([ 'label' => $item->getLabel() ]);
         };
+
         $grid->getInlineEdit()->onSubmit[] = [$this, 'handleInlineUpdate'];
 
         return $grid;
+    }
+
+    /**
+     * @param ArrayHash $row
+     * @return array
+     * @throws \App\Exceptions\ValidatorException
+     */
+    public function validateInlineUpdate(ArrayHash $row): array
+    {
+        $validationFields['label'] = new ValidatorArgument($row->label, 'notEmpty');
+        return $this->validator->validatePlain($validationFields);
     }
 }

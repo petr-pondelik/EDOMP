@@ -10,7 +10,7 @@ namespace App\AdminModule\Presenters;
 
 use App\Components\DataGrids\TemplateGridFactory;
 use App\Components\Forms\ProblemTemplateForm\QuadraticEqTemplateForm\IQuadraticEqTemplateFormFactory;
-use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\HeaderBar\IHeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\ConstHelper;
@@ -33,7 +33,7 @@ class QuadraticEqTemplatePresenter extends ProblemTemplatePresenter
      * @param Authorizator $authorizator
      * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
-     * @param HeaderBarFactory $headerBarFactory
+     * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param QuadraticEquationTemplateRepository $repository
@@ -47,7 +47,7 @@ class QuadraticEqTemplatePresenter extends ProblemTemplatePresenter
     public function __construct
     (
         Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         QuadraticEquationTemplateRepository $repository, QuadraticEquationTemplateFunctionality $functionality,
         TemplateGridFactory $templateGridFactory, IQuadraticEqTemplateFormFactory $problemTemplateFormFactory,
         ConstHelper $constHelper, ISectionHelpModalFactory $sectionHelpModalFactory,

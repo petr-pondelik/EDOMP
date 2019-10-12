@@ -169,7 +169,7 @@ class TestFunctionality extends BaseFunctionality
             for ($j = 0; $j < $entity->getProblemsPerVariant(); $j++) {
                 $this->problemFunctionality->calculateSuccessRate($data->{'problemFinalId' . $i . $j}, false, false);
                 if (!empty($data->{'problemTemplateId' . $i . $j})) {
-                    $this->problemFunctionality->calculateSuccessRate($data->{'problemTemplateId_' . $i . $j}, true, false);
+                    $this->problemFunctionality->calculateSuccessRate($data->{'problemTemplateId' . $i . $j}, true, false);
                 }
             }
         }

@@ -11,8 +11,8 @@ namespace App\AdminModule\Presenters;
 use App\Arguments\UserInformArgs;
 use App\Components\DataGrids\TestGridFactory;
 use App\Components\Forms\EntityFormControl;
-use App\Components\Forms\TestForm\TestEntityForm\ITestEntityFormFactory;
-use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\Forms\TestForm\TestEntityForm\ITestFormFactory;
+use App\Components\HeaderBar\IHeaderBarFactory;
 use App\Components\SectionHelpModal\ISectionHelpModalFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
@@ -79,7 +79,7 @@ class TestPresenter extends EntityPresenter
      * @param Authorizator $authorizator
      * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
-     * @param HeaderBarFactory $headerBarFactory
+     * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param TestRepository $testRepository
@@ -88,7 +88,7 @@ class TestPresenter extends EntityPresenter
      * @param ProblemRepository $problemRepository
      * @param LogoRepository $logoRepository
      * @param ProblemFinalTestVariantAssociationRepository $problemTestAssociationRepository
-     * @param ITestEntityFormFactory $testCreateFormFactory
+     * @param ITestFormFactory $testCreateFormFactory
      * @param TestGridFactory $testGridFactory
      * @param FileService $fileService
      * @param TestGeneratorService $testGeneratorService
@@ -97,11 +97,11 @@ class TestPresenter extends EntityPresenter
     public function __construct
     (
         Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
-        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         TestRepository $testRepository, TestFunctionality $testFunctionality,
         ProblemTemplateRepository $problemTemplateRepository, ProblemRepository $problemRepository, LogoRepository $logoRepository,
         ProblemFinalTestVariantAssociationRepository $problemTestAssociationRepository,
-        ITestEntityFormFactory $testCreateFormFactory, TestGridFactory $testGridFactory,
+        ITestFormFactory $testCreateFormFactory, TestGridFactory $testGridFactory,
         FileService $fileService,
         TestGeneratorService $testGeneratorService,
         ISectionHelpModalFactory $sectionHelpModalFactory
@@ -127,22 +127,27 @@ class TestPresenter extends EntityPresenter
     public function actionRegenerate(int $id): void
     {
         bdump('ACTION REGENERATE');
-        $entity = $this->repository->find($id);
 
-        if(!$entity->isClosed()){
+        if (!$entity = $this->safeFind($id)) {
+            $this->redirect('default');
+        }
+
+        if (!$entity->isClosed()) {
             $this->flashMessage('Pro přegenerování je nutné test nejprve uzavřít.', 'danger');
             $this->redirect('default');
         }
 
-        if(!$this->isEntityAllowed($entity)){
+        if (!$this->isEntityAllowed($entity)) {
             $this->flashMessage('Nedostatečná přístupová práva.', 'danger');
             $this->redirect('default');
         }
+
         $formControl = $this['entityForm'];
         $formControl->setEntity($entity);
         $this->getEntityForm()->initComponents();
         $this->template->entity = $entity;
-        if(!$formControl->isSubmitted()){
+
+        if (!$formControl->isSubmitted()) {
             $formControl->setDefaults();
         }
     }
@@ -163,8 +168,10 @@ class TestPresenter extends EntityPresenter
     public function createComponentEntityGrid($name): DataGrid
     {
         $grid = $this->gridFactory->create($this, $name);
+
         $grid->addAction('close', '', 'close!')
             ->setTemplate(__DIR__ . '/templates/Test/dataGridActions/closeAction.latte');
+
         $grid->addAction('delete', '', 'delete!')
             ->setIcon('trash')
             ->setClass('btn btn-danger btn-sm ajax')
@@ -172,30 +179,21 @@ class TestPresenter extends EntityPresenter
             ->addAttributes([
                 'data-toggle' => 'tooltip'
             ]);
-        $grid->addAction('downloadSource', '', 'downloadSource!', ['id'])
-            ->setIcon('download')
-            ->setClass('btn btn-primary btn-sm')
-            ->setTitle('Stáhnout archiv testu')
-            ->addAttributes([
-                'data-toggle' => 'tooltip'
-            ]);
-        $grid->addAction('pdf', '', 'pdfOverleaf!', ['id'])
-            ->setIcon('file-pdf')
-            ->setClass('btn btn-primary btn-sm')
-            ->setTitle('Přesměrovat ke kompilaci')
-            ->addAttributes([
-                'target' => '_blank',
-                'data-toggle' => 'tooltip'
-            ]);
+
+        $grid->addAction('downloadSource', '', 'downloadSource!')
+            ->setTemplate(__DIR__ . '/templates/Test/dataGridActions/downloadSource.latte');
+
+        $grid->addAction('pdf', '', 'pdfOverleaf!')
+            ->setTemplate(__DIR__ . '/templates/Test/dataGridActions/pdfOverleaf.latte');
+
         $grid->addAction('regenerate', '', 'regenerate!')
             ->setTemplate(__DIR__ . '/templates/Test/dataGridActions/regenerateAction.latte');
+
         $grid->addAction('update', '', 'update!')
             ->setIcon('edit')
             ->setClass('btn btn-primary btn-sm')
-            ->setTitle('Upravit test')
-            ->addAttributes([
-                'data-toggle' => 'tooltip'
-            ]);
+            ->setTitle('Upravit test');
+
         return $grid;
     }
 
@@ -204,13 +202,13 @@ class TestPresenter extends EntityPresenter
      */
     public function handleClose(int $id): void
     {
-        try{
+        try {
             $test = $this->functionality->close($id);
             $template = $this->getTemplate();
-            $template->setFile(TEMPLATES_DIR . '/pdf/testPdf/default.latte');
+            $template->setFile(TEMPLATES_DIR . '/pdf/testPdf/active.latte');
             $this->testGeneratorService->createTestData($test, $template);
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('close', true,'error', $e, true));
+        } catch (\Exception $e) {
+            $this->informUser(new UserInformArgs('close', true, 'error', $e, true));
             return;
         }
         // Set template back to test/default
@@ -225,6 +223,19 @@ class TestPresenter extends EntityPresenter
      */
     public function handlePdfOverleaf(int $id): void
     {
+        bdump('HANDLE PDF OVERLEAF');
+        bdump($id);
+
+        if (!$entity = $this->safeFind($id)) {
+            bdump('FAIL');
+            $this->redirect('default');
+        }
+
+        if (!$entity->isClosed()) {
+            $this->flashMessage('Pro kompilaci je potřeba test nejprve uzavřít.', 'danger');
+            return;
+        }
+
         $this->fileService->moveTestDirToPublic($id);
         $this->redirectUrl('https://www.overleaf.com/docs?snip_uri=http://wiedzmin.4fan.cz/data_public/tests/test_' . $id . '.zip');
     }
@@ -244,6 +255,19 @@ class TestPresenter extends EntityPresenter
      */
     public function handleDownloadSource(int $id): void
     {
+        bdump('HANDLE DOWNLOAD SOURCE');
+        bdump($id);
+
+        if (!$entity = $this->safeFind($id)) {
+            return;
+        }
+
+        if(!$entity->isClosed()){
+            $this->flashMessage('Pro stažení archivu je potřeba test nejprve uzavřít.', 'danger');
+            $this->redrawControl('mainFlashesSnippet');
+            return;
+        }
+
         $this->sendResponse(new CallbackResponse(static function (IRequest $request, IResponse $response) use ($id) {
             $response = new Response();
             $response->setHeader('Content-type', 'application/zip');
@@ -272,10 +296,13 @@ class TestPresenter extends EntityPresenter
         $control->onSuccess[] = function () use ($control) {
             bdump('SUCCESS');
             bdump($this->getTemplate());
-            $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null, false, 'entityForm'));
-            $this->reloadEntity();
-            if($control->isUpdate()){
+            if ($control->isUpdate()) {
+                $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null, false, 'entityForm'));
+                $this->reloadEntity();
                 $control->redrawControl();
+            } else {
+                $this->informUser(new UserInformArgs($this->getAction(), false, 'success', null, false));
+                $this->redirect('default');
             }
         };
         $control->onError[] = function ($e) {
@@ -288,7 +315,7 @@ class TestPresenter extends EntityPresenter
     public function renderCreate(): void
     {
 //        if($this->getParameter('filters') === null){
-            $this->getEntityForm()->fillComponents();
+        $this->getEntityForm()->fillComponents();
 //        }
     }
 

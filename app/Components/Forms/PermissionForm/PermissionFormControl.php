@@ -15,6 +15,7 @@ use App\Model\Persistent\Functionality\GroupFunctionality;
 use App\Model\Persistent\Functionality\SuperGroupFunctionality;
 use App\Model\Persistent\Repository\CategoryRepository;
 use App\Services\Validator;
+use mysql_xdevapi\Exception;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -76,7 +77,6 @@ class PermissionFormControl extends FormControl
     {
         $form = parent::createComponentForm();
         $categoryOptions = $this->categoryRepository->findAssoc([], 'id');
-//        $form->addHidden('id');
         $form->addMultiSelect('categories', 'Kategorie', $categoryOptions)
             ->setHtmlAttribute('class', 'form-control selectpicker')
             ->setHtmlAttribute('title', 'Zvolte kategorie');
@@ -130,16 +130,6 @@ class PermissionFormControl extends FormControl
                 return;
             }
             $this->onError($e);
-        }
-    }
-
-    public function render(): void
-    {
-        if($this->super){
-            $this->template->render(__DIR__ . '/templates/superGroup.latte');
-        }
-        else{
-            $this->template->render(__DIR__ . '/templates/group.latte');
         }
     }
 

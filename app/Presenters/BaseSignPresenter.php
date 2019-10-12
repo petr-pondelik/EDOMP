@@ -9,7 +9,7 @@
 namespace App\Presenters;
 
 use App\Components\Forms\SignForm\SignFormControl;
-use App\Components\HeaderBar\HeaderBarFactory;
+use App\Components\HeaderBar\IHeaderBarFactory;
 use App\Components\SideBar\ISideBarFactory;
 use App\Helpers\FlashesTranslator;
 use App\Components\Forms\SignForm\ISignIFormFactory;
@@ -45,7 +45,7 @@ abstract class BaseSignPresenter extends BasePresenter
     /**
      * BaseSignPresenter constructor.
      * @param Authenticator $authenticator
-     * @param HeaderBarFactory $headerBarFactory
+     * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param Validator $validator
@@ -54,7 +54,7 @@ abstract class BaseSignPresenter extends BasePresenter
     public function __construct
     (
         Authenticator $authenticator,
-        HeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         Validator $validator,
         ISignIFormFactory $signFormFactory
     )
@@ -72,10 +72,9 @@ abstract class BaseSignPresenter extends BasePresenter
     {
         $control = $this->signFormFactory->create($this->admin);
         $control->onSuccess[] = function () {
-            if($this->user->identity->firstName || $this->user->identity->lastName){
+            if ($this->user->identity->firstName || $this->user->identity->lastName) {
                 $this->flashMessage('Vítejte, ' . $this->user->identity->firstName . ' ' . $this->user->identity->lastName . '.');
-            }
-            else{
+            } else {
                 $this->flashMessage('Vítejte, ' . $this->user->identity->username . '.');
             }
             $this->redirect('Homepage:default');
@@ -94,8 +93,12 @@ abstract class BaseSignPresenter extends BasePresenter
 
     public function renderIn(): void
     {
-        if($this->user->isLoggedIn()){
+        if ($this->user->isLoggedIn()) {
             $this->redirect('Homepage:default');
+        }
+
+        if($userEmail = $this->getParameter('email')){
+            $this['signForm']->setLogin($userEmail);
         }
     }
 }

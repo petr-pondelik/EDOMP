@@ -29,6 +29,7 @@ import './js/spinner.ajax';
 
 // Import custom modules
 import './js/sidemenu';
+import './js/card-header-toggle';
 
 /**
  * STYLES MODULES
@@ -45,30 +46,6 @@ import 'bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone.css';
 // Import custom styles
 import './css/sidemenu.css';
 import './scss/main.scss';
-
-// Handle card heading chevrons toggle
-$(document).ready(() => {
-
-    $(document).on('click', '.heading-test-logo, .heading-filters', (e) => {
-        $(e.target).children().toggleClass('d-none');
-    });
-
-    $(document).find('.logo-img').click((e) => {
-
-        let logoId = e.target.dataset.logoId;
-        let logoLabel = e.target.dataset.logoLabel;
-
-        $(document).find('#test-logo-label').val(logoLabel);
-        $(document).find('#test-logo-id').val(logoId);
-
-        $(document).find('.heading-logo').removeClass('active');
-
-        $(document).find('.accordion .fa-chevron-down').removeClass('d-none');
-        $(document).find('.accordion .fa-chevron-up').addClass('d-none');
-
-    });
-
-});
 
 // Handle show result button
 $(document).ready(() => {
