@@ -11,6 +11,7 @@ namespace App\Services;
 use App\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\Model\NonPersistent\TemplateData\ProblemTemplateState;
 use App\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
+use App\Traits\IEDOMPSession;
 use Nette\Http\Session;
 use Nette\Http\SessionSection;
 
@@ -18,7 +19,7 @@ use Nette\Http\SessionSection;
  * Class ProblemTemplateSession
  * @package App\Services
  */
-class ProblemTemplateSession
+class ProblemTemplateSession implements IEDOMPSession
 {
     /**
      * @var SessionSection

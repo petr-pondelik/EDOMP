@@ -156,9 +156,7 @@
 
         {for $i = 0; $i < $maxProblems; $i++}
 
-            {if $i === 0}
-
-                <div id="problem-wrapper-{$i}">
+                <div n:class="$i > 1 ? hidden" id="problem-wrapper-{$i}">
 
                     <div class="card card-shadow border-0 mb-4">
 
@@ -176,87 +174,7 @@
                             </button>
                         </h4>
 
-                        <div class="card-body mb-3 collapse" id="problem-card-body-{$i}">
-
-                            <div>
-
-                                <div class="form-group mt-3 mb-3">
-                                    {label 'isTemplate' . $i}
-                                    {input 'isTemplate' . $i}
-                                </div>
-
-                                <div class="form-group mt-3 mb-3">
-                                    {label 'problemType' . $i}
-                                    {input 'problemType' . $i}
-                                </div>
-
-                                <div class="form-group mt-3 mb-3">
-                                    {label 'difficulty' . $i}
-                                    {input 'difficulty' . $i}
-                                </div>
-
-                                <div class="form-group mt-3 mb-3">
-                                    {label 'subCategory' . $i}
-                                    {input 'subCategory' . $i}
-                                </div>
-
-                                {foreach $problemConditionTypes as $problemConditionType}
-                                    <div class="form-group mt-3 mb-3 hidden condition-type-id"
-                                         id="condition-type-id-{$problemConditionType->getId()}-{$i}">
-                                        {label 'conditionType' . $problemConditionType->getId() . $i}
-                                        {input 'conditionType' . $problemConditionType->getId() . $i}
-                                    </div>
-                                {/foreach}
-
-                                <div n:snippet="snippetProblem{$i}" class="form-group mt-3 mb-3">
-
-                                    {label 'problem' . $i}
-                                    {input 'problem' . $i}
-
-                                    {control problemStack$i}
-
-                                </div>
-
-                                <div class="form-group custom-control custom-checkbox">
-                                    <input n:name="newPage$i" type="checkbox" class="custom-control-input"
-                                                               id="newpage-{$i}">
-                                    <label n:name="newPage$i" for="newpage-{$i}" class="custom-control-label"/>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <button type="button" class="col-12 btn btn-success btn-add mb-2" id="btn-add-{$i}"
-                            data-problem-id="{$i}">
-                        <i class="fas fa-plus" data-problem-id="{$i}"></i>
-                    </button>
-
-                </div>
-
-            {else}
-
-                <div class="hidden" id="problem-wrapper-{$i}">
-
-                    <div class="card card-shadow border-0 mb-4">
-
-                        <h4 class="card-header card-header-toggle p-0 m-0">
-                            <button type="button"
-                                    class="d-flex justify-content-between align-items-center col-12 btn btn-card-header-toggle"
-                                    data-toggle="collapse"
-                                    data-target="#problem-card-body-{$i}"
-                                    aria-expanded="false"
-                                    aria-controls="#problem-card-body-{$i}"
-                            >
-                                Úloha č. {$i+1}
-                                <i class="fas fa-chevron-down"></i>
-                                <i class="fas fa-chevron-up d-none"></i>
-                            </button>
-                        </h4>
-
-                        <div class="card-body collapse" id="problem-card-body-{$i}">
+                        <div class="card-body {*collapse*}" id="problem-card-body-{$i}">
 
                             <div>
 
@@ -288,18 +206,15 @@
                                     </div>
                                 {/foreach}
 
-                                <div n:snippet="snippetProblem-{$i}" class="form-group mt-3 mb-3">
-
+                                <div n:snippet="snippetProblem$i" class="form-group mt-3 mb-3">
                                     {label 'problem' . $i}
-                                    {input 'problem' . $i, class => 'form-control filter problem-select'}
-
+                                    {input 'problem' . $i}
                                     {control problemStack$i}
-
+                                    {control paginator$i, 'paginatorId' => $i}
                                 </div>
 
-                                <div class="form-group custom-control custom-checkbox">
-                                    <input n:name="newPage$i" type="checkbox" class="custom-control-input"
-                                                               id="new-page-{$i}">
+                                <div class="d-flex justify-content-center form-group custom-control custom-checkbox">
+                                    <input n:name="newPage$i" type="checkbox" class="custom-control-input" id="new-page-{$i}">
                                     <label n:name="newPage$i" for="new-page-{$i}" class="custom-control-label"/>
                                 </div>
 
@@ -321,7 +236,6 @@
 
                 </div>
 
-            {/if}
         {/for}
 
         {snippet flashesSnippet}

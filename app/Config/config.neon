@@ -246,6 +246,7 @@ services:
 	service.math: App\Services\MathService
 	service.fractions.variable: App\Services\VariableFractionService
 	service.session.problem.template: App\Services\ProblemTemplateSession
+	service.session.filter: App\Services\FilterSession
 	service.model.problem.duplicity: App\Services\ProblemDuplicityModel
 
 	# Managers

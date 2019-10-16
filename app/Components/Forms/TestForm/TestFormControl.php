@@ -29,12 +29,15 @@ use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
 use App\Model\Persistent\Repository\ProblemTypeRepository;
 use App\Model\Persistent\Repository\SubCategoryRepository;
 use App\Services\FileService;
+use App\Services\FilterSession;
 use App\Services\TestGeneratorService;
 use App\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
+use IPub\VisualPaginator\Components as VisualPaginator;
+
 
 /**
  * Class TestEntityFormControl
@@ -118,6 +121,11 @@ class TestFormControl extends EntityFormControl
     protected $filterViewFactory;
 
     /**
+     * @var FilterSession
+     */
+    protected $filterSession;
+
+    /**
      * @var ProblemConditionType[]
      */
     protected $problemConditionTypes;
@@ -147,6 +155,7 @@ class TestFormControl extends EntityFormControl
      * @param ILogoViewFactory $logoViewFactory
      * @param IFilterViewFactory $filterViewFactory
      * @param TestFunctionality $testFunctionality
+     * @param FilterSession $filterSession
      * @throws \Exception
      */
     public function __construct
@@ -168,7 +177,8 @@ class TestFormControl extends EntityFormControl
         IProblemStackFactory $problemStackFactory,
         ILogoViewFactory $logoViewFactory,
         IFilterViewFactory $filterViewFactory,
-        TestFunctionality $testFunctionality
+        TestFunctionality $testFunctionality,
+        FilterSession $filterSession
     )
     {
         parent::__construct($validator, $entityManager);
@@ -188,6 +198,7 @@ class TestFormControl extends EntityFormControl
         $this->problemStackFactory = $problemStackFactory;
         $this->logoViewFactory = $logoViewFactory;
         $this->filterViewFactory = $filterViewFactory;
+        $this->filterSession = $filterSession;
         $this->problemConditionTypes = $this->problemConditionTypeRepository->findAssoc([], 'id');
     }
 
@@ -199,6 +210,9 @@ class TestFormControl extends EntityFormControl
     {
         parent::loadState($params);
         $this->maxProblems = $this->presenter->context->parameters['testMaxProblems'];
+        if (!$this->presenter->isAjax()) {
+            $this->filterSession->erase();
+        }
     }
 
     /**
@@ -209,32 +223,59 @@ class TestFormControl extends EntityFormControl
         return $this->getAction() === 'regenerate';
     }
 
-    public function initComponents(): void
+    /**
+     * @param iterable|null $args
+     */
+    public function initComponents(iterable $args = null): void
     {
-        parent::initComponents();
-
         if (!$this->isCreate()) {
             $this->addComponent($this->logoViewFactory->create(), 'logoView');
         }
 
         if ($this->isCreate()) {
-            $problems = $this->problemRepository->findAssoc(['isGenerated' => false], 'id');
             for ($i = 0; $i < $this->maxProblems; $i++) {
+                $this->addPaginator($i);
                 $this->addComponent($this->problemStackFactory->create($i), 'problemStack' . $i);
-                $this['problemStack' . $i]->setProblems($problems);
             }
         }
 
         if ($this->isRegenerate()) {
-            for ($i = 0; $i < $this->entity->getProblemsPerVariant(); $i++){
+            for ($i = 0; $i < $this->entity->getProblemsPerVariant(); $i++) {
                 $this->addComponent($this->filterViewFactory->create(), 'filterView' . $i);
             }
         }
     }
 
-    public function fillComponents(): void
+    /**
+     * @param iterable|null $args
+     */
+    public function fillComponents(iterable $args = null): void
     {
-        parent::fillComponents();
+        if ($this->isCreate()) {
+
+            $problems = $this->problemRepository->findFiltered(['isGenerated' => false]);
+            $problemsCnt = count($problems);
+
+            for ($i = 0; $i < $this->maxProblems; $i++) {
+
+                if (!isset($args[$i])) {
+
+                    // Problem stack paginator
+                    $paginator = $this['paginator' . $i]->getPaginator();
+                    $paginator->itemsPerPage = 10;
+                    $paginator->itemCount = $problemsCnt;
+
+                    $problemsInterval = array_slice($problems, $paginator->offset, $paginator->itemsPerPage);
+
+                    bdump($problemsInterval);
+
+                    $this['problemStack' . $i]->setProblems($problemsInterval);
+
+                }
+
+            }
+
+        }
 
         if (!$this->isCreate()) {
             $this['logoView']->setLogo($this->entity->getLogo());
@@ -242,10 +283,29 @@ class TestFormControl extends EntityFormControl
 
         if ($this->isRegenerate()) {
             $persistedFilters = $this->entity->getFilters()->getValues();
-            foreach ($persistedFilters as $persistedFilter){
+            foreach ($persistedFilters as $persistedFilter) {
                 $this['filterView' . $persistedFilter->getSeq()]->setEntity($persistedFilter);
             }
         }
+    }
+
+    /**
+     * @param int $id
+     */
+    public function addPaginator(int $id): void
+    {
+        $paginatorControl = new VisualPaginator\Control();
+        $paginatorControl->enableAjax();
+        $paginatorControl->setTemplateFile(TEMPLATES_DIR . '/VisualPaginator/problemStack.latte');
+
+        $paginatorControl->onShowPage[] = function ($filters) use ($id) {
+            bdump('ON SHOW PAGE');
+            bdump($filters);
+            bdump($this->filterSession->getFilters());
+            $this->handleFilterChange($id, $this->filterSession->getFilters());
+        };
+
+        $this->addComponent($paginatorControl, 'paginator' . $id);
     }
 
     /**
@@ -328,13 +388,12 @@ class TestFormControl extends EntityFormControl
 
         $difficulties = $this->difficultyRepository->findAssoc([], 'id');
         $subCategories = $this->subCategoryRepository->findAssoc([], 'id');
-        $problems = $this->problemRepository->findAssoc([], 'id');
         $problemTypes = $this->problemTypeRepository->findAssoc([], 'id');
 
         $conditionTypesByProblemTypes = [];
         foreach ($problemTypes as $id => $problemType) {
             foreach ($problemType->getConditionTypes()->getValues() as $conditionType) {
-                if(!$conditionType->isValidation()){
+                if (!$conditionType->isValidation()) {
                     $conditionTypesByProblemTypes[$id] = $conditionType->getId();
                 }
             }
@@ -387,12 +446,14 @@ class TestFormControl extends EntityFormControl
 
             }
 
-            $form->addMultiSelect('problem' . $i, 'Zvolené úlohy', $problems)
-                ->setHtmlAttribute('class', 'form-control filter problem-select hidden')
+            $form->addTextArea('problem' . $i, 'Zvolené úlohy')
+                // hidden
+                ->setHtmlAttribute('class', 'form-control filter selected-problems')
                 ->setHtmlAttribute('data-problem-id', $i)
+                ->setHtmlAttribute('data-filter-type', 'selected')
                 ->setHtmlId('problem-' . $i);
 
-            $form->addCheckbox('newPage' . $i, 'Nová stránka');
+            $form->addCheckbox('newPage' . $i, 'Konec strany zadání');
 
         }
 
@@ -444,7 +505,7 @@ class TestFormControl extends EntityFormControl
      */
     public function prepareRegenerateForm(Form $form): Form
     {
-        if(!$this->isRegenerate()){
+        if (!$this->isRegenerate()) {
             throw new ComponentException('Trying to prepare regenerate form outside of regenerate action.');
         }
 
@@ -466,6 +527,7 @@ class TestFormControl extends EntityFormControl
 
     /**
      * @param Form $form
+     * @throws \App\Exceptions\ValidatorException
      */
     public function handleFormValidate(Form $form): void
     {
@@ -495,7 +557,7 @@ class TestFormControl extends EntityFormControl
                 $this->validator->validate($form, $validateFields);
             }
         }
-        if(!$this->entity->isClosed()){
+        if (!$this->entity->isClosed()) {
             $this->handleFormValidate($form);
         }
         $this->redrawControl('formSnippetArea');
@@ -509,6 +571,7 @@ class TestFormControl extends EntityFormControl
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         bdump($values);
+        bdump($this->filterSession->getFilters());
         try {
             $this->testGeneratorService->generateTest($values);
         } catch (\Exception $e) {
@@ -548,9 +611,9 @@ class TestFormControl extends EntityFormControl
     public function handleRegenerateFormSuccess(Form $form, ArrayHash $values): void
     {
         bdump('HANDLE REGENERATE FORM SUCCESS');
-        try{
+        try {
             $this->testGeneratorService->regenerateTest($this->entity->getId(), $values);
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             bdump($e);
             $this->onError($e);
             return;
@@ -559,51 +622,93 @@ class TestFormControl extends EntityFormControl
     }
 
     /**
+     * @param int $key
      * @param array $filters
+     * @throws \Nette\Utils\JsonException
      */
-    public function handleFilterChange(array $filters): void
+    public function handleFilterChange(int $key, array $filters): void
     {
         bdump('HANDLE FILTER CHANGE');
+        bdump($filters);
 
-        foreach ($filters as $problemKey => $problemFilters) {
+        bdump($key);
+
+        if (!isset($filters[$key])) {
+            $filters[$key] = [];
+        }
+
+            $resFilters = [];
+            $problemFilters = $filters[$key];
 
             if (!isset($problemFilters['filters'])) {
                 $problemFilters['filters'] = [];
             }
 
-            if (!isset($problemFilters['limit'])) {
-                $problemFilters['limit'] = 10;
+            if (!isset($problemFilters['selected'])) {
+               $problemFilters['selected'] = [];
             }
 
             // Pick only non-generated problems
             $problemFilters['filters']['isGenerated'] = false;
 
-//            if (!isset($problemFilters['filters']['isTemplate']) || $problemFilters['filters']['isTemplate'] === '') {
-//                unset($problemFilters['filters']['isTemplate']);
-                $filterRes = $this->problemRepository->findFiltered($problemFilters['filters'], $problemFilters['limit']);
-//            } else if ($problemFilters['filters']['isTemplate']) {
-//                $filterRes = $this->problemTemplateRepository->findFiltered($problemFilters['filters'], $problemFilters['limit']);
-//            } else {
-//                $filterRes = $this->problemFinalRepository->findFiltered($problemFilters['filters'], $problemFilters['limit']);
-//            }
+            // If selected is in JSON string format, decode it
+            if ($problemFilters['selected'] && !is_array($problemFilters['selected'])) {
+                $problemFilters['selected'] = Json::decode($problemFilters['selected'], Json::FORCE_ARRAY);
+            }
 
-            $this['form']['problem' . $problemKey]->setItems($filterRes);
+            $filterRes = $this->problemRepository->findFiltered($problemFilters['filters']);
+            bdump('FILTER RES');
+            bdump($filterRes);
+
+            $resFilters[$key] = $problemFilters;
+
+            $this['form']['problem' . $key]->setValue(Json::encode($filterRes));
 
             $valuesToSetArr = [];
             $valuesToSetObj = [];
 
-            if (isset($problemFilters['selected'])) {
+            bdump('PROBLEMS SELECTED');
+            bdump($problemFilters['selected']);
+
+            if (isset($problemFilters['selected']) && $problemFilters['selected']) {
                 foreach ($problemFilters['selected'] as $selected) {
-                    if (array_key_exists((int)$selected, $filterRes)) {
+                    if (array_key_exists((int) $selected, $filterRes)) {
                         $valuesToSetArr[] = $selected;
                         $valuesToSetObj[$selected] = $filterRes[$selected];
+                        unset($filterRes[$selected]);
                     }
                 }
             }
-            $this['form']['problem' . $problemKey]->setValue($valuesToSetArr);
-            $this['problemStack' . $problemKey]->setProblems($filterRes, $valuesToSetObj);
-        }
-        $this->redrawControl('testCreateFormSnippet');
+
+            bdump('VALUES TO SET ARR');
+            bdump($valuesToSetArr);
+            $resFilters[$key]['selected'] = $valuesToSetArr;
+            $this['form']['problem' . $key]->setValue(Json::encode($valuesToSetArr));
+
+            $paginator = $this['paginator' . $key]->getPaginator();
+            $paginator->itemCount = count($filterRes);
+            $paginator->itemsPerPage = 10;
+
+            bdump('FILTER RES');
+            bdump($filterRes);
+
+            $filterRes = array_slice($filterRes, $paginator->offset, $paginator->itemsPerPage);
+
+            $this['problemStack' . $key]->setProblems($filterRes, $valuesToSetObj);
+
+            bdump($resFilters);
+            $this->filterSession->setFilters($resFilters);
+
+            $this->presenter->payload->selected = [
+                'key' => $key,
+                'values' => $valuesToSetArr
+            ];
+
+        bdump('REDRAW');
+
+        $this['problemStack' . $key]->redrawControl();
+        $this['paginator' . $key]->redrawControl();
+
     }
 
     public function setDefaults(): void
@@ -643,6 +748,8 @@ class TestFormControl extends EntityFormControl
     public function render(): void
     {
         bdump('TEST ENTITY FORM RENDER');
+        bdump($this->getComponents());
+        bdump($this->filterSession->getFilters());
         if ($this->isCreate()) {
             $this->template->maxProblems = $this->maxProblems;
             $this->template->problemConditionTypes = $this->problemConditionTypes;

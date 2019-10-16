@@ -83,9 +83,14 @@ class ProblemStackControl extends EDOMPControl
 
     public function render(): void
     {
+        bdump('RENDER PROBLEM STACK');
+        bdump($this->problems);
+        bdump($this->selectedProblems);
+
         $this->template->id = $this->id;
         $this->template->problems = $this->problems;
         $this->template->selectedProblems = $this->selectedProblems;
+
         parent::render();
     }
 }

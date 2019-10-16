@@ -43,7 +43,13 @@ abstract class EDOMPControl extends Control
         $this->template->render($this->getDir() . '/templates/' . $this->getTemplateName() . '.latte');
     }
 
-    public function initComponents(): void {}
+    /**
+     * @param iterable|null $args
+     */
+    public function initComponents(iterable $args = null): void {}
 
-    public function fillComponents(): void {}
+    /**
+     * @param iterable|null $args
+     */
+    public function fillComponents(iterable $args = null): void {}
 }

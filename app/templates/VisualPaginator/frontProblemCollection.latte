@@ -12,22 +12,6 @@
             </li>
         {/if}
 
-        {*{foreach $steps as $step}
-            {if $step == $paginator->page}
-                <li class="page-item active">
-                    <span class="page-link">{$step}</span>
-                </li>
-            {else}
-                <li class="page-item">
-                    <a href="{link $handle, 'page' => $step}" n:class="'page-link', $useAjax ? ajax">
-                        {$step}
-                    </a>
-                </li>
-            {/if}
-        {/foreach}*}
-
-        <p>{$paginator->page}/{$paginator->itemCount}</p>
-
         {if $paginator->isLast()}
             <li class="page-item disabled">
                 <span class="btn btn-sm btn-secondary disabled">Další</span>

@@ -7,6 +7,8 @@
         // Move problem from problem stack into problem selected area
         $(document).on('click', '.problem-stack li', function () {
 
+            console.log('MOVE FROM STACK INTO SELECTED');
+
             let $item = $(this);
             let problemKey = $item.data('problemKey');
             let problemId = $item.data('problemId');
@@ -42,19 +44,24 @@
 
         // Add problem to the corresponding multi-select
         function addProblem(problemKey, problemId) {
+            console.log('ADD PROBLEM');
 
-            let $problemSelect = $('#problem-' + problemKey);
-            let selectedProblems = $problemSelect.val();
-            console.log(selectedProblems);
+            let $problemsElement = $('#problem-' + problemKey);
+            let selectedProblems = $problemsElement.val();
+
+            selectedProblems = (!selectedProblems) ? [] : JSON.parse(selectedProblems);
 
             selectedProblems.push(problemId);
-            $problemSelect.val(selectedProblems);
-            $problemSelect.trigger('change');
+            console.log(selectedProblems);
+            $problemsElement.val(JSON.stringify(selectedProblems));
 
+            $problemsElement.trigger('change');
         }
 
         // Move problem from problem selected area into problem stack
         $(document).on('click', '.problem-select-area li', function () {
+
+            console.log('MOVE FROM SELECTED INTO STACK');
 
             let $item = $(this);
             let problemKey = $item.data('problemKey');
@@ -66,7 +73,6 @@
 
             console.log('KEY: ' + problemKey);
             console.log('CLICKED ' + problemId);
-            // console.log('SELECTED CNT: ' + selectedCnt);
 
             $(this).fadeOut(() => {
 
@@ -86,9 +92,8 @@
 
         // Remove problem from the corresponding multi-select
         function removeProblem(problemKey, problemId) {
-
-            let $problemSelect = $('#problem-' + problemKey);
-            let selectedProblems = $problemSelect.val();
+            let $problemsElement = $('#problem-' + problemKey);
+            let selectedProblems = JSON.parse($problemsElement.val());
 
             let inx = getIndex(selectedProblems, problemId);
 
@@ -96,8 +101,8 @@
             selectedProblems.splice(inx, 1);
             console.log(selectedProblems);
 
-            $problemSelect.val(selectedProblems);
-
+            $problemsElement.val(JSON.stringify(selectedProblems));
+            $problemsElement.trigger('change');
         }
 
         function getIndex(array, item) {

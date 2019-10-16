@@ -41,14 +41,13 @@ trait FilterTrait
 
     /**
      * @param array $filters
-     * @param int $limit
+     * @param array|null $excludeId
      * @return array
      */
-    public function findFiltered(array $filters, int $limit): array
+    public function findFiltered(array $filters, array $excludeId = null): array
     {
         bdump('FIND FILTERED');
         bdump($filters);
-        bdump($limit);
 
         $filtersProcessed = self::processFilters($filters);
         bdump($filtersProcessed);

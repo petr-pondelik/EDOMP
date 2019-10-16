@@ -89,8 +89,8 @@ class CategoryPresenter extends FrontPresenter
     public function actionDefault(int $id, bool $clear_filters = false, int $page = 1, array $filters = null): void
     {
         if(!$this->authorizator->isCategoryAllowed($this->user->identity, $id)){
-            $this->flashMessage("Nedostatečná přístupová práva.", "danger");
-            $this->redirect("Homepage:default");
+            $this->flashMessage('Nedostatečná přístupová práva.', 'danger');
+            $this->redirect('Homepage:default');
         }
         if($filters){
             $this->filters = $filters;
@@ -109,8 +109,8 @@ class CategoryPresenter extends FrontPresenter
     {
         $category = $this->categoryRepository->find($id);
 
-        if(!$category){
-
+        if (!$category) {
+            bdump('NOT FOUND');
         }
 
         $this->template->label = $category->getLabel();
@@ -121,8 +121,6 @@ class CategoryPresenter extends FrontPresenter
         $paginator = $visualPaginator->getPaginator();
         $paginator->itemsPerPage = 1;
         $paginator->itemCount = $problemsCnt;
-
-        //bdump($id);
 
         $problems = $this->problemFinalRepository->getFiltered($id, $paginator->itemsPerPage, $paginator->offset, $this->filters);
 
@@ -172,7 +170,7 @@ class CategoryPresenter extends FrontPresenter
     {
         $paginator = new VisualPaginator\Control;
         $paginator->enableAjax();
-        $paginator->setTemplateFile(TEMPLATES_DIR . '/VisualPaginator/bootstrap.latte');
+        $paginator->setTemplateFile(TEMPLATES_DIR . '/VisualPaginator/frontProblemCollection.latte');
         $paginator->onShowPage[] = function() {
             $this->redrawControl('paginatorSnippet');
             $this->redrawControl('problemsSnippet');

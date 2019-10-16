@@ -77,9 +77,11 @@ class LogoFormControl extends EntityFormControl
         }
     }
 
-    public function initComponents(): void
+    /**
+     * @param iterable|null $args
+     */
+    public function initComponents(iterable $args = null): void
     {
-        parent::initComponents();
         if($this->isUpdate()){
             $this['logoView']->setLogo($this->entity);
         }

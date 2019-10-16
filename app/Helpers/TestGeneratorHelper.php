@@ -12,6 +12,7 @@ use App\Model\NonPersistent\Generator\Variant;
 use App\Model\Persistent\Entity\Test;
 use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Json;
 use Nette\Utils\Strings;
 
 /**
@@ -70,12 +71,13 @@ class TestGeneratorHelper
      * @param ArrayHash $data
      * @param Test|null $original
      * @return array
+     * @throws \Nette\Utils\JsonException
      */
     public static function getSelectedProblems(int $seq, ArrayHash $data, Test $original = null): array
     {
         bdump('GET SELECTED PROBLEMS');
         if (!$original) {
-            return $data['problem' . $seq];
+            return Json::decode($data['problem' . $seq], Json::FORCE_ARRAY);
         }
         return $original->getFilters()->getValues()[$seq]->getSelectedProblems();
     }

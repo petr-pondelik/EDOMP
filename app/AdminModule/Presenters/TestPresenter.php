@@ -24,6 +24,7 @@ use App\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository
 use App\Model\Persistent\Repository\TestRepository;
 use App\Services\Authorizator;
 use App\Services\FileService;
+use App\Services\FilterSession;
 use App\Services\NewtonApiClient;
 use App\Services\TestGeneratorService;
 use App\Services\Validator;
@@ -75,6 +76,11 @@ class TestPresenter extends EntityPresenter
     protected $testGeneratorService;
 
     /**
+     * @var FilterSession
+     */
+    protected $filterSession;
+
+    /**
      * TestPresenter constructor.
      * @param Authorizator $authorizator
      * @param Validator $validator
@@ -93,6 +99,7 @@ class TestPresenter extends EntityPresenter
      * @param FileService $fileService
      * @param TestGeneratorService $testGeneratorService
      * @param ISectionHelpModalFactory $sectionHelpModalFactory
+     * @param FilterSession $filterSession
      */
     public function __construct
     (
@@ -104,10 +111,12 @@ class TestPresenter extends EntityPresenter
         ITestFormFactory $testCreateFormFactory, TestGridFactory $testGridFactory,
         FileService $fileService,
         TestGeneratorService $testGeneratorService,
-        ISectionHelpModalFactory $sectionHelpModalFactory
+        ISectionHelpModalFactory $sectionHelpModalFactory,
+        FilterSession $filterSession
     )
     {
-        parent::__construct(
+        parent::__construct
+        (
             $authorizator, $validator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory,
             $testRepository, $testFunctionality, $testGridFactory, $testCreateFormFactory
         );
@@ -118,6 +127,7 @@ class TestPresenter extends EntityPresenter
         $this->fileService = $fileService;
         $this->validator = $validator;
         $this->testGeneratorService = $testGeneratorService;
+        $this->filterSession = $filterSession;
     }
 
     /**
@@ -153,12 +163,23 @@ class TestPresenter extends EntityPresenter
     }
 
     /**
+     * @param int $key
      * @param array $filters
-     * @throws \Exception
      */
-    public function handleFilterChange(array $filters): void
+    public function handleFilterChange(int $key, array $filters): void
     {
-        $this['entityForm']->handleFilterChange($filters);
+        bdump($this->getParameters());
+        $this['entityForm']->handleFilterChange($key, $filters);
+    }
+
+    /**
+     * @param array $filters
+     */
+    public function handleSetFilters(array $filters): void
+    {
+        bdump('HANDLE SET FILTERS');
+        $this->filterSession->setFilters($filters);
+        bdump($this->filterSession->getFilters());
     }
 
     /**
@@ -314,9 +335,11 @@ class TestPresenter extends EntityPresenter
 
     public function renderCreate(): void
     {
-//        if($this->getParameter('filters') === null){
-        $this->getEntityForm()->fillComponents();
-//        }
+        bdump('RENDER CREATE');
+        bdump($this->filterSession->getFilters());
+        if(!$this->isAjax()){
+            $this->getEntityForm()->fillComponents($this->filterSession->getFilters());
+        }
     }
 
     public function renderRegenerate(): void
