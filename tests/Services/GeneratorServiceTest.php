@@ -17,7 +17,7 @@ use App\Model\Entity\LinearEqTempl;
 use App\Model\Entity\ProblemType;
 use App\Model\Entity\SubCategory;
 use App\Model\Repository\ProblemTemplateRepository;
-use App\Services\GeneratorService;
+use App\Services\ProblemGenerator;
 use Nette\Utils\Strings;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
 class GeneratorServiceTest extends TestCase
 {
     /**
-     * @var GeneratorService
+     * @var ProblemGenerator
      */
     protected $generatorService;
 
@@ -55,7 +55,7 @@ class GeneratorServiceTest extends TestCase
             ->getMock();
 
         // Instantiate tested class
-        $this->generatorService = new GeneratorService($this->problemTemplateRepositoryMock, $stringsHelper, $constHelper);
+        $this->generatorService = new ProblemGenerator($this->problemTemplateRepositoryMock, $stringsHelper, $constHelper);
     }
 
     /**

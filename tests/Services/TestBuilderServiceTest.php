@@ -25,7 +25,7 @@ use App\Model\Functionality\ProblemFinalFunctionality;
 use App\Model\Functionality\TestFunctionality;
 use App\Model\Repository\ProblemRepository;
 use App\Model\Repository\TestRepository;
-use App\Services\GeneratorService;
+use App\Services\ProblemGenerator;
 use App\Services\TestGeneratorService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Nette\Utils\ArrayHash;
@@ -340,7 +340,7 @@ class TestBuilderServiceTest extends TestCase
             });
 
         // Mock the GeneratorService
-        $this->generatorServiceMock = $this->getMockBuilder(GeneratorService::class)
+        $this->generatorServiceMock = $this->getMockBuilder(ProblemGenerator::class)
             ->setMethods(['generateInteger', 'generateProblemFinal'])
             ->disableOriginalConstructor()
             ->getMock();

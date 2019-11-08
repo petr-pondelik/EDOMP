@@ -18,25 +18,22 @@ final class RouterFactory
 	{
 		$router = new RouteList;
 
-		$adminRouter = new RouteList('Admin');
-		$adminRouter[] = new Route('admin/<presenter>/<action>[/<id>]', [
+		$adminRouter = new RouteList('Teacher');
+		$adminRouter[] = new Route('/teacher/<presenter>/<action>[/<id>]', [
             'presenter' => 'Homepage',
             'action' => 'default'
         ]);
+
+		bdump($adminRouter);
+
 		$frontRouter = new RouteList('Front');
 		$frontRouter[] = new Route('/<presenter>/<action>[/<id>]', [
             'presenter' => 'Homepage',
             'action' => 'default'
         ]);
 
-		/*$defaultRouter = new RouteList('Auth');
-        $frontRouter[] = new Route('/<presenter>/<action>[/<id>]', [
-            'presenter' => 'Sign',
-            'action' => 'in'
-        ]);*/
 		$router[] = $adminRouter;
 		$router[] = $frontRouter;
-		//$router[] = $defaultRouter;
 		return $router;
 	}
 }

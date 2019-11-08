@@ -1,0 +1,20 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: wiedzmin
+ * Date: 15.9.19
+ * Time: 22:13
+ */
+
+namespace App\Exceptions;
+
+use App\CoreModule\Exceptions\EDOMPException;
+
+/**
+ * Class GeneratorException
+ * @package App\Exceptions
+ */
+class GeneratorException extends EDOMPException
+{
+
+}

@@ -3,6 +3,7 @@ parameters:
     testMaxProblems: 20
 
 extensions:
+    # Vendor extensions
     console: Kdyby\Console\DI\ConsoleExtension
     events: Kdyby\Events\DI\EventsExtension
     annotations: Kdyby\Annotations\DI\AnnotationsExtension
@@ -13,6 +14,10 @@ extensions:
     visualPaginator: IPub\VisualPaginator\DI\VisualPaginatorExtension
     webpack: Oops\WebpackNetteAdapter\DI\WebpackExtension(%debugMode%)
     ajaxHistory: VojtechDobes\NetteAjax\HistoryExtension
+
+    # Own extensions
+    teacherModule: App\TeacherModule\DI\TeacherModuleExtension
+
 application:
 	errorPresenter: Error
 	mapping:
@@ -33,142 +38,142 @@ services:
 	repository.user:
 	    class: App\Model\Persistent\Repository\UserRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\User
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\User
 
 	repository.role:
 	    class: App\Model\Persistent\Repository\RoleRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\Role
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\Role
 
 	repository.problem:
 	    class: App\Model\Persistent\Repository\ProblemRepository
 	    tags:
-	       doctrine.repositoryEntity: App\Model\Persistent\Entity\Problem
+	       doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\Problem
 
 	repository.problem.final:
 	    class: App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemFinal\ProblemFinal
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal
 
 	repository.problem.final.equation.linear:
 	    class: App\Model\Persistent\Repository\ProblemFinal\LinearEquationFinalRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemFinal\LinearEquationFinal
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\ProblemFinal\LinearEquationFinal
 
 	repository.problem.final.equation.quadratic:
 	    class: App\Model\Persistent\Repository\ProblemFinal\QuadraticEquationFinalRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemFinal\QuadraticEquationFinal
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\ProblemFinal\QuadraticEquationFinal
 
 	repository.problem.final.sequence.arithmetic:
 	    class: App\Model\Persistent\Repository\ProblemFinal\ArithmeticSequenceFinalRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemFinal\ArithmeticSequenceFinal
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\ProblemFinal\ArithmeticSequenceFinal
 
 	repository.problem.final.sequence.geometric:
 	    class: App\Model\Persistent\Repository\ProblemFinal\GeometricSequenceFinalRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemFinal\GeometricSequenceFinal
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\ProblemFinal\GeometricSequenceFinal
 
 	repository.problem.template:
 	    class: App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate
 
 	repository.problemtype:
 	    class: App\Model\Persistent\Repository\ProblemTypeRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemType
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\ProblemType
 
 	repository.difficulty:
 	    class: App\Model\Persistent\Repository\DifficultyRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\Difficulty
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\Difficulty
 
 	repository.subcategory:
 	    class: App\Model\Persistent\Repository\SubCategoryRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\SubCategory
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\SubCategory
 
 	repository.category:
 	    class: App\Model\Persistent\Repository\CategoryRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\Category
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\Category
 
 	repository.condition.type:
 	    class: App\Model\Persistent\Repository\ProblemConditionTypeRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemConditionType
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\ProblemConditionType
 
 	repository.condition:
 	    class: App\Model\Persistent\Repository\ProblemConditionRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemCondition
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\ProblemCondition
 
 	repository.template.equation.linear:
 	    class: App\Model\Persistent\Repository\ProblemTemplate\LinearEquationTemplateRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemTemplate\LinearEquationTemplate
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\ProblemTemplate\LinearEquationTemplate
 
 	repository.template.equation.quadratic:
 	    class: App\Model\Persistent\Repository\ProblemTemplate\QuadraticEquationTemplateRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemTemplate\QuadraticEquationTemplate
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\ProblemTemplate\QuadraticEquationTemplate
 
 	repository.template.sequence.arithmetic:
 	    class: App\Model\Persistent\Repository\ProblemTemplate\ArithmeticSequenceTemplateRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemTemplate\ArithmeticSequenceTemplate
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ArithmeticSequenceTemplate
 
 	repository.template.sequence.geometric:
 	    class: App\Model\Persistent\Repository\ProblemTemplate\GeometricSequenceTemplateRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemTemplate\GeometricSequenceTemplate
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\ProblemTemplate\GeometricSequenceTemplate
 
 	repository.supergroup:
 	    class: App\Model\Persistent\Repository\SuperGroupRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\SuperGroup
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\SuperGroup
 
 	repository.group:
 	    class: App\Model\Persistent\Repository\GroupRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\Group
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\Group
 
 	repository.logo:
 	    class: App\Model\Persistent\Repository\LogoRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\Logo
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\Logo
 
 	repository.test:
 	    class: App\Model\Persistent\Repository\TestRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\Test
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\Test
 
 	repository.test.variant:
 	    class: App\Model\Persistent\Repository\TestVariantRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\TestVariant
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\TestVariant
 
 	repository.problem.final.test.variant.association:
 	    class: App\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ProblemFinalTestVariantAssociation
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\ProblemFinalTestVariantAssociation
 
 	repository.template.jsondata:
 	    class: App\Model\Persistent\Repository\TemplateJsonDataRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\TemplateJsonData
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\TemplateJsonData
 
 	repository.validation.function:
 	    class: App\Model\Persistent\Repository\ValidationFunctionRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\ValidationFunction
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\ValidationFunction
 
 	repository.filter:
 	    class: App\Model\Persistent\Repository\FilterRepository
 	    tags:
-	        doctrine.repositoryEntity: App\Model\Persistent\Entity\Filter
+	        doctrine.repositoryEntity: App\CoreModule\Model\Persistent\Entity\Filter
 
 	# Functionalities
 	functionality.user: App\Model\Persistent\Functionality\UserFunctionality
@@ -195,23 +200,18 @@ services:
 	functionality.filter: App\Model\Persistent\Functionality\FilterFunctionality
 
 	# Factories
-	factory.header.bar: App\Components\HeaderBar\IHeaderBarFactory
-	factory.side.bar: App\Components\SideBar\ISideBarFactory
-	factory.form.user: App\Components\Forms\UserForm\IUserIFormFactory
+	factory.header.bar: App\CoreModule\Components\HeaderBar\IHeaderBarFactory
+	factory.side.bar: App\CoreModule\Components\SideBar\ISideBarFactory
+	factory.form.user: App\Components\Forms\UserForm\IUserFormFactory
 	factory.form.category: App\Components\Forms\CategoryForm\ICategoryFormFactory
 	factory.form.subcategory: App\Components\Forms\SubCategoryForm\ISubCategoryFormFactory
 	factory.form.problem.final: App\Components\Forms\ProblemFinalForm\IProblemFinalFormFactory
-	factory.form.problem.type: App\Components\Forms\ProblemTypeForm\IProblemTypeFormFactory
-	factory.form.problem.template.lineareq: App\Components\Forms\ProblemTemplateForm\LinearEqTemplateForm\ILinearEqTemplateFormFactory
-	factory.form.problem.template.quadraticeq: App\Components\Forms\ProblemTemplateForm\QuadraticEqTemplateForm\IQuadraticEqTemplateFormFactory
-	factory.form.problem.template.arithmeticseq: App\Components\Forms\ProblemTemplateForm\ArithmeticSeqTemplateForm\IArithmeticSeqTemplateFormFactory
-	factory.form.problem.template.geometicseq: ProblemTemplateForm\GeometricSeqTemplateForm\IGeometricSeqTemplateFormFactory
 	factory.form.supergroup: App\Components\Forms\SuperGroupForm\ISuperGroupIFormFactory
 	factory.form.logo: App\Components\Forms\LogoForm\ILogoIFormFactory
 	factory.form.group: App\Components\Forms\GroupForm\IGroupIFormFactory
 	factory.form.test: App\Components\Forms\TestForm\TestEntityForm\ITestFormFactory
 	factory.form.permission: App\Components\Forms\PermissionForm\IPermissionIFormFactory
-	factory.form.sign: App\Components\Forms\SignForm\ISignIFormFactory
+	factory.form.sign: App\CoreModule\Components\Forms\SignForm\ISignIFormFactory
 	factory.form.problem.filter: App\Components\Forms\ProblemFilterForm\IProblemFilterFormFactory
 	factory.grid.user: App\Components\DataGrids\UserGridFactory
 	factory.grid.category: App\Components\DataGrids\CategoryGridFactory
@@ -225,47 +225,33 @@ services:
 	factory.grid.test: App\Components\DataGrids\TestGridFactory
 	factory.logo.draganddrop: App\Components\LogoDragAndDrop\ILogoDragAndDropFactory
 	factory.problem.stack: App\Components\ProblemStack\IProblemStackFactory
-	factory.section.help.modal: App\Components\SectionHelpModal\ISectionHelpModalFactory
+	factory.section.help.modal: App\CoreModule\Components\HelpModal\ISectionHelpModalFactory
 	factory.view.logo: App\Components\LogoView\ILogoViewFactory
 	factory.view.filter: App\Components\FilterTable\IFilterViewFactory
-	factory.form.password: App\Components\Forms\PasswordForm\IPasswordFormFactory
+	factory.form.password: App\CoreModule\Components\Forms\PasswordForm\IPasswordFormFactory
 	factory.form.test.template: App\Components\Forms\TestTemplateForm\ITestTemplateFormFactory
 
 	# Services
-	service.newtopapi.client: App\Services\NewtonApiClient(%newtonApiHost%)
 	service.mail: App\Services\MailService(..., ..., %templatesDir%, %loginURL%)
 	service.validator: App\Services\Validator
-	service.container.plugin: App\Services\PluginContainer
-	service.generator: App\Services\GeneratorService
-	service.condition: App\Services\ConditionService
 	service.file: App\Services\FileService(%logosDir%, %logosTmpDir%, %templatesDir%)
-	service.test.generator: App\Services\TestGeneratorService
 	service.authenticator: App\Services\Authenticator
 	service.authorizator: App\Services\Authorizator
 	service.eos.parser: jlawrence\eos\Parser
-	service.math: App\Services\MathService
-	service.fractions.variable: App\Services\VariableFractionService
 	service.session.problem.template: App\Services\ProblemTemplateSession
 	service.session.filter: App\Services\FilterSession
-	service.model.problem.duplicity: App\Services\ProblemDuplicityModel
 
 	# Managers
 	manager.entity.constraint: App\Model\Persistent\Manager\ConstraintEntityManager
 	manager.homepage.statistics: App\Model\Persistent\Manager\HomepageStatisticsManager
 
 	# Helpers
-	helper.const: App\Helpers\ConstHelper
-	helper.strings: App\Helpers\StringsHelper
-	helper.latex: App\Helpers\LatexHelper
+	helper.const: App\CoreModule\Helpers\ConstHelper
+	helper.strings: App\CoreModule\Helpers\StringsHelper
+	helper.latex: App\CoreModule\Helpers\LatexHelper
 	helper.parser.newton: App\Helpers\NewtonParser
-	helper.formatter: App\Helpers\FormatterHelper
-	helper.flashes.translator: App\Helpers\FlashesTranslator
-	helper.regular.expressions: App\Helpers\RegularExpressions
+	helper.formatter: App\CoreModule\Helpers\FormatterHelper
+	helper.flashes.translator: App\CoreModule\Helpers\FlashesTranslator
+	helper.regular.expressions: App\CoreModule\Helpers\RegularExpressions
 	helper.filter.view: App\Helpers\FilterViewHelper
 	helper.generator.test: App\Helpers\TestGeneratorHelper
-
-	# Plugins
-	plugin.template.equation.linear: App\Plugins\LinearEquationPlugin
-	plugin.template.equation.quadratic: App\Plugins\QuadraticEquationPlugin
-	plugin.template.sequence.arithmetic: App\Plugins\ArithmeticSequencePlugin
-	plugin.template.sequence.geometric: App\Plugins\GeometricSequencePlugin
