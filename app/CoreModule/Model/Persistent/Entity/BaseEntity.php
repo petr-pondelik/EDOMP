@@ -9,8 +9,8 @@
 namespace App\CoreModule\Model\Persistent\Entity;
 
 
-use App\Model\Persistent\Traits\KeyArrayTrait;
-use App\Model\Persistent\Traits\ToStringTrait;
+use App\CoreModule\Model\Persistent\Traits\KeyArrayTrait;
+use App\CoreModule\Model\Persistent\Traits\ToStringTrait;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 use Nette\Utils\DateTime;
 use Doctrine\ORM\Mapping as ORM;

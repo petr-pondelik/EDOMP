@@ -6,13 +6,13 @@
  * Time: 22:03
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\CoreModule\Model\Persistent\Repository;
 
 use Nette\Security\User;
 
 /**
  * Class GroupRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository
  */
 class GroupRepository extends BaseRepository
 {

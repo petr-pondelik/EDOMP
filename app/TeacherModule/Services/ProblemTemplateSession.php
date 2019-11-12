@@ -6,18 +6,18 @@
  * Time: 20:39
  */
 
-namespace App\Services;
+namespace App\TeacherModule\Services;
 
-use App\Model\NonPersistent\Entity\ProblemTemplateNP;
-use App\Model\NonPersistent\TemplateData\ProblemTemplateState;
-use App\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
+use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
+use App\TeacherModule\Model\NonPersistent\TemplateData\ProblemTemplateState;
+use App\TeacherModule\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
 use App\CoreModule\Interfaces\IEDOMPSession;
 use Nette\Http\Session;
 use Nette\Http\SessionSection;
 
 /**
  * Class ProblemTemplateSession
- * @package App\Services
+ * @package App\TeacherModule\Services
  */
 class ProblemTemplateSession implements IEDOMPSession
 {

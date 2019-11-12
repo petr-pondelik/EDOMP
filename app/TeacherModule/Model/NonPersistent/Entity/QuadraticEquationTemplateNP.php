@@ -9,8 +9,8 @@
 namespace App\TeacherModule\Model\NonPersistent\Entity;
 
 /**
- * Class QuadraticEquationTemplate
- * @package App\TeacherModule\Model\NonPersistent\Entity\Entity
+ * Class QuadraticEquationTemplateNP
+ * @package App\TeacherModule\Model\NonPersistent\Entity
  */
 class QuadraticEquationTemplateNP extends EquationTemplateNP
 {

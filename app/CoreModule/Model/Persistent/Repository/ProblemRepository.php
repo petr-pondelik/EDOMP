@@ -6,13 +6,13 @@
  * Time: 23:33
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\CoreModule\Model\Persistent\Repository;
 
-use App\Model\Persistent\Traits\FilterTrait;
+use App\CoreModule\Model\Persistent\Traits\FilterTrait;
 
 /**
  * Class ProblemRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository
  */
 class ProblemRepository extends BaseRepository
 {

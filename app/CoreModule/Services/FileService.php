@@ -6,13 +6,13 @@
  * Time: 21:54
  */
 
-namespace App\Services;
+namespace App\CoreModule\Services;
 
 use App\CoreModule\Model\Persistent\Entity\Logo;
 use App\CoreModule\Model\Persistent\Entity\Test;
-use App\Model\Persistent\Functionality\LogoFunctionality;
-use App\Model\Persistent\Repository\LogoRepository;
-use App\Model\Persistent\Repository\TestRepository;
+use App\CoreModule\Model\Persistent\Functionality\LogoFunctionality;
+use App\CoreModule\Model\Persistent\Repository\LogoRepository;
+use App\CoreModule\Model\Persistent\Repository\TestRepository;
 use Doctrine\ORM\EntityNotFoundException;
 use Nette\FileNotFoundException;
 use Nette\Http\IRequest;
@@ -24,7 +24,7 @@ use Nette\Utils\Strings;
 
 /**
  * Class FileService
- * @package App\Service
+ * @package App\CoreModule\Services
  */
 class FileService
 {
@@ -41,7 +41,17 @@ class FileService
     /**
      * @var string
      */
-    protected $templatesDir;
+    protected $coreTemplatesDir;
+
+    /**
+     * @var string
+     */
+    protected $studentTemplatesDir;
+
+    /**
+     * @var string
+     */
+    protected $teacherTemplatesDir;
 
     /**
      * @var TestRepository
@@ -62,7 +72,9 @@ class FileService
      * FileService constructor.
      * @param string $logosDir
      * @param string $logosTmpDir
-     * @param string $templatesDir
+     * @param string $coreTemplatesDir
+     * @param string $studentTemplatesDir
+     * @param string $teacherTemplatesDir
      * @param TestRepository $testRepository
      * @param LogoRepository $logoRepository
      * @param LogoFunctionality $logoFunctionality
@@ -71,7 +83,9 @@ class FileService
     (
         string $logosDir,
         string $logosTmpDir,
-        string $templatesDir,
+        string $coreTemplatesDir,
+        string $studentTemplatesDir,
+        string $teacherTemplatesDir,
         TestRepository $testRepository,
         LogoRepository $logoRepository,
         LogoFunctionality $logoFunctionality
@@ -79,7 +93,9 @@ class FileService
     {
         $this->logosDir = $logosDir;
         $this->logosTmpDir = $logosTmpDir;
-        $this->templatesDir = $templatesDir;
+        $this->coreTemplatesDir = $coreTemplatesDir;
+        $this->studentTemplatesDir = $studentTemplatesDir;
+        $this->teacherTemplatesDir = $teacherTemplatesDir;
         $this->testRepository = $testRepository;
         $this->logoRepository = $logoRepository;
         $this->logoFunctionality = $logoFunctionality;
@@ -99,15 +115,15 @@ class FileService
      */
     public function updateTestTemplate(string $templateStr): void
     {
-        FileSystem::write($this->templatesDir . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR . 'testPdf' . DIRECTORY_SEPARATOR . 'active.latte', $templateStr);
+        FileSystem::write($this->teacherTemplatesDir . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR . 'testPdf' . DIRECTORY_SEPARATOR . 'active.latte', $templateStr);
     }
 
     public function resetTestTemplate(): void
     {
         FileSystem::copy
         (
-            $this->templatesDir . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR . 'testPdf' . DIRECTORY_SEPARATOR . 'default.latte',
-            $this->templatesDir . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR . 'testPdf' . DIRECTORY_SEPARATOR . 'active.latte'
+            $this->teacherTemplatesDir . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR . 'testPdf' . DIRECTORY_SEPARATOR . 'default.latte',
+            $this->teacherTemplatesDir . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR . 'testPdf' . DIRECTORY_SEPARATOR . 'active.latte'
         );
     }
 

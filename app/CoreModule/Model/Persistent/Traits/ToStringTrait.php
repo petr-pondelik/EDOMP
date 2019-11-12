@@ -6,13 +6,13 @@
  * Time: 18:54
  */
 
-namespace App\Model\Persistent\Traits;
+namespace App\CoreModule\Model\Persistent\Traits;
 
 use App\CoreModule\Model\Persistent\Entity\Logo;
 
 /**
  * Trait ToStringTrait
- * @package App\Model\Persistent\Traits
+ * @package App\CoreModule\Model\Persistent\Traits
  */
 trait ToStringTrait
 {

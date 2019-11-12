@@ -6,11 +6,11 @@
  * Time: 13:04
  */
 
-namespace App\Model\Persistent\Traits;
+namespace App\CoreModule\Model\Persistent\Traits;
 
 /**
  * Trait SequenceValTrait
- * @package App\Model\Persistent\Traits
+ * @package App\CoreModule\Model\Persistent\Traits
  */
 trait SequenceValTrait
 {

@@ -6,7 +6,7 @@
  * Time: 19:00
  */
 
-namespace App\Model\Persistent\Traits;
+namespace App\CoreModule\Model\Persistent\Traits;
 
 
 use App\CoreModule\Model\Persistent\Entity\Problem;
@@ -14,7 +14,7 @@ use App\CoreModule\Model\Persistent\Entity\ProblemType;
 
 /**
  * Trait FilterTrait
- * @package App\Model\Persistent\Traits
+ * @package App\CoreModule\Model\Persistent\Traits
  */
 trait FilterTrait
 {

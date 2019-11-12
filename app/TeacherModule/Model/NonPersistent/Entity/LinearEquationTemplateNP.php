@@ -10,7 +10,7 @@ namespace App\TeacherModule\Model\NonPersistent\Entity;
 
 /**
  * Class LinearEquationTemplate
- * @package App\TeacherModule\Model\NonPersistent\Entity\Entity
+ * @package App\TeacherModule\Model\NonPersistent\Entity
  */
 class LinearEquationTemplateNP extends EquationTemplateNP
 {

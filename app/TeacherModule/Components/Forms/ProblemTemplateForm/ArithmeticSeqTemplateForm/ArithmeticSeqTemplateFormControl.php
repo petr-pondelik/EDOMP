@@ -10,18 +10,18 @@ namespace App\TeacherModule\Components\Forms\ProblemTemplateForm\ArithmeticSeqTe
 
 
 use App\TeacherModule\Components\Forms\ProblemTemplateForm\ProblemTemplateFormControl;
-use App\Exceptions\EquationException;
+use App\TeacherModule\Exceptions\EquationException;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\StringsHelper;
-use App\Model\Persistent\Functionality\ProblemTemplate\ArithmeticSequenceTemplateFunctionality;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\DifficultyRepository;
-use App\Model\Persistent\Repository\ProblemConditionRepository;
-use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
-use App\Model\Persistent\Repository\ProblemTypeRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Services\ProblemTemplateSession;
-use App\Services\Validator;
+use App\CoreModule\Model\Persistent\Functionality\ProblemTemplate\ArithmeticSequenceTemplateFunctionality;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\TeacherModule\Services\ProblemTemplateSession;
+use App\CoreModule\Services\Validator;
 use App\TeacherModule\Model\NonPersistent\Entity\ArithmeticSequenceTemplateNP;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\TeacherModule\Services\PluginContainer;

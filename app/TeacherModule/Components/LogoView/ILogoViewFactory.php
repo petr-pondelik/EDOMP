@@ -6,12 +6,12 @@
  * Time: 17:06
  */
 
-namespace App\Components\LogoView;
+namespace App\TeacherModule\Components\LogoView;
 
 
 /**
  * Interface ILogoViewFactory
- * @package App\Components\LogoView
+ * @package App\TeacherModule\Components\LogoView
  */
 interface ILogoViewFactory
 {

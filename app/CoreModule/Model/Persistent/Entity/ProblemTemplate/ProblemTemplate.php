@@ -12,7 +12,7 @@ use App\CoreModule\Model\Persistent\Entity\Problem;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository")
  *
  * Class ProblemTemplate
  * @package App\CoreModule\Model\Persistent\Entity

@@ -4,7 +4,16 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // DIRECTORY_SEPARATOR is PHP constant holding system dir. separator (\ for Win and / for Linux)
 define('APP_DIR', __DIR__);
-define('TEMPLATES_DIR', APP_DIR . DIRECTORY_SEPARATOR . 'templates');
+
+define('CORE_MODULE_DIR', APP_DIR . DIRECTORY_SEPARATOR . 'CoreModule' . DIRECTORY_SEPARATOR);
+define('CORE_MODULE_TEMPLATES_DIR', CORE_MODULE_DIR . 'templates' . DIRECTORY_SEPARATOR);
+
+define('TEACHER_MODULE_DIR', APP_DIR . DIRECTORY_SEPARATOR . 'TeacherModule' . DIRECTORY_SEPARATOR);
+define('TEACHER_MODULE_TEMPLATES_DIR', TEACHER_MODULE_DIR . 'templates' . DIRECTORY_SEPARATOR);
+
+define('STUDENT_MODULE_DIR', APP_DIR . DIRECTORY_SEPARATOR . 'StudentModule' . DIRECTORY_SEPARATOR);
+define('STUDENT_MODULE_TEMPLATES_DIR', STUDENT_MODULE_DIR . 'templates' . DIRECTORY_SEPARATOR);
+
 define('DATA_DIR', APP_DIR . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data');
 define('WWW_DIR', APP_DIR . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'www');
 define('DATA_PUBLIC_DIR', WWW_DIR . DIRECTORY_SEPARATOR . 'data_public');
@@ -47,7 +56,9 @@ $configurator->addConfig(__DIR__ . '/Config/config.local.neon');
 //$configurator->addConfig(__DIR__ . '/Config/config.' . ENVIRONMENT . '.neon');
 
 $configurator->addParameters([
-    'templatesDir' => TEMPLATES_DIR,
+    'coreTemplatesDir' => CORE_MODULE_TEMPLATES_DIR,
+    'studentTemplatesDir' => STUDENT_MODULE_TEMPLATES_DIR,
+    'teacherTemplatesDir' => TEACHER_MODULE_TEMPLATES_DIR,
     'assetsDir' => ASSETS_DIR,
     'logosDir' => LOGOS_DIR,
     'logosTmpDir' => LOGOS_TMP_DIR,

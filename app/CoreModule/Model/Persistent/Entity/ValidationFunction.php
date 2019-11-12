@@ -8,7 +8,7 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
-use App\Model\Persistent\Traits\LabelTrait;
+use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 

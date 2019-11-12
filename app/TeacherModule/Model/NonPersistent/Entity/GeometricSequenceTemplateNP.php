@@ -9,8 +9,8 @@
 namespace App\TeacherModule\Model\NonPersistent\Entity;
 
 /**
- * Class GeometricSequenceTemplate
- * @package App\TeacherModule\Model\NonPersistent\Entity\Entity
+ * Class GeometricSequenceTemplateNP
+ * @package App\TeacherModule\Model\NonPersistent\Entity
  */
 class GeometricSequenceTemplateNP extends SequenceTemplateNP
 {

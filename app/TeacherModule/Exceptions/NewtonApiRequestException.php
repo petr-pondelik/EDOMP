@@ -6,11 +6,11 @@
  * Time: 13:15
  */
 
-namespace App\Exceptions;
+namespace App\TeacherModule\Exceptions;
 
 /**
  * Class NewtonApiMalformedException
- * @package App\Exceptions
+ * @package App\TeacherModule\Exceptions
  */
 class NewtonApiRequestException extends NewtonApiException
 {

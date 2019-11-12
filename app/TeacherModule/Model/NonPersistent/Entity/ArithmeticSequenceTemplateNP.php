@@ -9,8 +9,8 @@
 namespace App\TeacherModule\Model\NonPersistent\Entity;
 
 /**
- * Class ArithmeticSequenceTemplate
- * @package App\TeacherModule\Model\NonPersistent\Entity\Entity
+ * Class ArithmeticSequenceTemplateNP
+ * @package App\TeacherModule\Model\NonPersistent\Entity
  */
 class ArithmeticSequenceTemplateNP extends SequenceTemplateNP
 {

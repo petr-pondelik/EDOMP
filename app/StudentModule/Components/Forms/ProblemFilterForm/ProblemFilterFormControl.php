@@ -6,19 +6,19 @@
  * Time: 11:47
  */
 
-namespace App\Components\Forms\ProblemFilterForm;
+namespace App\StudentModule\Components\Forms\ProblemFilterForm;
 
 
 use App\CoreModule\Components\Forms\FormControl;
-use App\Model\Persistent\Repository\DifficultyRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Services\Validator;
+use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
+use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
  * Class ProblemFilterFormControl
- * @package App\Components\Forms\ProblemFilterForm
+ * @package App\StudentModule\Components\Forms\ProblemFilterForm
  */
 class ProblemFilterFormControl extends FormControl
 {

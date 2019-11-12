@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository")
  *
  * Class ProblemTestAssociation
  * @package App\CoreModule\Model\Persistent\Entity

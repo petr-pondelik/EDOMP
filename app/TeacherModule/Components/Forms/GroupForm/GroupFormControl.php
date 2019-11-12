@@ -6,22 +6,22 @@
  * Time: 19:53
  */
 
-namespace App\Components\Forms\GroupForm;
+namespace App\TeacherModule\Components\Forms\GroupForm;
 
 
 use App\CoreModule\Arguments\ValidatorArgument;
 use App\CoreModule\Components\Forms\EntityFormControl;
-use App\Model\Persistent\Functionality\GroupFunctionality;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\SuperGroupRepository;
-use App\Services\Validator;
+use App\CoreModule\Model\Persistent\Functionality\GroupFunctionality;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\SuperGroupRepository;
+use App\CoreModule\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
  * Class GroupFormControl
- * @package App\Components\Forms\GroupForm
+ * @package App\TeacherModule\Components\Forms\GroupForm
  */
 class GroupFormControl extends EntityFormControl
 {

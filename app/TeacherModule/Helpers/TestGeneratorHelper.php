@@ -6,18 +6,18 @@
  * Time: 17:58
  */
 
-namespace App\Helpers;
+namespace App\TeacherModule\Helpers;
 
-use App\Model\NonPersistent\Generator\Variant;
 use App\CoreModule\Model\Persistent\Entity\Test;
-use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
+use App\TeacherModule\Model\NonPersistent\Generator\Variant;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
 
 /**
  * Class TestGeneratorHelper
- * @package App\Helpers
+ * @package App\TeacherModule\Helpers
  */
 class TestGeneratorHelper
 {

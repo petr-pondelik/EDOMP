@@ -10,18 +10,18 @@ namespace App\TeacherModule\Presenters;
 
 use App\CoreModule\Arguments\UserInformArgs;
 use App\CoreModule\Arguments\ValidatorArgument;
-use App\Components\DataGrids\SubCategoryGridFactory;
-use App\Components\Forms\SubCategoryForm\ISubCategoryFormFactory;
+use App\TeacherModule\Components\DataGrids\SubCategoryGridFactory;
+use App\TeacherModule\Components\Forms\SubCategoryForm\ISubCategoryFormFactory;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\Model\Persistent\Functionality\SubCategoryFunctionality;
-use App\Model\Persistent\Repository\CategoryRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Services\Authorizator;
+use App\CoreModule\Model\Persistent\Functionality\SubCategoryFunctionality;
+use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Services\Authorizator;
 use App\TeacherModule\Services\NewtonApiClient;
-use App\Services\Validator;
+use App\CoreModule\Services\Validator;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 

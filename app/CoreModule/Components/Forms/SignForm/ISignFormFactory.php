@@ -12,10 +12,10 @@ namespace App\CoreModule\Components\Forms\SignForm;
 use App\CoreModule\Components\Forms\IFormFactory;
 
 /**
- * Interface ISignIFormFactory
+ * Interface ISignFormFactory
  * @package App\CoreModule\Components\Forms\SignForm
  */
-interface ISignIFormFactory extends IFormFactory
+interface ISignFormFactory extends IFormFactory
 {
     /**
      * @param bool $admin

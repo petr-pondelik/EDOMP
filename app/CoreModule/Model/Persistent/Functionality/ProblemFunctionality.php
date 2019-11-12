@@ -6,18 +6,18 @@
  * Time: 20:57
  */
 
-namespace App\Model\Persistent\Functionality;
+namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\ProblemRepository;
-use App\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository;
 use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
 
 /**
  * Class ProblemFunctionality
- * @package App\Model\Persistent\Functionality
+ * @package App\CoreModule\Model\Persistent\Functionality
  */
 class ProblemFunctionality extends BaseFunctionality
 {

@@ -6,15 +6,15 @@
  * Time: 21:26
  */
 
-namespace App\Components\DataGrids;
+namespace App\TeacherModule\Components\DataGrids;
 
 use App\CoreModule\Components\DataGrids\BaseGrid;
-use App\Model\Persistent\Repository\ProblemTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class ProblemTypeGridFactory
- * @package App\Components\DataGrids
+ * @package App\TeacherModule\Components\DataGrids
  */
 class ProblemTypeGridFactory extends BaseGrid
 {

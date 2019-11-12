@@ -4,7 +4,7 @@
             {if $presenter->isModule('Teacher')}
                 <a href={plink :Teacher:Homepage:default}>EDOMP: Administrace</a>
                 {else}
-                <a href={plink :Front:Homepage:default}>EDOMP</a>
+                <a href={plink :Student:Homepage:default}>EDOMP</a>
             {/if}
             <div class="pr-4" id="sidebar-close">
                 <i class="fas fa-times"></i>
@@ -23,7 +23,7 @@
                         <i class="fas fa-home mr-2"></i> Domů
                     </a>
                     {else}
-                    <a href={plink :Front:Homepage:default}>
+                    <a href={plink :Student:Homepage:default}>
                         <i class="fas fa-home mr-2"></i> Domů
                     </a>
                 {/if}
@@ -157,7 +157,7 @@
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('Settings:*') ? active">
-                    <a href={plink :Front:Settings:default}>
+                    <a href={plink :Student:Settings:default}>
                         <i class="fas fa-cog mr-2"></i>Nastavení
                     </a>
                 </li>

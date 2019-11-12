@@ -6,21 +6,21 @@
  * Time: 11:11
  */
 
-namespace App\Model\Persistent\Functionality;
+namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\Test;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\GroupRepository;
-use App\Model\Persistent\Repository\LogoRepository;
-use App\Model\Persistent\Repository\TestRepository;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\GroupRepository;
+use App\CoreModule\Model\Persistent\Repository\LogoRepository;
+use App\CoreModule\Model\Persistent\Repository\TestRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
 
 /**
  * Class TestFunctionality
- * @package App\Model\Persistent\Functionality
+ * @package App\CoreModule\Model\Persistent\Functionality
  */
 class TestFunctionality extends BaseFunctionality
 {

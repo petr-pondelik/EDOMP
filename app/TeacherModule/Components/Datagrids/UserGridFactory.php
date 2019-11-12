@@ -6,17 +6,17 @@
  * Time: 23:22
  */
 
-namespace App\Components\DataGrids;
+namespace App\TeacherModule\Components\DataGrids;
 
 use App\CoreModule\Components\DataGrids\BaseGrid;
 use App\CoreModule\Helpers\ConstHelper;
-use App\Model\Persistent\Repository\RoleRepository;
-use App\Model\Persistent\Repository\UserRepository;
+use App\CoreModule\Model\Persistent\Repository\RoleRepository;
+use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class UserGridFactory
- * @package App\Components\DataGrids
+ * @package App\TeacherModule\Components\DataGrids
  */
 class UserGridFactory extends BaseGrid
 {

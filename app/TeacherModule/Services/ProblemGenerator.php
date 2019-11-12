@@ -8,12 +8,12 @@
 
 namespace App\TeacherModule\Services;
 
-use App\Exceptions\GeneratorException;
+use App\TeacherModule\Exceptions\GeneratorException;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
-use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
 

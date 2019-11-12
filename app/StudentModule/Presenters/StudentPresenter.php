@@ -6,19 +6,19 @@
  * Time: 19:12
  */
 
-namespace App\FrontModule\Presenters;
+namespace App\StudentModule\Presenters;
 
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\Presenters\BasePresenter;
-use App\Services\Authorizator;
+use App\CoreModule\Presenters\BasePresenter;
+use App\CoreModule\Services\Authorizator;
 
 /**
- * Class FrontPresenter
- * @package App\FrontModule\Presenters
+ * Class StudentPresenter
+ * @package App\StudentModule\Presenters
  */
-class FrontPresenter extends BasePresenter
+class StudentPresenter extends BasePresenter
 {
     /**
      * @var Authorizator
@@ -26,7 +26,7 @@ class FrontPresenter extends BasePresenter
     protected $authorizator;
 
     /**
-     * FrontPresenter constructor.
+     * StudentPresenter constructor.
      * @param Authorizator $authorizator
      * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory

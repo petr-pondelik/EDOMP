@@ -6,13 +6,12 @@
  * Time: 16:23
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\CoreModule\Model\Persistent\Repository;
 
 /**
  * Class TemplateJsonDataRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository
  */
 class TemplateJsonDataRepository extends BaseRepository
 {
-
 }

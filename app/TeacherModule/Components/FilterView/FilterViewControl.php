@@ -6,16 +6,16 @@
  * Time: 14:42
  */
 
-namespace App\Components\FilterTable;
+namespace App\TeacherModule\Components\FilterView;
 
 
 use App\CoreModule\Components\EDOMPControl;
-use App\Helpers\FilterViewHelper;
 use App\CoreModule\Model\Persistent\Entity\Filter;
+use App\TeacherModule\Helpers\FilterViewHelper;
 
 /**
  * Class FilterTableControl
- * @package App\Components\FilterTable
+ * @package App\TeacherModule\Components\FilterView
  */
 class FilterViewControl extends EDOMPControl
 {

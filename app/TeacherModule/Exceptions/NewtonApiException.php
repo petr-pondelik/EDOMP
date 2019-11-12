@@ -6,13 +6,13 @@
  * Time: 13:14
  */
 
-namespace App\Exceptions;
+namespace App\TeacherModule\Exceptions;
 
 use App\CoreModule\Exceptions\EDOMPException;
 
 /**
  * Class NewtonApiException
- * @package App\Exceptions
+ * @package App\TeacherModule\Exceptions
  */
 class NewtonApiException extends EDOMPException
 {

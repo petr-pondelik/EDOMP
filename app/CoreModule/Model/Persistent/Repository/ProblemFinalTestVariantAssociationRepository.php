@@ -6,11 +6,11 @@
  * Time: 10:36
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\CoreModule\Model\Persistent\Repository;
 
 /**
  * Class ProblemTestAssociationRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository
  */
 class ProblemFinalTestVariantAssociationRepository extends BaseRepository
 {

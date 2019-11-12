@@ -6,7 +6,7 @@
  * Time: 12:40
  */
 
-namespace App\Services;
+namespace App\CoreModule\Services;
 
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
@@ -15,7 +15,7 @@ use Nette\Security\IIdentity;
 
 /**
  * Class Authorizator
- * @package App\Services
+ * @package App\CoreModule\Services
  */
 class Authorizator implements IAuthorizator
 {

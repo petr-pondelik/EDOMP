@@ -14,7 +14,7 @@ use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\FilterRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\FilterRepository")
  *
  * Class Filter
  * @package App\CoreModule\Model\Persistent\Entity

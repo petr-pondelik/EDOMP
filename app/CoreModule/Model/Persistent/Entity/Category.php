@@ -8,7 +8,7 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
-use App\Model\Persistent\Traits\LabelTrait;
+use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class Category
  * @package App\CoreModule\Model\Persistent\Entity
  *
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\CategoryRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\CategoryRepository")
  */
 class Category extends BaseEntity
 {

@@ -6,11 +6,11 @@
  * Time: 13:43
  */
 
-namespace App\Exceptions;
+namespace App\TeacherModule\Exceptions;
 
 /**
  * Class NewtonApiSyntaxException
- * @package App\Exceptions
+ * @package App\TeacherModule\Exceptions
  */
 class NewtonApiSyntaxException extends NewtonApiException
 {

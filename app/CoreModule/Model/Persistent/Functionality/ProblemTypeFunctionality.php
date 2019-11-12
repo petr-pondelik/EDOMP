@@ -6,17 +6,17 @@
  * Time: 21:15
  */
 
-namespace App\Model\Persistent\Functionality;
+namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\ProblemType;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\ProblemTypeRepository;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use Doctrine\ORM\EntityNotFoundException;
 
 /**
  * Class ProblemTypeFunctionality
- * @package App\Model\Persistent\Functionality
+ * @package App\CoreModule\Model\Persistent\Functionality
  */
 class ProblemTypeFunctionality extends BaseFunctionality
 {

@@ -1,7 +1,7 @@
 {
-	"name": "nette/web-project",
-	"description": "Nette: Standard Web Project",
-	"keywords": ["nette"],
+	"name": "EDOMP",
+	"description": "Electronical Database Of Mathematical Problems based on Nette Framework.",
+	"keywords": ["nette", "math", "teacher", "student"],
 	"type": "project",
 	"license": ["MIT", "BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
 	"require": {

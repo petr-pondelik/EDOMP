@@ -6,20 +6,20 @@
  * Time: 17:30
  */
 
-namespace App\Model\Persistent\Functionality;
+namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\Filter;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\DifficultyRepository;
-use App\Model\Persistent\Repository\ProblemConditionRepository;
-use App\Model\Persistent\Repository\ProblemTypeRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
 use Nette\Utils\Strings;
 
 /**
  * Class FilterFunctionality
- * @package App\Model\Persistent\Functionality
+ * @package App\CoreModule\Model\Persistent\Functionality
  */
 class FilterFunctionality extends BaseFunctionality
 {

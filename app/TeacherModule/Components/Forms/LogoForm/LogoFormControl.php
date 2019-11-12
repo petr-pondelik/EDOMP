@@ -6,24 +6,24 @@
  * Time: 11:54
  */
 
-namespace App\Components\Forms\LogoForm;
+namespace App\TeacherModule\Components\Forms\LogoForm;
 
 
 use App\CoreModule\Arguments\ValidatorArgument;
 use App\CoreModule\Components\Forms\EntityFormControl;
-use App\Components\LogoView\ILogoViewFactory;
-use App\Model\Persistent\Functionality\LogoFunctionality;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\LogoRepository;
-use App\Services\FileService;
-use App\Services\Validator;
+use App\TeacherModule\Components\LogoView\ILogoViewFactory;
+use App\CoreModule\Model\Persistent\Functionality\LogoFunctionality;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\LogoRepository;
+use App\CoreModule\Services\FileService;
+use App\CoreModule\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
  * Class LogoFormControl
- * @package App\Components\Forms\LogoForm
+ * @package App\TeacherModule\Components\Forms\LogoForm
  */
 class LogoFormControl extends EntityFormControl
 {

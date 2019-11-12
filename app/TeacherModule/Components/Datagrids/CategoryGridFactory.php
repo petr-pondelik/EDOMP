@@ -6,15 +6,15 @@
  * Time: 0:11
  */
 
-namespace App\Components\DataGrids;
+namespace App\TeacherModule\Components\DataGrids;
 
 use App\CoreModule\Components\DataGrids\BaseGrid;
-use App\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class CategoryGridFactory
- * @package App\Components\DataGrids
+ * @package App\TeacherModule\Components\DataGrids
  */
 class CategoryGridFactory extends BaseGrid
 {

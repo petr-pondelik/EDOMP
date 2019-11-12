@@ -6,14 +6,14 @@
  * Time: 21:01
  */
 
-namespace App\Components\LogoDragAndDrop;
+namespace App\TeacherModule\Components\LogoDragAndDrop;
 
 use App\CoreModule\Components\EDOMPControl;
-use App\Model\Persistent\Repository\LogoRepository;
+use App\CoreModule\Model\Persistent\Repository\LogoRepository;
 
 /**
  * Class LogoDragAndDropControl
- * @package App\Components\LogoDragAndDrop
+ * @package App\TeacherModule\Components\LogoDragAndDrop
  */
 class LogoDragAndDropControl extends EDOMPControl
 {

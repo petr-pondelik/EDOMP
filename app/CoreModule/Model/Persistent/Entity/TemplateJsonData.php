@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\TemplateJsonDataRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\TemplateJsonDataRepository")
  *
  * Class TemplateJsonData
  * @package App\CoreModule\Model\Persistent\Entity

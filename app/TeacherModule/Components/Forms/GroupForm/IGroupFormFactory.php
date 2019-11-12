@@ -6,16 +6,16 @@
  * Time: 19:54
  */
 
-namespace App\Components\Forms\GroupForm;
+namespace App\TeacherModule\Components\Forms\GroupForm;
 
 
 use App\CoreModule\Components\Forms\IFormFactory;
 
 /**
- * Interface IGroupIFormFactory
- * @package App\Components\Forms\GroupForm
+ * Interface IGroupFormFactory
+ * @package App\TeacherModule\Components\Forms\GroupForm
  */
-interface IGroupIFormFactory extends IFormFactory
+interface IGroupFormFactory extends IFormFactory
 {
     /**
      * @return GroupFormControl

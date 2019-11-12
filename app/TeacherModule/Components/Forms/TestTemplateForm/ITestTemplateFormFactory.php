@@ -6,11 +6,11 @@
  * Time: 16:45
  */
 
-namespace App\Components\Forms\TestTemplateForm;
+namespace App\TeacherModule\Components\Forms\TestTemplateForm;
 
 /**
  * Interface ITestTemplateFormFactory
- * @package App\Components\Forms\TestTemplateForm
+ * @package App\TeacherModule\Components\Forms\TestTemplateForm
  */
 interface ITestTemplateFormFactory
 {

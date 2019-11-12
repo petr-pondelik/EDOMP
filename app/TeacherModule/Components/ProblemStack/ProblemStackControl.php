@@ -6,16 +6,16 @@
  * Time: 18:15
  */
 
-namespace App\Components\ProblemStack;
+namespace App\TeacherModule\Components\ProblemStack;
 
 
 use App\CoreModule\Components\EDOMPControl;
 use App\CoreModule\Model\Persistent\Entity\Problem;
-use App\Model\Persistent\Repository\ProblemRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
 
 /**
  * Class ProblemStackControl
- * @package App\Components\ProblemStack
+ * @package App\TeacherModule\Components\ProblemStack
  */
 class ProblemStackControl extends EDOMPControl
 {

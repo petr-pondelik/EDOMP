@@ -6,14 +6,14 @@
  * Time: 11:26
  */
 
-namespace App\Components\Forms\CategoryForm;
+namespace App\TeacherModule\Components\Forms\CategoryForm;
 
 
 use App\CoreModule\Components\Forms\IFormFactory;
 
 /**
  * Interface ICategoryFormFactory
- * @package App\Components\Forms\CategoryForm
+ * @package App\TeacherModule\Components\Forms\CategoryForm
  */
 interface ICategoryFormFactory extends IFormFactory
 {

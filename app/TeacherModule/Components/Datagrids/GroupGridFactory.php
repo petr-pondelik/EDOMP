@@ -6,17 +6,17 @@
  * Time: 11:39
  */
 
-namespace App\Components\DataGrids;
+namespace App\TeacherModule\Components\DataGrids;
 
 use App\CoreModule\Components\DataGrids\BaseGrid;
 use App\CoreModule\Helpers\ConstHelper;
-use App\Model\Persistent\Repository\GroupRepository;
-use App\Model\Persistent\Repository\SuperGroupRepository;
+use App\CoreModule\Model\Persistent\Repository\GroupRepository;
+use App\CoreModule\Model\Persistent\Repository\SuperGroupRepository;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class GroupGridFactory
- * @package App\Components\DataGrids
+ * @package App\TeacherModule\Components\DataGrids
  */
 class GroupGridFactory extends BaseGrid
 {

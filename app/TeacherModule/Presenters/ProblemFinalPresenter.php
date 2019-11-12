@@ -9,18 +9,18 @@
 namespace App\TeacherModule\Presenters;
 
 use App\CoreModule\Arguments\UserInformArgs;
-use App\Components\DataGrids\ProblemGridFactory;
-use App\Components\Forms\ProblemFinalForm\IProblemFinalFormFactory;
+use App\TeacherModule\Components\DataGrids\ProblemGridFactory;
+use App\TeacherModule\Components\Forms\ProblemFinalForm\IProblemFinalFormFactory;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
-use App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
-use App\Services\Authorizator;
+use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
+use App\CoreModule\Services\Authorizator;
 use App\TeacherModule\Services\PluginContainer;
 use App\TeacherModule\Services\NewtonApiClient;
-use App\Services\Validator;
+use App\CoreModule\Services\Validator;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 

@@ -11,19 +11,19 @@ namespace App\TeacherModule\Presenters;
 
 use App\CoreModule\Arguments\UserInformArgs;
 use App\CoreModule\Arguments\ValidatorArgument;
-use App\Components\DataGrids\GroupGridFactory;
-use App\Components\Forms\GroupForm\IGroupIFormFactory;
+use App\TeacherModule\Components\DataGrids\GroupGridFactory;
+use App\TeacherModule\Components\Forms\GroupForm\IGroupFormFactory;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
-use App\Model\Persistent\Functionality\GroupFunctionality;
-use App\Model\Persistent\Repository\GroupRepository;
-use App\Model\Persistent\Repository\SuperGroupRepository;
-use App\Services\Authorizator;
+use App\CoreModule\Model\Persistent\Functionality\GroupFunctionality;
+use App\CoreModule\Model\Persistent\Repository\GroupRepository;
+use App\CoreModule\Model\Persistent\Repository\SuperGroupRepository;
+use App\CoreModule\Services\Authorizator;
 use App\TeacherModule\Services\NewtonApiClient;
-use App\Services\Validator;
+use App\CoreModule\Services\Validator;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 
@@ -50,7 +50,7 @@ class GroupPresenter extends EntityPresenter
      * @param SuperGroupRepository $superGroupRepository
      * @param Validator $validator
      * @param GroupGridFactory $groupGridFactory
-     * @param IGroupIFormFactory $groupFormFactory
+     * @param IGroupFormFactory $groupFormFactory
      * @param IHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
@@ -59,7 +59,7 @@ class GroupPresenter extends EntityPresenter
         IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         GroupRepository $groupRepository, GroupFunctionality $groupFunctionality, SuperGroupRepository $superGroupRepository,
         Validator $validator,
-        GroupGridFactory $groupGridFactory, IGroupIFormFactory $groupFormFactory,
+        GroupGridFactory $groupGridFactory, IGroupFormFactory $groupFormFactory,
         IHelpModalFactory $sectionHelpModalFactory
     )
     {

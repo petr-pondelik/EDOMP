@@ -6,16 +6,16 @@
  * Time: 13:15
  */
 
-namespace App\Model\Persistent\Repository\ProblemFinal;
+namespace App\CoreModule\Model\Persistent\Repository\ProblemFinal;
 
 use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
-use App\Model\Persistent\Repository\BaseRepository;
-use App\Model\Persistent\Traits\FilterTrait;
+use App\CoreModule\Model\Persistent\Repository\BaseRepository;
+use App\CoreModule\Model\Persistent\Traits\FilterTrait;
 use Doctrine\ORM\QueryBuilder;
 
 /**
  * Class ProblemFinalRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository\ProblemFinal
  */
 class ProblemFinalRepository extends BaseRepository
 {

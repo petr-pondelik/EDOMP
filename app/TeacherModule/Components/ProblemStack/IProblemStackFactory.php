@@ -6,12 +6,12 @@
  * Time: 18:16
  */
 
-namespace App\Components\ProblemStack;
+namespace App\TeacherModule\Components\ProblemStack;
 
 
 /**
  * Interface IProblemStackFactory
- * @package App\Components\ProblemStack
+ * @package App\TeacherModule\Components\ProblemStack
  */
 interface IProblemStackFactory
 {

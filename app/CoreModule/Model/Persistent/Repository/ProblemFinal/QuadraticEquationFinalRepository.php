@@ -6,13 +6,13 @@
  * Time: 22:29
  */
 
-namespace App\Model\Persistent\Repository\ProblemFinal;
+namespace App\CoreModule\Model\Persistent\Repository\ProblemFinal;
 
-use App\Model\Persistent\Repository\BaseRepository;
+use App\CoreModule\Model\Persistent\Repository\BaseRepository;
 
 /**
  * Class QuadraticEquationFinalRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository\ProblemFinal
  */
 class QuadraticEquationFinalRepository extends BaseRepository
 {

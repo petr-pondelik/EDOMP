@@ -6,19 +6,19 @@
  * Time: 22:14
  */
 
-namespace App\Model\Persistent\Functionality;
+namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\SuperGroup;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\CategoryRepository;
-use App\Model\Persistent\Repository\SuperGroupRepository;
-use App\Model\Persistent\Repository\UserRepository;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\SuperGroupRepository;
+use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class SuperGroupFunctionality
- * @package App\Model\Persistent\Functionality
+ * @package App\CoreModule\Model\Persistent\Functionality
  */
 class SuperGroupFunctionality extends BaseFunctionality
 {

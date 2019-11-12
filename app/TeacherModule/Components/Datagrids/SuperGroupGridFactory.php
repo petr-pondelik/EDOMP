@@ -6,16 +6,16 @@
  * Time: 18:43
  */
 
-namespace App\Components\DataGrids;
+namespace App\TeacherModule\Components\DataGrids;
 
 use App\CoreModule\Components\DataGrids\BaseGrid;
 use App\CoreModule\Helpers\ConstHelper;
-use App\Model\Persistent\Repository\SuperGroupRepository;
+use App\CoreModule\Model\Persistent\Repository\SuperGroupRepository;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class SuperGroupGridFactory
- * @package App\Components\DataGrids
+ * @package App\TeacherModule\Components\DataGrids
  */
 class SuperGroupGridFactory extends BaseGrid
 {

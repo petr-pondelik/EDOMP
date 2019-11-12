@@ -8,8 +8,9 @@
 
 namespace App\TeacherModule\Model\NonPersistent\ProblemDuplicity;
 
-use App\Core\Model\Persistent\Entity\Problem;
-use App\Core\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
+
+use App\CoreModule\Model\Persistent\Entity\Problem;
+use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 
 /**
  * Class TemplateDuplicityState

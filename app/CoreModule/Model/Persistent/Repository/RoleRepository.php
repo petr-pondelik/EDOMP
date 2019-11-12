@@ -6,13 +6,13 @@
  * Time: 22:14
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\CoreModule\Model\Persistent\Repository;
 
 use Nette\Security\User;
 
 /**
  * Class RoleRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository
  */
 class RoleRepository extends BaseRepository
 {

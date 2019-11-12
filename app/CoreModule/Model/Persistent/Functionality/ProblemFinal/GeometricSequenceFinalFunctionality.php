@@ -6,25 +6,25 @@
  * Time: 20:58
  */
 
-namespace App\Model\Persistent\Functionality\ProblemFinal;
+namespace App\CoreModule\Model\Persistent\Functionality\ProblemFinal;
 
 use App\CoreModule\Helpers\FormatterHelper;
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\ProblemFinal\GeometricSequenceFinal;
-use App\Model\Persistent\Functionality\BaseFunctionality;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\DifficultyRepository;
-use App\Model\Persistent\Repository\ProblemConditionRepository;
-use App\Model\Persistent\Repository\ProblemFinal\GeometricSequenceFinalRepository;
-use App\Model\Persistent\Repository\ProblemRepository;
-use App\Model\Persistent\Repository\ProblemTypeRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Model\Persistent\Traits\ProblemFinalFunctionalityTrait;
+use App\CoreModule\Model\Persistent\Functionality\BaseFunctionality;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinal\GeometricSequenceFinalRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Traits\ProblemFinalFunctionalityTrait;
 use Doctrine\ORM\EntityNotFoundException;
 
 /**
  * Class GeometricSequenceFinalFunctionality
- * @package App\Model\Persistent\Functionality\ProblemFinal
+ * @package App\CoreModule\Model\Persistent\Functionality\ProblemFinal
  */
 class GeometricSequenceFinalFunctionality extends BaseFunctionality
 {

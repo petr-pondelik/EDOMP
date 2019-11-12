@@ -8,7 +8,8 @@
 
 namespace App\TeacherModule\Model\NonPersistent\ProblemDuplicity;
 
-use App\Core\Model\Persistent\Entity\Problem;
+
+use App\CoreModule\Model\Persistent\Entity\Problem;
 
 /**
  * Class FinalDuplicityState

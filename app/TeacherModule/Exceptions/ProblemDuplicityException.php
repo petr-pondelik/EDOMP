@@ -6,14 +6,14 @@
  * Time: 20:09
  */
 
-namespace App\Exceptions;
+namespace App\TeacherModule\Exceptions;
 
 
 use App\CoreModule\Exceptions\EDOMPException;
 
 /**
  * Class ProblemDuplicityException
- * @package App\Exceptions
+ * @package App\TeacherModule\Exceptions
  */
 class ProblemDuplicityException extends EDOMPException
 {

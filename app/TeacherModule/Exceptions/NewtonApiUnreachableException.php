@@ -6,11 +6,11 @@
  * Time: 13:15
  */
 
-namespace App\Exceptions;
+namespace App\TeacherModule\Exceptions;
 
 /**
  * Class NewtonApiUnreachableException
- * @package App\Exceptions
+ * @package App\TeacherModule\Exceptions
  */
 class NewtonApiUnreachableException extends NewtonApiException
 {

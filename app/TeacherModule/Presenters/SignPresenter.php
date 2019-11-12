@@ -9,7 +9,7 @@
 namespace App\TeacherModule\Presenters;
 
 
-use App\Presenters\BaseSignPresenter;
+use App\CoreModule\Presenters\BaseSignPresenter;
 
 /**
  * Class SignPresenter

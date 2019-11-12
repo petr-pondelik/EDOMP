@@ -6,13 +6,13 @@
  * Time: 13:32
  */
 
-namespace App\Model\Persistent\Functionality\ProblemTemplate;
+namespace App\CoreModule\Model\Persistent\Functionality\ProblemTemplate;
 
-use App\Model\Persistent\Functionality\BaseFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\BaseFunctionality;
 
 /**
  * Class ProblemTemplateFunctionality
- * @package App\Model\Persistent\Functionality\ProblemTemplate
+ * @package App\CoreModule\Model\Persistent\Functionality\ProblemTemplate
  */
 abstract class ProblemTemplateFunctionality extends BaseFunctionality
 {

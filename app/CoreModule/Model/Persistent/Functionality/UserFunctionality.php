@@ -6,20 +6,20 @@
  * Time: 22:10
  */
 
-namespace App\Model\Persistent\Functionality;
+namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\User;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\GroupRepository;
-use App\Model\Persistent\Repository\RoleRepository;
-use App\Model\Persistent\Repository\UserRepository;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\GroupRepository;
+use App\CoreModule\Model\Persistent\Repository\RoleRepository;
+use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityNotFoundException;
 
 /**
  * Class UserFunctionality
- * @package App\Model\Persistent\Functionality
+ * @package App\CoreModule\Model\Persistent\Functionality
  */
 class UserFunctionality extends BaseFunctionality
 {

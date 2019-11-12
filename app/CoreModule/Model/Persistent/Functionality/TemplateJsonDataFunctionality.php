@@ -6,18 +6,18 @@
  * Time: 16:40
  */
 
-namespace App\Model\Persistent\Functionality;
+namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\TemplateJsonData;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
-use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
-use App\Model\Persistent\Repository\TemplateJsonDataRepository;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
+use App\CoreModule\Model\Persistent\Repository\TemplateJsonDataRepository;
 
 /**
  * Class TemplateJsonDataFunctionality
- * @package App\Model\Persistent\Functionality
+ * @package App\CoreModule\Model\Persistent\Functionality
  */
 class TemplateJsonDataFunctionality extends BaseFunctionality
 {

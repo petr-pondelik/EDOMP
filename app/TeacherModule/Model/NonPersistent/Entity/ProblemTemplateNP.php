@@ -8,17 +8,17 @@
 
 namespace App\TeacherModule\Model\NonPersistent\Entity;
 
+use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use App\TeacherModule\Model\NonPersistent\TemplateData\ParametersData;
 use App\TeacherModule\Model\NonPersistent\TemplateData\ProblemTemplateState;
 use App\TeacherModule\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
 use App\TeacherModule\Model\NonPersistent\Traits\SetValuesTrait;
-use App\Core\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 
 /**
- * Class ProblemTemplate
- * @package App\TeacherModule\Model\NonPersistent\Entity\Entity
+ * Class ProblemTemplateNP
+ * @package App\TeacherModule\Model\NonPersistent\Entity
  */
 abstract class ProblemTemplateNP extends BaseEntityNP
 {
@@ -127,14 +127,6 @@ abstract class ProblemTemplateNP extends BaseEntityNP
                     $this->state->update(new ProblemTemplateStateItem($rule, $newValue, true));
                 }
             }
-//            foreach ($values as $key => $value){
-//                if ($value !== 0 && Strings::match($key, '~condition_\d~') && $value !== (int) $stateItems[$key]->getValue()) {
-//                    $this->state->update(new ProblemTemplateStateItem($key, $value, false));
-//                }
-//                else{
-//                    $this->state->update(new ProblemTemplateStateItem($key, $value, true));
-//                }
-//            }
         }
         else{
             $this->state->update(new ProblemTemplateStateItem('type', false, false));

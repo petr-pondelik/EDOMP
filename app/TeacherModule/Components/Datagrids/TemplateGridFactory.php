@@ -6,20 +6,20 @@
  * Time: 10:19
  */
 
-namespace App\Components\DataGrids;
+namespace App\TeacherModule\Components\DataGrids;
 
 use App\CoreModule\Components\DataGrids\BaseGrid;
 use App\CoreModule\Helpers\ConstHelper;
-use App\Model\Persistent\Repository\BaseRepository;
-use App\Model\Persistent\Repository\DifficultyRepository;
-use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
-use App\Model\Persistent\Repository\ProblemTypeRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\BaseRepository;
+use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class TemplateGridFactory
- * @package App\Components\DataGrids
+ * @package App\TeacherModule\Components\DataGrids
  */
 class TemplateGridFactory extends BaseGrid
 {

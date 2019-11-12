@@ -6,13 +6,13 @@
  * Time: 17:07
  */
 
-namespace App\Exceptions;
+namespace App\TeacherModule\Exceptions;
 
 use App\CoreModule\Exceptions\EDOMPException;
 
 /**
  * Class ProblemTemplateException
- * @package App\Exceptions
+ * @package App\TeacherModule\Exceptions
  */
 class ProblemTemplateException extends EDOMPException
 {

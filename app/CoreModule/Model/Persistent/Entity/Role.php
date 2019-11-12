@@ -8,13 +8,13 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
-use App\Model\Persistent\Traits\LabelTrait;
+use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\RoleRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\RoleRepository")
  *
  * Class Role
  * @package App\CoreModule\Model\Persistent\Entity

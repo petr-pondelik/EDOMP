@@ -12,15 +12,15 @@ namespace App\TeacherModule\Components\Forms\ProblemTemplateForm\LinearEqTemplat
 use App\TeacherModule\Components\Forms\ProblemTemplateForm\ProblemTemplateFormControl;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\StringsHelper;
-use App\Model\Persistent\Functionality\ProblemTemplate\LinearEquationTemplateFunctionality;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\DifficultyRepository;
-use App\Model\Persistent\Repository\ProblemConditionRepository;
-use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
-use App\Model\Persistent\Repository\ProblemTypeRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Services\ProblemTemplateSession;
-use App\Services\Validator;
+use App\CoreModule\Model\Persistent\Functionality\ProblemTemplate\LinearEquationTemplateFunctionality;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\TeacherModule\Services\ProblemTemplateSession;
+use App\CoreModule\Services\Validator;
 use App\TeacherModule\Model\NonPersistent\Entity\LinearEquationTemplateNP;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\TeacherModule\Services\PluginContainer;
@@ -28,7 +28,7 @@ use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class LinearEqTemplFormControl
+ * Class LinearEqTemplateFormControl
  * @package App\TeacherModule\Components\Forms\ProblemTemplateForm\LinearEqTemplateForm
  */
 class LinearEqTemplateFormControl extends ProblemTemplateFormControl

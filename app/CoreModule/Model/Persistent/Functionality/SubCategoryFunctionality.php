@@ -6,17 +6,17 @@
  * Time: 23:30
  */
 
-namespace App\Model\Persistent\Functionality;
+namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\SubCategory;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\CategoryRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
 
 /**
  * Class SubCategoryFunctionality
- * @package App\Model\Persistent\Functionality
+ * @package App\CoreModule\Model\Persistent\Functionality
  */
 class SubCategoryFunctionality extends BaseFunctionality
 {

@@ -6,32 +6,32 @@
  * Time: 11:02
  */
 
-namespace App\Components\Forms\TestForm\TestEntityForm;
+namespace App\TeacherModule\Components\Forms\TestForm;
 
 use App\CoreModule\Arguments\ValidatorArgument;
-use App\Components\FilterTable\IFilterViewFactory;
+use App\TeacherModule\Components\FilterView\IFilterViewFactory;
 use App\CoreModule\Components\Forms\EntityFormControl;
-use App\Components\LogoDragAndDrop\ILogoDragAndDropFactory;
-use App\Components\LogoDragAndDrop\LogoDragAndDropControl;
-use App\Components\LogoView\ILogoViewFactory;
-use App\Components\ProblemStack\IProblemStackFactory;
 use App\CoreModule\Exceptions\ComponentException;
 use App\CoreModule\Model\Persistent\Entity\ProblemConditionType;
-use App\Model\Persistent\Functionality\TestFunctionality;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\DifficultyRepository;
-use App\Model\Persistent\Repository\GroupRepository;
-use App\Model\Persistent\Repository\LogoRepository;
-use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
-use App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
-use App\Model\Persistent\Repository\ProblemRepository;
-use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
-use App\Model\Persistent\Repository\ProblemTypeRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Services\FileService;
-use App\Services\FilterSession;
+use App\CoreModule\Model\Persistent\Functionality\TestFunctionality;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
+use App\CoreModule\Model\Persistent\Repository\GroupRepository;
+use App\CoreModule\Model\Persistent\Repository\LogoRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Services\FileService;
+use App\TeacherModule\Components\LogoDragAndDrop\ILogoDragAndDropFactory;
+use App\TeacherModule\Components\LogoDragAndDrop\LogoDragAndDropControl;
+use App\TeacherModule\Components\LogoView\ILogoViewFactory;
+use App\TeacherModule\Components\ProblemStack\IProblemStackFactory;
+use App\TeacherModule\Services\FilterSession;
 use App\TeacherModule\Services\TestGenerator;
-use App\Services\Validator;
+use App\CoreModule\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
@@ -40,8 +40,8 @@ use IPub\VisualPaginator\Components as VisualPaginator;
 
 
 /**
- * Class TestEntityFormControl
- * @package App\Components\Forms\TestForm\TestEntityForm
+ * Class TestFormControl
+ * @package App\TeacherModule\Components\Forms\TestForm
  */
 class TestFormControl extends EntityFormControl
 {
@@ -296,7 +296,7 @@ class TestFormControl extends EntityFormControl
     {
         $paginatorControl = new VisualPaginator\Control();
         $paginatorControl->enableAjax();
-        $paginatorControl->setTemplateFile(TEMPLATES_DIR . '/VisualPaginator/problemStack.latte');
+        $paginatorControl->setTemplateFile(TEACHER_MODULE_TEMPLATES_DIR . '/VisualPaginator/problemStack.latte');
 
         $paginatorControl->onShowPage[] = function ($filters) use ($id) {
             bdump('ON SHOW PAGE');

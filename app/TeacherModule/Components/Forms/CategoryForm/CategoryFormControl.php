@@ -6,20 +6,20 @@
  * Time: 17:28
  */
 
-namespace App\Components\Forms\CategoryForm;
+namespace App\TeacherModule\Components\Forms\CategoryForm;
 
 use App\CoreModule\Arguments\ValidatorArgument;
 use App\CoreModule\Components\Forms\EntityFormControl;
-use App\Model\Persistent\Functionality\CategoryFunctionality;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Services\Validator;
+use App\CoreModule\Model\Persistent\Functionality\CategoryFunctionality;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class ICategoryFormFactory
- * @package App\Components\Forms
+ * Class CategoryFormControl
+ * @package App\TeacherModule\Components\Forms\CategoryForm
  */
 class CategoryFormControl extends EntityFormControl
 {

@@ -6,11 +6,11 @@
  * Time: 19:00
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\CoreModule\Model\Persistent\Repository;
 
 /**
  * Class LogoRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository
  */
 class LogoRepository extends BaseRepository
 {

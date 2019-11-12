@@ -9,8 +9,8 @@
 namespace App\CoreModule\Components\Forms;
 
 use App\CoreModule\Components\EDOMPControl;
-use App\Model\Persistent\Functionality\BaseFunctionality;
-use App\Services\Validator;
+use App\CoreModule\Model\Persistent\Functionality\BaseFunctionality;
+use App\CoreModule\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 

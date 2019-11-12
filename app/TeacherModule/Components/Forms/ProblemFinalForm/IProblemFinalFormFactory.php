@@ -6,14 +6,14 @@
  * Time: 14:51
  */
 
-namespace App\Components\Forms\ProblemFinalForm;
+namespace App\TeacherModule\Components\Forms\ProblemFinalForm;
 
 
 use App\CoreModule\Components\Forms\IFormFactory;
 
 /**
  * Class IProblemFinalFormFactory
- * @package App\Components\Forms\ProblemFinalForm
+ * @package App\TeacherModule\Components\Forms\ProblemFinalForm
  */
 interface IProblemFinalFormFactory extends IFormFactory
 {

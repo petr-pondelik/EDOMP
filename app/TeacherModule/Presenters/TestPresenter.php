@@ -9,23 +9,23 @@
 namespace App\TeacherModule\Presenters;
 
 use App\CoreModule\Arguments\UserInformArgs;
-use App\Components\DataGrids\TestGridFactory;
+use App\TeacherModule\Components\DataGrids\TestGridFactory;
 use App\CoreModule\Components\Forms\EntityFormControl;
-use App\Components\Forms\TestForm\TestEntityForm\ITestFormFactory;
+use App\TeacherModule\Components\Forms\TestForm\ITestFormFactory;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\Model\Persistent\Functionality\TestFunctionality;
-use App\Model\Persistent\Repository\LogoRepository;
-use App\Model\Persistent\Repository\ProblemRepository;
-use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
-use App\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository;
-use App\Model\Persistent\Repository\TestRepository;
-use App\Services\Authorizator;
-use App\Services\FileService;
-use App\Services\FilterSession;
-use App\Services\Validator;
+use App\CoreModule\Model\Persistent\Functionality\TestFunctionality;
+use App\CoreModule\Model\Persistent\Repository\LogoRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository;
+use App\CoreModule\Model\Persistent\Repository\TestRepository;
+use App\CoreModule\Services\Authorizator;
+use App\CoreModule\Services\FileService;
+use App\TeacherModule\Services\FilterSession;
+use App\CoreModule\Services\Validator;
 use App\TeacherModule\Services\NewtonApiClient;
 use App\TeacherModule\Services\TestGenerator;
 use Nette\Application\Responses\CallbackResponse;
@@ -36,7 +36,7 @@ use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class TestPresenter
- * @package app\presenters
+ * @package App\TeacherModule\Presenters
  */
 class TestPresenter extends EntityPresenter
 {
@@ -226,7 +226,7 @@ class TestPresenter extends EntityPresenter
         try {
             $test = $this->functionality->close($id);
             $template = $this->getTemplate();
-            $template->setFile(TEMPLATES_DIR . '/pdf/testPdf/active.latte');
+            $template->setFile(TEACHER_MODULE_TEMPLATES_DIR . '/pdf/testPdf/active.latte');
             $this->testGenerator->createTestData($test, $template);
         } catch (\Exception $e) {
             $this->informUser(new UserInformArgs('close', true, 'error', $e, true));

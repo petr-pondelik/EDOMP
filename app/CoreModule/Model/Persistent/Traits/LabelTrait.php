@@ -6,7 +6,7 @@
  * Time: 15:54
  */
 
-namespace App\Model\Persistent\Traits;
+namespace App\CoreModule\Model\Persistent\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;

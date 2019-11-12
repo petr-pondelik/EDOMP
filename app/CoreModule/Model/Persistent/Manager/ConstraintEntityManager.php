@@ -6,7 +6,7 @@
  * Time: 11:17
  */
 
-namespace App\Model\Persistent\Manager;
+namespace App\CoreModule\Model\Persistent\Manager;
 
 
 use App\CoreModule\Exceptions\EntityException;
@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class ConstraintEntityManager
- * @package App\Model\Persistent\Manager
+ * @package App\CoreModule\Model\Persistent\Manager
  */
 class ConstraintEntityManager
 {

@@ -6,11 +6,11 @@
  * Time: 18:52
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\CoreModule\Model\Persistent\Repository;
 
 /**
  * Class ProblemTypeRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository
  */
 class ProblemTypeRepository extends BaseRepository
 {

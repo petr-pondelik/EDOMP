@@ -15,28 +15,28 @@ use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
 use App\CoreModule\Helpers\LatexHelper;
 use App\CoreModule\Helpers\StringsHelper;
-use App\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
-use App\Model\Persistent\Functionality\FilterFunctionality;
-use App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
-use App\Model\Persistent\Functionality\TestFunctionality;
-use App\Model\Persistent\Functionality\TestVariantFunctionality;
-use App\Model\Persistent\Functionality\UserFunctionality;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\CategoryRepository;
-use App\Model\Persistent\Repository\FilterRepository;
-use App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
-use App\Model\Persistent\Repository\ProblemRepository;
-use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
-use App\Model\Persistent\Repository\ProblemTemplate\QuadraticEquationTemplateRepository;
-use App\Model\Persistent\Repository\TemplateJsonDataRepository;
-use App\Model\Persistent\Repository\TestRepository;
+use App\TeacherModule\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
+use App\CoreModule\Model\Persistent\Functionality\FilterFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\TestFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\TestVariantFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\UserFunctionality;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\FilterRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\QuadraticEquationTemplateRepository;
+use App\CoreModule\Model\Persistent\Repository\TemplateJsonDataRepository;
+use App\CoreModule\Model\Persistent\Repository\TestRepository;
 use App\TeacherModule\Plugins\QuadraticEquationPlugin;
-use App\Services\Authorizator;
+use App\CoreModule\Services\Authorizator;
 use App\TeacherModule\Services\ProblemGenerator;
 use App\TeacherModule\Services\NewtonApiClient;
 use App\TeacherModule\Services\PluginContainer;
-use App\Services\ProblemTemplateSession;
-use App\Services\Validator;
+use App\TeacherModule\Services\ProblemTemplateSession;
+use App\CoreModule\Services\Validator;
 use jlawrence\eos\Parser;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
@@ -240,12 +240,12 @@ class DoctrinePresenter extends TeacherPresenter
     }
 
     /**
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Nette\Utils\JsonException
-     * @throws \App\Exceptions\GeneratorException
+     * @throws \App\TeacherModule\Exceptions\GeneratorException
      */
     public function actionDefault()
     {

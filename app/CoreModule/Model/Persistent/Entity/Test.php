@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\TestRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\TestRepository")
  *
  * Class Test
  * @package App\CoreModule\Model\Persistent\Entity

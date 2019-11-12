@@ -6,7 +6,7 @@
  * Time: 20:14
  */
 
-namespace App\Services;
+namespace App\CoreModule\Services;
 
 use App\CoreModule\Model\Persistent\Entity\User;
 use Nette\Application\UI\ITemplate;
@@ -19,7 +19,7 @@ use Tracy\ILogger;
 
 /**
  * Class MailService
- * @package App\Services
+ * @package App\CoreModule\Services
  */
 class MailService
 {
@@ -36,7 +36,7 @@ class MailService
     /**
      * @var string
      */
-    protected $templateDir;
+    protected $coreTemplatesDir;
 
     /**
      * @var string
@@ -47,20 +47,20 @@ class MailService
      * MailService constructor.
      * @param IMailer $mailer
      * @param ITemplateFactory $templateFactory
-     * @param string $templateDir
+     * @param string $coreTemplatesDir
      * @param string $loginURL
      */
     public function __construct
     (
         IMailer $mailer,
         ITemplateFactory $templateFactory,
-        string $templateDir,
+        string $coreTemplatesDir,
         string $loginURL
     )
     {
         $this->mailer = $mailer;
         $this->templateFactory = $templateFactory;
-        $this->templateDir = $templateDir;
+        $this->coreTemplatesDir = $coreTemplatesDir;
         $this->loginURL = $loginURL;
     }
 
@@ -79,7 +79,7 @@ class MailService
     public function sendInvitationEmail(User $user, string $password): void
     {
         $template = $this->createTemplate();
-        $template->setFile($this->templateDir . '/mail/invitation.latte');
+        $template->setFile($this->coreTemplatesDir . '/mail/invitation.latte');
         $template->user = $user;
         $template->password = $password;
         $template->loginURL = $this->loginURL;

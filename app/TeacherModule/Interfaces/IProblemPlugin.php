@@ -6,7 +6,7 @@
  * Time: 19:36
  */
 
-namespace App\TeacherModule\Plugins;
+namespace App\TeacherModule\Interfaces;
 
 use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
@@ -15,7 +15,7 @@ use Nette\Utils\ArrayHash;
 
 /**
  * Interface IProblemPlugin
- * @package App\TeacherModule\Plugins
+ * @package App\TeacherModule\Interfaces
  */
 interface IProblemPlugin
 {

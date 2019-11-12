@@ -6,25 +6,25 @@
  * Time: 19:46
  */
 
-namespace App\Model\Persistent\Functionality\ProblemTemplate;
+namespace App\CoreModule\Model\Persistent\Functionality\ProblemTemplate;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\QuadraticEquationTemplate;
-use App\Model\Persistent\Functionality\BaseFunctionality;
-use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\DifficultyRepository;
-use App\Model\Persistent\Repository\ProblemConditionRepository;
-use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
-use App\Model\Persistent\Repository\ProblemTypeRepository;
-use App\Model\Persistent\Repository\ProblemTemplate\QuadraticEquationTemplateRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Model\Persistent\Repository\TemplateJsonDataRepository;
-use App\Model\Persistent\Traits\ProblemTemplateFunctionalityTrait;
+use App\CoreModule\Model\Persistent\Functionality\BaseFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\QuadraticEquationTemplateRepository;
+use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\TemplateJsonDataRepository;
+use App\CoreModule\Model\Persistent\Traits\ProblemTemplateFunctionalityTrait;
 
 /**
  * Class QuadraticEquationTemplateFunctionality
- * @package App\Model\Persistent\Functionality
+ * @package App\CoreModule\Model\Persistent\Functionality\ProblemTemplate
  */
 class QuadraticEquationTemplateFunctionality extends BaseFunctionality
 {

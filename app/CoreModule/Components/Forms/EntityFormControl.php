@@ -9,8 +9,8 @@
 namespace App\CoreModule\Components\Forms;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Services\Validator;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 

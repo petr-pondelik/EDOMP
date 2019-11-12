@@ -6,13 +6,13 @@
  * Time: 14:10
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\CoreModule\Model\Persistent\Repository;
 
 use App\CoreModule\Model\Persistent\Entity\ProblemConditionType;
 
 /**
  * Class ProblemConditionTypeRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository
  */
 class ProblemConditionTypeRepository extends BaseRepository
 {

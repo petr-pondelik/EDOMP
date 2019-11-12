@@ -6,18 +6,18 @@
  * Time: 16:45
  */
 
-namespace App\Components\Forms\TestTemplateForm;
+namespace App\TeacherModule\Components\Forms\TestTemplateForm;
 
 use App\CoreModule\Arguments\ValidatorArgument;
 use App\CoreModule\Components\Forms\FormControl;
-use App\Services\FileService;
-use App\Services\Validator;
+use App\CoreModule\Services\FileService;
+use App\CoreModule\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
  * Class TestTemplateFormControl
- * @package App\Components\Forms\TestTemplateForm
+ * @package App\TeacherModule\Components\Forms\TestTemplateForm
  */
 class TestTemplateFormControl extends FormControl
 {
@@ -92,7 +92,7 @@ class TestTemplateFormControl extends FormControl
 
     public function setDefaults(): void
     {
-        $templateString = $this->fileService->read(TEMPLATES_DIR . '/pdf/testPdf/active.latte');
+        $templateString = $this->fileService->read(TEACHER_MODULE_TEMPLATES_DIR . '/pdf/testPdf/active.latte');
         $this['form']['templateContent']->setValue($templateString);
         $this->template->templateContent = $templateString;
     }

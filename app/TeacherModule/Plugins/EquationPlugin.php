@@ -8,7 +8,7 @@
 
 namespace App\TeacherModule\Plugins;
 
-use App\Exceptions\NewtonApiSyntaxException;
+use App\TeacherModule\Exceptions\NewtonApiSyntaxException;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
 use Nette\Utils\ArrayHash;
@@ -22,10 +22,10 @@ abstract class EquationPlugin extends ProblemPlugin
     /**
      * @param ProblemTemplateNP $problemTemplate
      * @return ProblemTemplateNP
-     * @throws \App\Exceptions\EquationException
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \App\TeacherModule\Exceptions\EquationException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function standardize(ProblemTemplateNP $problemTemplate): ProblemTemplateNP
@@ -55,10 +55,10 @@ abstract class EquationPlugin extends ProblemPlugin
     /**
      * @param string $expression
      * @return string
-     * @throws \App\Exceptions\EquationException
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \App\TeacherModule\Exceptions\EquationException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function standardizeFinal(string $expression): string
@@ -78,11 +78,11 @@ abstract class EquationPlugin extends ProblemPlugin
     /**
      * @param ProblemTemplateNP $problemTemplate
      * @return int
-     * @throws \App\Exceptions\EquationException
-     * @throws \App\Exceptions\InvalidParameterException
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \App\TeacherModule\Exceptions\EquationException
+     * @throws \App\TeacherModule\Exceptions\InvalidParameterException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function validateBody(ProblemTemplateNP $problemTemplate): int
@@ -118,7 +118,7 @@ abstract class EquationPlugin extends ProblemPlugin
      * @param ProblemTemplate $problemTemplate
      * @param array|null $usedMatchesInx
      * @return ArrayHash
-     * @throws \App\Exceptions\GeneratorException
+     * @throws \App\TeacherModule\Exceptions\GeneratorException
      * @throws \Nette\Utils\JsonException
      */
     public function constructProblemFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash

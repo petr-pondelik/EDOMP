@@ -12,7 +12,7 @@ use App\TeacherModule\Components\Forms\ProblemTemplateForm\IProblemTemplateFormF
 
 /**
  * Interface IGeometricSeqTemplateFormFactory
- * @package ProblemTemplateForm\GeometricSeqTemplateForm
+ * @package App\TeacherModule\Components\Forms\ProblemTemplateForm\GeometricSeqTemplateForm
  */
 interface IGeometricSeqTemplateFormFactory extends IProblemTemplateFormFactory
 {

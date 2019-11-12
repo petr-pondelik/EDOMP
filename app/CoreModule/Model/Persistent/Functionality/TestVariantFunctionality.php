@@ -6,18 +6,18 @@
  * Time: 17:56
  */
 
-namespace App\Model\Persistent\Functionality;
+namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
 use App\CoreModule\Model\Persistent\Entity\ProblemFinalTestVariantAssociation;
 use App\CoreModule\Model\Persistent\Entity\TestVariant;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\TestVariantRepository;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\TestVariantRepository;
 
 /**
  * Class TestVariantFunctionality
- * @package App\Model\Persistent\Functionality
+ * @package App\CoreModule\Model\Persistent\Functionality
  */
 class TestVariantFunctionality extends BaseFunctionality
 {

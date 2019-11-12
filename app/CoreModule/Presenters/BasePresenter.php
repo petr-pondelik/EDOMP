@@ -6,7 +6,7 @@
  * Time: 21:53
  */
 
-namespace App\Presenters;
+namespace App\CoreModule\Presenters;
 
 use App\CoreModule\Arguments\UserInformArgs;
 use App\CoreModule\Components\HeaderBar\HeaderBarControl;
@@ -21,7 +21,7 @@ use Nette\Utils\Strings;
 
 /**
  * Class BasePresenter
- * @package App\Presenters
+ * @package App\CoreModule\Presenters
  */
 class BasePresenter extends Presenter
 {

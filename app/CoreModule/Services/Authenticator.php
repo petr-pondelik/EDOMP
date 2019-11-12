@@ -6,10 +6,10 @@
  * Time: 23:43
  */
 
-namespace App\Services;
+namespace App\CoreModule\Services;
 
-use App\Model\Persistent\Repository\CategoryRepository;
-use App\Model\Persistent\Repository\UserRepository;
+use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
 use Nette\Security\Identity;
@@ -18,7 +18,7 @@ use Nette\Security\Passwords;
 
 /**
  * Class Authenticator
- * @package App\Services
+ * @package App\CoreModule\Services
  */
 class Authenticator implements IAuthenticator
 {

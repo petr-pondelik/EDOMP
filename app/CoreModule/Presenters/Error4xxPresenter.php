@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Presenters;
+namespace App\CoreModule\Presenters;
 
 use Nette;
 
 /**
  * Class Error4xxPresenter
- * @package App\Presenters
+ * @package App\CoreModule\Presenters
  */
 final class Error4xxPresenter extends Nette\Application\UI\Presenter
 {

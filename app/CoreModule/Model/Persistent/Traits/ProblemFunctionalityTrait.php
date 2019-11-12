@@ -6,16 +6,16 @@
  * Time: 21:23
  */
 
-namespace App\Model\Persistent\Traits;
+namespace App\CoreModule\Model\Persistent\Traits;
 
-use App\Model\Persistent\Repository\DifficultyRepository;
-use App\Model\Persistent\Repository\ProblemConditionRepository;
-use App\Model\Persistent\Repository\ProblemTypeRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
 
 /**
  * Trait ProblemFunctionalityTrait
- * @package App\Model\Persistent\Traits
+ * @package App\CoreModule\Model\Persistent\Traits
  */
 trait ProblemFunctionalityTrait
 {

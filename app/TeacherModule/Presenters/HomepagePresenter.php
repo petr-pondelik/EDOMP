@@ -15,17 +15,17 @@ use App\CoreModule\Model\Persistent\Entity\SubCategory;
 use App\CoreModule\Model\Persistent\Entity\SuperGroup;
 use App\CoreModule\Model\Persistent\Entity\Test;
 use App\CoreModule\Model\Persistent\Entity\User;
-use App\Model\Persistent\Manager\HomepageStatisticsManager;
-use App\Model\Persistent\Repository\CategoryRepository;
-use App\Model\Persistent\Repository\GroupRepository;
-use App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
-use App\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Model\Persistent\Repository\TestRepository;
-use App\Model\Persistent\Repository\UserRepository;
-use App\Services\Authorizator;
+use App\CoreModule\Model\Persistent\Manager\HomepageStatisticsManager;
+use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\GroupRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
+use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\TestRepository;
+use App\CoreModule\Model\Persistent\Repository\UserRepository;
+use App\CoreModule\Services\Authorizator;
 use App\TeacherModule\Services\NewtonApiClient;
-use App\Services\Validator;
+use App\CoreModule\Services\Validator;
 use Nette;
 
 /**

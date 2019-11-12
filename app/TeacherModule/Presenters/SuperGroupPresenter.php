@@ -9,20 +9,19 @@
 namespace App\TeacherModule\Presenters;
 
 
-use App\CoreModule\Arguments\UserInformArgs;
 use App\CoreModule\Arguments\ValidatorArgument;
-use App\Components\DataGrids\SuperGroupGridFactory;
-use App\Components\Forms\SuperGroupForm\ISuperGroupIFormFactory;
+use App\TeacherModule\Components\DataGrids\SuperGroupGridFactory;
+use App\TeacherModule\Components\Forms\SuperGroupForm\ISuperGroupIFormFactory;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
-use App\Model\Persistent\Functionality\SuperGroupFunctionality;
-use App\Model\Persistent\Repository\SuperGroupRepository;
-use App\Services\Authorizator;
+use App\CoreModule\Model\Persistent\Functionality\SuperGroupFunctionality;
+use App\CoreModule\Model\Persistent\Repository\SuperGroupRepository;
+use App\CoreModule\Services\Authorizator;
 use App\TeacherModule\Services\NewtonApiClient;
-use App\Services\Validator;
+use App\CoreModule\Services\Validator;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 

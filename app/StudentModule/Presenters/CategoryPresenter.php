@@ -6,24 +6,24 @@
  * Time: 11:18
  */
 
-namespace App\FrontModule\Presenters;
+namespace App\StudentModule\Presenters;
 
-use App\Components\Forms\ProblemFilterForm\ProblemFilterFormControl;
-use App\Components\Forms\ProblemFilterForm\IProblemFilterFormFactory;
+use App\StudentModule\Components\Forms\ProblemFilterForm\ProblemFilterFormControl;
+use App\StudentModule\Components\Forms\ProblemFilterForm\IProblemFilterFormFactory;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\Model\Persistent\Repository\CategoryRepository;
-use App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
-use App\Services\Authorizator;
+use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
+use App\CoreModule\Services\Authorizator;
 use IPub\VisualPaginator\Components as VisualPaginator;
 use Nette\Utils\ArrayHash;
 
 /**
  * Class CategoryPresenter
- * @package App\FrontModule\Presenters
+ * @package App\StudentModule\Presenters
  */
-class CategoryPresenter extends FrontPresenter
+class CategoryPresenter extends StudentPresenter
 {
     /**
      * @var CategoryRepository
@@ -170,7 +170,7 @@ class CategoryPresenter extends FrontPresenter
     {
         $paginator = new VisualPaginator\Control;
         $paginator->enableAjax();
-        $paginator->setTemplateFile(TEMPLATES_DIR . '/VisualPaginator/frontProblemCollection.latte');
+        $paginator->setTemplateFile(STUDENT_MODULE_TEMPLATES_DIR . '/VisualPaginator/frontProblemCollection.latte');
         $paginator->onShowPage[] = function() {
             $this->redrawControl('paginatorSnippet');
             $this->redrawControl('problemsSnippet');

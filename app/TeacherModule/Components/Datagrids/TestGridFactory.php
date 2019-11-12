@@ -6,16 +6,16 @@
  * Time: 21:57
  */
 
-namespace App\Components\DataGrids;
+namespace App\TeacherModule\Components\DataGrids;
 
 use App\CoreModule\Components\DataGrids\BaseGrid;
-use App\Model\Persistent\Repository\GroupRepository;
-use App\Model\Persistent\Repository\TestRepository;
+use App\CoreModule\Model\Persistent\Repository\GroupRepository;
+use App\CoreModule\Model\Persistent\Repository\TestRepository;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class TestGridFactory
- * @package app\components\datagrids
+ * @package App\TeacherModule\Components\DataGrids
  */
 class TestGridFactory extends BaseGrid
 {

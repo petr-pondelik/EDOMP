@@ -6,14 +6,14 @@
  * Time: 22:48
  */
 
-namespace App\Model\Persistent\Repository\ProblemTemplate;
+namespace App\CoreModule\Model\Persistent\Repository\ProblemTemplate;
 
-use App\Model\Persistent\Repository\BaseRepository;
-use App\Model\Persistent\Traits\SequenceValTrait;
+use App\CoreModule\Model\Persistent\Repository\BaseRepository;
+use App\CoreModule\Model\Persistent\Traits\SequenceValTrait;
 
 /**
  * Class ArithmeticSequenceTemplateRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository\ProblemTemplate
  */
 class ArithmeticSequenceTemplateRepository extends BaseRepository
 {

@@ -6,13 +6,12 @@
  * Time: 16:56
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\CoreModule\Model\Persistent\Repository;
 
 /**
  * Class ValidationFunctionRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository
  */
 class ValidationFunctionRepository
 {
-
 }

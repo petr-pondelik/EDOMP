@@ -8,7 +8,7 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
-use App\Model\Persistent\Traits\LabelTrait;
+use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class TestVariant
  * @package App\CoreModule\Model\Persistent\Entity
  *
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\TestVariantRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\TestVariantRepository")
  */
 class TestVariant extends BaseEntity
 {

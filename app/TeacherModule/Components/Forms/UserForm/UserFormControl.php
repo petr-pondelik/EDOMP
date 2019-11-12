@@ -6,17 +6,17 @@
  * Time: 10:37
  */
 
-namespace App\Components\Forms\UserForm;
+namespace App\TeacherModule\Components\Forms\UserForm;
 
 
 use App\CoreModule\Arguments\ValidatorArgument;
 use App\CoreModule\Components\Forms\EntityFormControl;
-use App\Model\Persistent\Functionality\UserFunctionality;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\GroupRepository;
-use App\Model\Persistent\Repository\RoleRepository;
-use App\Services\MailService;
-use App\Services\Validator;
+use App\CoreModule\Model\Persistent\Functionality\UserFunctionality;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\GroupRepository;
+use App\CoreModule\Model\Persistent\Repository\RoleRepository;
+use App\CoreModule\Services\MailService;
+use App\CoreModule\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -24,7 +24,7 @@ use Nette\Utils\Random;
 
 /**
  * Class UserFormControl
- * @package App\Components\Forms\UserForm
+ * @package App\TeacherModule\Components\Forms\UserForm
  */
 class UserFormControl extends EntityFormControl
 {

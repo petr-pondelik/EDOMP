@@ -6,21 +6,21 @@
  * Time: 21:50
  */
 
-namespace App\Model\Persistent\Traits;
+namespace App\CoreModule\Model\Persistent\Traits;
 
 use App\CoreModule\Helpers\FormatterHelper;
 use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
-use App\Model\Persistent\Repository\DifficultyRepository;
-use App\Model\Persistent\Repository\ProblemConditionRepository;
-use App\Model\Persistent\Repository\ProblemRepository;
-use App\Model\Persistent\Repository\ProblemTypeRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
 use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
 
 /**
  * Trait ProblemFinalFunctionalityTrait
- * @package App\Model\Persistent\Traits
+ * @package App\CoreModule\Model\Persistent\Traits
  */
 trait ProblemFinalFunctionalityTrait
 {

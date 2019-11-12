@@ -6,14 +6,14 @@
  * Time: 15:25
  */
 
-namespace App\Model\Persistent\Traits;
+namespace App\CoreModule\Model\Persistent\Traits;
 
 use App\CoreModule\Exceptions\EntityException;
 use Doctrine\Common\Collections\Collection;
 
 /**
  * Trait KeyArrayTrait
- * @package App\Model\Persistent\Traits
+ * @package App\CoreModule\Model\Persistent\Traits
  */
 trait KeyArrayTrait
 {

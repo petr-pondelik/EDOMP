@@ -6,11 +6,11 @@
  * Time: 14:46
  */
 
-namespace App\Components\FilterTable;
+namespace App\TeacherModule\Components\FilterView;
 
 /**
  * Class IFilterTableFactory
- * @package App\Components\FilterTable
+ * @package App\TeacherModule\Components\FilterView
  */
 interface IFilterViewFactory
 {

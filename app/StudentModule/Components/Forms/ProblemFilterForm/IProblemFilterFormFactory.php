@@ -6,14 +6,14 @@
  * Time: 13:04
  */
 
-namespace App\Components\Forms\ProblemFilterForm;
+namespace App\StudentModule\Components\Forms\ProblemFilterForm;
 
 
 use App\CoreModule\Components\Forms\IFormFactory;
 
 /**
  * Interface IProblemFilterFormFactory
- * @package App\Components\Forms\ProblemFilterForm
+ * @package App\StudentModule\Components\Forms\ProblemFilterForm
  */
 interface IProblemFilterFormFactory extends IFormFactory
 {

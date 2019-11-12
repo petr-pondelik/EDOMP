@@ -6,21 +6,21 @@
  * Time: 18:43
  */
 
-namespace App\Components\Forms\SuperGroupForm;
+namespace App\TeacherModule\Components\Forms\SuperGroupForm;
 
 
 use App\CoreModule\Arguments\ValidatorArgument;
 use App\CoreModule\Components\Forms\EntityFormControl;
-use App\Model\Persistent\Functionality\SuperGroupFunctionality;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Services\Validator;
+use App\CoreModule\Model\Persistent\Functionality\SuperGroupFunctionality;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
  * Class SuperGroupFormControl
- * @package App\Components\Forms\SuperGroupForm
+ * @package App\TeacherModule\Components\Forms\SuperGroupForm
  */
 class SuperGroupFormControl extends EntityFormControl
 {

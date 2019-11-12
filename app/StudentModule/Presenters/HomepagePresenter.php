@@ -6,12 +6,12 @@
  * Time: 20:26
  */
 
-namespace App\FrontModule\Presenters;
+namespace App\StudentModule\Presenters;
 
 /**
  * Class HomepagePresenter
- * @package app\FrontModule\presenters
+ * @package App\StudentModule\Presenters
  */
-class HomepagePresenter extends FrontPresenter
+class HomepagePresenter extends StudentPresenter
 {
 }

@@ -15,7 +15,7 @@ use Nette\Utils\Strings;
 
 /**
  * Class MathService
- * @package App\Services
+ * @package App\TeacherModule\Services
  */
 class MathService
 {
@@ -78,10 +78,10 @@ class MathService
     /**
      * @param EquationTemplateNP $data
      * @return LinearEquationTemplateNP
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiSyntaxException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiSyntaxException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function processVariableFractions(EquationTemplateNP $data): EquationTemplateNP

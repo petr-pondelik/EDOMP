@@ -12,7 +12,7 @@ namespace App\TeacherModule\Services;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
-use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\TeacherModule\Model\NonPersistent\Entity\ArithmeticSequenceTemplateNP;
 use App\TeacherModule\Model\NonPersistent\Entity\GeometricSequenceTemplateNP;
 use App\TeacherModule\Model\NonPersistent\Entity\LinearEquationTemplateNP;
@@ -22,7 +22,7 @@ use Nette\NotSupportedException;
 
 /**
  * Class ConditionService
- * @package App\Services
+ * @package App\TeacherModule\Services
  */
 class ConditionService
 {

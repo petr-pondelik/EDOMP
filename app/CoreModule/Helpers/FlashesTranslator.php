@@ -8,9 +8,9 @@
 
 namespace App\CoreModule\Helpers;
 
-use App\Exceptions\GeneratorException;
-use App\Exceptions\InvalidParameterException;
-use App\Exceptions\ProblemDuplicityException;
+use App\TeacherModule\Exceptions\GeneratorException;
+use App\TeacherModule\Exceptions\InvalidParameterException;
+use App\TeacherModule\Exceptions\ProblemDuplicityException;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
@@ -299,7 +299,7 @@ class FlashesTranslator
 
         ],
 
-        'Front:Settings' => [
+        'Student:Settings' => [
 
             'success' => [
                 'password' => 'Heslo úspěšně změněno.'

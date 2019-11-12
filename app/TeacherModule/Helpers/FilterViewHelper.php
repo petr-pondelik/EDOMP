@@ -6,12 +6,12 @@
  * Time: 21:48
  */
 
-namespace App\Helpers;
+namespace App\TeacherModule\Helpers;
 
 
 /**
  * Class FilterTranslator
- * @package App\Helpers
+ * @package App\TeacherModule\Helpers
  */
 class FilterViewHelper
 {

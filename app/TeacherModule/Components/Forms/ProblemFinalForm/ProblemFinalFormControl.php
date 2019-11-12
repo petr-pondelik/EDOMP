@@ -6,27 +6,27 @@
  * Time: 14:50
  */
 
-namespace App\Components\Forms\ProblemFinalForm;
+namespace App\TeacherModule\Components\Forms\ProblemFinalForm;
 
 
 use App\CoreModule\Arguments\ValidatorArgument;
 use App\CoreModule\Components\Forms\EntityFormControl;
 use App\CoreModule\Helpers\ConstHelper;
-use App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\DifficultyRepository;
-use App\Model\Persistent\Repository\ProblemConditionRepository;
-use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
-use App\Model\Persistent\Repository\ProblemTypeRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Services\Validator;
+use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
  * Class ProblemFinalFormControl
- * @package App\Components\Forms\ProblemFinalForm
+ * @package App\TeacherModule\Components\Forms\ProblemFinalForm
  */
 class ProblemFinalFormControl extends EntityFormControl
 {

@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\ProblemFinal\QuadraticEquationFinalRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\ProblemFinal\QuadraticEquationFinalRepository")
  *
  * Class QuadraticEquationFinal
  * @package App\CoreModule\Model\Persistent\Entity

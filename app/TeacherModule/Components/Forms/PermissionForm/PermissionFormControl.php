@@ -6,23 +6,22 @@
  * Time: 12:40
  */
 
-namespace App\Components\Forms\PermissionForm;
+namespace App\TeacherModule\Components\Forms\PermissionForm;
 
 
 use App\CoreModule\Components\Forms\FormControl;
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
-use App\Model\Persistent\Functionality\GroupFunctionality;
-use App\Model\Persistent\Functionality\SuperGroupFunctionality;
-use App\Model\Persistent\Repository\CategoryRepository;
-use App\Services\Validator;
-use mysql_xdevapi\Exception;
+use App\CoreModule\Model\Persistent\Functionality\GroupFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\SuperGroupFunctionality;
+use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
  * Class PermissionFormControl
- * @package App\Components\Forms\PermissionForm
+ * @package App\TeacherModule\Components\Forms\PermissionForm
  */
 class PermissionFormControl extends FormControl
 {

@@ -8,14 +8,14 @@
 
 namespace App\TeacherModule\Plugins;
 
-use App\Exceptions\ProblemTemplateException;
+use App\TeacherModule\Exceptions\ProblemTemplateException;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\LatexHelper;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
 use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
-use App\Model\Persistent\Functionality\ProblemFinal\QuadraticEquationFinalFunctionality;
-use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\QuadraticEquationFinalFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\TeacherModule\Services\ConditionService;
 use App\TeacherModule\Services\MathService;
 use App\TeacherModule\Services\VariableFractionService;
@@ -64,9 +64,9 @@ class QuadraticEquationPlugin extends EquationPlugin
      * @param string $expression
      * @param string $variable
      * @return false|string
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getDiscriminantA(string $expression, string $variable)
@@ -110,9 +110,9 @@ class QuadraticEquationPlugin extends EquationPlugin
      * @param string $standardized
      * @param string $variable
      * @return false|string
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getDiscriminantB(string $standardized, string $variable)
@@ -159,9 +159,9 @@ class QuadraticEquationPlugin extends EquationPlugin
      * @param string $expression
      * @param string $variable
      * @return false|string
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getDiscriminantC(string $expression, string $variable)
@@ -197,9 +197,9 @@ class QuadraticEquationPlugin extends EquationPlugin
      * @param string $standardized
      * @param string $variable
      * @return string
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getDiscriminantExpression(string $standardized, string $variable): string
@@ -270,10 +270,10 @@ class QuadraticEquationPlugin extends EquationPlugin
     /**
      * @param ProblemFinal $problem
      * @return ArrayHash
-     * @throws \App\Exceptions\EquationException
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \App\TeacherModule\Exceptions\EquationException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function evaluate(ProblemFinal $problem): ArrayHash
@@ -324,9 +324,9 @@ class QuadraticEquationPlugin extends EquationPlugin
      * @param QuadraticEquationTemplateNP $data
      * @return bool
      * @throws \App\CoreModule\Exceptions\EntityException
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Nette\Utils\JsonException
      */

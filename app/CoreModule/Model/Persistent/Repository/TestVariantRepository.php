@@ -6,13 +6,12 @@
  * Time: 17:40
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\CoreModule\Model\Persistent\Repository;
 
 /**
  * Class TestVariantRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository
  */
 class TestVariantRepository extends BaseRepository
 {
-
 }

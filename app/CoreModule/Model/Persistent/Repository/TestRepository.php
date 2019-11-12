@@ -6,14 +6,14 @@
  * Time: 19:16
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\CoreModule\Model\Persistent\Repository;
 
 use App\CoreModule\Model\Persistent\Entity\ProblemFinalTestVariantAssociation;
-use App\Model\Persistent\Traits\SequenceValTrait;
+use App\CoreModule\Model\Persistent\Traits\SequenceValTrait;
 
 /**
  * Class TestRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository
  */
 class TestRepository extends BaseRepository
 {

@@ -6,7 +6,7 @@
  * Time: 17:36
  */
 
-namespace App\Services;
+namespace App\CoreModule\Services;
 
 use App\CoreModule\Arguments\ValidatorArgument;
 use App\CoreModule\Exceptions\ValidatorException;
@@ -14,8 +14,8 @@ use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\LatexHelper;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
-use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
-use App\Model\Persistent\Repository\UserRepository;
+use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
+use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use App\TeacherModule\Model\NonPersistent\Entity\ArithmeticSequenceTemplateNP;
 use App\TeacherModule\Model\NonPersistent\Entity\GeometricSequenceTemplateNP;
 use App\TeacherModule\Model\NonPersistent\Entity\LinearEquationTemplateNP;
@@ -34,7 +34,7 @@ use Nette\Utils\Validators;
 
 /**
  * Class Validator
- * @package App\Service
+ * @package App\CoreModule\Services
  */
 class Validator
 {
@@ -229,7 +229,7 @@ class Validator
                 return -1;
             },
 
-            // Validate password in administration User section
+            // Validate password in Teacher module
             'passwordConfirm' => static function (ArrayHash $data) {
                 if (empty($data->password) || empty($data->passwordConfirm)) {
                     return 0;

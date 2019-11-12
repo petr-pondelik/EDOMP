@@ -11,8 +11,8 @@ namespace App\CoreModule\Components\Forms\PasswordForm;
 
 use App\CoreModule\Arguments\ValidatorArgument;
 use App\CoreModule\Components\Forms\FormControl;
-use App\Model\Persistent\Functionality\UserFunctionality;
-use App\Services\Validator;
+use App\CoreModule\Model\Persistent\Functionality\UserFunctionality;
+use App\CoreModule\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 

@@ -6,12 +6,12 @@
  * Time: 11:20
  */
 
-namespace App\Components\Forms\TestForm\TestEntityForm;
+namespace App\TeacherModule\Components\Forms\TestForm;
 
 
 /**
  * Interface ITestEntityFormFactory
- * @package App\Components\Forms\TestForm\TestEntityForm
+ * @package App\TeacherModule\Components\Forms\TestForm
  */
 interface ITestFormFactory
 {

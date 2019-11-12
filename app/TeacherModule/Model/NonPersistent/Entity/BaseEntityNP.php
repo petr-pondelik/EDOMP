@@ -9,8 +9,8 @@
 namespace App\TeacherModule\Model\NonPersistent\Entity;
 
 /**
- * Class BaseEntity
- * @package App\TeacherModule\Model\NonPersistent\Entity\Entity
+ * Class BaseEntityNP
+ * @package App\TeacherModule\Model\NonPersistent\Entity
  */
 abstract class BaseEntityNP
 {

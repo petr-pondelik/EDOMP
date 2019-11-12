@@ -6,13 +6,13 @@
  * Time: 20:59
  */
 
-namespace App\Helpers;
+namespace App\TeacherModule\Helpers;
 
 use Nette\Utils\Strings;
 
 /**
  * Class NewtonParser
- * @package App\Helpers
+ * @package App\TeacherModule\Helpers
  */
 class NewtonParser
 {

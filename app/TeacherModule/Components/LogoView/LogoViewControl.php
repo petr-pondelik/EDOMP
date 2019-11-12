@@ -6,14 +6,14 @@
  * Time: 17:02
  */
 
-namespace App\Components\LogoView;
+namespace App\TeacherModule\Components\LogoView;
 
 use App\CoreModule\Components\EDOMPControl;
 use App\CoreModule\Model\Persistent\Entity\Logo;
 
 /**
  * Class LogoViewControl
- * @package App\Components\LogoView
+ * @package App\TeacherModule\Components\LogoView
  */
 class LogoViewControl extends EDOMPControl
 {

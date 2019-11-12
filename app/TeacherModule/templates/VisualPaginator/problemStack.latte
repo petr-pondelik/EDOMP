@@ -1,0 +1,28 @@
+{snippet componentSnippet}
+
+    {if $paginator->pageCount > 1}
+        <ul class="pagination d-flex justify-content-center my-4">
+            {if $paginator->isFirst()}
+                <li class="disabled btn btn-sm btn-secondary mr-1"><span>« Předchozí</span></li>
+            {else}
+                <li><button type="button" data-handle="{link $handle, 'page' => $paginator->page - 1}" rel="prev" class="problem-stack-paginator-btn btn btn-sm btn-primary mr-1">« Předchozí</button></li>
+            {/if}
+
+            {foreach $steps as $step}
+                {if $step == $paginator->page}
+                    <li class="active btn btn-sm btn-primary mx-1"><span>{$step}</span></li>
+                {else}
+                    <li><button type="button" data-handle="{link $handle, 'page' => $step}" class="problem-stack-paginator-btn btn btn-sm btn-light mx-1">{$step}</button></li>
+                {/if}
+                {if $iterator->nextValue > $step + 1}<li class="disabled"><span>…</span></li>{/if}
+            {/foreach}
+
+            {if $paginator->isLast()}
+                <li class="disabled btn btn-sm btn-secondary ml-1"><span>Další »</span></li>
+            {else}
+                <li><button type="button" data-handle="{link $handle, 'page' => $paginator->page + 1}" rel="next" class="problem-stack-paginator-btn btn btn-sm btn-primary ml-1">Další »</button></li>
+            {/if}
+        </ul>
+    {/if}
+
+{/snippet}

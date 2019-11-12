@@ -6,7 +6,7 @@
  * Time: 15:17
  */
 
-namespace App\Services;
+namespace App\TeacherModule\Services;
 
 use App\CoreModule\Interfaces\IEDOMPSession;
 use Nette\Http\Session;
@@ -14,7 +14,7 @@ use Nette\Http\SessionSection;
 
 /**
  * Class FilterSession
- * @package App\Services
+ * @package App\TeacherModule\Services
  */
 class FilterSession implements IEDOMPSession
 {

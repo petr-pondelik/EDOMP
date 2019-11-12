@@ -9,18 +9,18 @@
 namespace App\TeacherModule\Presenters;
 
 use App\CoreModule\Arguments\UserInformArgs;
-use App\Components\DataGrids\TemplateGridFactory;
+use App\TeacherModule\Components\DataGrids\TemplateGridFactory;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\Model\Persistent\Functionality\BaseFunctionality;
-use App\Model\Persistent\Repository\BaseRepository;
-use App\Services\Authorizator;
+use App\CoreModule\Model\Persistent\Functionality\BaseFunctionality;
+use App\CoreModule\Model\Persistent\Repository\BaseRepository;
+use App\CoreModule\Services\Authorizator;
 use App\TeacherModule\Services\NewtonApiClient;
-use App\Services\ProblemTemplateSession;
-use App\Services\Validator;
+use App\TeacherModule\Services\ProblemTemplateSession;
+use App\CoreModule\Services\Validator;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 

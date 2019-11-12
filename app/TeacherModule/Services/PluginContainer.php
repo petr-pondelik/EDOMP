@@ -11,7 +11,7 @@ namespace App\TeacherModule\Services;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\LatexHelper;
 use App\CoreModule\Helpers\StringsHelper;
-use App\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
 use App\TeacherModule\Plugins\ArithmeticSequencePlugin;
 use App\TeacherModule\Plugins\GeometricSequencePlugin;
 use App\TeacherModule\Plugins\LinearEquationPlugin;
@@ -22,7 +22,7 @@ use Nette\Utils\Strings;
 
 /**
  * Class PluginContainer
- * @package App\Services
+ * @package App\TeacherModule\Services
  */
 class PluginContainer
 {

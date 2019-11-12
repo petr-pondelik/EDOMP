@@ -8,14 +8,14 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
-use App\Model\Persistent\Traits\LabelTrait;
+use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\SubCategoryRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\SubCategoryRepository")
  *
  * Class SubCategory
  * @package App\CoreModule\Model\Persistent\Entity

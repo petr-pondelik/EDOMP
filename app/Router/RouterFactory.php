@@ -6,7 +6,10 @@ use Nette;
 use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;
 
-
+/**
+ * Class RouterFactory
+ * @package App
+ */
 final class RouterFactory
 {
 	use Nette\StaticClass;
@@ -18,22 +21,23 @@ final class RouterFactory
 	{
 		$router = new RouteList;
 
-		$adminRouter = new RouteList('Teacher');
-		$adminRouter[] = new Route('/teacher/<presenter>/<action>[/<id>]', [
+		$teacherRouter = new RouteList('Teacher');
+        $teacherRouter[] = new Route('/teacher/<presenter>/<action>[/<id>]', [
             'presenter' => 'Homepage',
             'action' => 'default'
         ]);
 
-		bdump($adminRouter);
+		bdump($teacherRouter);
 
-		$frontRouter = new RouteList('Front');
-		$frontRouter[] = new Route('/<presenter>/<action>[/<id>]', [
+		$studentRouter = new RouteList('Student');
+        $studentRouter[] = new Route('/<presenter>/<action>[/<id>]', [
             'presenter' => 'Homepage',
             'action' => 'default'
         ]);
 
-		$router[] = $adminRouter;
-		$router[] = $frontRouter;
+		$router[] = $teacherRouter;
+		$router[] = $studentRouter;
+
 		return $router;
 	}
 }

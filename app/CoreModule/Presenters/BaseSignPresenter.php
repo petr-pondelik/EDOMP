@@ -6,19 +6,19 @@
  * Time: 19:15
  */
 
-namespace App\Presenters;
+namespace App\CoreModule\Presenters;
 
 use App\CoreModule\Components\Forms\SignForm\SignFormControl;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\CoreModule\Components\Forms\SignForm\ISignIFormFactory;
-use App\Services\Authenticator;
-use App\Services\Validator;
+use App\CoreModule\Components\Forms\SignForm\ISignFormFactory;
+use App\CoreModule\Services\Authenticator;
+use App\CoreModule\Services\Validator;
 
 /**
  * Class BaseSignPresenter
- * @package app\presenters
+ * @package App\CoreModule\Presenters
  */
 abstract class BaseSignPresenter extends BasePresenter
 {
@@ -33,7 +33,7 @@ abstract class BaseSignPresenter extends BasePresenter
     protected $validator;
 
     /**
-     * @var ISignIFormFactory
+     * @var ISignFormFactory
      */
     protected $signFormFactory;
 
@@ -49,14 +49,14 @@ abstract class BaseSignPresenter extends BasePresenter
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
      * @param Validator $validator
-     * @param ISignIFormFactory $signFormFactory
+     * @param ISignFormFactory $signFormFactory
      */
     public function __construct
     (
         Authenticator $authenticator,
         IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         Validator $validator,
-        ISignIFormFactory $signFormFactory
+        ISignFormFactory $signFormFactory
     )
     {
         parent::__construct($headerBarFactory, $sideBarFactory, $flashesTranslator);

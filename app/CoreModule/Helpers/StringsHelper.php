@@ -8,7 +8,7 @@
 
 namespace App\CoreModule\Helpers;
 
-use App\Exceptions\EquationException;
+use App\TeacherModule\Exceptions\EquationException;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 

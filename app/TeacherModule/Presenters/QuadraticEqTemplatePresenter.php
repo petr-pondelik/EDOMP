@@ -8,19 +8,19 @@
 
 namespace App\TeacherModule\Presenters;
 
-use App\Components\DataGrids\TemplateGridFactory;
+use App\TeacherModule\Components\DataGrids\TemplateGridFactory;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\Model\Persistent\Functionality\ProblemTemplate\QuadraticEquationTemplateFunctionality;
-use App\Model\Persistent\Repository\ProblemTemplate\QuadraticEquationTemplateRepository;
-use App\Services\Authorizator;
+use App\CoreModule\Model\Persistent\Functionality\ProblemTemplate\QuadraticEquationTemplateFunctionality;
+use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\QuadraticEquationTemplateRepository;
+use App\CoreModule\Services\Authorizator;
 use App\TeacherModule\Components\Forms\ProblemTemplateForm\QuadraticEqTemplateForm\IQuadraticEqTemplateFormFactory;
 use App\TeacherModule\Services\NewtonApiClient;
-use App\Services\ProblemTemplateSession;
-use App\Services\Validator;
+use App\TeacherModule\Services\ProblemTemplateSession;
+use App\CoreModule\Services\Validator;
 
 /**
  * Class QuadraticEqTemplatePresenter

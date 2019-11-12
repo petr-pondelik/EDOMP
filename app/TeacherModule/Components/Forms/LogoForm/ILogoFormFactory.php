@@ -6,16 +6,16 @@
  * Time: 11:55
  */
 
-namespace App\Components\Forms\LogoForm;
+namespace App\TeacherModule\Components\Forms\LogoForm;
 
 
 use App\CoreModule\Components\Forms\IFormFactory;
 
 /**
  * Interface ILogoIFormFactory
- * @package App\Components\Forms\LogoForm
+ * @package App\TeacherModule\Components\Forms\LogoForm
  */
-interface ILogoIFormFactory extends IFormFactory
+interface ILogoFormFactory extends IFormFactory
 {
     /**
      * @return LogoFormControl

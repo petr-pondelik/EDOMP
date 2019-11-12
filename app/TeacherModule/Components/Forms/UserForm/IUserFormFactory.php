@@ -6,14 +6,14 @@
  * Time: 10:38
  */
 
-namespace App\Components\Forms\UserForm;
+namespace App\TeacherModule\Components\Forms\UserForm;
 
 
 use App\CoreModule\Components\Forms\IFormFactory;
 
 /**
  * Interface IUserFormFactory
- * @package App\Components\Forms\UserForm
+ * @package App\TeacherModule\Components\Forms\UserForm
  */
 interface IUserFormFactory extends IFormFactory
 {

@@ -6,7 +6,7 @@
  * Time: 13:26
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\CoreModule\Model\Persistent\Repository;
 
 use App\CoreModule\Helpers\ConstHelper;
 use Doctrine\ORM\Mapping;
@@ -14,7 +14,7 @@ use Kdyby\Doctrine\EntityRepository;
 
 /**
  * Class BaseRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository
  */
 abstract class BaseRepository extends EntityRepository
 {

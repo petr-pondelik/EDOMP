@@ -6,7 +6,7 @@
  * Time: 19:34
  */
 
-namespace App\FrontModule\Presenters;
+namespace App\StudentModule\Presenters;
 
 use App\CoreModule\Arguments\UserInformArgs;
 use App\CoreModule\Components\Forms\PasswordForm\IPasswordFormFactory;
@@ -14,13 +14,13 @@ use App\CoreModule\Components\Forms\PasswordForm\PasswordFormControl;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\Services\Authorizator;
+use App\CoreModule\Services\Authorizator;
 
 /**
  * Class SettingsPresenter
- * @package App\FrontModule\Presenters
+ * @package App\StudentModule\Presenters
  */
-class SettingsPresenter extends FrontPresenter
+class SettingsPresenter extends StudentPresenter
 {
     /**
      * @var IPasswordFormFactory

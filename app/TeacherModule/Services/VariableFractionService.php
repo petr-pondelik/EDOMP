@@ -20,7 +20,7 @@ use Nette\Utils\Strings;
 
 /**
  * Class VariableFractionService
- * @package App\Services
+ * @package App\TeacherModule\Services
  */
 class VariableFractionService
 {
@@ -70,10 +70,10 @@ class VariableFractionService
     /**
      * @param EquationTemplateNP $data
      * @return GlobalDivider|null
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiSyntaxException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiSyntaxException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function processVariableFractions(EquationTemplateNP $data): ?EquationTemplateNP
@@ -132,9 +132,9 @@ class VariableFractionService
     /**
      * @param EquationTemplateNP $data
      * @return EquationTemplateNP
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getMultipliedByLCM(EquationTemplateNP $data): EquationTemplateNP
@@ -197,10 +197,10 @@ class VariableFractionService
     /**
      * @param LocalDivider $localDivider
      * @return LocalDivider
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiSyntaxException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiSyntaxException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function processLocalDivider(LocalDivider $localDivider): LocalDivider
@@ -237,10 +237,10 @@ class VariableFractionService
      * @param EquationTemplateNP $data
      * @param array $variableFractionsData
      * @return EquationTemplateNP
-     * @throws \App\Exceptions\NewtonApiException
-     * @throws \App\Exceptions\NewtonApiRequestException
-     * @throws \App\Exceptions\NewtonApiSyntaxException
-     * @throws \App\Exceptions\NewtonApiUnreachableException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiSyntaxException
+     * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function processVariableFractionsFirstRound(EquationTemplateNP $data, array $variableFractionsData): EquationTemplateNP

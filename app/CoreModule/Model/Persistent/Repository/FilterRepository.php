@@ -6,13 +6,12 @@
  * Time: 17:15
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\CoreModule\Model\Persistent\Repository;
 
 /**
  * Class FilterRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository
  */
 class FilterRepository extends BaseRepository
 {
-
 }

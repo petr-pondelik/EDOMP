@@ -6,7 +6,7 @@
  * Time: 14:03
  */
 
-namespace App\Model\Persistent\Manager;
+namespace App\CoreModule\Model\Persistent\Manager;
 
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Model\Persistent\Entity\Group;
@@ -16,7 +16,7 @@ use Kdyby\Doctrine\EntityManager;
 
 /**
  * Class HomepageStatisticsManager
- * @package App\Model\Persistent\Manager
+ * @package App\CoreModule\Model\Persistent\Manager
  */
 class HomepageStatisticsManager
 {

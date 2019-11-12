@@ -6,13 +6,13 @@
  * Time: 18:43
  */
 
-namespace App\Components\Forms\SuperGroupForm;
+namespace App\TeacherModule\Components\Forms\SuperGroupForm;
 
 use App\CoreModule\Components\Forms\IFormFactory;
 
 /**
  * Interface ISuperGroupIFormFactory
- * @package App\Components\Forms\SuperGroupForm
+ * @package App\TeacherModule\Components\Forms\SuperGroupForm
  */
 interface ISuperGroupIFormFactory extends IFormFactory
 {

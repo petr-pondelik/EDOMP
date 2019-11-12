@@ -6,11 +6,11 @@
  * Time: 15:59
  */
 
-namespace App\Model\Persistent\Repository;
+namespace App\CoreModule\Model\Persistent\Repository;
 
 /**
  * Class CategoryRepository
- * @package App\Model\Persistent\Repository
+ * @package App\CoreModule\Model\Persistent\Repository
  */
 class CategoryRepository extends BaseRepository
 {

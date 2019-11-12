@@ -8,7 +8,7 @@
 
 namespace App\TeacherModule\Services;
 
-use App\Exceptions\ProblemDuplicityException;
+use App\TeacherModule\Exceptions\ProblemDuplicityException;
 use App\TeacherModule\Model\NonPersistent\ProblemDuplicity\FinalDuplicityState;
 use App\TeacherModule\Model\NonPersistent\ProblemDuplicity\TemplateDuplicityState;
 

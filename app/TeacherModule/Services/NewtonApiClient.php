@@ -8,11 +8,11 @@
 
 namespace App\TeacherModule\Services;
 
-use App\Exceptions\NewtonApiException;
-use App\Exceptions\NewtonApiRequestException;
-use App\Exceptions\NewtonApiSyntaxException;
-use App\Exceptions\NewtonApiUnreachableException;
-use App\Helpers\NewtonParser;
+use App\TeacherModule\Exceptions\NewtonApiException;
+use App\TeacherModule\Exceptions\NewtonApiRequestException;
+use App\TeacherModule\Exceptions\NewtonApiSyntaxException;
+use App\TeacherModule\Exceptions\NewtonApiUnreachableException;
+use App\TeacherModule\Helpers\NewtonParser;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
@@ -21,7 +21,7 @@ use Nette\Utils\Strings;
 
 /**
  * Class GuzzleHttpClient
- * @package app\services
+ * @package App\TeacherModule\Services
  */
 class NewtonApiClient
 {

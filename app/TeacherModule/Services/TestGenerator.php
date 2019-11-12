@@ -8,20 +8,20 @@
 
 namespace App\TeacherModule\Services;
 
-use App\Exceptions\GeneratorException;
-use App\Exceptions\ProblemDuplicityException;
-use App\Helpers\TestGeneratorHelper;
-use App\Services\FileService;
+use App\TeacherModule\Exceptions\GeneratorException;
+use App\TeacherModule\Exceptions\ProblemDuplicityException;
 use App\TeacherModule\Model\NonPersistent\Generator\Variant;
+use App\TeacherModule\Helpers\TestGeneratorHelper;
+use App\CoreModule\Services\FileService;
 use App\CoreModule\Model\Persistent\Entity\Test;
 use App\CoreModule\Model\Persistent\Entity\TestVariant;
-use App\Model\Persistent\Functionality\FilterFunctionality;
-use App\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
-use App\Model\Persistent\Functionality\TestFunctionality;
-use App\Model\Persistent\Functionality\TestVariantFunctionality;
-use App\Model\Persistent\Manager\ConstraintEntityManager;
-use App\Model\Persistent\Repository\ProblemRepository;
-use App\Model\Persistent\Repository\TestRepository;
+use App\CoreModule\Model\Persistent\Functionality\FilterFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\TestFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\TestVariantFunctionality;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
+use App\CoreModule\Model\Persistent\Repository\TestRepository;
 use Nette\Application\UI\ITemplate;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\FileSystem;
@@ -29,7 +29,7 @@ use Nette\Utils\Strings;
 
 /**
  * Class TestGenerator
- * @package App\Services
+ * @package App\TeacherModule\Services
  */
 class TestGenerator
 {

@@ -6,14 +6,14 @@
  * Time: 23:35
  */
 
-namespace App\Exceptions;
+namespace App\TeacherModule\Exceptions;
 
 
 use App\CoreModule\Exceptions\EDOMPException;
 
 /**
  * Class InvalidParameterException
- * @package App\Exceptions
+ * @package App\TeacherModule\Exceptions
  */
 class InvalidParameterException extends EDOMPException
 {

@@ -6,11 +6,11 @@
  * Time: 21:01
  */
 
-namespace App\Components\LogoDragAndDrop;
+namespace App\TeacherModule\Components\LogoDragAndDrop;
 
 /**
  * Interface ILogoDragAndDropFactory
- * @package App\Components\LogoDragAndDrop
+ * @package App\TeacherModule\Components\LogoDragAndDrop
  */
 interface ILogoDragAndDropFactory
 {

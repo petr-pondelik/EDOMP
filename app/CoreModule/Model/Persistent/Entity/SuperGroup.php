@@ -8,12 +8,12 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
-use App\Model\Persistent\Traits\LabelTrait;
+use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\SuperGroupRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\SuperGroupRepository")
  *
  * Class SuperGroup
  * @package App\CoreModule\Model\Persistent\Entity

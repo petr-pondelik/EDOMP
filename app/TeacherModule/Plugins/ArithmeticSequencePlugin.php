@@ -8,15 +8,15 @@
 
 namespace App\TeacherModule\Plugins;
 
-use App\Exceptions\ProblemTemplateException;
+use App\TeacherModule\Exceptions\ProblemTemplateException;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\LatexHelper;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
-use App\Model\Persistent\Functionality\ProblemFinal\ArithmeticSequenceFinalFunctionality;
-use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\ArithmeticSequenceFinalFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\TeacherModule\Services\ConditionService;
 use App\TeacherModule\Services\ProblemGenerator;
 use App\TeacherModule\Services\MathService;
@@ -107,7 +107,7 @@ class ArithmeticSequencePlugin extends SequencePlugin
     /**
      * @param ProblemFinal $problem
      * @return ArrayHash
-     * @throws \App\Exceptions\EquationException
+     * @throws \App\TeacherModule\Exceptions\EquationException
      */
     public function evaluate(ProblemFinal $problem): ArrayHash
     {

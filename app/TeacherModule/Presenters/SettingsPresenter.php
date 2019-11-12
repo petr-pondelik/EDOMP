@@ -9,24 +9,24 @@
 namespace App\TeacherModule\Presenters;
 
 use App\CoreModule\Arguments\UserInformArgs;
-use App\Components\DataGrids\GroupGridFactory;
-use App\Components\DataGrids\SuperGroupGridFactory;
+use App\TeacherModule\Components\DataGrids\GroupGridFactory;
+use App\TeacherModule\Components\DataGrids\SuperGroupGridFactory;
 use App\CoreModule\Components\Forms\PasswordForm\IPasswordFormFactory;
 use App\CoreModule\Components\Forms\PasswordForm\PasswordFormControl;
-use App\Components\Forms\PermissionForm\PermissionFormControl;
-use App\Components\Forms\PermissionForm\IPermissionIFormFactory;
-use App\Components\Forms\TestTemplateForm\ITestTemplateFormFactory;
-use App\Components\Forms\TestTemplateForm\TestTemplateFormControl;
+use App\TeacherModule\Components\Forms\PermissionForm\PermissionFormControl;
+use App\TeacherModule\Components\Forms\PermissionForm\IPermissionFormFactory;
+use App\TeacherModule\Components\Forms\TestTemplateForm\ITestTemplateFormFactory;
+use App\TeacherModule\Components\Forms\TestTemplateForm\TestTemplateFormControl;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\Model\Persistent\Repository\GroupRepository;
-use App\Model\Persistent\Repository\SuperGroupRepository;
-use App\Services\Authorizator;
-use App\Services\FileService;
+use App\CoreModule\Model\Persistent\Repository\GroupRepository;
+use App\CoreModule\Model\Persistent\Repository\SuperGroupRepository;
+use App\CoreModule\Services\Authorizator;
+use App\CoreModule\Services\FileService;
 use App\TeacherModule\Services\NewtonApiClient;
-use App\Services\Validator;
+use App\CoreModule\Services\Validator;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
@@ -61,7 +61,7 @@ class SettingsPresenter extends TeacherPresenter
     protected $superGroupGridFactory;
 
     /**
-     * @var IPermissionIFormFactory
+     * @var IPermissionFormFactory
      */
     protected $permissionFormFactory;
 
@@ -88,7 +88,7 @@ class SettingsPresenter extends TeacherPresenter
      * @param SuperGroupRepository $superGroupRepository
      * @param GroupGridFactory $groupGridFactory
      * @param SuperGroupGridFactory $superGroupGridFactory
-     * @param IPermissionIFormFactory $permissionFormFactory
+     * @param IPermissionFormFactory $permissionFormFactory
      * @param IHelpModalFactory $sectionHelpModalFactory
      * @param IPasswordFormFactory $passwordFormFactory
      * @param ITestTemplateFormFactory $testTemplateFormFactory
@@ -106,7 +106,7 @@ class SettingsPresenter extends TeacherPresenter
         SuperGroupRepository $superGroupRepository,
         GroupGridFactory $groupGridFactory,
         SuperGroupGridFactory $superGroupGridFactory,
-        IPermissionIFormFactory $permissionFormFactory,
+        IPermissionFormFactory $permissionFormFactory,
         IHelpModalFactory $sectionHelpModalFactory,
         IPasswordFormFactory $passwordFormFactory,
         ITestTemplateFormFactory $testTemplateFormFactory

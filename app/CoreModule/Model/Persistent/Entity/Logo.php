@@ -8,12 +8,12 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
-use App\Model\Persistent\Traits\LabelTrait;
+use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\LogoRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\LogoRepository")
  *
  * Class Logo
  * @package App\CoreModule\Model\Persistent\Entity

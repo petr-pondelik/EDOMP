@@ -14,7 +14,7 @@ use Nette\Security\Passwords;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Model\Persistent\Repository\UserRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\UserRepository")
  *
  * Class User
  * @package App\CoreModule\Model\Persistent\Entity

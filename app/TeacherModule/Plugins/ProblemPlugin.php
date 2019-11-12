@@ -8,17 +8,18 @@
 
 namespace App\TeacherModule\Plugins;
 
-use App\Exceptions\InvalidParameterException;
+use App\TeacherModule\Exceptions\InvalidParameterException;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\LatexHelper;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
+use App\TeacherModule\Interfaces\IProblemPlugin;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
-use App\Model\Persistent\Functionality\BaseFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\BaseFunctionality;
 use App\TeacherModule\Services\VariableFractionService;
-use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\TeacherModule\Services\ConditionService;
 use App\TeacherModule\Services\MathService;
 use App\TeacherModule\Services\NewtonApiClient;
@@ -163,7 +164,7 @@ abstract class ProblemPlugin implements IProblemPlugin
      * @param ProblemTemplate $problemTemplate
      * @param array|null $usedMatchesInx
      * @return ArrayHash
-     * @throws \App\Exceptions\GeneratorException
+     * @throws \App\TeacherModule\Exceptions\GeneratorException
      * @throws \Nette\Utils\JsonException
      */
     public function constructProblemFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash
@@ -188,7 +189,7 @@ abstract class ProblemPlugin implements IProblemPlugin
      * @param ProblemTemplate $problemTemplate
      * @param array|null $usedMatchesInx
      * @return ProblemFinal
-     * @throws \App\Exceptions\GeneratorException
+     * @throws \App\TeacherModule\Exceptions\GeneratorException
      * @throws \Nette\Utils\JsonException
      */
     public function constructProblemFinal(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ProblemFinal

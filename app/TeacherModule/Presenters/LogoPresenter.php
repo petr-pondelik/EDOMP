@@ -10,19 +10,19 @@ namespace App\TeacherModule\Presenters;
 
 use App\CoreModule\Arguments\UserInformArgs;
 use App\CoreModule\Arguments\ValidatorArgument;
-use App\Components\DataGrids\LogoGridFactory;
+use App\TeacherModule\Components\DataGrids\LogoGridFactory;
 use App\CoreModule\Components\Forms\EntityFormControl;
-use App\Components\Forms\LogoForm\ILogoIFormFactory;
+use App\TeacherModule\Components\Forms\LogoForm\ILogoFormFactory;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\Model\Persistent\Functionality\LogoFunctionality;
-use App\Model\Persistent\Repository\LogoRepository;
-use App\Services\Authorizator;
-use App\Services\FileService;
+use App\CoreModule\Model\Persistent\Functionality\LogoFunctionality;
+use App\CoreModule\Model\Persistent\Repository\LogoRepository;
+use App\CoreModule\Services\Authorizator;
+use App\CoreModule\Services\FileService;
 use App\TeacherModule\Services\NewtonApiClient;
-use App\Services\Validator;
+use App\CoreModule\Services\Validator;
 use Nette\Application\Responses\TextResponse;
 use Nette\IOException;
 use Nette\Utils\ArrayHash;
@@ -50,7 +50,7 @@ class LogoPresenter extends EntityPresenter
      * @param LogoFunctionality $logoFunctionality
      * @param FileService $fileService
      * @param LogoGridFactory $logoGridFactory
-     * @param ILogoIFormFactory $logoFormFactory
+     * @param ILogoFormFactory $logoFormFactory
      * @param IHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
@@ -59,7 +59,7 @@ class LogoPresenter extends EntityPresenter
         IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         LogoRepository $logoRepository, LogoFunctionality $logoFunctionality,
         FileService $fileService,
-        LogoGridFactory $logoGridFactory, ILogoIFormFactory $logoFormFactory,
+        LogoGridFactory $logoGridFactory, ILogoFormFactory $logoFormFactory,
         IHelpModalFactory $sectionHelpModalFactory
     )
     {
@@ -111,20 +111,6 @@ class LogoPresenter extends EntityPresenter
         $grid->getInlineEdit()->onSubmit[] = [$this, 'handleInlineUpdate'];
 
     }
-
-//    /**
-//     * @param int $id
-//     * @param $row
-//     */
-//    public function handleInlineUpdate(int $id, $row): void
-//    {
-//        try{
-//            $this->functionality->update($id, $row);
-//        } catch (\Exception $e){
-//            $this->informUser(new UserInformArgs('update', true,'error', $e, true));
-//        }
-//        $this->informUser(new UserInformArgs('update', true, 'success',null, true));
-//    }
 
     /**
      * @throws \Nette\Application\AbortException

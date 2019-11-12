@@ -6,15 +6,15 @@
  * Time: 11:05
  */
 
-namespace App\Components\DataGrids;
+namespace App\TeacherModule\Components\DataGrids;
 
 use App\CoreModule\Components\DataGrids\BaseGrid;
-use App\Model\Persistent\Repository\LogoRepository;
+use App\CoreModule\Model\Persistent\Repository\LogoRepository;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Class LogoGridFactory
- * @package App\Components\DataGrids
+ * @package App\TeacherModule\Components\DataGrids
  */
 class LogoGridFactory extends BaseGrid
 {

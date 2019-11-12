@@ -6,13 +6,13 @@
  * Time: 22:13
  */
 
-namespace App\Exceptions;
+namespace App\TeacherModule\Exceptions;
 
 use App\CoreModule\Exceptions\EDOMPException;
 
 /**
  * Class GeneratorException
- * @package App\Exceptions
+ * @package App\TeacherModule\Exceptions
  */
 class GeneratorException extends EDOMPException
 {

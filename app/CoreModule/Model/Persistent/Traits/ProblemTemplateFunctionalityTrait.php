@@ -6,23 +6,23 @@
  * Time: 12:53
  */
 
-namespace App\Model\Persistent\Traits;
+namespace App\CoreModule\Model\Persistent\Traits;
 
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
-use App\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
-use App\Model\Persistent\Repository\DifficultyRepository;
-use App\Model\Persistent\Repository\ProblemConditionRepository;
-use App\Model\Persistent\Repository\ProblemConditionTypeRepository;
-use App\Model\Persistent\Repository\ProblemTypeRepository;
-use App\Model\Persistent\Repository\SubCategoryRepository;
-use App\Model\Persistent\Repository\TemplateJsonDataRepository;
+use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
+use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\TemplateJsonDataRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 
 /**
  * Trait ProblemTemplateFunctionalityTrait
- * @package App\Model\Persistent\Traits
+ * @package App\CoreModule\Model\Persistent\Traits
  */
 trait ProblemTemplateFunctionalityTrait
 {

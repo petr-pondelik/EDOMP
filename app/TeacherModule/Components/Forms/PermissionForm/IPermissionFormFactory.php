@@ -6,16 +6,16 @@
  * Time: 12:40
  */
 
-namespace App\Components\Forms\PermissionForm;
+namespace App\TeacherModule\Components\Forms\PermissionForm;
 
 
 use App\CoreModule\Components\Forms\IFormFactory;
 
 /**
  * Interface IPermissionIFormFactory
- * @package App\Components\Forms\PermissionForm
+ * @package App\TeacherModule\Components\Forms\PermissionForm
  */
-interface IPermissionIFormFactory extends IFormFactory
+interface IPermissionFormFactory extends IFormFactory
 {
     public function create(bool $super = false): PermissionFormControl;
 }

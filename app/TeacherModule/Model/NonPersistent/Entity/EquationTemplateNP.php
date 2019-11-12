@@ -8,10 +8,10 @@
 
 namespace App\TeacherModule\Model\NonPersistent\Entity;
 
+use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use App\TeacherModule\Model\NonPersistent\Math\GlobalDivider;
 use App\TeacherModule\Model\NonPersistent\Math\NonDegradeCondition;
 use App\TeacherModule\Model\NonPersistent\Math\VariableFraction;
-use App\Core\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use Nette\Utils\ArrayHash;
 
 /**

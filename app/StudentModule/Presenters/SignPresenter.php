@@ -6,14 +6,14 @@
  * Time: 20:25
  */
 
-namespace App\FrontModule\Presenters;
+namespace App\StudentModule\Presenters;
 
 
-use App\Presenters\BaseSignPresenter;
+use App\CoreModule\Presenters\BaseSignPresenter;
 
 /**
  * Class SignPresenter
- * @package App\FrontModule\Presenters
+ * @package App\StudentModule\Presenters
  */
 class SignPresenter extends BaseSignPresenter
 {

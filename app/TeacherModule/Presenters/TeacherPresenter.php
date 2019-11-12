@@ -14,10 +14,10 @@ use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\HelpModal\HelpModalControl;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\Presenters\BasePresenter;
-use App\Services\Authorizator;
+use App\CoreModule\Presenters\BasePresenter;
+use App\CoreModule\Services\Authorizator;
 use App\TeacherModule\Services\NewtonApiClient;
-use App\Services\Validator;
+use App\CoreModule\Services\Validator;
 
 /**
  * Class TeacherPresenter

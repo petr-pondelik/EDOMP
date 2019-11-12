@@ -11,7 +11,7 @@ namespace App\CoreModule\Components\Forms\SignForm;
 
 use App\CoreModule\Arguments\ValidatorArgument;
 use App\CoreModule\Components\Forms\FormControl;
-use App\Services\Validator;
+use App\CoreModule\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;

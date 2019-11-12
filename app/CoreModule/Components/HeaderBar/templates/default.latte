@@ -7,7 +7,7 @@
             <div class="btn-group">
                 {if $user->isInRole('teacher') || $user->isInRole('admin')}
                     {if $presenter->isModule('Teacher')}
-                        <a href="{plink :Front:Homepage:default}" class="admin mr-3" title="Cvičebnice">
+                        <a href="{plink :Student:Homepage:default}" class="admin mr-3" title="Cvičebnice">
                             Cvičebnice
                         </a>
                         <a href="#" class="admin mr-3" data-toggle="modal" data-target="#sectionHelpModal">
@@ -39,13 +39,13 @@
                     {if $presenter->isModule('Teacher')}
                         <a href="{plink :Teacher:Settings:default}" class="dropdown-item">Nastavení</a>
                     {else}
-                        <a href="{plink :Front:Settings:default}" class="dropdown-item">Nastavení</a>
+                        <a href="{plink :Student:Settings:default}" class="dropdown-item">Nastavení</a>
                     {/if}
                     <div class="dropdown-divider"></div>
                     {if $presenter->isModule('Teacher')}
                         <a href="{plink :Teacher:Sign:in do => logout}" class="dropdown-item">Odhlásit</a>
                         {else}
-                        <a href="{plink :Front:Sign:in do => logout}" class="dropdown-item">Odhlásit</a>
+                        <a href="{plink :Student:Sign:in do => logout}" class="dropdown-item">Odhlásit</a>
                     {/if}
                 </div>
             </div>
