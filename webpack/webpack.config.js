@@ -6,8 +6,6 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ManifestPlugin = require('webpack-manifest-plugin');
 
 const ROOT_DIR = path.resolve(__dirname, './../');
-// const WWW_DIR = path.resolve(ROOT_DIR, 'www');
-// const DIST_DIR = path.resolve(WWW_DIR, 'dist');
 
 module.exports = {
     entry: {

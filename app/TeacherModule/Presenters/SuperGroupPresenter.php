@@ -67,6 +67,7 @@ class SuperGroupPresenter extends EntityPresenter
      */
     public function isEntityAllowed(BaseEntity $entity): bool
     {
+        // TODO: Pass all the Nette\Security\User $user to isEntityAllowed
         return $this->user->isInRole('admin') || $this->authorizator->isEntityAllowed($this->user->identity, $entity);
     }
 

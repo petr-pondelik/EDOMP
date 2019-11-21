@@ -10,6 +10,7 @@ namespace App\TeacherModule\Services;
 
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
+use App\TeacherModule\Model\NonPersistent\Entity\EquationTemplateNP;
 use jlawrence\eos\Parser;
 use Nette\Utils\Strings;
 
@@ -77,7 +78,7 @@ class MathService
 
     /**
      * @param EquationTemplateNP $data
-     * @return LinearEquationTemplateNP
+     * @return EquationTemplateNP
      * @throws \App\TeacherModule\Exceptions\NewtonApiException
      * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
      * @throws \App\TeacherModule\Exceptions\NewtonApiSyntaxException

@@ -21,7 +21,6 @@ use App\TeacherModule\Services\ConditionService;
 use App\TeacherModule\Services\ProblemGenerator;
 use App\TeacherModule\Services\MathService;
 use App\TeacherModule\Services\NewtonApiClient;
-use App\TeacherModule\Services\VariableFractionService;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 
@@ -36,11 +35,10 @@ class ArithmeticSequencePlugin extends SequencePlugin
      * @param NewtonApiClient $newtonApiClient
      * @param MathService $mathService
      * @param ConditionService $conditionService
-     * @param ProblemGenerator $generatorService
+     * @param ProblemGenerator $problemGenerator
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param LatexHelper $latexHelper
      * @param StringsHelper $stringsHelper
-     * @param VariableFractionService $variableDividers
      * @param ConstHelper $constHelper
      * @param RegularExpressions $regularExpressions
      * @param ArithmeticSequenceFinalFunctionality $arithmeticSequenceFinalFunctionality
@@ -48,13 +46,13 @@ class ArithmeticSequencePlugin extends SequencePlugin
     public function __construct
     (
         NewtonApiClient $newtonApiClient, MathService $mathService, ConditionService $conditionService,
-        ProblemGenerator $generatorService, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexHelper $latexHelper, StringsHelper $stringsHelper, VariableFractionService $variableDividers,
+        ProblemGenerator $problemGenerator, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
+        LatexHelper $latexHelper, StringsHelper $stringsHelper,
         ConstHelper $constHelper, RegularExpressions $regularExpressions,
         ArithmeticSequenceFinalFunctionality $arithmeticSequenceFinalFunctionality
     )
     {
-        parent::__construct($newtonApiClient, $mathService, $conditionService, $generatorService, $templateJsonDataFunctionality, $latexHelper, $stringsHelper, $variableDividers, $constHelper, $regularExpressions);
+        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexHelper, $stringsHelper, $constHelper, $regularExpressions);
         $this->functionality = $arithmeticSequenceFinalFunctionality;
     }
 

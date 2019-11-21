@@ -53,6 +53,7 @@ class Authorizator implements IAuthorizator
      */
     public function isEntityAllowed(IIdentity $user, BaseEntity $entity): bool
     {
+        // TODO: Whas if entity doesn't have createdBy???
         if($createdBy = $entity->getCreatedBy()){
             return $user->getId() === $createdBy->getId();
         }

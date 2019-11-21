@@ -18,7 +18,6 @@ use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\GeometricSequence
 use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\TeacherModule\Services\ConditionService;
 use App\TeacherModule\Services\MathService;
-use App\TeacherModule\Services\VariableFractionService;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\TeacherModule\Services\NewtonApiClient;
 use App\TeacherModule\Services\ProblemGenerator;
@@ -36,11 +35,10 @@ class GeometricSequencePlugin extends SequencePlugin
      * @param NewtonApiClient $newtonApiClient
      * @param MathService $mathService
      * @param ConditionService $conditionService
-     * @param ProblemGenerator $generatorService
+     * @param ProblemGenerator $problemGenerator
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param LatexHelper $latexHelper
      * @param StringsHelper $stringsHelper
-     * @param VariableFractionService $variableDividers
      * @param ConstHelper $constHelper
      * @param RegularExpressions $regularExpressions
      * @param GeometricSequenceFinalFunctionality $geometricSequenceFinalFunctionality
@@ -48,13 +46,13 @@ class GeometricSequencePlugin extends SequencePlugin
     public function __construct
     (
         NewtonApiClient $newtonApiClient, MathService $mathService, ConditionService $conditionService,
-        ProblemGenerator $generatorService, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexHelper $latexHelper, StringsHelper $stringsHelper, VariableFractionService $variableDividers,
+        ProblemGenerator $problemGenerator, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
+        LatexHelper $latexHelper, StringsHelper $stringsHelper,
         ConstHelper $constHelper, RegularExpressions $regularExpressions,
         GeometricSequenceFinalFunctionality $geometricSequenceFinalFunctionality
     )
     {
-        parent::__construct($newtonApiClient, $mathService, $conditionService, $generatorService, $templateJsonDataFunctionality, $latexHelper, $stringsHelper, $variableDividers, $constHelper, $regularExpressions);
+        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexHelper, $stringsHelper, $constHelper, $regularExpressions);
         $this->functionality = $geometricSequenceFinalFunctionality;
     }
 

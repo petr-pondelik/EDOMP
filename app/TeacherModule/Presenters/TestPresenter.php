@@ -224,6 +224,7 @@ class TestPresenter extends EntityPresenter
     public function handleClose(int $id): void
     {
         try {
+            // TODO: REFACTOR - MOVE TEMPLATE HANDLING INTO TestGenerator->createTestData($test)
             $test = $this->functionality->close($id);
             $template = $this->getTemplate();
             $template->setFile(TEACHER_MODULE_TEMPLATES_DIR . '/pdf/testPdf/active.latte');
@@ -233,6 +234,7 @@ class TestPresenter extends EntityPresenter
             return;
         }
         // Set template back to test/default
+        // TODO: THIS WON'T BE NEEDED AFTER MOVING TEMPLATE HANDLING INTO TestGenerator
         $template->setFile(__DIR__ . '/templates/Test/default.latte');
         $this->informUser(new UserInformArgs('close', true, 'success', null, true));
         $this['entityGrid']->reload();

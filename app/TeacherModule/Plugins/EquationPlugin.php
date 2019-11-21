@@ -31,7 +31,6 @@ abstract class EquationPlugin extends ProblemPlugin
     public function standardize(ProblemTemplateNP $problemTemplate): ProblemTemplateNP
     {
         bdump('STANDARDIZE EQUATION');
-
         $expression = $this->latexHelper::parseLatex($problemTemplate->getBody());
         $parameterized = $this->stringsHelper::getParametrized($expression);
         bdump($parameterized);

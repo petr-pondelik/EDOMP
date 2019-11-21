@@ -119,7 +119,6 @@ trait ProblemTemplateFunctionalityTrait
             }
 
             $templateJsonData = [];
-            $hasCondition = false;
 
             bdump('BEFORE TEMPLATE MATCHES INTERSECT');
             bdump($templateId);
@@ -136,7 +135,6 @@ trait ProblemTemplateFunctionalityTrait
                 foreach ($templateJsons as $json){
                     $problemConditionTypeId = $json->getProblemConditionType()->getId();
                     if( isset($data->{'condition_' . $problemConditionTypeId}) && $data->{'condition_' . $problemConditionTypeId} !== 0) {
-                        $hasCondition = true;
                         $arr = Json::decode($json->getJsonData());
                         bdump($arr);
                         $templateJsonData = $this->intersectJsonDataArrays($templateJsonData, $arr);
@@ -145,15 +143,11 @@ trait ProblemTemplateFunctionalityTrait
 
             }
 
-            if($templateJsonData){
+            if ($templateJsonData) {
                 // Reindex array key to start from 0 (array_values) and encode data to JSON string
                 $templateJsonData = Json::encode(array_values($templateJsonData));
                 bdump($templateJsonData);
                 $template->setMatches($templateJsonData);
-            }
-
-            if(!$hasCondition){
-                $template->setMatches(null);
             }
 
             // Comment this for testing purposes

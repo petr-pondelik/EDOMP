@@ -24,6 +24,8 @@ use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
+use App\TeacherModule\Model\NonPersistent\TemplateData\ParametersData;
+use App\TeacherModule\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
 use App\TeacherModule\Plugins\ProblemPlugin;
 use App\TeacherModule\Services\ProblemTemplateSession;
 use App\CoreModule\Services\Validator;
@@ -269,6 +271,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
     /**
      * @param array $data
+     * @throws \App\CoreModule\Exceptions\ValidatorException
      */
     public function handleCondValidation(array $data): void
     {
@@ -541,7 +544,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         );
 
         // Validate template condition
-        try{
+        try {
             $form = $this->validator->validate($this['form'], $validationFields);
             if($form->hasErrors()){
                 $data->getState()->update(new ProblemTemplateStateItem('condition_' . $data->getConditionType(), $data->getConditionAccessor(), false));

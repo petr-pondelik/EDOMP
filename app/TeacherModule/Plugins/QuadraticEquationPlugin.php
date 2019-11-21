@@ -18,7 +18,6 @@ use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\QuadraticEquation
 use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\TeacherModule\Services\ConditionService;
 use App\TeacherModule\Services\MathService;
-use App\TeacherModule\Services\VariableFractionService;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\TeacherModule\Model\NonPersistent\Entity\QuadraticEquationTemplateNP;
 use App\TeacherModule\Services\NewtonApiClient;
@@ -38,11 +37,10 @@ class QuadraticEquationPlugin extends EquationPlugin
      * @param NewtonApiClient $newtonApiClient
      * @param MathService $mathService
      * @param ConditionService $conditionService
-     * @param ProblemGenerator $generatorService
+     * @param ProblemGenerator $problemGenerator
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param LatexHelper $latexHelper
      * @param StringsHelper $stringsHelper
-     * @param VariableFractionService $variableDividers
      * @param ConstHelper $constHelper
      * @param RegularExpressions $regularExpressions
      * @param QuadraticEquationFinalFunctionality $quadraticEquationFinalFunctionality
@@ -50,13 +48,13 @@ class QuadraticEquationPlugin extends EquationPlugin
     public function __construct
     (
         NewtonApiClient $newtonApiClient, MathService $mathService, ConditionService $conditionService,
-        ProblemGenerator $generatorService, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexHelper $latexHelper, StringsHelper $stringsHelper, VariableFractionService $variableDividers,
+        ProblemGenerator $problemGenerator, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
+        LatexHelper $latexHelper, StringsHelper $stringsHelper,
         ConstHelper $constHelper, RegularExpressions $regularExpressions,
         QuadraticEquationFinalFunctionality $quadraticEquationFinalFunctionality
     )
     {
-        parent::__construct($newtonApiClient, $mathService, $conditionService, $generatorService, $templateJsonDataFunctionality, $latexHelper, $stringsHelper, $variableDividers, $constHelper, $regularExpressions);
+        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexHelper, $stringsHelper, $constHelper, $regularExpressions);
         $this->functionality = $quadraticEquationFinalFunctionality;
     }
 
@@ -262,7 +260,7 @@ class QuadraticEquationPlugin extends EquationPlugin
         }
 
         $matchesJson = Json::encode($matches);
-        $this->templateJsonDataFunctionality->create(ArrayHash::from([ 'jsonData' => $matchesJson ]), true, $data->getIdHidden());
+        $this->templateJsonDataFunctionality->create(ArrayHash::from(['jsonData' => $matchesJson]), true, $data->getIdHidden());
 
         return true;
     }

@@ -18,7 +18,6 @@ use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\LinearEquationFin
 use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\TeacherModule\Services\ConditionService;
 use App\TeacherModule\Services\MathService;
-use App\TeacherModule\Services\VariableFractionService;
 use App\TeacherModule\Model\NonPersistent\Entity\LinearEquationTemplateNP;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\TeacherModule\Services\NewtonApiClient;
@@ -38,11 +37,10 @@ class LinearEquationPlugin extends EquationPlugin
      * @param NewtonApiClient $newtonApiClient
      * @param MathService $mathService
      * @param ConditionService $conditionService
-     * @param ProblemGenerator $generatorService
+     * @param ProblemGenerator $problemGenerator
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param LatexHelper $latexHelper
      * @param StringsHelper $stringsHelper
-     * @param VariableFractionService $variableDividers
      * @param ConstHelper $constHelper
      * @param RegularExpressions $regularExpressions
      * @param LinearEquationFinalFunctionality $linearEquationFinalFunctionality
@@ -50,13 +48,13 @@ class LinearEquationPlugin extends EquationPlugin
     public function __construct
     (
         NewtonApiClient $newtonApiClient, MathService $mathService, ConditionService $conditionService,
-        ProblemGenerator $generatorService, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexHelper $latexHelper, StringsHelper $stringsHelper, VariableFractionService $variableDividers,
+        ProblemGenerator $problemGenerator, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
+        LatexHelper $latexHelper, StringsHelper $stringsHelper,
         ConstHelper $constHelper, RegularExpressions $regularExpressions,
         LinearEquationFinalFunctionality $linearEquationFinalFunctionality
     )
     {
-        parent::__construct($newtonApiClient, $mathService, $conditionService, $generatorService, $templateJsonDataFunctionality, $latexHelper, $stringsHelper, $variableDividers, $constHelper, $regularExpressions);
+        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexHelper, $stringsHelper, $constHelper, $regularExpressions);
         $this->functionality = $linearEquationFinalFunctionality;
     }
 
@@ -87,7 +85,7 @@ class LinearEquationPlugin extends EquationPlugin
         bdump($matches);
 
         // Check if the whole expression was matched
-        if($matches[0] !== $standardized){
+        if ($matches[0] !== $standardized) {
             throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat lineární rovnici.');
         }
 
@@ -99,7 +97,7 @@ class LinearEquationPlugin extends EquationPlugin
                     ]
                 ]
             ]);
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             bdump($e);
             throw new ProblemTemplateException('Zadán nepodporovaný formát šablony.');
         }

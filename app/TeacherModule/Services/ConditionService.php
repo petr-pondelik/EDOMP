@@ -87,7 +87,7 @@ class ConditionService
 
         $this->validationFunctions = [
 
-            'linearEquationType' => static function (LinearEquationTemplateNP $data, array $parValuesArr) use ($stringsHelper, $mathService, $regularExpressions) {
+            'linearEquationType' => static function (LinearEquationTemplateNP $data, array $parValuesArr) use ($stringsHelper, $mathService) {
 
 //                bdump('CONDITION SERVICE: LINEAR EQUATION TYPE');
 

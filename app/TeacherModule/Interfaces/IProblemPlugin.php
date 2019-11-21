@@ -27,6 +27,12 @@ interface IProblemPlugin
 
     /**
      * @param ProblemTemplateNP $problemTemplate
+     * @return bool
+     */
+    public function validateType(ProblemTemplateNP $problemTemplate): bool;
+
+    /**
+     * @param ProblemTemplateNP $problemTemplate
      * @return ProblemTemplateNP
      */
     public function standardize(ProblemTemplateNP $problemTemplate): ProblemTemplateNP;

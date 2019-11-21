@@ -469,7 +469,6 @@ class LatexHelper
         $res = self::parseSubscripts($res);
         $res = self::parseSuperscripts($res);
         $res = self::parseFractions($res);
-        //bdump($res);
         return $res;
     }
 

@@ -477,7 +477,7 @@ class TestGenerator
         $template->test = $test;
         foreach ($test->getTestVariants()->getValues() as $testVariant) {
             $template->testVariant = $testVariant;
-            file_put_contents(DATA_DIR . '/tests/' . $test->getId() . '/variant_' . Strings::lower($testVariant->getLabel()) . '.tex', (string)$template);
+            file_put_contents(DATA_DIR . '/tests/' . $test->getId() . '/variant_' . Strings::lower($testVariant->getLabel()) . '.tex', (string) $template);
         }
         $this->fileService->createTestZip($test);
     }

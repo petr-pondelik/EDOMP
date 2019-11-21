@@ -280,7 +280,7 @@ class ProblemGenerator
             $matchesIndex = $this->generateIntegerWithout(0, $matchesCnt - 1, $usedMatchesInx);
 
             if ($matchesIndex === null) {
-                throw new GeneratorException("Can't generate problem final body - matchesArr exhausted.", false);
+                throw new GeneratorException("Can't generate problem final body: matchesArr exhausted.", false);
             }
 
             $params = $matchesArr[$matchesIndex];

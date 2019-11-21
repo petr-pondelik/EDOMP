@@ -14,11 +14,9 @@ use App\CoreModule\Helpers\LatexHelper;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
 use App\TeacherModule\Interfaces\IProblemPlugin;
-use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use App\CoreModule\Model\Persistent\Functionality\BaseFunctionality;
-use App\TeacherModule\Services\VariableFractionService;
 use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\TeacherModule\Services\ConditionService;
 use App\TeacherModule\Services\MathService;
@@ -51,7 +49,7 @@ abstract class ProblemPlugin implements IProblemPlugin
     /**
      * @var ProblemGenerator
      */
-    protected $generatorService;
+    protected $problemGenerator;
 
     /**
      * @var BaseFunctionality
@@ -79,11 +77,6 @@ abstract class ProblemPlugin implements IProblemPlugin
     protected $regularExpressions;
 
     /**
-     * @var VariableFractionService
-     */
-    protected $variableDividers;
-
-    /**
      * @var ConstHelper
      */
     protected $constHelper;
@@ -93,11 +86,10 @@ abstract class ProblemPlugin implements IProblemPlugin
      * @param NewtonApiClient $newtonApiClient
      * @param MathService $mathService
      * @param ConditionService $conditionService
-     * @param ProblemGenerator $generatorService
+     * @param ProblemGenerator $problemGenerator
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param LatexHelper $latexHelper
      * @param StringsHelper $stringsHelper
-     * @param VariableFractionService $variableDividers
      * @param ConstHelper $constHelper
      * @param RegularExpressions $regularExpressions
      */
@@ -106,10 +98,9 @@ abstract class ProblemPlugin implements IProblemPlugin
         NewtonApiClient $newtonApiClient,
         MathService $mathService,
         ConditionService $conditionService,
-        ProblemGenerator $generatorService,
+        ProblemGenerator $problemGenerator,
         TemplateJsonDataFunctionality $templateJsonDataFunctionality,
         LatexHelper $latexHelper, StringsHelper $stringsHelper,
-        VariableFractionService $variableDividers,
         ConstHelper $constHelper,
         RegularExpressions $regularExpressions
     )
@@ -117,11 +108,10 @@ abstract class ProblemPlugin implements IProblemPlugin
         $this->newtonApiClient = $newtonApiClient;
         $this->mathService = $mathService;
         $this->conditionService = $conditionService;
-        $this->generatorService = $generatorService;
+        $this->problemGenerator = $problemGenerator;
         $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
         $this->latexHelper = $latexHelper;
         $this->stringsHelper = $stringsHelper;
-        $this->variableDividers = $variableDividers;
         $this->constHelper = $constHelper;
         $this->regularExpressions = $regularExpressions;
     }
@@ -169,7 +159,7 @@ abstract class ProblemPlugin implements IProblemPlugin
      */
     public function constructProblemFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash
     {
-        [$finalBody, $matchesIndex] = $this->generatorService->generateProblemFinalBody($problemTemplate, $usedMatchesInx);
+        [$finalBody, $matchesIndex] = $this->problemGenerator->generateProblemFinalBody($problemTemplate, $usedMatchesInx);
         bdump($finalBody);
         $finalData = ArrayHash::from([
             'textBefore' => $problemTemplate->getTextBefore(),
@@ -200,10 +190,4 @@ abstract class ProblemPlugin implements IProblemPlugin
         $problemFinal->setBody($this->latexHelper->postprocessProblemFinalBody($problemFinal->getBody()));
         return $problemFinal;
     }
-
-    /**
-     * @param ProblemTemplateNP $data
-     * @return bool
-     */
-    abstract public function validateType(ProblemTemplateNP $data): bool;
 }

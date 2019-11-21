@@ -12,6 +12,8 @@
             </li>
         {/if}
 
+        <p>{$paginator->page}/{$paginator->itemCount}</p>
+
         {if $paginator->isLast()}
             <li class="page-item disabled">
                 <span class="btn btn-sm btn-secondary disabled">Další</span>

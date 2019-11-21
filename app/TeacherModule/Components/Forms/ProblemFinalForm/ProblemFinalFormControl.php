@@ -145,6 +145,7 @@ class ProblemFinalFormControl extends EntityFormControl
 
     /**
      * @param Form $form
+     * @throws \App\CoreModule\Exceptions\ValidatorException
      */
     public function handleFormValidate(Form $form): void
     {
