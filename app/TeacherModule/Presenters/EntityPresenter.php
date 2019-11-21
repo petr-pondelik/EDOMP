@@ -100,11 +100,11 @@ abstract class EntityPresenter extends TeacherPresenter
     {
         bdump('ACTION UPDATE');
 
-        if(!$entity = $this->safeFind($id)){
+        if (!$entity = $this->safeFind($id)) {
             $this->redirect('default');
         }
 
-        if(!$this->isEntityAllowed($entity)){
+        if (!$this->isEntityAllowed($entity)) {
             $this->flashMessage('Nedostatečná přístupová práva.', 'danger');
             $this->redirect('default');
         }
@@ -112,7 +112,7 @@ abstract class EntityPresenter extends TeacherPresenter
         $formControl->setEntity($entity);
         $this->getEntityForm()->initComponents();
         $this->template->entity = $entity;
-        if(!$formControl->isSubmitted()){
+        if (!$formControl->isSubmitted()) {
             $formControl->setDefaults();
         }
     }
@@ -121,7 +121,7 @@ abstract class EntityPresenter extends TeacherPresenter
     {
         bdump('RELOAD ENTITY');
         $id = $this->getParameter('id');
-        if($id && $this->getAction() === 'update'){
+        if ($id && $this->getAction() === 'update') {
             $entity = $this->repository->find($id);
             $this->template->entity = $entity;
             $this['entityForm']->setEntity($entity);
@@ -137,18 +137,19 @@ abstract class EntityPresenter extends TeacherPresenter
      */
     public function isEntityAllowed(BaseEntity $entity): bool
     {
-        return true;
+        return $this->authorizator->isEntityAllowed($this->user, $entity);
     }
 
     /**
      * @param int $id
+     * @throws \App\CoreModule\Exceptions\FlashesTranslatorException
      */
     public function handleDelete(int $id): void
     {
-        try{
+        try {
             $this->functionality->delete($id);
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('delete', true,'error', $e, true));
+        } catch (\Exception $e) {
+            $this->informUser(new UserInformArgs('delete', true, 'error', $e, true));
             return;
         }
         $this['entityGrid']->reload();
@@ -171,7 +172,7 @@ abstract class EntityPresenter extends TeacherPresenter
      */
     public function handleInlineUpdate(int $id, ArrayHash $row): void
     {
-        try{
+        try {
             $errors = $this->validateInlineUpdate($row);
             if ($errors) {
                 bdump($errors);
@@ -179,8 +180,8 @@ abstract class EntityPresenter extends TeacherPresenter
                 return;
             }
             $this->functionality->update($id, $row);
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('update', true,'error', $e, true));
+        } catch (\Exception $e) {
+            $this->informUser(new UserInformArgs('update', true, 'error', $e, true));
             return;
         }
         $this->informUser(new UserInformArgs('update', true, 'success', null, true));
@@ -207,7 +208,7 @@ abstract class EntityPresenter extends TeacherPresenter
             $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null, false, 'entityForm'));
             $this->reloadEntity();
         };
-        $control->onError[] = function ($e){
+        $control->onError[] = function ($e) {
             $this->informUser(new UserInformArgs($this->getAction(), true, 'error', $e, false, 'entityForm'));
         };
         return $control;

@@ -70,6 +70,8 @@ class TestVariantFunctionality extends BaseFunctionality
      */
     public function attachProblem(TestVariant $testVariant, ProblemFinal $problemFinal, bool $newPage = false): TestVariant
     {
+        bdump('ATTACH PROBLEM');
+        bdump($problemFinal);
         $association = new ProblemFinalTestVariantAssociation();
         $association->setTestVariant($testVariant);
         $association->setProblemFinal($problemFinal);

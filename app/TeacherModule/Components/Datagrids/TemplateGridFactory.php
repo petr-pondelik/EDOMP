@@ -10,10 +10,10 @@ namespace App\TeacherModule\Components\DataGrids;
 
 use App\CoreModule\Components\DataGrids\BaseGrid;
 use App\CoreModule\Helpers\ConstHelper;
-use App\CoreModule\Model\Persistent\Repository\BaseRepository;
 use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
+use App\CoreModule\Model\Persistent\Repository\SecuredRepository;
 use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
 use Ublaboo\DataGrid\DataGrid;
 
@@ -58,7 +58,8 @@ class TemplateGridFactory extends BaseGrid
      */
     public function __construct(
         DifficultyRepository $difficultyRepository,
-        ProblemTemplateRepository $problemTemplateRepository, ProblemTypeRepository $problemTypeRepository,
+        ProblemTemplateRepository $problemTemplateRepository,
+        ProblemTypeRepository $problemTypeRepository,
         SubCategoryRepository $subCategoryRepository,
         ConstHelper $constHelper
     )
@@ -80,16 +81,16 @@ class TemplateGridFactory extends BaseGrid
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      * @throws \Exception
      */
-    public function create($container, $name, BaseRepository $repository = null, int $problemType = 0): DataGrid
+    public function create($container, $name, SecuredRepository $repository = null, int $problemType = 0): DataGrid
     {
         $grid = parent::create($container, $name);
 
         $difficultyOptions = $this->difficultyRepository->findAssoc([], 'id');
-        $subCategoryOptions = $this->subCategoryRepository->findAssoc([], 'id');
+        $subCategoryOptions = $this->subCategoryRepository->findAllowed($container->user);
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($repository->createQueryBuilder('er'));
+        $grid->setDataSource($repository->getSecuredQueryBuilder($container->user));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()
@@ -111,11 +112,25 @@ class TemplateGridFactory extends BaseGrid
 
         $grid->addColumnText('success_rate', 'Prům. úspěšnost');
 
+        $grid->addColumnStatus('studentVisible', 'Zobrazit ve cvičebnici', 'studentVisible')
+            ->addAttributes(['class' => 'text-center'])
+            ->setOptions([
+                0 => 'Ne',
+                1 => 'Ano'
+            ])
+            ->onChange[] = [$container, 'handleStudentVisibleUpdate'];
+
+        $grid->addFilterMultiSelect('studentVisible', '', [
+            0 => 'Ne',
+            1 => 'Ano'
+        ]);
+
         $grid->addColumnStatus('subCategory', 'Téma', 'subCategory.id')
             ->setSortable('er.id')
             ->addAttributes(['class' => 'text-center'])
             ->setOptions($subCategoryOptions)
             ->onChange[] = [$container, 'handleSubCategoryUpdate'];
+
 
         $grid->addFilterMultiSelect('subCategory', '', $subCategoryOptions);
 

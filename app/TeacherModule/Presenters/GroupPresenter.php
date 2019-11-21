@@ -17,7 +17,6 @@ use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Functionality\GroupFunctionality;
 use App\CoreModule\Model\Persistent\Repository\GroupRepository;
 use App\CoreModule\Model\Persistent\Repository\SuperGroupRepository;
@@ -68,15 +67,6 @@ class GroupPresenter extends EntityPresenter
             $groupRepository, $groupFunctionality, $groupGridFactory, $groupFormFactory
         );
         $this->superGroupRepository = $superGroupRepository;
-    }
-
-    /**
-     * @param BaseEntity $entity
-     * @return bool
-     */
-    public function isEntityAllowed(BaseEntity $entity): bool
-    {
-        return $this->user->isInRole('admin') || $this->authorizator->isEntityAllowed($this->user->identity, $entity);
     }
 
     /**

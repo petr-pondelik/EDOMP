@@ -68,16 +68,7 @@ class GroupGridFactory extends BaseGrid
 
         $grid->setPrimaryKey('id');
 
-        $qb = $this->groupRepository->createQueryBuilder('er')
-            ->where('er.id != :id')
-            ->setParameter('id', $this->constHelper::ADMIN_GROUP);
-
-        if($container->user->isInRole('teacher')){
-            $qb->andWhere('er.createdBy = :createdById')
-                ->setParameter('createdById', $container->user->identity->id);
-        }
-
-        $grid->setDataSource($qb);
+        $grid->setDataSource($this->groupRepository->getSecuredQueryBuilder($container->user));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()
@@ -85,14 +76,14 @@ class GroupGridFactory extends BaseGrid
             ->setFilterText();
 
         $grid->addColumnDateTime('created', 'Vytvořeno')
-            ->addAttributes(['class' => 'text-center'] )
+            ->addAttributes(['class' => 'text-center'])
             ->setFormat('d.m.Y H:i:s')
             ->setSortable();
 
         $grid->addColumnText('label', 'Název')
             ->setFilterText();
 
-        if(!$isPermissions){
+        if (!$isPermissions) {
             $grid->addColumnStatus('superGroup', 'Superskupina', 'superGroup.id')
                 ->setSortable('er.category')
                 ->addAttributes(['class' => 'text-center'])

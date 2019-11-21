@@ -22,7 +22,7 @@ extensions:
     studentModule: App\StudentModule\DI\StudentModuleExtension
 
 application:
-	errorPresenter: Error
+	errorPresenter: Core:Error
 	mapping:
 		*: App\*Module\Presenters\*Presenter
 

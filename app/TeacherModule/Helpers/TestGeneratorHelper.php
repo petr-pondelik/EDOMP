@@ -77,6 +77,10 @@ class TestGeneratorHelper
     {
         bdump('GET SELECTED PROBLEMS');
         if (!$original) {
+            if (!$data['problem' . $seq]) {
+                $data['problem' . $seq] = '[]';
+            }
+            bdump($data);
             return Json::decode($data['problem' . $seq], Json::FORCE_ARRAY);
         }
         return $original->getFilters()->getValues()[$seq]->getSelectedProblems();
@@ -105,7 +109,9 @@ class TestGeneratorHelper
     protected function getFiltersFromData(int $seq, ArrayHash $data): array
     {
         bdump('GET FILTERS FROM DATA');
+        bdump($data);
         $filters['isGenerated'] = false;
+        $filters['createdBy'] = $data['userId'];
         $filters['isTemplate'] = $data['isTemplate' . $seq];
         $filters['problemType'] = $data['problemType' . $seq];
         $filters['difficulty'] = $data['difficulty' . $seq];
@@ -147,7 +153,8 @@ class TestGeneratorHelper
             'introductionText' => $data->introductionText,
             // In the case of regenerate, get variantsCnt from regenerated test
             'variantsCnt' => $test ? $test->getVariantsCnt() : $data->variantsCnt,
-            'problemsPerVariant' => $data->problemsPerVariant
+            'problemsPerVariant' => $data->problemsPerVariant,
+            'userId' => $data->userId
         ]);
 
         if ($test) {

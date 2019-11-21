@@ -8,6 +8,7 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
+use App\CoreModule\Model\Persistent\Traits\CreatedByTrait;
 use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,6 +25,8 @@ class Group extends BaseEntity
 {
     use LabelTrait;
 
+    use CreatedByTrait;
+
     /**
      * @var string
      */
@@ -38,13 +41,6 @@ class Group extends BaseEntity
      * @var SuperGroup
      */
     protected $superGroup;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\CoreModule\Model\Persistent\Entity\User", inversedBy="groupsCreated", cascade={"persist", "merge"})
-     *
-     * @var User
-     */
-    protected $createdBy;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\User", mappedBy="groups", cascade={"all"})
@@ -63,6 +59,7 @@ class Group extends BaseEntity
     public function __construct()
     {
         parent::__construct();
+        $this->teacherLevelSecured = true;
         $this->users = new ArrayCollection();
         $this->categories = new ArrayCollection();
     }
@@ -104,7 +101,7 @@ class Group extends BaseEntity
      */
     public function addCategory(Category $category): void
     {
-        if($this->categories->contains($category)){
+        if ($this->categories->contains($category)) {
             return;
         }
         $this->categories[] = $category;
@@ -116,25 +113,9 @@ class Group extends BaseEntity
     public function getCategoriesId(): array
     {
         $res = [];
-        foreach ($this->getCategories()->getValues() as $key => $category){
+        foreach ($this->getCategories()->getValues() as $key => $category) {
             $res[] = $category->getId();
         }
         return $res;
-    }
-
-    /**
-     * @return User
-     */
-    public function getCreatedBy(): ?User
-    {
-        return $this->createdBy;
-    }
-
-    /**
-     * @param User $createdBy
-     */
-    public function setCreatedBy(User $createdBy): void
-    {
-        $this->createdBy = $createdBy;
     }
 }

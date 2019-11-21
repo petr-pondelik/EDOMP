@@ -57,6 +57,7 @@ class SuperGroupFormControl extends EntityFormControl
 
     /**
      * @param Form $form
+     * @throws \App\CoreModule\Exceptions\ValidatorException
      */
     public function handleFormValidate(Form $form): void
     {
@@ -73,7 +74,7 @@ class SuperGroupFormControl extends EntityFormControl
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
-            $values->user_id = $this->presenter->user->id;
+            $values->userId = $this->presenter->user->id;
             $this->functionality->create($values);
             $this->onSuccess();
         } catch (\Exception $e){

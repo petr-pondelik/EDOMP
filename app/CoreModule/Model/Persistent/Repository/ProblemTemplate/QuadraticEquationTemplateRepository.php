@@ -8,19 +8,26 @@
 
 namespace App\CoreModule\Model\Persistent\Repository\ProblemTemplate;
 
-use App\CoreModule\Model\Persistent\Repository\BaseRepository;
-use App\CoreModule\Model\Persistent\Traits\SequenceValTrait;
+use App\CoreModule\Helpers\ConstHelper;
+use App\CoreModule\Model\Persistent\Entity\Problem;
+use App\CoreModule\Model\Persistent\Repository\SecuredRepository;
+use Doctrine\ORM\Mapping;
 
 /**
  * Class QuadraticEquationTemplateRepository
  * @package App\CoreModule\Model\Persistent\Repository\ProblemTemplate
  */
-class QuadraticEquationTemplateRepository extends BaseRepository
+class QuadraticEquationTemplateRepository extends SecuredRepository
 {
-    use SequenceValTrait;
-
     /**
-     * @var string
+     * QuadraticEquationTemplateRepository constructor.
+     * @param $em
+     * @param Mapping\ClassMetadata $class
+     * @param ConstHelper $constHelper
      */
-    protected $tableName = 'problem';
+    public function __construct($em, Mapping\ClassMetadata $class, ConstHelper $constHelper)
+    {
+        parent::__construct($em, $class, $constHelper);
+        $this->tableName = $this->getEntityManager()->getClassMetadata(Problem::class)->getTableName();
+    }
 }

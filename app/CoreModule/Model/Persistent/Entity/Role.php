@@ -9,7 +9,6 @@
 namespace App\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Traits\LabelTrait;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -37,36 +36,6 @@ class Role extends BaseEntity
      * @var string
      */
     protected $key;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\User", mappedBy="role", cascade={"all"})
-     */
-    protected $users;
-
-    /**
-     * Role constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->users = new ArrayCollection();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUsers()
-    {
-        return $this->users;
-    }
-
-    /**
-     * @param mixed $users
-     */
-    public function setUsers($users): void
-    {
-        $this->users = $users;
-    }
 
     /**
      * @return string

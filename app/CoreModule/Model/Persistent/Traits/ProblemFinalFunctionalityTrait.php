@@ -15,6 +15,7 @@ use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
 
@@ -32,6 +33,11 @@ trait ProblemFinalFunctionalityTrait
     protected $problemRepository;
 
     /**
+     * @var UserRepository
+     */
+    protected $userRepository;
+
+    /**
      * @var FormatterHelper
      */
     protected $formatterHelper;
@@ -42,6 +48,7 @@ trait ProblemFinalFunctionalityTrait
      * @param DifficultyRepository $difficultyRepository
      * @param SubCategoryRepository $subCategoryRepository
      * @param ProblemRepository $problemRepository
+     * @param UserRepository $userRepository
      * @param FormatterHelper $formatterHelper
      */
     public function injectRepositories
@@ -51,6 +58,7 @@ trait ProblemFinalFunctionalityTrait
         DifficultyRepository $difficultyRepository,
         SubCategoryRepository $subCategoryRepository,
         ProblemRepository $problemRepository,
+        UserRepository $userRepository,
         FormatterHelper $formatterHelper
     ): void
     {
@@ -59,6 +67,7 @@ trait ProblemFinalFunctionalityTrait
         $this->difficultyRepository = $difficultyRepository;
         $this->subCategoryRepository = $subCategoryRepository;
         $this->problemRepository = $problemRepository;
+        $this->userRepository = $userRepository;
         $this->formatterHelper = $formatterHelper;
     }
 
@@ -72,42 +81,51 @@ trait ProblemFinalFunctionalityTrait
         bdump('SET BASICS');
         bdump($data);
 
-        if(isset($data->body)){
+        if (isset($data->body)) {
             $entity->setBody($data->body);
         }
 
-        if(isset($data->problemType)){
+        if (isset($data->problemType)) {
             $entity->setProblemType($this->problemTypeRepository->find($data->problemType));
         }
 
-        if(isset($data->difficulty)){
+        if (isset($data->difficulty)) {
             $entity->setDifficulty($this->difficultyRepository->find($data->difficulty));
         }
 
-        if(isset($data->subCategory)){
+        if (isset($data->subCategory)) {
             $entity->setSubCategory($this->subCategoryRepository->find($data->subCategory));
         }
 
-        if(isset($data->result)){
+        if (isset($data->result)) {
             $entity->setResult($data->result);
         }
 
-        if(isset($data->textBefore)){
+        if (isset($data->textBefore)) {
             $entity->setTextBefore($data->textBefore);
         }
 
-        if(isset($data->textAfter)){
+        if (isset($data->textAfter)) {
             $entity->setTextAfter($data->textAfter);
         }
 
-        if(isset($data->problemTemplateId)){
+        if (isset($data->problemTemplateId)) {
             $entity->setProblemTemplate($this->problemRepository->find($data->problemTemplateId));
         }
 
-        $entity->setIsGenerated( isset($data->isGenerated) && $data->isGenerated );
+        $entity->setIsGenerated(isset($data->isGenerated) && $data->isGenerated);
 
-        if(isset($data->matchesIndex)){
+        if (isset($data->matchesIndex)) {
             $entity->setMatchesIndex($data->matchesIndex);
+        }
+
+        if (isset($data->studentVisible)) {
+            bdump('SET STUDENT VISIBLE');
+            $entity->setStudentVisible($data->studentVisible);
+        }
+
+        if (isset($data->userId)) {
+            $entity->setCreatedBy($this->userRepository->find($data->userId));
         }
 
         return $entity;
@@ -120,11 +138,11 @@ trait ProblemFinalFunctionalityTrait
      */
     public function attachConditions(ProblemFinal $problem, ArrayHash $data): ProblemFinal
     {
-        if(isset($data->problemType)){
+        if (isset($data->problemType)) {
             $type = $this->problemTypeRepository->find($data->problemType);
             $problemCondTypes = $type->getConditionTypes()->getValues();
 
-            foreach ($problemCondTypes as $problemCondType){
+            foreach ($problemCondTypes as $problemCondType) {
 
                 //Get ConditionType ID
                 $condTypeId = $problemCondType->getId();
@@ -153,7 +171,7 @@ trait ProblemFinalFunctionalityTrait
     public function storeResult(int $id, ArrayHash $result): void
     {
         $problem = $this->repository->find($id);
-        if(!$problem){
+        if (!$problem) {
             throw new EntityNotFoundException('Entity for update not found.');
         }
         $formatted = $this->formatterHelper->formatResult($result);

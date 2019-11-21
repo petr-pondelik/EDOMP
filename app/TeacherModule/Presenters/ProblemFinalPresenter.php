@@ -91,13 +91,13 @@ class ProblemFinalPresenter extends EntityPresenter
             ->setIcon('pencil-alt')
             ->setTitle('Upravit inline')
             ->setClass('btn btn-primary btn-sm ajax')
-            ->onControlAdd[] = static function($container) {
-                $container->addText('textBefore', '');
-                $container->addText('textAfter', '');
-                $container->addText('result', '');
-            };
+            ->onControlAdd[] = static function ($container) {
+            $container->addText('textBefore', '');
+            $container->addText('textAfter', '');
+            $container->addText('result', '');
+        };
 
-        $grid->getInlineEdit()->onSetDefaults[] = static function($cont, $item) {
+        $grid->getInlineEdit()->onSetDefaults[] = static function ($cont, $item) {
             $cont->setDefaults([
                 'textBefore' => $item->getTextBefore(),
                 'textAfter' => $item->getTextAfter(),
@@ -117,9 +117,9 @@ class ProblemFinalPresenter extends EntityPresenter
      */
     public function handleSubCategoryUpdate(int $problemId, int $subCategoryId): void
     {
-        try{
-            $this->functionality->update($problemId, ArrayHash::from([ 'subCategory' => $subCategoryId ]),true, false);
-        } catch (\Exception $e){
+        try {
+            $this->functionality->update($problemId, ArrayHash::from(['subCategory' => $subCategoryId]), true, false);
+        } catch (\Exception $e) {
             $this->informUser(new UserInformArgs('subCategory', true, 'error', $e));
             return;
         }
@@ -130,17 +130,35 @@ class ProblemFinalPresenter extends EntityPresenter
     /**
      * @param int $problemId
      * @param int $difficultyId
+     * @throws \App\CoreModule\Exceptions\FlashesTranslatorException
      */
     public function handleDifficultyUpdate(int $problemId, int $difficultyId): void
     {
-        try{
-            $this->functionality->update($problemId, ArrayHash::from([ 'difficulty' => $difficultyId ]), true, false);
-        } catch (\Exception $e){
+        try {
+            $this->functionality->update($problemId, ArrayHash::from(['difficulty' => $difficultyId]), true, false);
+        } catch (\Exception $e) {
             $this->informUser(new UserInformArgs('difficulty', true, 'error', $e));
             return;
         }
         $this['entityGrid']->reload();
         $this->informUser(new UserInformArgs('difficulty', true));
+    }
+
+    /**
+     * @param int $problemId
+     * @param bool $visible
+     * @throws \App\CoreModule\Exceptions\FlashesTranslatorException
+     */
+    public function handleStudentVisibleUpdate(int $problemId, bool $visible): void
+    {
+        try {
+            $this->functionality->update($problemId, ArrayHash::from(['studentVisible' => $visible]), true, false);
+        } catch (\Exception $e) {
+            $this->informUser(new UserInformArgs('studentVisible', true, 'error', $e));
+            return;
+        }
+        $this['entityGrid']->reload();
+        $this->informUser(new UserInformArgs('studentVisible', true));
     }
 
     /**
@@ -151,9 +169,9 @@ class ProblemFinalPresenter extends EntityPresenter
     {
         $problem = $this->repository->find($id);
         $result = null;
-        try{
+        try {
             $this->pluginContainer->getPlugin($problem->getProblemType()->getKeyLabel())->evaluate($problem);
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->informUser(new UserInformArgs('getRes', true, 'error', $e));
             return;
         }

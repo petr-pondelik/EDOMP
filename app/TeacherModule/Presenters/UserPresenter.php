@@ -79,15 +79,6 @@ class UserPresenter extends EntityPresenter
     }
 
     /**
-     * @param BaseEntity $entity
-     * @return bool
-     */
-    public function isEntityAllowed(BaseEntity $entity): bool
-    {
-        return $this->user->isInRole('admin') || $this->authorizator->isEntityAllowed($this->user->identity, $entity);
-    }
-
-    /**
      * @param $name
      * @return DataGrid
      */
@@ -137,6 +128,7 @@ class UserPresenter extends EntityPresenter
 
     /**
      * @param int $id
+     * @throws \App\CoreModule\Exceptions\FlashesTranslatorException
      */
     public function handleResendPassword(int $id): void
     {

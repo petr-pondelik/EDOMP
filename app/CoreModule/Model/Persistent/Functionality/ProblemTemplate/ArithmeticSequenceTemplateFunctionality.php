@@ -12,6 +12,7 @@ use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ArithmeticSequenceTemplate;
 use App\CoreModule\Model\Persistent\Functionality\BaseFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\UserFunctionality;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ArithmeticSequenceTemplateRepository;
 use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
@@ -20,6 +21,7 @@ use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
 use App\CoreModule\Model\Persistent\Repository\TemplateJsonDataRepository;
+use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use App\CoreModule\Model\Persistent\Traits\ProblemTemplateFunctionalityTrait;
 
 /**
@@ -31,8 +33,14 @@ class ArithmeticSequenceTemplateFunctionality extends BaseFunctionality
     use ProblemTemplateFunctionalityTrait;
 
     /**
+     * @var UserFunctionality
+     */
+    protected $userRepository;
+
+    /**
      * ArithmeticSequenceTemplateFunctionality constructor.
      * @param ConstraintEntityManager $entityManager
+     * @param UserRepository $userRepository
      * @param ArithmeticSequenceTemplateRepository $repository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
@@ -45,14 +53,19 @@ class ArithmeticSequenceTemplateFunctionality extends BaseFunctionality
     public function __construct
     (
         ConstraintEntityManager $entityManager,
+        UserRepository $userRepository,
         ArithmeticSequenceTemplateRepository $repository,
         ProblemTypeRepository $problemTypeRepository,
-        ProblemConditionTypeRepository $problemConditionTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
-        TemplateJsonDataRepository $templateJsonDataRepository, TemplateJsonDataFunctionality $templateJsonDataFunctionality
+        ProblemConditionTypeRepository $problemConditionTypeRepository,
+        ProblemConditionRepository $problemConditionRepository,
+        DifficultyRepository $difficultyRepository,
+        SubCategoryRepository $subCategoryRepository,
+        TemplateJsonDataRepository $templateJsonDataRepository,
+        TemplateJsonDataFunctionality $templateJsonDataFunctionality
     )
     {
         parent::__construct($entityManager);
+        $this->userRepository = $userRepository;
         $this->problemTypeRepository = $problemTypeRepository;
         $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;

@@ -48,6 +48,7 @@ class TestGridFactory extends BaseGrid
      * @param $container
      * @param $name
      * @return \Ublaboo\DataGrid\DataGrid
+     * @throws \Doctrine\ORM\Query\QueryException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
     public function create($container, $name): DataGrid
@@ -56,7 +57,7 @@ class TestGridFactory extends BaseGrid
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->testRepository->createQueryBuilder('er'));
+        $grid->setDataSource($this->testRepository->getSecuredQueryBuilder($container->user));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()

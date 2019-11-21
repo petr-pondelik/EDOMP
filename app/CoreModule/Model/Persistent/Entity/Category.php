@@ -8,11 +8,11 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
+use App\CoreModule\Model\Persistent\Traits\CreatedByTrait;
 use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Category
@@ -24,20 +24,12 @@ class Category extends BaseEntity
 {
     use LabelTrait;
 
+    use CreatedByTrait;
+
     /**
      * @var string
      */
     protected $toStringAttr = 'label';
-
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank(
-     *     message="Label can't be blank."
-     * )
-     *
-     * @var string
-     */
-    protected $label;
 
     /**
      * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\SubCategory", mappedBy="category", cascade={"all"})

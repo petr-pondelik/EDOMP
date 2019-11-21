@@ -159,8 +159,10 @@ abstract class ProblemPlugin implements IProblemPlugin
      */
     public function constructProblemFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash
     {
+        bdump('CONSTRUCT PROBLEM FINAL DATA');
         [$finalBody, $matchesIndex] = $this->problemGenerator->generateProblemFinalBody($problemTemplate, $usedMatchesInx);
         bdump($finalBody);
+        bdump($problemTemplate);
         $finalData = ArrayHash::from([
             'textBefore' => $problemTemplate->getTextBefore(),
             'body' => $finalBody,
@@ -170,7 +172,9 @@ abstract class ProblemPlugin implements IProblemPlugin
             'subCategory' => $problemTemplate->getSubCategory()->getId(),
             'problemTemplateId' => $problemTemplate->getId(),
             'matchesIndex' => $matchesIndex,
-            'isGenerated' => true
+            'isGenerated' => true,
+            'studentVisible' => $problemTemplate->isStudentVisible(),
+            'userId' => $problemTemplate->getCreatedBy()->getId()
         ]);
         return $finalData;
     }
@@ -185,6 +189,7 @@ abstract class ProblemPlugin implements IProblemPlugin
     public function constructProblemFinal(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ProblemFinal
     {
         $finalData = $this->constructProblemFinalData($problemTemplate, $usedMatchesInx);
+        bdump($finalData);
         $conditions = $problemTemplate->getConditions()->getValues();
         $problemFinal = $this->functionality->create($finalData, false, $conditions);
         $problemFinal->setBody($this->latexHelper->postprocessProblemFinalBody($problemFinal->getBody()));

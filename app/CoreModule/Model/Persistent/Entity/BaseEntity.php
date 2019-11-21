@@ -9,6 +9,7 @@
 namespace App\CoreModule\Model\Persistent\Entity;
 
 
+use App\CoreModule\Model\Persistent\Traits\EntitySecurityTrait;
 use App\CoreModule\Model\Persistent\Traits\KeyArrayTrait;
 use App\CoreModule\Model\Persistent\Traits\ToStringTrait;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
@@ -32,6 +33,9 @@ abstract class BaseEntity
 
     // Trait for converting Doctrine ArrayCollection into array of entity keys
     use KeyArrayTrait;
+
+    // Trait for marking entity as secured
+    use EntitySecurityTrait;
 
     /**
      * @var string

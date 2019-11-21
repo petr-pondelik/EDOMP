@@ -57,7 +57,7 @@ class SubCategoryFormControl extends EntityFormControl
     {
         $form = parent::createComponentForm();
 
-        $categoryOptions = $this->categoryRepository->findAssoc([], 'id');
+        $categoryOptions = $this->categoryRepository->findAllowed($this->presenter->user);
 
         $form->addText('label', 'Název *')
             ->setHtmlAttribute('class', 'form-control')
@@ -72,6 +72,7 @@ class SubCategoryFormControl extends EntityFormControl
 
     /**
      * @param Form $form
+     * @throws \App\CoreModule\Exceptions\ValidatorException
      */
     public function handleFormValidate(Form $form): void
     {
@@ -90,6 +91,7 @@ class SubCategoryFormControl extends EntityFormControl
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try {
+            $values->userId = $this->presenter->user->id;
             $this->functionality->create($values);
             $this->onSuccess();
         } catch (\Exception $e) {

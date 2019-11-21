@@ -23,7 +23,7 @@ use Nette\Utils\Strings;
  * Class BasePresenter
  * @package App\CoreModule\Presenters
  */
-class BasePresenter extends Presenter
+abstract class BasePresenter extends Presenter
 {
     /**
      * @var IHeaderBarFactory
@@ -106,6 +106,7 @@ class BasePresenter extends Presenter
 
     /**
      * @param UserInformArgs $args
+     * @throws \App\CoreModule\Exceptions\FlashesTranslatorException
      */
     public function informUser(UserInformArgs $args): void
     {

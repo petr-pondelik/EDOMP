@@ -14,6 +14,7 @@ use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\GroupRepository;
 use App\CoreModule\Model\Persistent\Repository\LogoRepository;
 use App\CoreModule\Model\Persistent\Repository\TestRepository;
+use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
@@ -35,6 +36,11 @@ class TestFunctionality extends BaseFunctionality
     protected $groupRepository;
 
     /**
+     * @var UserRepository
+     */
+    protected $userRepository;
+
+    /**
      * @var ProblemFinalTestVariantAssociationFunctionality
      */
     protected $problemFinalTestVariantAssociationFunctionality;
@@ -50,13 +56,17 @@ class TestFunctionality extends BaseFunctionality
      * @param TestRepository $repository
      * @param LogoRepository $logoRepository
      * @param GroupRepository $groupRepository
+     * @param UserRepository $userRepository
      * @param ProblemFinalTestVariantAssociationFunctionality $problemFinalTestVariantAssociationFunctionality
      * @param ProblemFunctionality $problemFunctionality
      */
     public function __construct
     (
-        ConstraintEntityManager $entityManager, TestRepository $repository,
-        LogoRepository $logoRepository, GroupRepository $groupRepository,
+        ConstraintEntityManager $entityManager,
+        TestRepository $repository,
+        LogoRepository $logoRepository,
+        GroupRepository $groupRepository,
+        UserRepository $userRepository,
         ProblemFinalTestVariantAssociationFunctionality $problemFinalTestVariantAssociationFunctionality,
         ProblemFunctionality $problemFunctionality
     )
@@ -65,6 +75,7 @@ class TestFunctionality extends BaseFunctionality
         $this->repository = $repository;
         $this->logoRepository = $logoRepository;
         $this->groupRepository = $groupRepository;
+        $this->userRepository = $userRepository;
         $this->problemFinalTestVariantAssociationFunctionality = $problemFinalTestVariantAssociationFunctionality;
         $this->problemFunctionality = $problemFunctionality;
     }
@@ -87,6 +98,10 @@ class TestFunctionality extends BaseFunctionality
         $test->setIntroductionText($data->introductionText);
         $test->setVariantsCnt($data->variantsCnt);
         $test->setProblemsPerVariant($data->problemsPerVariant);
+
+        if (isset($data->userId)) {
+            $test->setCreatedBy($this->userRepository->find($data->userId));
+        }
 
         $this->em->persist($test);
 

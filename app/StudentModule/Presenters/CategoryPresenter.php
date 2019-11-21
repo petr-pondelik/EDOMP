@@ -115,14 +115,14 @@ class CategoryPresenter extends StudentPresenter
 
         $this->template->label = $category->getLabel();
 
-        $problemsCnt = $this->problemFinalRepository->getFilteredCnt($id, $this->filters);
+        $problemsCnt = $this->problemFinalRepository->getStudentFilteredCnt($id, $this->filters);
 
         $visualPaginator = $this['visualPaginator'];
         $paginator = $visualPaginator->getPaginator();
         $paginator->itemsPerPage = 1;
         $paginator->itemCount = $problemsCnt;
 
-        $problems = $this->problemFinalRepository->getFiltered($id, $paginator->itemsPerPage, $paginator->offset, $this->filters);
+        $problems = $this->problemFinalRepository->getStudentFiltered($id, $paginator->itemsPerPage, $paginator->offset, $this->filters);
 
         $this->template->problems = $problems;
         $this->template->paginator = $paginator;

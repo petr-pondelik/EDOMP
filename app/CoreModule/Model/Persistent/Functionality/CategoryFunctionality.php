@@ -14,6 +14,7 @@ use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\Category;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\UserRepository;
 
 /**
  * Class CategoryFunctionality
@@ -22,18 +23,26 @@ use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
 class CategoryFunctionality extends BaseFunctionality
 {
     /**
+     * @var UserRepository
+     */
+    protected $userRepository;
+
+    /**
      * CategoryFunctionality constructor.
      * @param ConstraintEntityManager $entityManager
      * @param CategoryRepository $categoryRepository
+     * @param UserRepository $userRepository
      */
     public function __construct
     (
         ConstraintEntityManager $entityManager,
-        CategoryRepository $categoryRepository
+        CategoryRepository $categoryRepository,
+        UserRepository $userRepository
     )
     {
         parent::__construct($entityManager);
         $this->repository = $categoryRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -46,6 +55,7 @@ class CategoryFunctionality extends BaseFunctionality
     {
         $category = new Category();
         $category->setLabel($data->label);
+        $category->setCreatedBy($this->userRepository->find($data->userId));
         $this->em->persist($category);
         if($flush){
             $this->em->flush();

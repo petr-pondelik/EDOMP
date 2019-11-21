@@ -82,11 +82,11 @@ class ProblemGridFactory extends BaseGrid
         $grid = parent::create($container, $name);
 
         $difficultyOptions = $this->difficultyRepository->findAssoc([], 'id');
-        $subCategoryOptions = $this->subCategoryRepository->findAssoc([], 'id');
+        $subCategoryOptions = $this->subCategoryRepository->findAllowed($container->user);
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->problemRepository->createQueryBuilder('er'));
+        $grid->setDataSource($this->problemRepository->getSecuredQueryBuilder($container->user));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()
@@ -109,6 +109,19 @@ class ProblemGridFactory extends BaseGrid
         $grid->addColumnText('result', 'Výsledek');
 
         $grid->addColumnText('success_rate', 'Prům. úspěšnost');
+
+        $grid->addColumnStatus('studentVisible', 'Zobrazit ve cvičebnici', 'studentVisible')
+            ->addAttributes(['class' => 'text-center'])
+            ->setOptions([
+                0 => 'Ne',
+                1 => 'Ano'
+            ])
+            ->onChange[] = [$container, 'handleStudentVisibleUpdate'];
+
+        $grid->addFilterMultiSelect('studentVisible', '', [
+            0 => 'Ne',
+            1 => 'Ano'
+        ]);
 
         $grid->addColumnNumber('isGenerated', 'Vygenerovaný')
             ->addAttributes(['class' => 'text-center'])

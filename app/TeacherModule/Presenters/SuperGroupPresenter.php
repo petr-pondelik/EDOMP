@@ -62,16 +62,6 @@ class SuperGroupPresenter extends EntityPresenter
     }
 
     /**
-     * @param BaseEntity $entity
-     * @return bool
-     */
-    public function isEntityAllowed(BaseEntity $entity): bool
-    {
-        // TODO: Pass all the Nette\Security\User $user to isEntityAllowed
-        return $this->user->isInRole('admin') || $this->authorizator->isEntityAllowed($this->user->identity, $entity);
-    }
-
-    /**
      * @param $name
      * @return DataGrid
      */

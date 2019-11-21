@@ -112,6 +112,12 @@ class ProblemFinalFormControl extends EntityFormControl
             ->setPrompt('Zvolte podkategorii')
             ->setHtmlAttribute('class', 'form-control');
 
+        $form->addSelect('studentVisible', 'Zobrazit ve cvičebnici *', [
+            1 => 'Ano',
+            0 => 'Ne'
+        ])
+            ->setHtmlAttribute('class', 'form-control');
+
         $form->addTextArea('textBefore', 'Úvod zadání')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Úvodní text zadání.')
@@ -168,6 +174,8 @@ class ProblemFinalFormControl extends EntityFormControl
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
         try{
+            bdump($values);
+            $values->userId = $this->presenter->user->id;
             $this->functionality->create($values);
             $this->onSuccess();
         } catch (\Exception $e) {
@@ -209,6 +217,7 @@ class ProblemFinalFormControl extends EntityFormControl
         $this['form']['result']->setDefaultValue($this->entity->getResult());
         $this['form']['difficulty']->setDefaultValue($this->entity->getDifficulty()->getId());
         $this['form']['subCategory']->setDefaultValue($this->entity->getSubCategory()->getId());
+        $this['form']['studentVisible']->setDefaultValue((int) $this->entity->isStudentVisible());
 
         if($this->entity->isGenerated()){
             $this['form']['body']->setDisabled();

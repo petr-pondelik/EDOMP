@@ -296,7 +296,7 @@ class TestGenerator
 
             $filters['isTemplate'] = 0;
 
-            // Get all final problem that match applied filters
+            // Get all final problems that match applied filters
             $finals = $this->problemRepository->findFiltered($filters);
 
             // Conjunct selected problems with filtered final problems
@@ -315,7 +315,7 @@ class TestGenerator
 
                 $this->problemDuplicityModel->checkFinalDuplicityState(count($selectedProblems), count($selectedFinals));
 
-                // If the problem isn't template, mak used final problem
+                // If the problem isn't template, mark used final problem
                 if (!$problem->isTemplate()) {
                     if ($this->problemDuplicityModel->getFinalState()->addUsed($problem)) {
                         break;

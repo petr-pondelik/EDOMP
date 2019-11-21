@@ -68,7 +68,7 @@ trait ProblemTemplateFunctionalityTrait
      */
     public function intersectJsonDataArrays(array $firstArr, array $secondArr): array
     {
-        return array_uintersect($firstArr, $secondArr, static function($first, $second) {
+        return array_uintersect($firstArr, $secondArr, static function ($first, $second) {
             return strcmp(serialize($first), serialize($second));
         });
     }
@@ -86,35 +86,43 @@ trait ProblemTemplateFunctionalityTrait
         bdump('SET BASE VALUES');
         bdump($data);
 
-        if(isset($data->textBefore)){
+        if (isset($data->textBefore)) {
             $template->setTextBefore($data->textBefore);
         }
-        if(isset($data->body)){
+        if (isset($data->body)) {
             $template->setBody($data->body);
         }
-        if(isset($data->textAfter)){
+        if (isset($data->textAfter)) {
             $template->setTextAfter($data->textAfter);
         }
-        if(isset($data->type)){
+        if (isset($data->type)) {
             $template->setProblemType($this->problemTypeRepository->find($data->type));
         }
-        if(isset($data->difficulty)){
+        if (isset($data->difficulty)) {
             $template->setDifficulty($this->difficultyRepository->find($data->difficulty));
         }
-        if(isset($data->subCategory)){
+        if (isset($data->subCategory)) {
             $template->setSubCategory($this->subCategoryRepository->find($data->subCategory));
         }
-        if(isset($data->matches)){
+        if (isset($data->matches)) {
             $template->setMatches($data->matches);
         }
 
-        if(!$fromDataGrid){
+        if (isset($data->studentVisible)) {
+            $template->setStudentVisible($data->studentVisible);
+        }
+
+        if (isset($data->userId)) {
+            $template->setCreatedBy($this->userRepository->find($data->userId));
+        }
+
+        if (!$fromDataGrid) {
             $attached = $this->attachConditions($template, $data);
             $template = $attached->template;
 
             bdump($templateId);
 
-            if(!$templateId){
+            if (!$templateId) {
                 $templateId = $this->repository->getSequenceVal();
             }
 
@@ -123,7 +131,7 @@ trait ProblemTemplateFunctionalityTrait
             bdump('BEFORE TEMPLATE MATCHES INTERSECT');
             bdump($templateId);
 
-            if($templateJsons = $this->templateJsonDataRepository->findBy(['templateId' => $templateId])){
+            if ($templateJsons = $this->templateJsonDataRepository->findBy(['templateId' => $templateId])) {
 
                 $templateJsonData = Json::decode($templateJsons[0]->getJsonData());
                 bdump($templateJsonData);
@@ -132,9 +140,9 @@ trait ProblemTemplateFunctionalityTrait
                 unset($templateJsons[0]);
 
                 // Make merge of all template recorded JSONs
-                foreach ($templateJsons as $json){
+                foreach ($templateJsons as $json) {
                     $problemConditionTypeId = $json->getProblemConditionType()->getId();
-                    if( isset($data->{'condition_' . $problemConditionTypeId}) && $data->{'condition_' . $problemConditionTypeId} !== 0) {
+                    if (isset($data->{'condition_' . $problemConditionTypeId}) && $data->{'condition_' . $problemConditionTypeId} !== 0) {
                         $arr = Json::decode($json->getJsonData());
                         bdump($arr);
                         $templateJsonData = $this->intersectJsonDataArrays($templateJsonData, $arr);
@@ -168,7 +176,7 @@ trait ProblemTemplateFunctionalityTrait
     public function baseUpdate(int $id, ArrayHash $data, bool $fromDataGrid = false): ?Object
     {
         $template = $this->repository->find($id);
-        if(!$fromDataGrid){
+        if (!$fromDataGrid) {
             $template->setConditions(new ArrayCollection());
         }
         return $this->setBasics($template, $data, $id, $fromDataGrid);
@@ -184,7 +192,7 @@ trait ProblemTemplateFunctionalityTrait
         $hasCondition = false;
         $problemCondTypes = $this->problemConditionTypeRepository->findNonValidation($data->type);
 
-        foreach ($problemCondTypes as $problemCondType){
+        foreach ($problemCondTypes as $problemCondType) {
             //Get ConditionType ID
             $condTypeId = $problemCondType->getId();
 
@@ -192,7 +200,7 @@ trait ProblemTemplateFunctionalityTrait
             $condTypeVal = $data->{'condition_' . $condTypeId};
 
             //Template has condition
-            if($condTypeVal){
+            if ($condTypeVal) {
                 $hasCondition = true;
             }
 

@@ -12,6 +12,7 @@ namespace App\CoreModule\Services;
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use Nette\Security\IAuthorizator;
 use Nette\Security\IIdentity;
+use Nette\Security\User;
 
 /**
  * Class Authorizator
@@ -38,8 +39,8 @@ class Authorizator implements IAuthorizator
      */
     public function isCategoryAllowed(IIdentity $userIdentity, int $categoryId): bool
     {
-        foreach ($userIdentity->categories as $key => $category){
-            if($key === $categoryId){
+        foreach ($userIdentity->categories as $key => $category) {
+            if ($key === $categoryId) {
                 return true;
             }
         }
@@ -47,16 +48,33 @@ class Authorizator implements IAuthorizator
     }
 
     /**
-     * @param IIdentity $user
+     * @param User $user
      * @param BaseEntity $entity
      * @return bool
      */
-    public function isEntityAllowed(IIdentity $user, BaseEntity $entity): bool
+    public function isEntityAllowed(User $user, BaseEntity $entity): bool
     {
-        // TODO: Whas if entity doesn't have createdBy???
-        if($createdBy = $entity->getCreatedBy()){
-            return $user->getId() === $createdBy->getId();
+        bdump('IS ENTITY ALLOWED');
+        // If the user has admin role, entity is always allowed
+        if ($user->isInRole('admin')) {
+            return true;
         }
+
+        // If the user has teacher role
+        if ($user->isInRole('teacher')) {
+            bdump('TEACHER ROLE');
+            // If the entity is not teacher-level secured, it's allowed
+            if (!$entity->isTeacherLevelSecured()) {
+                bdump('NOT TEACHER LEVEL SECURED');
+                return true;
+            }
+            // If the entity is teacher-level secured, it's allowed only for it's author
+            if (method_exists($entity, 'getCreatedBy')) {
+                $createdBy = $entity->getCreatedBy();
+                return $createdBy ? $createdBy->getId() === $user->getId() : false;
+            }
+        }
+
         return false;
     }
 }

@@ -8,8 +8,10 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
+use App\CoreModule\Model\Persistent\Traits\CreatedByTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Nette\Security\Passwords;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -21,6 +23,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User extends BaseEntity
 {
+    use CreatedByTrait;
+
     /**
      * @var string
      */
@@ -71,6 +75,10 @@ class User extends BaseEntity
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @Assert\Type(
+     *     type="bool",
+     *     message="IsAdmin must be {{ type }}."
+     * )
      *
      * @var bool
      */
@@ -91,7 +99,7 @@ class User extends BaseEntity
     protected $lastName;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\CoreModule\Model\Persistent\Entity\Role", inversedBy="users", cascade={"persist", "merge"})
+     * @ORM\ManyToOne(targetEntity="App\CoreModule\Model\Persistent\Entity\Role")
      * @Assert\NotBlank(
      *     message="Role can't be blank."
      * )
@@ -101,43 +109,46 @@ class User extends BaseEntity
     protected $role;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\CoreModule\Model\Persistent\Entity\User", inversedBy="usersCreated", cascade={"persist", "merge"})
-     *
-     * @var User
-     */
-    protected $createdBy;
-
-    /**
      * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\Group", inversedBy="users", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="user_group_rel")
+     *
+     * @var ArrayCollection|PersistentCollection
      */
     protected $groups;
 
     /**
      * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\SuperGroup", mappedBy="createdBy", cascade={"all"})
+     *
+     * @var ArrayCollection|PersistentCollection
      */
     protected $superGroupsCreated;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\Group", mappedBy="createdBy", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\Test", mappedBy="createdBy", cascade={"all"})
+     *
+     * @var ArrayCollection|PersistentCollection
      */
-    protected $groupsCreated;
+    protected $testsCreated;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\User", mappedBy="createdBy", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\Logo", mappedBy="createdBy", cascade={"all"})
+     *
+     * @var ArrayCollection|PersistentCollection
      */
-    protected $usersCreated;
+    protected $logosCreated;
 
     /**
      * User constructor.
      */
     public function __construct()
     {
+        bdump('USER ENTITY CONSTRUCT');
         parent::__construct();
+        $this->teacherLevelSecured = true;
         $this->groups = new ArrayCollection();
-        $this->groupsCreated = new ArrayCollection();
         $this->superGroupsCreated = new ArrayCollection();
-        $this->usersCreated = new ArrayCollection();
+        $this->testsCreated = new ArrayCollection();
+        $this->logosCreated = new ArrayCollection();
     }
 
     /**
@@ -261,38 +272,6 @@ class User extends BaseEntity
     }
 
     /**
-     * @return User
-     */
-    public function getCreatedBy(): ?User
-    {
-        return $this->createdBy;
-    }
-
-    /**
-     * @param User $createdBy
-     */
-    public function setCreatedBy(User $createdBy): void
-    {
-        $this->createdBy = $createdBy;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getGroupsCreated()
-    {
-        return $this->groupsCreated;
-    }
-
-    /**
-     * @param mixed $groupsCreated
-     */
-    public function setGroupsCreated($groupsCreated): void
-    {
-        $this->groupsCreated = $groupsCreated;
-    }
-
-    /**
      * @return mixed
      */
     public function getSuperGroupsCreated()
@@ -306,22 +285,6 @@ class User extends BaseEntity
     public function setSuperGroupsCreated($superGroupsCreated): void
     {
         $this->superGroupsCreated = $superGroupsCreated;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUsersCreated()
-    {
-        return $this->usersCreated;
-    }
-
-    /**
-     * @param mixed $usersCreated
-     */
-    public function setUsersCreated($usersCreated): void
-    {
-        $this->usersCreated = $usersCreated;
     }
 
     /**
@@ -370,5 +333,21 @@ class User extends BaseEntity
     public function setEmail(string $email): void
     {
         $this->email = $email;
+    }
+
+    /**
+     * @return ArrayCollection|PersistentCollection
+     */
+    public function getLogosCreated()
+    {
+        return $this->logosCreated;
+    }
+
+    /**
+     * @param ArrayCollection|PersistentCollection $logosCreated
+     */
+    public function setLogosCreated($logosCreated): void
+    {
+        $this->logosCreated = $logosCreated;
     }
 }

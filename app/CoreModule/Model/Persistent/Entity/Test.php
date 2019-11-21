@@ -8,6 +8,7 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
+use App\CoreModule\Model\Persistent\Traits\CreatedByTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -22,6 +23,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Test extends BaseEntity
 {
+    use CreatedByTrait;
+
     /**
      * @var string
      */
@@ -110,7 +113,7 @@ class Test extends BaseEntity
     /**
      * @ORM\Column(type="boolean", nullable=true)
      * @Assert\Type(
-     *     type="boolean",
+     *     type="bool",
      *     message="IsClosed must be {{ type }}."
      * )
      *
@@ -162,6 +165,7 @@ class Test extends BaseEntity
     public function __construct()
     {
         parent::__construct();
+        $this->teacherLevelSecured = true;
         $this->isClosed = false;
         $this->groups = new ArrayCollection();
         $this->testVariants = new ArrayCollection();

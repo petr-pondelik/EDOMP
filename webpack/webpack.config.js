@@ -9,8 +9,8 @@ const ROOT_DIR = path.resolve(__dirname, './../');
 
 module.exports = {
     entry: {
-        front: path.resolve(ROOT_DIR, 'resources', 'front.js'),
-        admin: path.resolve(ROOT_DIR, 'resources', 'admin.js'),
+        student: path.resolve(ROOT_DIR, 'resources', 'student.js'),
+        teacher: path.resolve(ROOT_DIR, 'resources', 'teacher.js'),
         netteAjaxHistory: path.resolve(ROOT_DIR, 'resources', 'nette-ajax-history.js')
     },
     resolve: {

@@ -14,7 +14,7 @@ use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\HelpModal\HelpModalControl;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\CoreModule\Presenters\BasePresenter;
+use App\CoreModule\Presenters\SecuredPresenter;
 use App\CoreModule\Services\Authorizator;
 use App\TeacherModule\Services\NewtonApiClient;
 use App\CoreModule\Services\Validator;
@@ -23,7 +23,7 @@ use App\CoreModule\Services\Validator;
  * Class TeacherPresenter
  * @package App\TeacherModule\Presenters
  */
-abstract class TeacherPresenter extends BasePresenter
+abstract class TeacherPresenter extends SecuredPresenter
 {
     /**
      * @var Authorizator
@@ -69,16 +69,11 @@ abstract class TeacherPresenter extends BasePresenter
         $this->sectionHelpModalFactory = $sectionHelpModalFactory;
     }
 
-    /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Nette\Application\AbortException
-     */
-    public function startup(): void
+    public function secure(): void
     {
-        parent::startup();
-        if(!($this->user->isInRole('admin') || $this->user->isInRole("teacher"))){
-            if($this->user->isLoggedIn()){
-                $this->flashMessage("Nedostatečná přístupová práva.", "danger");
+        if (!($this->user->isInRole('admin') || $this->user->isInRole('teacher'))) {
+            if ($this->user->isLoggedIn()) {
+                $this->flashMessage('Nedostatečná přístupová práva.', 'danger');
             }
             $this->redirect('Sign:in');
         }

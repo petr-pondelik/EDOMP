@@ -42,6 +42,7 @@ class CategoryGridFactory extends BaseGrid
      * @param $name
      * @return \Ublaboo\DataGrid\DataGrid
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
+     * @throws \Doctrine\ORM\Query\QueryException
      */
     public function create($container, $name): DataGrid
     {
@@ -49,7 +50,7 @@ class CategoryGridFactory extends BaseGrid
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->categoryRepository->createQueryBuilder('er'));
+        $grid->setDataSource($this->categoryRepository->getSecuredQueryBuilder($container->user));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()

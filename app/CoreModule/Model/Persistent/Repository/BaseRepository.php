@@ -9,6 +9,7 @@
 namespace App\CoreModule\Model\Persistent\Repository;
 
 use App\CoreModule\Helpers\ConstHelper;
+use App\CoreModule\Model\Persistent\Traits\SequenceValTrait;
 use Doctrine\ORM\Mapping;
 use Kdyby\Doctrine\EntityRepository;
 
@@ -18,10 +19,22 @@ use Kdyby\Doctrine\EntityRepository;
  */
 abstract class BaseRepository extends EntityRepository
 {
+    use SequenceValTrait;
+
     /**
      * @var ConstHelper
      */
     protected $constHelper;
+
+    /**
+     * @var string
+     */
+    protected $tableName;
+
+    /**
+     * @var array
+     */
+    protected $exclude = [];
 
     /**
      * BaseRepository constructor.
@@ -33,13 +46,6 @@ abstract class BaseRepository extends EntityRepository
     {
         parent::__construct($em, $class);
         $this->constHelper = $constHelper;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCnt(): int
-    {
-        return count($this->findAll());
+        $this->tableName = $this->getClassMetadata()->getTableName();
     }
 }

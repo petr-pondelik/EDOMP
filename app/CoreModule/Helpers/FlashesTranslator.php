@@ -8,6 +8,7 @@
 
 namespace App\CoreModule\Helpers;
 
+use App\CoreModule\Exceptions\FlashesTranslatorException;
 use App\TeacherModule\Exceptions\GeneratorException;
 use App\TeacherModule\Exceptions\InvalidParameterException;
 use App\TeacherModule\Exceptions\ProblemDuplicityException;
@@ -32,7 +33,8 @@ class FlashesTranslator
                 'update' => 'Šablona úspěšně editována.',
                 'delete' => 'Šablona úspěšně odstraněna.',
                 'difficulty' => 'Obtížnost úspěšně změněna.',
-                'subCategory' => 'Téma úspěšně změněno.'
+                'subCategory' => 'Téma úspěšně změněno.',
+                'studentVisible' => 'Viditelnost úlohy ve sbírce změněna.',
             ],
 
             'error' => [
@@ -40,7 +42,8 @@ class FlashesTranslator
                 'update' => 'Chyba při editaci šablony.',
                 'delete' => 'Chyba při odstraňování šablony.',
                 'difficulty' => 'Chyba při změně obtížnosti.',
-                'subCategory' => 'Chyba při změně tématu.'
+                'subCategory' => 'Chyba při změně tématu.',
+                'studentVisible' => 'Chyba při změně viditelnosti úlohy ve sbírce.',
             ],
 
             'constraintViolation' => 'K šabloně existují vygenerované příklady.'
@@ -53,7 +56,8 @@ class FlashesTranslator
                 'update' => 'Šablona úspěšně editována.',
                 'delete' => 'Šablona úspěšně odstraněna.',
                 'difficulty' => 'Obtížnost úspěšně změněna.',
-                'subCategory' => 'Téma úspěšně změněno.'
+                'subCategory' => 'Téma úspěšně změněno.',
+                'studentVisible' => 'Viditelnost úlohy ve sbírce změněna.'
             ],
 
             'error' => [
@@ -61,7 +65,8 @@ class FlashesTranslator
                 'update' => 'Chyba při editaci šablony.',
                 'delete' => 'Chyba při odstraňování šablony.',
                 'difficulty' => 'Chyba při změně obtížnosti.',
-                'subCategory' => 'Chyba při změně tématu.'
+                'subCategory' => 'Chyba při změně tématu.',
+                'studentVisible' => 'Chyba při změně viditelnosti úlohy ve sbírce.',
             ],
 
             'constraintViolation' => 'K šabloně existují vygenerované příklady.'
@@ -74,7 +79,8 @@ class FlashesTranslator
                 'update' => 'Šablona úspěšně editována.',
                 'delete' => 'Šablona úspěšně odstraněna.',
                 'difficulty' => 'Obtížnost úspěšně změněna.',
-                'subCategory' => 'Téma úspěšně změněno.'
+                'subCategory' => 'Téma úspěšně změněno.',
+                'studentVisible' => 'Viditelnost úlohy ve sbírce změněna.',
             ],
 
             'error' => [
@@ -82,7 +88,8 @@ class FlashesTranslator
                 'update' => 'Chyba při editaci šablony.',
                 'delete' => 'Chyba při odstraňování šablony.',
                 'difficulty' => 'Chyba při změně obtížnosti.',
-                'subCategory' => 'Chyba při změně tématu.'
+                'subCategory' => 'Chyba při změně tématu.',
+                'studentVisible' => 'Chyba při změně viditelnosti úlohy ve sbírce.',
             ],
 
             'constraintViolation' => 'K šabloně existují vygenerované příklady.'
@@ -95,7 +102,8 @@ class FlashesTranslator
                 'update' => 'Šablona úspěšně editována.',
                 'delete' => 'Šablona úspěšně odstraněna.',
                 'difficulty' => 'Obtížnost úspěšně změněna.',
-                'subCategory' => 'Téma úspěšně změněno.'
+                'subCategory' => 'Téma úspěšně změněno.',
+                'studentVisible' => 'Viditelnost úlohy ve sbírce změněna.',
             ],
 
             'error' => [
@@ -103,7 +111,8 @@ class FlashesTranslator
                 'update' => 'Chyba při editaci šablony.',
                 'delete' => 'Chyba při odstraňování šablony.',
                 'difficulty' => 'Chyba při změně obtížnosti.',
-                'subCategory' => 'Chyba při změně tématu.'
+                'subCategory' => 'Chyba při změně tématu.',
+                'studentVisible' => 'Chyba při změně viditelnosti úlohy ve sbírce.',
             ],
 
             'constraintViolation' => 'K šabloně existují vygenerované příklady.'
@@ -117,7 +126,8 @@ class FlashesTranslator
                 'delete' => 'Příklad úspěšně odstraněn.',
                 'difficulty' => 'Obtížnost úspěšně změněna.',
                 'subCategory' => 'Téma úspěšně změněno.',
-                'getRes' => 'Výsledek úspěšně získán.'
+                'getRes' => 'Výsledek úspěšně získán.',
+                'studentVisible' => 'Viditelnost úlohy ve sbírce změněna.',
             ],
 
             'error' => [
@@ -126,7 +136,8 @@ class FlashesTranslator
                 'delete' => 'Chyba při odstraňování příkladu.',
                 'difficulty' => 'Chyba při změně obtížnosti.',
                 'subCategory' => 'Chyba při změně tématu.',
-                'getRes' => 'Při výpočtu výsledku nastala chyba.'
+                'getRes' => 'Při výpočtu výsledku nastala chyba.',
+                'studentVisible' => 'Chyba při změně viditelnosti úlohy ve sbírce.',
             ],
 
             'constraintViolation' => 'Příklad se vyskytuje ve vygenerovaném testu.'
@@ -315,20 +326,27 @@ class FlashesTranslator
 
     /**
      * @param string $operation
-     * @param \Exception $e
      * @param string $presenterName
      * @param string|null $type
+     * @param \Exception $e
      * @return string
+     * @throws FlashesTranslatorException
      */
     public static function translate(string $operation, string $presenterName, string $type = null, \Exception $e = null): string
     {
         bdump('TRANSLATE');
 
-        if($e instanceof ForeignKeyConstraintViolationException){
+        if ($e instanceof ForeignKeyConstraintViolationException) {
+            if (!isset(self::$presenterMessages[$presenterName]['constraintViolation'])) {
+                throw new FlashesTranslatorException('Non existing message.');
+            }
             return self::$presenterMessages[$presenterName]['constraintViolation'];
         }
 
-        if($e instanceof UniqueConstraintViolationException){
+        if ($e instanceof UniqueConstraintViolationException) {
+            if (!isset(self::$presenterMessages[$presenterName]['uniqueConstraintViolation'])) {
+                throw new FlashesTranslatorException('Non existing message.');
+            }
             return self::$presenterMessages[$presenterName]['uniqueConstraintViolation'];
         }
 
@@ -336,8 +354,12 @@ class FlashesTranslator
             $e instanceof ProblemDuplicityException ||
             $e instanceof InvalidParameterException ||
             ($e instanceof GeneratorException && $e->isVisible())
-        ){
+        ) {
             return $e->getMessage();
+        }
+
+        if (!isset(self::$presenterMessages[$presenterName][$type][$operation])) {
+            throw new FlashesTranslatorException('Non existing message.');
         }
 
         return self::$presenterMessages[$presenterName][$type][$operation];

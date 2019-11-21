@@ -88,12 +88,12 @@ class SubCategoryPresenter extends EntityPresenter
             ->setIcon('pencil-alt')
             ->setTitle('Upravit inline')
             ->setClass('btn btn-primary btn-sm ajax')
-            ->onControlAdd[] = function($container) {
+            ->onControlAdd[] = function ($container) {
             $container->addText('label', '');
         };
 
-        $grid->getInlineEdit()->onSetDefaults[] = function($cont, $item) {
-            $cont->setDefaults([ 'label' => $item->getLabel() ]);
+        $grid->getInlineEdit()->onSetDefaults[] = function ($cont, $item) {
+            $cont->setDefaults(['label' => $item->getLabel()]);
         };
 
         $grid->getInlineEdit()->onSubmit[] = [$this, 'handleInlineUpdate'];
@@ -104,15 +104,18 @@ class SubCategoryPresenter extends EntityPresenter
     /**
      * @param int $subCategoryId
      * @param $categoryId
+     * @throws \App\CoreModule\Exceptions\FlashesTranslatorException
      */
     public function handleCategoryUpdate(int $subCategoryId, $categoryId): void
     {
-        try{
+        bdump('HANDLE CATEGORY UPDATE');
+        bdump($categoryId);
+        try {
             $this->functionality->update($subCategoryId,
                 ArrayHash::from(['category' => $categoryId])
             );
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('category', true,'error', $e));
+        } catch (\Exception $e) {
+            $this->informUser(new UserInformArgs('category', true, 'error', $e));
         }
         $this['entityGrid']->reload();
         $this->informUser(new UserInformArgs('category', true));

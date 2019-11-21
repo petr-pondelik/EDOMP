@@ -19,6 +19,7 @@ use App\CoreModule\Model\Persistent\Repository\ProblemFinal\LinearEquationFinalR
 use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use App\CoreModule\Model\Persistent\Traits\ProblemFinalFunctionalityTrait;
 use Doctrine\ORM\EntityNotFoundException;
 
@@ -35,6 +36,7 @@ class LinearEquationFinalFunctionality extends BaseFunctionality
      * @param ConstraintEntityManager $entityManager
      * @param LinearEquationFinalRepository $repository
      * @param ProblemRepository $problemRepository
+     * @param UserRepository $userRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param DifficultyRepository $difficultyRepository
@@ -46,14 +48,17 @@ class LinearEquationFinalFunctionality extends BaseFunctionality
         ConstraintEntityManager $entityManager,
         LinearEquationFinalRepository $repository,
         ProblemRepository $problemRepository,
-        ProblemTypeRepository $problemTypeRepository, ProblemConditionRepository $problemConditionRepository,
-        DifficultyRepository $difficultyRepository, SubCategoryRepository $subCategoryRepository,
+        UserRepository $userRepository,
+        ProblemTypeRepository $problemTypeRepository,
+        ProblemConditionRepository $problemConditionRepository,
+        DifficultyRepository $difficultyRepository,
+        SubCategoryRepository $subCategoryRepository,
         FormatterHelper $formatterHelper
     )
     {
         parent::__construct($entityManager);
         $this->repository = $repository;
-        $this->injectRepositories($problemTypeRepository, $problemConditionRepository, $difficultyRepository, $subCategoryRepository, $problemRepository, $formatterHelper);
+        $this->injectRepositories($problemTypeRepository, $problemConditionRepository, $difficultyRepository, $subCategoryRepository, $problemRepository, $userRepository, $formatterHelper);
     }
 
     /**

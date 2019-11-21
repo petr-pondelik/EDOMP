@@ -9,6 +9,8 @@
 namespace App\CoreModule\DI;
 
 
+use App\CoreModule\Components\ForgetPassword\IForgetPasswordFactory;
+use App\CoreModule\Components\Forms\ForgetPasswordForm\IForgetPasswordFormFactory;
 use App\CoreModule\Components\Forms\PasswordForm\IPasswordFormFactory;
 use App\CoreModule\Components\Forms\SignForm\ISignFormFactory;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
@@ -206,6 +208,12 @@ class CoreModuleExtension extends ModuleExtension
 
         $builder->addDefinition($this->prefix('signFormFactory'))
             ->setImplement(ISignFormFactory::class);
+
+        $builder->addDefinition($this->prefix('forgetPasswordFactory'))
+            ->setImplement(IForgetPasswordFactory::class);
+
+        $builder->addDefinition($this->prefix('forgetPasswordFormFactory'))
+            ->setImplement(IForgetPasswordFormFactory::class);
 
 
         // Repositories definitions

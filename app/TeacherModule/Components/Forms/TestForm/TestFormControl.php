@@ -253,7 +253,11 @@ class TestFormControl extends EntityFormControl
     {
         if ($this->isCreate()) {
 
-            $problems = $this->problemRepository->findFiltered(['isGenerated' => false]);
+            $problems = $this->problemRepository->findFiltered([
+                'isGenerated' => false,
+                'createdBy' => $this->presenter->user->id
+            ]);
+
             $problemsCnt = count($problems);
 
             for ($i = 0; $i < $this->maxProblems; $i++) {
@@ -572,6 +576,7 @@ class TestFormControl extends EntityFormControl
     {
         bdump($values);
         bdump($this->filterSession->getFilters());
+        $values->userId = $this->presenter->user->id;
         try {
             $this->testGenerator->generateTest($values);
         } catch (\Exception $e) {
@@ -579,7 +584,7 @@ class TestFormControl extends EntityFormControl
             $this->onError($e);
             return;
         }
-        $this->onSuccess();
+//        $this->onSuccess();
     }
 
     /**
@@ -637,72 +642,73 @@ class TestFormControl extends EntityFormControl
             $filters[$key] = [];
         }
 
-            $resFilters = [];
-            $problemFilters = $filters[$key];
+        $resFilters = [];
+        $problemFilters = $filters[$key];
 
-            if (!isset($problemFilters['filters'])) {
-                $problemFilters['filters'] = [];
-            }
+        if (!isset($problemFilters['filters'])) {
+            $problemFilters['filters'] = [];
+        }
 
-            if (!isset($problemFilters['selected'])) {
-               $problemFilters['selected'] = [];
-            }
+        if (!isset($problemFilters['selected'])) {
+            $problemFilters['selected'] = [];
+        }
 
-            // Pick only non-generated problems
-            $problemFilters['filters']['isGenerated'] = false;
+        // Pick only non-generated problems
+        $problemFilters['filters']['isGenerated'] = false;
+        $problemFilters['filters']['createdBy'] = $this->presenter->user->id;
 
-            // If selected is in JSON string format, decode it
-            if ($problemFilters['selected'] && !is_array($problemFilters['selected'])) {
-                $problemFilters['selected'] = Json::decode($problemFilters['selected'], Json::FORCE_ARRAY);
-            }
+        // If selected is in JSON string format, decode it
+        if ($problemFilters['selected'] && !is_array($problemFilters['selected'])) {
+            $problemFilters['selected'] = Json::decode($problemFilters['selected'], Json::FORCE_ARRAY);
+        }
 
-            $filterRes = $this->problemRepository->findFiltered($problemFilters['filters']);
-            bdump('FILTER RES');
-            bdump($filterRes);
+        $filterRes = $this->problemRepository->findFiltered($problemFilters['filters']);
+        bdump('FILTER RES');
+        bdump($filterRes);
 
-            $resFilters[$key] = $problemFilters;
+        $resFilters[$key] = $problemFilters;
 
-            $this['form']['problem' . $key]->setValue(Json::encode($filterRes));
+        $this['form']['problem' . $key]->setValue(Json::encode($filterRes));
 
-            $valuesToSetArr = [];
-            $valuesToSetObj = [];
+        $valuesToSetArr = [];
+        $valuesToSetObj = [];
 
-            bdump('PROBLEMS SELECTED');
-            bdump($problemFilters['selected']);
+        bdump('PROBLEMS SELECTED');
+        bdump($problemFilters['selected']);
 
-            if (isset($problemFilters['selected']) && $problemFilters['selected']) {
-                foreach ($problemFilters['selected'] as $selected) {
-                    if (array_key_exists((int) $selected, $filterRes)) {
-                        $valuesToSetArr[] = $selected;
-                        $valuesToSetObj[$selected] = $filterRes[$selected];
-                        unset($filterRes[$selected]);
-                    }
+        if (isset($problemFilters['selected']) && $problemFilters['selected']) {
+            foreach ($problemFilters['selected'] as $selected) {
+                if (array_key_exists((int)$selected, $filterRes)) {
+                    $valuesToSetArr[] = $selected;
+                    $valuesToSetObj[$selected] = $filterRes[$selected];
+                    unset($filterRes[$selected]);
                 }
             }
+        }
 
-            bdump('VALUES TO SET ARR');
-            bdump($valuesToSetArr);
-            $resFilters[$key]['selected'] = $valuesToSetArr;
-            $this['form']['problem' . $key]->setValue(Json::encode($valuesToSetArr));
+        bdump('VALUES TO SET ARR');
+        bdump($valuesToSetArr);
+        $resFilters[$key]['selected'] = $valuesToSetArr;
+        $this['form']['problem' . $key]->setValue(Json::encode($valuesToSetArr));
 
-            $paginator = $this['paginator' . $key]->getPaginator();
-            $paginator->itemCount = count($filterRes);
-            $paginator->itemsPerPage = 10;
+        $paginator = $this['paginator' . $key]->getPaginator();
+        $paginator->itemCount = count($filterRes);
+        $paginator->itemsPerPage = 10;
 
-            bdump('FILTER RES');
-            bdump($filterRes);
+        bdump('FILTER RES');
+        bdump($filterRes);
 
-            $filterRes = array_slice($filterRes, $paginator->offset, $paginator->itemsPerPage);
+        $filterRes = array_slice($filterRes, $paginator->offset, $paginator->itemsPerPage);
 
-            $this['problemStack' . $key]->setProblems($filterRes, $valuesToSetObj);
+        $this['problemStack' . $key]->setProblems($filterRes, $valuesToSetObj);
 
-            bdump($resFilters);
-            $this->filterSession->setFilters($resFilters);
+        bdump($resFilters);
+        $this->filterSession->setFilters($resFilters);
 
-            $this->presenter->payload->selected = [
-                'key' => $key,
-                'values' => $valuesToSetArr
-            ];
+        $this->presenter->payload->selected = [
+            'key' => $key,
+            'values' => $valuesToSetArr
+        ];
 
         bdump('REDRAW');
 

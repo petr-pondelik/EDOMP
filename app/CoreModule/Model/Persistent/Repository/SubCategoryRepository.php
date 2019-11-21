@@ -12,6 +12,6 @@ namespace App\CoreModule\Model\Persistent\Repository;
  * Class SubCategoryRepository
  * @package App\CoreModule\Model\Persistent\Repository
  */
-class SubCategoryRepository extends BaseRepository
+class SubCategoryRepository extends SecuredRepository
 {
 }

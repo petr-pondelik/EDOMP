@@ -48,6 +48,7 @@ class SuperGroupGridFactory extends BaseGrid
      * @param $container
      * @param $name
      * @return DataGrid
+     * @throws \Doctrine\ORM\Query\QueryException
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
      */
     public function create($container, $name): DataGrid
@@ -56,16 +57,7 @@ class SuperGroupGridFactory extends BaseGrid
 
         $grid->setPrimaryKey('id');
 
-        $qb = $this->superGroupRepository->createQueryBuilder('er')
-            ->where('er.id != :id')
-            ->setParameter('id', $this->constHelper::ADMIN_GROUP);
-
-        if($container->user->isInRole('teacher')){
-            $qb->andWhere('er.createdBy = :createdById')
-                ->setParameter('createdById', $container->user->identity->id);
-        }
-
-        $grid->setDataSource($qb);
+        $grid->setDataSource($this->superGroupRepository->getSecuredQueryBuilder($container->user));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()

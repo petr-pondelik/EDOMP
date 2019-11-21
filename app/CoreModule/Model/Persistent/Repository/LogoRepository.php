@@ -8,18 +8,13 @@
 
 namespace App\CoreModule\Model\Persistent\Repository;
 
+use App\CoreModule\Model\Persistent\Traits\SequenceValTrait;
+
 /**
  * Class LogoRepository
  * @package App\CoreModule\Model\Persistent\Repository
  */
-class LogoRepository extends BaseRepository
+class LogoRepository extends SecuredRepository
 {
-    /**
-     * @return int
-     */
-    public function getSequenceVal(): int
-    {
-        $sql = "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'edomp' AND TABLE_NAME = 'logo'";
-        return $this->getEntityManager()->getConnection()->query($sql)->fetch()["AUTO_INCREMENT"];
-    }
+    use SequenceValTrait;
 }

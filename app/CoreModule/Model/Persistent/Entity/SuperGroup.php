@@ -8,6 +8,7 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
+use App\CoreModule\Model\Persistent\Traits\CreatedByTrait;
 use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,6 +22,8 @@ use Doctrine\ORM\Mapping as ORM;
 class SuperGroup extends BaseEntity
 {
     use LabelTrait;
+
+    use CreatedByTrait;
 
     /**
      * @var string
@@ -39,18 +42,12 @@ class SuperGroup extends BaseEntity
     protected $categories;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\CoreModule\Model\Persistent\Entity\User", inversedBy="superGroupsCreated", cascade={"persist", "merge"})
-     *
-     * @var User
-     */
-    protected $createdBy;
-
-    /**
      * SuperGroup constructor.
      */
     public function __construct()
     {
         parent::__construct();
+        $this->teacherLevelSecured = true;
         $this->groups = new ArrayCollection();
         $this->categories = new ArrayCollection();
     }
@@ -93,7 +90,7 @@ class SuperGroup extends BaseEntity
     public function getCategoriesId(): array
     {
         $res = [];
-        foreach ($this->getCategories()->getValues() as $key => $category){
+        foreach ($this->getCategories()->getValues() as $key => $category) {
             $res[] = $category->getId();
         }
         return $res;
@@ -101,23 +98,9 @@ class SuperGroup extends BaseEntity
 
     public function addCategory(Category $category): void
     {
-        if($this->categories->contains($category)) return;
+        if ($this->categories->contains($category)) {
+            return;
+        }
         $this->categories[] = $category;
-    }
-
-    /**
-     * @return User|null
-     */
-    public function getCreatedBy(): ?User
-    {
-        return $this->createdBy;
-    }
-
-    /**
-     * @param User $createdBy
-     */
-    public function setCreatedBy(User $createdBy): void
-    {
-        $this->createdBy = $createdBy;
     }
 }

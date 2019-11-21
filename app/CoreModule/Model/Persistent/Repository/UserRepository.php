@@ -12,6 +12,6 @@ namespace App\CoreModule\Model\Persistent\Repository;
  * Class UserRepository
  * @package App\CoreModule\Model\Persistent\Repository
  */
-class UserRepository extends BaseRepository
+class UserRepository extends SecuredRepository
 {
 }

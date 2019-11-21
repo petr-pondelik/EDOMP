@@ -41,6 +41,7 @@ class LogoGridFactory extends BaseGrid
      * @param $name
      * @return \Ublaboo\DataGrid\DataGrid
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
+     * @throws \Doctrine\ORM\Query\QueryException
      */
     public function create($container, $name): DataGrid
     {
@@ -48,7 +49,7 @@ class LogoGridFactory extends BaseGrid
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->logoRepository->createQueryBuilder('er'));
+        $grid->setDataSource($this->logoRepository->getSecuredQueryBuilder($container->user));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()

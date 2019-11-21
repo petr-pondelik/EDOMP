@@ -136,7 +136,7 @@ class SettingsPresenter extends TeacherPresenter
             $this->redirect('groupPermission');
         }
 
-        if($this->user->isInRole('teacher') && !$this->authorizator->isEntityAllowed($this->user->identity, $group)){
+        if($this->user->isInRole('teacher') && !$this->authorizator->isEntityAllowed($this->user, $group)){
             $this->flashMessage('Nedostatečná přístupová práva.', 'danger');
             $this->redirect('Homepage:default');
         }

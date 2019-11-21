@@ -1,7 +1,6 @@
 {block sign}
 
     <div class="col-sm-12 col-md-9 col-lg-5 centered">
-
         <div class="text-center mb-5" id="page-header">
             <p id="title">EDOMP</p>
         </div>
@@ -15,7 +14,13 @@
                 <p class="text-center mt-4 text-muted">
                     Přihlášení do <a href="{plink :Student:Sign:in}"> cvičebnice</a>.
                 </p>
+                <div class="text-center mt-4 text-muted">
+                    <button class="btn btn-outline-dark" data-toggle="modal" data-target="#forget-password-modal">Zapomenuté heslo?</button>
+                </div>
             </div>
         </div>
     </div>
+
+    {control forgetPassword}
+
 {/block}

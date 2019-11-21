@@ -56,10 +56,14 @@ class SubCategoryGridFactory extends BaseGrid
         $grid = parent::create($container, $name);
 
         $categoryOptions = $this->categoryRepository->findAssoc([], 'id');
+        bdump($categoryOptions);
+
+        $categoryOptions = $this->categoryRepository->findAllowed($container->user);
+        bdump($categoryOptions);
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->subCategoryRepository->createQueryBuilder('er'));
+        $grid->setDataSource($this->subCategoryRepository->getSecuredQueryBuilder($container->user));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()

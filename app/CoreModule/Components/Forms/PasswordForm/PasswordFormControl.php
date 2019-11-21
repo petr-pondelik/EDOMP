@@ -54,6 +54,7 @@ class PasswordFormControl extends FormControl
 
     /**
      * @param Form $form
+     * @throws \App\CoreModule\Exceptions\ValidatorException
      */
     public function handleFormValidate(Form $form): void
     {

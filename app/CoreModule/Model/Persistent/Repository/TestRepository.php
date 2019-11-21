@@ -15,14 +15,9 @@ use App\CoreModule\Model\Persistent\Traits\SequenceValTrait;
  * Class TestRepository
  * @package App\CoreModule\Model\Persistent\Repository
  */
-class TestRepository extends BaseRepository
+class TestRepository extends SecuredRepository
 {
     use SequenceValTrait;
-
-    /**
-     * @var string
-     */
-    protected $tableName = 'test';
 
     /**
      * @param int $id

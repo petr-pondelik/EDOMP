@@ -8,6 +8,7 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
+use App\CoreModule\Model\Persistent\Traits\CreatedByTrait;
 use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -21,6 +22,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Logo extends BaseEntity
 {
     use LabelTrait;
+
+    use CreatedByTrait;
 
     /**
      * @var string
@@ -52,7 +55,11 @@ class Logo extends BaseEntity
     protected $extensionTmp;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Assert\Type(
+     *     type="bool",
+     *     message="IsUsed must be {{ type }}."
+     * )
      *
      * @var bool
      */

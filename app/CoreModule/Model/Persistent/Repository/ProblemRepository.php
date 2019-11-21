@@ -14,7 +14,7 @@ use App\CoreModule\Model\Persistent\Traits\FilterTrait;
  * Class ProblemRepository
  * @package App\CoreModule\Model\Persistent\Repository
  */
-class ProblemRepository extends BaseRepository
+class ProblemRepository extends SecuredRepository
 {
     use FilterTrait;
 }

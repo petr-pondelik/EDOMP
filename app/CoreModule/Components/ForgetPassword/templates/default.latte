@@ -1,0 +1,19 @@
+{layout './../../../templates/layouts/modal/@modalFull.latte'}
+
+{block modalTitle}
+    <h2 class="modal-title" id="{$labelItem}">Zaslat nové heslo</h2>
+{/block}
+
+{block modalBody}
+
+    <p>
+        Pro získání nového hesla zadejte prosím svůj <strong>uživatelský e-mail</strong>.<br>
+        Na zadaný e-mail Vám bude zasláno nové heslo, jež můžete změnit v rámci nastavení.
+    </p>
+
+    {control forgetPasswordForm}
+{/block}
+
+{block modalFooter}
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zavřít</button>
+{/block}

@@ -12,13 +12,14 @@ use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
 use App\CoreModule\Presenters\BasePresenter;
+use App\CoreModule\Presenters\SecuredPresenter;
 use App\CoreModule\Services\Authorizator;
 
 /**
  * Class StudentPresenter
  * @package App\StudentModule\Presenters
  */
-class StudentPresenter extends BasePresenter
+class StudentPresenter extends SecuredPresenter
 {
     /**
      * @var Authorizator
@@ -45,10 +46,9 @@ class StudentPresenter extends BasePresenter
     /**
      * @throws \Nette\Application\AbortException
      */
-    public function startup(): void
+    public function secure(): void
     {
-        parent::startup();
-        if(!$this->user->isLoggedIn()){
+        if (!$this->user->isLoggedIn()) {
             $this->redirect('Sign:in');
         }
     }

@@ -8,32 +8,25 @@
 
 namespace App\CoreModule\Model\Persistent\Repository;
 
-use Nette\Security\User;
+
+use App\CoreModule\Helpers\ConstHelper;
+use Doctrine\ORM\Mapping;
 
 /**
  * Class SuperGroupRepository
  * @package App\CoreModule\Model\Persistent\Repository
  */
-class SuperGroupRepository extends BaseRepository
+class SuperGroupRepository extends SecuredRepository
 {
     /**
-     * @param User $user
-     * @return mixed
-     * @throws \Doctrine\ORM\Query\QueryException
+     * SuperGroupRepository constructor.
+     * @param $em
+     * @param Mapping\ClassMetadata $class
+     * @param ConstHelper $constHelper
      */
-    public function findAllowed(User $user)
+    public function __construct($em, Mapping\ClassMetadata $class, ConstHelper $constHelper)
     {
-        $qb = $this->createQueryBuilder("sg")
-            ->select("sg")
-            ->where("sg.id != :adminId")
-            ->indexBy("sg", "sg.id")
-            ->setParameter("adminId", $this->constHelper::ADMIN_GROUP);
-
-        if(!$user->isInRole('admin')){
-            $qb->andWhere('sg.createdBy = :userId')
-                ->setParameter('userId', $user->getId());
-        }
-
-        return $qb->getQuery()->getResult();
+        parent::__construct($em, $class, $constHelper);
+        $this->exclude[] = $this->constHelper::ADMIN_SUPER_GROUP;
     }
 }

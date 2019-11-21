@@ -69,8 +69,8 @@ class SuperGroupFunctionality extends BaseFunctionality
     {
         $superGroup = new SuperGroup();
         $superGroup->setLabel($data->label);
-        if(isset($data->user_id)){
-            $superGroup->setCreatedBy($this->userRepository->find($data->user_id));
+        if(isset($data->userId)){
+            $superGroup->setCreatedBy($this->userRepository->find($data->userId));
         }
         $this->em->persist($superGroup);
         if ($flush) {

@@ -8,6 +8,7 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
+use App\CoreModule\Model\Persistent\Traits\CreatedByTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -34,6 +35,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 abstract class Problem extends BaseEntity
 {
+    use CreatedByTrait;
+
     /**
      * @var string
      */
@@ -143,6 +146,17 @@ abstract class Problem extends BaseEntity
     protected $isGenerated = false;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Assert\Type(
+     *     type="bool",
+     *     message="StudentVisible must be {{ type }}."
+     * )
+     *
+     * @var boolean
+     */
+    protected $studentVisible;
+
+    /**
      * Problem constructor.
      */
     public function __construct()
@@ -184,7 +198,7 @@ abstract class Problem extends BaseEntity
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getTextAfter(): ?string
     {
@@ -194,25 +208,26 @@ abstract class Problem extends BaseEntity
     /**
      * @param string|null $textAfter
      */
-    public function setTextAfter(string $textAfter = null): void
+    public function setTextAfter(?string $textAfter): void
     {
         $this->textAfter = $textAfter;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getSuccessRate(): ?float
     {
-        if(empty($this->successRate))
+        if(empty($this->successRate)) {
             return null;
+        }
         return round($this->successRate, 2);
     }
 
     /**
      * @param float|null $successRate
      */
-    public function setSuccessRate(float $successRate = null): void
+    public function setSuccessRate(?float $successRate): void
     {
         $this->successRate = $successRate;
     }
@@ -322,5 +337,21 @@ abstract class Problem extends BaseEntity
     public function setIsGenerated(bool $isGenerated): void
     {
         $this->isGenerated = $isGenerated;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStudentVisible(): bool
+    {
+        return $this->studentVisible;
+    }
+
+    /**
+     * @param bool $studentVisible
+     */
+    public function setStudentVisible(bool $studentVisible): void
+    {
+        $this->studentVisible = $studentVisible;
     }
 }

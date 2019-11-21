@@ -157,6 +157,7 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
     /**
      * @param int $id
      * @param ArrayHash $row
+     * @throws \App\CoreModule\Exceptions\FlashesTranslatorException
      */
     public function handleInlineUpdate(int $id, ArrayHash $row): void
     {
@@ -177,6 +178,7 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
     /**
      * @param int $subCategoryId
      * @param int $templateId
+     * @throws \App\CoreModule\Exceptions\FlashesTranslatorException
      */
     public function handleSubCategoryUpdate(int $templateId, int $subCategoryId): void
     {
@@ -192,6 +194,7 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
     /**
      * @param int $templateId
      * @param int $difficultyId
+     * @throws \App\CoreModule\Exceptions\FlashesTranslatorException
      */
     public function handleDifficultyUpdate(int $templateId, int $difficultyId): void
     {
@@ -203,6 +206,23 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
         }
         $this['entityGrid']->reload();
         $this->informUser(new UserInformArgs('difficulty', true, 'success', null, true));
+    }
+
+    /**
+     * @param int $problemId
+     * @param bool $visible
+     * @throws \App\CoreModule\Exceptions\FlashesTranslatorException
+     */
+    public function handleStudentVisibleUpdate(int $problemId, bool $visible): void
+    {
+        try {
+            $this->functionality->update($problemId, ArrayHash::from(['studentVisible' => $visible]), true, true);
+        } catch (\Exception $e) {
+            $this->informUser(new UserInformArgs('studentVisible', true, 'error', $e));
+            return;
+        }
+        $this['entityGrid']->reload();
+        $this->informUser(new UserInformArgs('studentVisible', true));
     }
 
     /**
