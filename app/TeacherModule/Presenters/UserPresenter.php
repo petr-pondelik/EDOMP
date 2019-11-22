@@ -135,7 +135,7 @@ class UserPresenter extends EntityPresenter
         $password = Random::generate(8);
         try{
             $user = $this->functionality->updatePassword($id, $password);
-            $this->mailService->sendInvitationEmail($user, $password);
+            $this->mailService->sendPasswordResetEmail($user, $password);
         } catch (\Exception $e) {
             $this->informUser(new UserInformArgs('resendPassword', true, 'error', $e, true));
         }

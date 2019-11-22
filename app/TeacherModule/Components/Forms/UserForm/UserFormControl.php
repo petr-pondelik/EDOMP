@@ -16,6 +16,7 @@ use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\GroupRepository;
 use App\CoreModule\Model\Persistent\Repository\RoleRepository;
 use App\CoreModule\Services\MailService;
+use App\CoreModule\Services\PasswordGenerator;
 use App\CoreModule\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
@@ -44,6 +45,11 @@ class UserFormControl extends EntityFormControl
     protected $roleRepository;
 
     /**
+     * @var PasswordGenerator
+     */
+    protected $passwordGenerator;
+
+    /**
      * UserFormControl constructor.
      * @param Validator $validator
      * @param ConstraintEntityManager $entityManager
@@ -51,6 +57,7 @@ class UserFormControl extends EntityFormControl
      * @param UserFunctionality $userFunctionality
      * @param GroupRepository $groupRepository
      * @param RoleRepository $roleRepository
+     * @param PasswordGenerator $passwordGenerator
      */
     public function __construct
     (
@@ -59,7 +66,8 @@ class UserFormControl extends EntityFormControl
         MailService $mailService,
         UserFunctionality $userFunctionality,
         GroupRepository $groupRepository,
-        RoleRepository $roleRepository
+        RoleRepository $roleRepository,
+        PasswordGenerator $passwordGenerator
     )
     {
         parent::__construct($validator, $entityManager);
@@ -67,6 +75,7 @@ class UserFormControl extends EntityFormControl
         $this->functionality = $userFunctionality;
         $this->groupRepository = $groupRepository;
         $this->roleRepository = $roleRepository;
+        $this->passwordGenerator = $passwordGenerator;
     }
 
     /**
@@ -136,7 +145,7 @@ class UserFormControl extends EntityFormControl
         try {
             // Get ID of logged user
             $values->userId = $this->presenter->user->id;
-            $values->password = Random::generate(8);
+            $values->password = $this->passwordGenerator->generate();
             // If username wasn't entered, set email as username
             if (!$values->username) {
                 $values->username = $values->email;

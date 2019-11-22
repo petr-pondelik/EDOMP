@@ -106,6 +106,7 @@ use App\CoreModule\Services\Authenticator;
 use App\CoreModule\Services\Authorizator;
 use App\CoreModule\Services\FileService;
 use App\CoreModule\Services\MailService;
+use App\CoreModule\Services\PasswordGenerator;
 use App\CoreModule\Services\Validator;
 use Nette\DI\ContainerBuilder;
 
@@ -169,6 +170,9 @@ class CoreModuleExtension extends ModuleExtension
 
         $builder->addDefinition($this->prefix('validator'))
             ->setType(Validator::class);
+
+        $builder->addDefinition($this->prefix('passwordGenerator'))
+            ->setType(PasswordGenerator::class);
 
 
         // Helpers definitions

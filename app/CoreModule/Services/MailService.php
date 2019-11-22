@@ -44,6 +44,16 @@ class MailService
     protected $loginURL;
 
     /**
+     * @var string
+     */
+    protected $from = 'EDOMP <edomp@wiedzmin.4fan.cz>';
+
+    /**
+     * @var string
+     */
+    protected $subjectPrefix = 'EDOMP | ';
+
+    /**
      * MailService constructor.
      * @param IMailer $mailer
      * @param ITemplateFactory $templateFactory
@@ -73,24 +83,6 @@ class MailService
     }
 
     /**
-     * @param User $user
-     * @param string $password
-     */
-    public function sendInvitationEmail(User $user, string $password): void
-    {
-        $template = $this->createTemplate();
-        $template->setFile($this->coreTemplatesDir . '/mail/invitation.latte');
-        $template->user = $user;
-        $template->password = $password;
-        $template->loginURL = $this->loginURL;
-        $message = new Message();
-        $message->setFrom('EDOMP <edomp@wiedzmin.4fan.cz>')
-            ->setSubject('Pozvání do aplikace')
-            ->setHtmlBody($template);
-        $this->sendEmailTo($message, $user->getEmail());
-    }
-
-    /**
      * @param Message $message
      * @param string $email
      */
@@ -102,5 +94,41 @@ class MailService
         } catch (SendException $e){
             Debugger::log($e, ILogger::EXCEPTION);
         }
+    }
+
+    /**
+     * @param User $user
+     * @param string $password
+     */
+    public function sendInvitationEmail(User $user, string $password): void
+    {
+        $template = $this->createTemplate();
+        $template->setFile($this->coreTemplatesDir . 'mail' . DIRECTORY_SEPARATOR . 'invitation.latte');
+        $template->user = $user;
+        $template->password = $password;
+        $template->loginURL = $this->loginURL;
+        $message = new Message();
+        $message->setFrom($this->from)
+            ->setSubject($this->subjectPrefix . 'Pozvání do aplikace')
+            ->setHtmlBody($template);
+        $this->sendEmailTo($message, $user->getEmail());
+    }
+
+    /**
+     * @param User $user
+     * @param string $password
+     */
+    public function sendPasswordResetEmail(User $user, string $password): void
+    {
+        $template = $this->createTemplate();
+        $template->setFile($this->coreTemplatesDir . 'mail' . DIRECTORY_SEPARATOR . 'passwordReset.latte');
+        $template->user = $user;
+        $template->password = $password;
+        $template->loginURL = $this->loginURL;
+        $message = new Message();
+        $message->setFrom($this->from)
+            ->setSubject($this->subjectPrefix . 'Reset hesla')
+            ->setHtmlBody($template);
+        $this->sendEmailTo($message, $user->getEmail());
     }
 }

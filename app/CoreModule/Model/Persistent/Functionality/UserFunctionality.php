@@ -109,7 +109,13 @@ class UserFunctionality extends BaseFunctionality
             throw new EntityNotFoundException('Entity for update not found.');
         }
 
-        $user->setEmail($data->email);
+        if (isset($data->email)) {
+            $user->setEmail($data->email);
+        }
+
+        if (isset($data->password)) {
+            $user->setPassword($data->password);
+        }
 
         if (!isset($data->username) || !$data->username) {
             $user->setUsername($data->email);
@@ -117,8 +123,13 @@ class UserFunctionality extends BaseFunctionality
             $user->setUsername($data->username);
         }
 
-        $user->setFirstName($data->firstName);
-        $user->setLastName($data->lastName);
+        if (isset($data->firstName)) {
+            $user->setFirstName($data->firstName);
+        }
+
+        if (isset($data->lastName)) {
+            $user->setLastName($data->lastName);
+        }
 
         if (isset($data->role)) {
             $user->setRole($this->roleRepository->find($data->role));
@@ -162,6 +173,28 @@ class UserFunctionality extends BaseFunctionality
     public function updatePassword(int $id, string $password, $flush = true): User
     {
         $user = $this->repository->find($id);
+        if (!$user) {
+            throw new EntityNotFoundException('Entity for update not found.');
+        }
+        $user->setPassword($password);
+        $this->em->persist($user);
+        if ($flush) {
+            $this->em->flush();
+        }
+        return $user;
+    }
+
+    /**
+     * @param string $email
+     * @param string $password
+     * @param bool $flush
+     * @return User
+     * @throws EntityNotFoundException
+     * @throws \App\CoreModule\Exceptions\EntityException
+     */
+    public function updatePasswordByEmail(string $email, string $password, $flush = true): User
+    {
+        $user = $this->repository->findOneBy([ 'email' => $email ]);
         if (!$user) {
             throw new EntityNotFoundException('Entity for update not found.');
         }

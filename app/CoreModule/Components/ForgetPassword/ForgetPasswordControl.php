@@ -11,7 +11,6 @@ namespace App\CoreModule\Components\ForgetPassword;
 use App\CoreModule\Components\EDOMPControl;
 use App\CoreModule\Components\Forms\ForgetPasswordForm\ForgetPasswordFormControl;
 use App\CoreModule\Components\Forms\ForgetPasswordForm\IForgetPasswordFormFactory;
-use App\CoreModule\Services\MailService;
 
 /**
  * Class ForgetPasswordControl
@@ -20,28 +19,17 @@ use App\CoreModule\Services\MailService;
 class ForgetPasswordControl extends EDOMPControl
 {
     /**
-     * @var MailService
-     */
-    protected $mailService;
-
-    /**
      * @var IForgetPasswordFormFactory
      */
     protected $forgetPasswordFormFactory;
 
     /**
      * ForgetPassword constructor.
-     * @param MailService $mailService
      * @param IForgetPasswordFormFactory $forgetPasswordFormFactory
      */
-    public function __construct
-    (
-        MailService $mailService,
-        IForgetPasswordFormFactory $forgetPasswordFormFactory
-    )
+    public function __construct(IForgetPasswordFormFactory $forgetPasswordFormFactory)
     {
         parent::__construct();
-        $this->mailService = $mailService;
         $this->forgetPasswordFormFactory = $forgetPasswordFormFactory;
     }
 
