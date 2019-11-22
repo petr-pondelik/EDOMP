@@ -10,7 +10,7 @@ namespace App\TeacherModule\Plugins;
 
 use App\TeacherModule\Exceptions\InvalidParameterException;
 use App\CoreModule\Helpers\ConstHelper;
-use App\CoreModule\Helpers\LatexHelper;
+use App\TeacherModule\Services\LatexParser;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
 use App\TeacherModule\Interfaces\IProblemPlugin;
@@ -62,9 +62,9 @@ abstract class ProblemPlugin implements IProblemPlugin
     protected $templateJsonDataFunctionality;
 
     /**
-     * @var LatexHelper
+     * @var LatexParser
      */
-    protected $latexHelper;
+    protected $latexParser;
 
     /**
      * @var StringsHelper
@@ -88,7 +88,7 @@ abstract class ProblemPlugin implements IProblemPlugin
      * @param ConditionService $conditionService
      * @param ProblemGenerator $problemGenerator
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
-     * @param LatexHelper $latexHelper
+     * @param LatexParser $latexParser
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param RegularExpressions $regularExpressions
@@ -100,7 +100,7 @@ abstract class ProblemPlugin implements IProblemPlugin
         ConditionService $conditionService,
         ProblemGenerator $problemGenerator,
         TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexHelper $latexHelper, StringsHelper $stringsHelper,
+        LatexParser $latexParser, StringsHelper $stringsHelper,
         ConstHelper $constHelper,
         RegularExpressions $regularExpressions
     )
@@ -110,7 +110,7 @@ abstract class ProblemPlugin implements IProblemPlugin
         $this->conditionService = $conditionService;
         $this->problemGenerator = $problemGenerator;
         $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
-        $this->latexHelper = $latexHelper;
+        $this->latexParser = $latexParser;
         $this->stringsHelper = $stringsHelper;
         $this->constHelper = $constHelper;
         $this->regularExpressions = $regularExpressions;
@@ -157,12 +157,10 @@ abstract class ProblemPlugin implements IProblemPlugin
      * @throws \App\TeacherModule\Exceptions\GeneratorException
      * @throws \Nette\Utils\JsonException
      */
-    public function constructProblemFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash
+    protected function constructFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash
     {
         bdump('CONSTRUCT PROBLEM FINAL DATA');
-        [$finalBody, $matchesIndex] = $this->problemGenerator->generateProblemFinalBody($problemTemplate, $usedMatchesInx);
-        bdump($finalBody);
-        bdump($problemTemplate);
+        [$finalBody, $matchesIndex] = $this->problemGenerator->generate($problemTemplate, $usedMatchesInx);
         $finalData = ArrayHash::from([
             'textBefore' => $problemTemplate->getTextBefore(),
             'body' => $finalBody,
@@ -180,19 +178,27 @@ abstract class ProblemPlugin implements IProblemPlugin
     }
 
     /**
+     * @param ProblemFinal $entity
+     * @return ProblemFinal
+     */
+    protected function postprocessFinal(ProblemFinal $entity): ProblemFinal
+    {
+        $entity->setBody($this->latexParser->postprocessFinalBody($entity->getBody()));
+        return $entity;
+    }
+
+    /**
      * @param ProblemTemplate $problemTemplate
      * @param array|null $usedMatchesInx
      * @return ProblemFinal
      * @throws \App\TeacherModule\Exceptions\GeneratorException
      * @throws \Nette\Utils\JsonException
      */
-    public function constructProblemFinal(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ProblemFinal
+    public function createFinal(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ProblemFinal
     {
-        $finalData = $this->constructProblemFinalData($problemTemplate, $usedMatchesInx);
-        bdump($finalData);
+        $finalData = $this->constructFinalData($problemTemplate, $usedMatchesInx);
         $conditions = $problemTemplate->getConditions()->getValues();
         $problemFinal = $this->functionality->create($finalData, false, $conditions);
-        $problemFinal->setBody($this->latexHelper->postprocessProblemFinalBody($problemFinal->getBody()));
-        return $problemFinal;
+        return $this->postprocessFinal($problemFinal);
     }
 }

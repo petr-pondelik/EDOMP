@@ -13,7 +13,7 @@ use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\CoreModule\Helpers\LatexHelper;
+use App\TeacherModule\Services\LatexParser;
 use App\CoreModule\Helpers\StringsHelper;
 use App\TeacherModule\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
 use App\CoreModule\Model\Persistent\Functionality\FilterFunctionality;
@@ -85,9 +85,9 @@ class DoctrinePresenter extends TeacherPresenter
     protected $validator;
 
     /**
-     * @var LatexHelper
+     * @var LatexParser
      */
-    protected $latexHelper;
+    protected $latexParser;
 
     /**
      * @var StringsHelper
@@ -173,7 +173,7 @@ class DoctrinePresenter extends TeacherPresenter
      * @param ProblemTemplateRepository $problemTemplateRepository
      * @param QuadraticEquationTemplateRepository $quadraticEqTemplRepository
      * @param Validator $validator
-     * @param LatexHelper $latexHelper
+     * @param LatexParser $latexParser
      * @param StringsHelper $stringsHelper
      * @param TestVariantFunctionality $testVariantFunctionality
      * @param TestFunctionality $testFunctionality
@@ -198,7 +198,7 @@ class DoctrinePresenter extends TeacherPresenter
         TemplateJsonDataRepository $templateJsonDataRepository,
         ProblemTemplateRepository $problemTemplateRepository, QuadraticEquationTemplateRepository $quadraticEqTemplRepository,
         Validator $validator,
-        LatexHelper $latexHelper, StringsHelper $stringsHelper, TestVariantFunctionality $testVariantFunctionality,
+        LatexParser $latexParser, StringsHelper $stringsHelper, TestVariantFunctionality $testVariantFunctionality,
         TestFunctionality $testFunctionality,
         TestRepository $testRepository,
         IHelpModalFactory $sectionHelpModalFactory,
@@ -222,7 +222,7 @@ class DoctrinePresenter extends TeacherPresenter
         $this->quadraticEqTemplRepository = $quadraticEqTemplRepository;
         $this->em = $em;
         $this->validator = $validator;
-        $this->latexHelper = $latexHelper;
+        $this->latexParser = $latexParser;
         $this->stringsHelper = $stringsHelper;
         $this->testVariantFunctionality = $testVariantFunctionality;
         $this->testFunctionality = $testFunctionality;
@@ -300,7 +300,7 @@ class DoctrinePresenter extends TeacherPresenter
         $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate, []);
         bdump($linearEquationFinal);
 
-        bdump($this->latexHelper->postprocessProblemFinalBody('0 \big[ 5x + 15 \big] + 4x + 0 \frac{5x}{2} + 0*5 + 0 - 0 + 2'));
+        bdump($this->latexParser->postprocessFinalBody('0 \big[ 5x + 15 \big] + 4x + 0 \frac{5x}{2} + 0*5 + 0 - 0 + 2'));
 
 //        $this->em->flush();
 
@@ -432,8 +432,8 @@ class DoctrinePresenter extends TeacherPresenter
 //        $problemType->setLabel("Funkce");
 
 //        //bdump($this->validator->validateLinearEquation('55/15 x - 42/22 + 2/3 p2 - 43/20 p2 + 4 p3 + 15 p4', 'x'));
-//        //bdump($this->latexHelper::parseLatex('$$ x^{2} $$'));
-//        //bdump($this->latexHelper::parseLatex('$$ \frac{1}{2} \big( 2 x - 1 \big)^2 - \big( \frac{1}{2} \big( x + 1 \big) \big)^2 = 3 \big( \big( \frac{1}{2} x \big)^2 - \big( \frac{1}{<par min="2" max="10"/>} \big)^2 \big)^{2} $$'));
+//        //bdump($this->latexParser::parse('$$ x^{2} $$'));
+//        //bdump($this->latexParser::parse('$$ \frac{1}{2} \big( 2 x - 1 \big)^2 - \big( \frac{1}{2} \big( x + 1 \big) \big)^2 = 3 \big( \big( \frac{1}{2} x \big)^2 - \big( \frac{1}{<par min="2" max="10"/>} \big)^2 \big)^{2} $$'));
 //
 //        //bdump($this->stringsHelper::getLinearEquationRegExp('x'));
 //        //bdump($this->stringsHelper::getQuadraticEquationRegExp('x'));
@@ -465,7 +465,7 @@ class DoctrinePresenter extends TeacherPresenter
 
         /*$this->em->persist($category);*/
 
-        ////bdump($this->latexHelper::parseLatex('$$ \bigg \langle15 x + 5\bigg \rangle $$'));
+        ////bdump($this->latexParser::parse('$$ \bigg \langle15 x + 5\bigg \rangle $$'));
 
     }
 }

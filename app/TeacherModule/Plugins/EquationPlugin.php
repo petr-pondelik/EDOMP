@@ -31,7 +31,7 @@ abstract class EquationPlugin extends ProblemPlugin
     public function preprocess(ProblemTemplateNP $problemTemplate): ProblemTemplateNP
     {
         bdump('PREPROCESS EQUATION');
-        $expression = $this->latexHelper::parseLatex($problemTemplate->getBody());
+        $expression = $this->latexParser::parse($problemTemplate->getBody());
         $parameterized = $this->stringsHelper::getParametrized($expression);
         bdump($parameterized);
         $problemTemplate->setExpression($parameterized->expression);
@@ -63,14 +63,13 @@ abstract class EquationPlugin extends ProblemPlugin
     public function standardizeFinal(string $expression): string
     {
         bdump('STANDARDIZE EQUATION');
-        $expression = $this->latexHelper::parseLatex($expression);
+        $expression = $this->latexParser::parse($expression);
         $parameterized = $this->stringsHelper::getParametrized($expression);
         $sides = $this->stringsHelper::getEquationSides($parameterized->expression);
         $sides->left = $this->newtonApiClient->simplify($sides->left);
         $sides->right = $this->newtonApiClient->simplify($sides->right);
         $expression = $this->stringsHelper::mergeEqSides($sides);
         $expression = $this->newtonApiClient->simplify($expression);
-        bdump($expression);
         return $expression;
     }
 
@@ -87,11 +86,11 @@ abstract class EquationPlugin extends ProblemPlugin
     public function validateBody(ProblemTemplateNP $problemTemplate): int
     {
         bdump('VALIDATE BODY');
-        if(!$this->latexHelper::latexWrapped($problemTemplate->getBody())){
+        if(!$this->latexParser::latexWrapped($problemTemplate->getBody())){
             return 1;
         }
 
-        $parsed = $this->latexHelper::parseLatex($problemTemplate->getBody());
+        $parsed = $this->latexParser::parse($problemTemplate->getBody());
 
         $this->validateParameters($problemTemplate->getBody());
         $split = $this->stringsHelper::splitByParameters($parsed);
@@ -120,9 +119,9 @@ abstract class EquationPlugin extends ProblemPlugin
      * @throws \App\TeacherModule\Exceptions\GeneratorException
      * @throws \Nette\Utils\JsonException
      */
-    public function constructProblemFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash
+    public function constructFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash
     {
-        $finalData = parent::constructProblemFinalData($problemTemplate, $usedMatchesInx);
+        $finalData = parent::constructFinalData($problemTemplate, $usedMatchesInx);
         $finalData->variable = $problemTemplate->getVariable();
         return $finalData;
     }

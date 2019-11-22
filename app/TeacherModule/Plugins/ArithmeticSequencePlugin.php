@@ -10,7 +10,7 @@ namespace App\TeacherModule\Plugins;
 
 use App\TeacherModule\Exceptions\ProblemTemplateException;
 use App\CoreModule\Helpers\ConstHelper;
-use App\CoreModule\Helpers\LatexHelper;
+use App\TeacherModule\Services\LatexParser;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
@@ -37,7 +37,7 @@ final class ArithmeticSequencePlugin extends SequencePlugin
      * @param ConditionService $conditionService
      * @param ProblemGenerator $problemGenerator
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
-     * @param LatexHelper $latexHelper
+     * @param LatexParser $latexParser
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param RegularExpressions $regularExpressions
@@ -47,12 +47,12 @@ final class ArithmeticSequencePlugin extends SequencePlugin
     (
         NewtonApiClient $newtonApiClient, MathService $mathService, ConditionService $conditionService,
         ProblemGenerator $problemGenerator, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexHelper $latexHelper, StringsHelper $stringsHelper,
+        LatexParser $latexParser, StringsHelper $stringsHelper,
         ConstHelper $constHelper, RegularExpressions $regularExpressions,
         ArithmeticSequenceFinalFunctionality $arithmeticSequenceFinalFunctionality
     )
     {
-        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexHelper, $stringsHelper, $constHelper, $regularExpressions);
+        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexParser, $stringsHelper, $constHelper, $regularExpressions);
         $this->functionality = $arithmeticSequenceFinalFunctionality;
     }
 

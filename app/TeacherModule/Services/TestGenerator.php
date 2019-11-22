@@ -342,7 +342,7 @@ class TestGenerator
 
             try {
                 bdump($problemTemplate);
-                $problem = $this->pluginContainer->getPlugin($problemTypeKeyLabel)->constructProblemFinal($problemTemplate, $this->problemDuplicityModel->getTemplateState()->getTemplateUsed($problemTemplate));
+                $problem = $this->pluginContainer->getPlugin($problemTypeKeyLabel)->createFinal($problemTemplate, $this->problemDuplicityModel->getTemplateState()->getTemplateUsed($problemTemplate));
             } catch (GeneratorException $e) {
                 throw new ProblemDuplicityException('Test nelze vygenerovat bez opakujících se úloh.');
             }

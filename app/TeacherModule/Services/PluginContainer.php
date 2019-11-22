@@ -9,7 +9,7 @@
 namespace App\TeacherModule\Services;
 
 use App\CoreModule\Helpers\ConstHelper;
-use App\CoreModule\Helpers\LatexHelper;
+use App\TeacherModule\Services\LatexParser;
 use App\CoreModule\Helpers\StringsHelper;
 use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
 use App\TeacherModule\Plugins\ArithmeticSequencePlugin;
@@ -52,9 +52,9 @@ class PluginContainer
     protected $stringsHelper;
 
     /**
-     * @var LatexHelper
+     * @var LatexParser
      */
-    protected $latexHelper;
+    protected $latexParser;
 
     /**
      * @var LinearEquationPlugin
@@ -92,7 +92,7 @@ class PluginContainer
      * @param ProblemFinalRepository $problemFinalRepository
      * @param ConstHelper $constHelper
      * @param StringsHelper $stringsHelper
-     * @param LatexHelper $latexHelper
+     * @param LatexParser $latexParser
      * @param Parser $parser
      * @param LinearEquationPlugin $linearEquationPlugin
      * @param QuadraticEquationPlugin $quadraticEquationPlugin
@@ -103,7 +103,7 @@ class PluginContainer
     (
         NewtonApiClient $newtonApiClient,
         ProblemFinalRepository $problemFinalRepository,
-        ConstHelper $constHelper, StringsHelper $stringsHelper, LatexHelper $latexHelper,
+        ConstHelper $constHelper, StringsHelper $stringsHelper, LatexParser $latexParser,
         Parser $parser,
         LinearEquationPlugin $linearEquationPlugin,
         QuadraticEquationPlugin $quadraticEquationPlugin,
@@ -116,7 +116,7 @@ class PluginContainer
         $this->parser = $parser;
         $this->constHelper = $constHelper;
         $this->stringsHelper = $stringsHelper;
-        $this->latexHelper = $latexHelper;
+        $this->latexParser = $latexParser;
         $this->linearEquationPlugin = $linearEquationPlugin;
         $this->quadraticEquationPlugin = $quadraticEquationPlugin;
         $this->arithmeticSequencePlugin = $arithmeticSequencePlugin;

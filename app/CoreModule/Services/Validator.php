@@ -11,7 +11,7 @@ namespace App\CoreModule\Services;
 use App\CoreModule\Arguments\ValidatorArgument;
 use App\CoreModule\Exceptions\ValidatorException;
 use App\CoreModule\Helpers\ConstHelper;
-use App\CoreModule\Helpers\LatexHelper;
+use App\TeacherModule\Services\LatexParser;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
 use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
@@ -64,9 +64,9 @@ class Validator
     protected $stringsHelper;
 
     /**
-     * @var LatexHelper
+     * @var LatexParser
      */
-    protected $latexHelper;
+    protected $latexParser;
 
     /**
      * @var array
@@ -121,7 +121,7 @@ class Validator
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param ConstHelper $constHelper
      * @param StringsHelper $stringsHelper
-     * @param LatexHelper $latexHelper
+     * @param LatexParser $latexParser
      * @param LinearEquationPlugin $linearEquationPlugin
      * @param QuadraticEquationPlugin $quadraticEquationPlugin
      * @param ArithmeticSequencePlugin $arithmeticSequencePlugin
@@ -133,7 +133,7 @@ class Validator
         NewtonApiClient $newtonApiClient,
         UserRepository $userRepository,
         TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        ConstHelper $constHelper, StringsHelper $stringsHelper, LatexHelper $latexHelper,
+        ConstHelper $constHelper, StringsHelper $stringsHelper, LatexParser $latexParser,
         LinearEquationPlugin $linearEquationPlugin,
         QuadraticEquationPlugin $quadraticEquationPlugin,
         ArithmeticSequencePlugin $arithmeticSequencePlugin,
@@ -146,7 +146,7 @@ class Validator
         $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
         $this->constHelper = $constHelper;
         $this->stringsHelper = $stringsHelper;
-        $this->latexHelper = $latexHelper;
+        $this->latexParser = $latexParser;
         $this->linearEquationPlugin = $linearEquationPlugin;
         $this->quadraticEquationPlugin = $quadraticEquationPlugin;
         $this->arithmeticSequencePlugin = $arithmeticSequencePlugin;

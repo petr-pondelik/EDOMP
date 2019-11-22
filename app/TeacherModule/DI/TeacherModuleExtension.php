@@ -46,6 +46,7 @@ use App\TeacherModule\Plugins\LinearEquationPlugin;
 use App\TeacherModule\Plugins\QuadraticEquationPlugin;
 use App\TeacherModule\Services\ConditionService;
 use App\TeacherModule\Services\FilterSession;
+use App\TeacherModule\Services\LatexParser;
 use App\TeacherModule\Services\MathService;
 use App\TeacherModule\Services\NewtonApiClient;
 use App\TeacherModule\Services\PluginContainer;
@@ -117,6 +118,9 @@ class TeacherModuleExtension extends ModuleExtension
 
         $builder->addDefinition($this->prefix('filterSession'))
             ->setType(FilterSession::class);
+
+        $builder->addDefinition($this->prefix('latexParser'))
+            ->setType(LatexParser::class);
 
         // Problem Plugins definitions
 

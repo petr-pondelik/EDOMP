@@ -34,7 +34,7 @@ abstract class SequencePlugin extends ProblemPlugin
     {
         bdump('PREPROCESS SEQUENCE');
 
-        $expression = $this->latexHelper::parseLatex($problemTemplate->getBody());
+        $expression = $this->latexParser::parse($problemTemplate->getBody());
         $problemTemplate->setExpression($expression);
         $parametrized = $this->stringsHelper::getParametrized($expression);
         $sides = $this->stringsHelper::getEquationSides($parametrized->expression);
@@ -56,12 +56,10 @@ abstract class SequencePlugin extends ProblemPlugin
     public function standardizeFinal(string $expression): string
     {
         bdump('STANDARDIZE SEQUENCE');
-
-        $expression = $this->latexHelper::parseLatex($expression);
+        $expression = $this->latexParser::parse($expression);
         $parametrized = $this->stringsHelper::getParametrized($expression);
         $sides = $this->stringsHelper::getEquationSides($parametrized->expression);
         $expression = $this->newtonApiClient->simplify($sides->right);
-
         return $expression;
     }
 
@@ -72,7 +70,6 @@ abstract class SequencePlugin extends ProblemPlugin
     public function validateType(ProblemTemplateNP $problemTemplate): bool
     {
         bdump('VALIDATE SEQUENCE');
-        bdump($problemTemplate);
         if(!Strings::match($problemTemplate->getExpression(), '~' . $this->regularExpressions::getSequenceRE($problemTemplate->getIndexVariable()) . '~')){
             return false;
         }
@@ -86,7 +83,7 @@ abstract class SequencePlugin extends ProblemPlugin
      */
     public function evaluate(ProblemFinal $problem): ArrayHash
     {
-        $parsed = $this->latexHelper::parseLatex($problem->getBody());
+        $parsed = $this->latexParser::parse($problem->getBody());
         $variable = $problem->getVariable();
 
         $sides = $this->stringsHelper::getEquationSides($parsed, false);
@@ -123,10 +120,10 @@ abstract class SequencePlugin extends ProblemPlugin
      */
     public function validateBody(ProblemTemplateNP $problemTemplate): int
     {
-        if(!$this->latexHelper::latexWrapped($problemTemplate->getBody())){
+        if(!$this->latexParser::latexWrapped($problemTemplate->getBody())){
             return 1;
         }
-        $parsed = $this->latexHelper::parseLatex($problemTemplate->getBody());
+        $parsed = $this->latexParser::parse($problemTemplate->getBody());
 
         $this->validateParameters($problemTemplate->getBody());
         $split = $this->stringsHelper::splitByParameters($parsed);
@@ -153,9 +150,9 @@ abstract class SequencePlugin extends ProblemPlugin
      * @throws \App\TeacherModule\Exceptions\GeneratorException
      * @throws \Nette\Utils\JsonException
      */
-    public function constructProblemFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash
+    public function constructFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash
     {
-        $finalData = parent::constructProblemFinalData($problemTemplate, $usedMatchesInx);
+        $finalData = parent::constructFinalData($problemTemplate, $usedMatchesInx);
         $finalData->indexVariable = $problemTemplate->getIndexVariable();
         $finalData->firstN = $problemTemplate->getFirstN();
         return $finalData;

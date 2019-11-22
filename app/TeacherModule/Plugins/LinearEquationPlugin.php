@@ -10,7 +10,7 @@ namespace App\TeacherModule\Plugins;
 
 use App\TeacherModule\Exceptions\ProblemTemplateException;
 use App\CoreModule\Helpers\ConstHelper;
-use App\CoreModule\Helpers\LatexHelper;
+use App\TeacherModule\Services\LatexParser;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
 use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
@@ -39,7 +39,7 @@ final class LinearEquationPlugin extends EquationPlugin
      * @param ConditionService $conditionService
      * @param ProblemGenerator $problemGenerator
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
-     * @param LatexHelper $latexHelper
+     * @param LatexParser $latexParser
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param RegularExpressions $regularExpressions
@@ -49,12 +49,12 @@ final class LinearEquationPlugin extends EquationPlugin
     (
         NewtonApiClient $newtonApiClient, MathService $mathService, ConditionService $conditionService,
         ProblemGenerator $problemGenerator, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexHelper $latexHelper, StringsHelper $stringsHelper,
+        LatexParser $latexParser, StringsHelper $stringsHelper,
         ConstHelper $constHelper, RegularExpressions $regularExpressions,
         LinearEquationFinalFunctionality $linearEquationFinalFunctionality
     )
     {
-        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexHelper, $stringsHelper, $constHelper, $regularExpressions);
+        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexParser, $stringsHelper, $constHelper, $regularExpressions);
         $this->functionality = $linearEquationFinalFunctionality;
     }
 
@@ -68,7 +68,6 @@ final class LinearEquationPlugin extends EquationPlugin
     public function validateType(ProblemTemplateNP $data): bool
     {
         bdump('VALIDATE LINEAR EQUATION');
-        bdump($data->getStandardized());
 
         // Remove all the spaces
         $standardized = $this->stringsHelper::removeWhiteSpaces($data->getStandardized());
@@ -82,7 +81,6 @@ final class LinearEquationPlugin extends EquationPlugin
 
         // Match string against the linear expression regexp
         $matches = Strings::match($standardized, '~' . $this->regularExpressions::getLinearEquationRE($data->getVariable()) . '~');
-        bdump($matches);
 
         // Check if the whole expression was matched
         if ($matches[0] !== $standardized) {
@@ -148,13 +146,9 @@ final class LinearEquationPlugin extends EquationPlugin
     public function validateResultCond(LinearEquationTemplateNP $data): bool
     {
         bdump('VALIDATE RESULT COND');
-        bdump($data);
-
         $variableExp = $this->stringsHelper::getLinearVariableExpresion($data->getStandardized(), $data->getVariable());
         $data->setLinearVariableExpression($variableExp);
         $data->setConditionValidateItem('linearVariableExpression');
-
-        bdump($data);
 
         try {
             $matches = $this->conditionService->findConditionsMatches([

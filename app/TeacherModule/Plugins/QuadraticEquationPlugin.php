@@ -10,7 +10,7 @@ namespace App\TeacherModule\Plugins;
 
 use App\TeacherModule\Exceptions\ProblemTemplateException;
 use App\CoreModule\Helpers\ConstHelper;
-use App\CoreModule\Helpers\LatexHelper;
+use App\TeacherModule\Services\LatexParser;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
 use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
@@ -39,7 +39,7 @@ final class QuadraticEquationPlugin extends EquationPlugin
      * @param ConditionService $conditionService
      * @param ProblemGenerator $problemGenerator
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
-     * @param LatexHelper $latexHelper
+     * @param LatexParser $latexParser
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param RegularExpressions $regularExpressions
@@ -49,12 +49,12 @@ final class QuadraticEquationPlugin extends EquationPlugin
     (
         NewtonApiClient $newtonApiClient, MathService $mathService, ConditionService $conditionService,
         ProblemGenerator $problemGenerator, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexHelper $latexHelper, StringsHelper $stringsHelper,
+        LatexParser $latexParser, StringsHelper $stringsHelper,
         ConstHelper $constHelper, RegularExpressions $regularExpressions,
         QuadraticEquationFinalFunctionality $quadraticEquationFinalFunctionality
     )
     {
-        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexHelper, $stringsHelper, $constHelper, $regularExpressions);
+        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexParser, $stringsHelper, $constHelper, $regularExpressions);
         $this->functionality = $quadraticEquationFinalFunctionality;
     }
 
@@ -70,11 +70,7 @@ final class QuadraticEquationPlugin extends EquationPlugin
     public function getDiscriminantA(string $expression, string $variable)
     {
         bdump('GET DISCRIMINANT A');
-        bdump($expression);
-
         $aExp = Strings::match($expression, '~' . sprintf($this->regularExpressions::RE_DISCRIMINANT_A_COEFFICIENT, $variable) . '~');
-        bdump($aExp);
-
         $prefix = Strings::trim($aExp[1]);
         $postfix = Strings::trim($aExp[2]);
 
@@ -93,14 +89,10 @@ final class QuadraticEquationPlugin extends EquationPlugin
             $res = $prefix;
         }
 
-        bdump($res);
-
         if($res !== '1' && $res !== '-1'){
             $res = $this->newtonApiClient->simplify($res);
         }
 
-        bdump('GET DISCRIMINANT A RES');
-        bdump($res);
         return $this->stringsHelper::wrap($res);
     }
 
@@ -116,14 +108,11 @@ final class QuadraticEquationPlugin extends EquationPlugin
     public function getDiscriminantB(string $standardized, string $variable)
     {
         bdump('GET DISCRIMINANT B');
-        bdump($standardized);
 
         $bExp = Strings::after($standardized, $variable . '^2');
         $bExp = Strings::replace($bExp, '~' . $this->regularExpressions::RE_FIRST_OPERATOR_SPLIT . '~', '$2$3');
-        bdump($bExp);
 
         $matchArr = Strings::match($bExp, '~' . sprintf($this->regularExpressions::RE_DISCRIMINANT_B_COEFFICIENT, $variable) . '~');
-        bdump($matchArr);
 
         $prefix = Strings::trim($matchArr[1]);
         $postfix = Strings::trim($matchArr[2]);
@@ -147,9 +136,6 @@ final class QuadraticEquationPlugin extends EquationPlugin
             $res = $this->newtonApiClient->simplify($res);
         }
 
-        bdump('GET DISCRIMINANT B RES');
-        bdump($res);
-
         return $this->stringsHelper::wrap($res);
     }
 
@@ -165,12 +151,9 @@ final class QuadraticEquationPlugin extends EquationPlugin
     public function getDiscriminantC(string $expression, string $variable)
     {
         bdump('GET DISCRIMINANT C');
-        bdump($expression);
 
         $cExp = Strings::after($expression, ' ' . $variable . ' ');
         $matchArr = Strings::match($cExp, '~' . $this->regularExpressions::RE_DISCRIMINANT_C_COEFFICIENT . '~');
-        bdump($matchArr);
-
         $res = $matchArr[2];
 
         if(!$res){
@@ -185,9 +168,6 @@ final class QuadraticEquationPlugin extends EquationPlugin
         }
 
         $res = $this->newtonApiClient->simplify($res);
-
-        bdump('GET DISCRIMINANT C RES');
-        bdump($res);
         return $this->stringsHelper::wrap($res);
     }
 
@@ -218,12 +198,9 @@ final class QuadraticEquationPlugin extends EquationPlugin
 
         // Remove all the spaces
         $standardized = $this->stringsHelper::removeWhiteSpaces($data->getStandardized());
-        bdump($standardized);
 
         // Match string against the quadratic expression regexp
         $matches = Strings::match($standardized, '~' . $this->regularExpressions::getQuadraticEquationRE($data->getVariable()) . '~');
-
-        bdump($matches);
 
         // Check if the whole expression was matched
         if($matches[0] !== $standardized){
@@ -232,7 +209,6 @@ final class QuadraticEquationPlugin extends EquationPlugin
 
         bdump('VARIABLE COEFFICIENTS');
         $variableCoefficients = Strings::matchAll($standardized, '~' . sprintf($this->regularExpressions::RE_VARIABLE_COEFFICIENT, $data->getVariable()) . '~');
-        bdump($variableCoefficients);
 
         foreach ($variableCoefficients as $variableCoefficient){
             if($variableCoefficient[2] > 2){
@@ -279,8 +255,6 @@ final class QuadraticEquationPlugin extends EquationPlugin
         $standardized = $this->standardizeFinal($problem->getBody());
         $a = $this->getDiscriminantA($standardized, $problem->getVariable());
         $b = $this->getDiscriminantB($standardized, $problem->getVariable());
-        /*$a = $this->stringsHelper::trim($a);
-        $b = $this->stringsHelper::trim($b);*/
         $discriminant = $this->getDiscriminantExpression($standardized, $problem->getVariable());
         $discriminant = $this->mathService->evaluateExpression($discriminant);
 
@@ -334,8 +308,6 @@ final class QuadraticEquationPlugin extends EquationPlugin
         $discriminant = $this->getDiscriminantExpression($data->getStandardized(), $data->getVariable());
         $data->setDiscriminant($discriminant);
         $data->setConditionValidateItem('discriminant');
-
-        bdump($data);
 
         $matches = $this->conditionService->findConditionsMatches([
             $this->constHelper::DISCRIMINANT => [

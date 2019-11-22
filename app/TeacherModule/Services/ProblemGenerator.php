@@ -8,12 +8,12 @@
 
 namespace App\TeacherModule\Services;
 
+use App\CoreModule\Interfaces\IGenerator;
 use App\TeacherModule\Exceptions\GeneratorException;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
-use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
 
@@ -21,13 +21,8 @@ use Nette\Utils\Strings;
  * Class GeneratorService
  * @package App\Helpers
  */
-class ProblemGenerator
+class ProblemGenerator implements IGenerator
 {
-    /**
-     * @var ProblemTemplateRepository
-     */
-    protected $problemTemplateRepository;
-
     /**
      * @var StringsHelper
      */
@@ -49,26 +44,18 @@ class ProblemGenerator
     protected $generatorMarksMapping;
 
     /**
-     * @var array
-     */
-    protected $conditionsMatches;
-
-    /**
      * GeneratorService constructor.
-     * @param ProblemTemplateRepository $problemTemplateRepository
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param RegularExpressions $regularExpressions
      */
     public function __construct
     (
-        ProblemTemplateRepository $problemTemplateRepository,
         StringsHelper $stringsHelper,
         ConstHelper $constHelper,
         RegularExpressions $regularExpressions
     )
     {
-        $this->problemTemplateRepository = $problemTemplateRepository;
         $this->stringsHelper = $stringsHelper;
         $this->constHelper = $constHelper;
         $this->regularExpressions = $regularExpressions;
@@ -233,8 +220,6 @@ class ProblemGenerator
     protected function generateParams(string $expression): array
     {
         $expressionSplit = $this->stringsHelper::splitByParameters($expression);
-        bdump($expressionSplit);
-
         $parameters = [];
         $paramsCnt = 0;
 
@@ -242,11 +227,9 @@ class ProblemGenerator
         foreach ($expressionSplit as $splitKey => $splitItem) {
             $expressionSplit[$splitKey] = $this->processBlock($splitItem);
             if ($splitItem !== '') {
-
                 if (Strings::match($splitItem, '~' . $this->regularExpressions::RE_PARAMETER_VALID . '~')) {
                     $parameters['p' . $paramsCnt++] = Strings::trim($expressionSplit[$splitKey]);
                 }
-
             }
         }
 
@@ -254,21 +237,24 @@ class ProblemGenerator
     }
 
     /**
-     * @param ProblemTemplate $problemTemplate
+     * @param ProblemTemplate|null $problemTemplate
      * @param array|null $usedMatchesInx
      * @return array
      * @throws GeneratorException
      * @throws \Nette\Utils\JsonException
      */
-    public function generateProblemFinalBody(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): array
+    public function generate(ProblemTemplate $problemTemplate = null, array $usedMatchesInx = null): array
     {
         bdump('GENERATE PROBLEM FINAL BODY');
-        bdump($usedMatchesInx);
+
+        if (!$problemTemplate) {
+            throw new GeneratorException('Specify ProblemTemplate from which to generate ProblemFinal.');
+        }
 
         $parametrized = $this->stringsHelper::getParametrized($problemTemplate->getBody());
 
         // Use JSON matches array of problemPrototype
-        $matchesJson = $this->problemTemplateRepository->find($problemTemplate->getId())->getMatches();
+        $matchesJson = $problemTemplate->getMatches();
         $matchesArr = null;
         $matchesIndex = null;
 
@@ -286,12 +272,8 @@ class ProblemGenerator
             $params = $matchesArr[$matchesIndex];
         } else {
             // Generate params without conditions
-            bdump($problemTemplate->getBody());
             $params = $this->generateParams($problemTemplate->getBody());
         }
-
-        bdump('GENERATED PARAMETERS');
-        bdump($params);
 
         return [$this->stringsHelper::passValues($parametrized->expression, $params), $matchesIndex];
     }

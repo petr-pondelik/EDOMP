@@ -6,15 +6,18 @@
  * Time: 19:40
  */
 
-namespace App\CoreModule\Helpers;
+namespace App\TeacherModule\Services;
 
+use App\CoreModule\Helpers\RegularExpressions;
+use App\CoreModule\Helpers\StringsHelper;
+use App\CoreModule\Interfaces\IParser;
 use Nette\Utils\Strings;
 
 /**
- * Class LatexHelper
+ * Class LatexParser
  * @package App\CoreModule\Helpers
  */
-class LatexHelper
+class LatexParser implements IParser
 {
     protected const GLOBAL = 'global';
 
@@ -351,7 +354,7 @@ class LatexHelper
     protected $regularExpressions;
 
     /**
-     * LatexHelper constructor.
+     * LatexParser constructor.
      * @param StringsHelper $stringsHelper
      * @param RegularExpressions $regularExpressions
      */
@@ -457,22 +460,6 @@ class LatexHelper
     }
 
     /**
-     * @param string $latex
-     * @return string
-     */
-    public static function parseLatex(string $latex): string
-    {
-        //bdump('PARSE LATEX');
-        $res = self::trim($latex);
-        $res = self::parseParentheses($res);
-        $res = self::parseLogarithm($res);
-        $res = self::parseSubscripts($res);
-        $res = self::parseSuperscripts($res);
-        $res = self::parseFractions($res);
-        return $res;
-    }
-
-    /**
      * @param string $expression
      * @return string
      */
@@ -517,7 +504,7 @@ class LatexHelper
      * @param string $body
      * @return string
      */
-    public function postprocessProblemFinalBody(string $body): string
+    public function postprocessFinalBody(string $body): string
     {
         $body = $this->removeZeroMultipliedBrackets($body);
         $body = $this->removeZeroMultipliedFractions($body);
@@ -526,5 +513,20 @@ class LatexHelper
         $body = $this->stringsHelper::normalizeOperators($body);
         $body = $this->stringsHelper::deduplicateWhiteSpaces($body);
         return $body;
+    }
+
+    /**
+     * @param string $latex
+     * @return string
+     */
+    public static function parse(string $latex): string
+    {
+        $res = self::trim($latex);
+        $res = self::parseParentheses($res);
+        $res = self::parseLogarithm($res);
+        $res = self::parseSubscripts($res);
+        $res = self::parseSuperscripts($res);
+        $res = self::parseFractions($res);
+        return $res;
     }
 }

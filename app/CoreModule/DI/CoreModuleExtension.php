@@ -19,7 +19,7 @@ use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\FlashesTranslator;
 use App\CoreModule\Helpers\FormatterHelper;
-use App\CoreModule\Helpers\LatexHelper;
+use App\TeacherModule\Services\LatexParser;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
 use App\CoreModule\Model\Persistent\Entity\Category;
@@ -185,9 +185,6 @@ class CoreModuleExtension extends ModuleExtension
 
         $builder->addDefinition($this->prefix('formatterHelper'))
             ->setType(FormatterHelper::class);
-
-        $builder->addDefinition($this->prefix('latexHelper'))
-            ->setType(LatexHelper::class);
 
         $builder->addDefinition($this->prefix('regularExpressions'))
             ->setType(RegularExpressions::class);
