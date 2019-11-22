@@ -33,14 +33,12 @@ abstract class SequencePlugin extends ProblemPlugin
     public function preprocess(ProblemTemplateNP $problemTemplate): ProblemTemplateNP
     {
         bdump('PREPROCESS SEQUENCE');
-
         $expression = $this->latexParser::parse($problemTemplate->getBody());
         $problemTemplate->setExpression($expression);
-        $parametrized = $this->stringsHelper::getParametrized($expression);
+        $parametrized = $this->parameterParser::parse($expression);
         $sides = $this->stringsHelper::getEquationSides($parametrized->expression);
         $expression = $this->newtonApiClient->simplify($sides->right);
         $problemTemplate->setStandardized($expression);
-
         return $problemTemplate;
     }
 
@@ -57,7 +55,7 @@ abstract class SequencePlugin extends ProblemPlugin
     {
         bdump('STANDARDIZE SEQUENCE');
         $expression = $this->latexParser::parse($expression);
-        $parametrized = $this->stringsHelper::getParametrized($expression);
+        $parametrized = $this->parameterParser::parse($expression);
         $sides = $this->stringsHelper::getEquationSides($parametrized->expression);
         $expression = $this->newtonApiClient->simplify($sides->right);
         return $expression;
@@ -97,7 +95,7 @@ abstract class SequencePlugin extends ProblemPlugin
 
         for($i = 1; $i <= $firstN; $i++){
             $res[$seqName . '_{' . $i . '}'] = $this->mathService->evaluateExpression(
-                $this->stringsHelper::passValues($sides->right, [
+                $this->parameterParser->passValues($sides->right, [
                     $variable => $i
                 ])
             );
@@ -126,13 +124,13 @@ abstract class SequencePlugin extends ProblemPlugin
         $parsed = $this->latexParser::parse($problemTemplate->getBody());
 
         $this->validateParameters($problemTemplate->getBody());
-        $split = $this->stringsHelper::splitByParameters($parsed);
+        $split = $this->parameterParser::splitByParameters($parsed);
 
         if (empty($problemTemplate->getIndexVariable()) || !$this->stringsHelper::containsVariable($split, $problemTemplate->getIndexVariable())) {
             return 2;
         }
 
-        $parametrized = $this->stringsHelper::getParametrized($parsed);
+        $parametrized = $this->parameterParser::parse($parsed);
 
         try {
             $this->newtonApiClient->simplify($parametrized->expression);

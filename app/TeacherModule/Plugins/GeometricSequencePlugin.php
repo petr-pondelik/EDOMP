@@ -20,6 +20,7 @@ use App\TeacherModule\Services\ConditionService;
 use App\TeacherModule\Services\MathService;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\TeacherModule\Services\NewtonApiClient;
+use App\TeacherModule\Services\ParameterParser;
 use App\TeacherModule\Services\ProblemGenerator;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
@@ -38,6 +39,7 @@ final class GeometricSequencePlugin extends SequencePlugin
      * @param ProblemGenerator $problemGenerator
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param LatexParser $latexParser
+     * @param ParameterParser $parameterParser
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param RegularExpressions $regularExpressions
@@ -45,14 +47,20 @@ final class GeometricSequencePlugin extends SequencePlugin
      */
     public function __construct
     (
-        NewtonApiClient $newtonApiClient, MathService $mathService, ConditionService $conditionService,
-        ProblemGenerator $problemGenerator, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexParser $latexParser, StringsHelper $stringsHelper,
-        ConstHelper $constHelper, RegularExpressions $regularExpressions,
+        NewtonApiClient $newtonApiClient,
+        MathService $mathService,
+        ConditionService $conditionService,
+        ProblemGenerator $problemGenerator,
+        TemplateJsonDataFunctionality $templateJsonDataFunctionality,
+        LatexParser $latexParser,
+        ParameterParser $parameterParser,
+        StringsHelper $stringsHelper,
+        ConstHelper $constHelper,
+        RegularExpressions $regularExpressions,
         GeometricSequenceFinalFunctionality $geometricSequenceFinalFunctionality
     )
     {
-        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexParser, $stringsHelper, $constHelper, $regularExpressions);
+        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexParser, $parameterParser, $stringsHelper, $constHelper, $regularExpressions);
         $this->functionality = $geometricSequenceFinalFunctionality;
     }
 
@@ -72,9 +80,9 @@ final class GeometricSequencePlugin extends SequencePlugin
         bdump('VALIDATE GEOMETRIC SEQUENCE');
 
         // Get three first members of the sequence
-        $q[] = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->getStandardized(), [$data->getIndexVariable() => 1]), $data->getIndexVariable());
-        $q[] = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->getStandardized(), [$data->getIndexVariable() => 2]), $data->getIndexVariable());
-        $q[] = $this->stringsHelper::fillMultipliers($this->stringsHelper::passValues($data->getStandardized(), [$data->getIndexVariable() => 3]), $data->getIndexVariable());
+        $q[] = $this->stringsHelper::fillMultipliers($this->parameterParser->passValues($data->getStandardized(), [$data->getIndexVariable() => 1]), $data->getIndexVariable());
+        $q[] = $this->stringsHelper::fillMultipliers($this->parameterParser->passValues($data->getStandardized(), [$data->getIndexVariable() => 2]), $data->getIndexVariable());
+        $q[] = $this->stringsHelper::fillMultipliers($this->parameterParser->passValues($data->getStandardized(), [$data->getIndexVariable() => 3]), $data->getIndexVariable());
 
         $data->setFirstValues($q);
 

@@ -8,11 +8,11 @@
 
 namespace App\TeacherModule\Plugins;
 
+use App\CoreModule\Helpers\StringsHelper;
 use App\TeacherModule\Exceptions\InvalidParameterException;
 use App\CoreModule\Helpers\ConstHelper;
 use App\TeacherModule\Services\LatexParser;
 use App\CoreModule\Helpers\RegularExpressions;
-use App\CoreModule\Helpers\StringsHelper;
 use App\TeacherModule\Interfaces\IProblemPlugin;
 use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
@@ -21,6 +21,7 @@ use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\TeacherModule\Services\ConditionService;
 use App\TeacherModule\Services\MathService;
 use App\TeacherModule\Services\NewtonApiClient;
+use App\TeacherModule\Services\ParameterParser;
 use App\TeacherModule\Services\ProblemGenerator;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
@@ -67,6 +68,11 @@ abstract class ProblemPlugin implements IProblemPlugin
     protected $latexParser;
 
     /**
+     * @var ParameterParser
+     */
+    protected $parameterParser;
+
+    /**
      * @var StringsHelper
      */
     protected $stringsHelper;
@@ -89,6 +95,7 @@ abstract class ProblemPlugin implements IProblemPlugin
      * @param ProblemGenerator $problemGenerator
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param LatexParser $latexParser
+     * @param ParameterParser $parameterParser
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param RegularExpressions $regularExpressions
@@ -100,7 +107,9 @@ abstract class ProblemPlugin implements IProblemPlugin
         ConditionService $conditionService,
         ProblemGenerator $problemGenerator,
         TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexParser $latexParser, StringsHelper $stringsHelper,
+        LatexParser $latexParser,
+        ParameterParser $parameterParser,
+        StringsHelper $stringsHelper,
         ConstHelper $constHelper,
         RegularExpressions $regularExpressions
     )
@@ -111,6 +120,7 @@ abstract class ProblemPlugin implements IProblemPlugin
         $this->problemGenerator = $problemGenerator;
         $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
         $this->latexParser = $latexParser;
+        $this->parameterParser = $parameterParser;
         $this->stringsHelper = $stringsHelper;
         $this->constHelper = $constHelper;
         $this->regularExpressions = $regularExpressions;
@@ -128,9 +138,7 @@ abstract class ProblemPlugin implements IProblemPlugin
             throw new InvalidParameterException('Zadaná šablona neobsahuje parametr.');
         }
 
-        $split = $this->stringsHelper::findParametersAll($expression);
-
-        bdump($split);
+        $split = $this->parameterParser::findParametersAll($expression);
 
         foreach ($split as $part) {
             if ($part !== '' && Strings::startsWith($part, '<par')) {
@@ -139,8 +147,8 @@ abstract class ProblemPlugin implements IProblemPlugin
                     throw new InvalidParameterException('Zadaná šablona obsahuje nevalidní parametr.');
                 }
 
-                $min = $this->stringsHelper::extractParAttr($part, 'min');
-                $max = $this->stringsHelper::extractParAttr($part, 'max');
+                $min = $this->parameterParser::extractParAttr($part, 'min');
+                $max = $this->parameterParser::extractParAttr($part, 'max');
 
                 if ($min > $max) {
                     throw new InvalidParameterException('Neplatný interval parametru.');

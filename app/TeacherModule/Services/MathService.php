@@ -31,6 +31,11 @@ class MathService
     protected $generatorService;
 
     /**
+     * @var ParameterParser
+     */
+    protected $parameterParser;
+
+    /**
      * @var StringsHelper
      */
     protected $stringsHelper;
@@ -49,18 +54,24 @@ class MathService
      * MathService constructor.
      * @param Parser $parser
      * @param ProblemGenerator $generatorService
+     * @param ParameterParser $parameterParser
      * @param StringsHelper $stringsHelper
      * @param VariableFractionService $variableFractionService
      * @param RegularExpressions $regularExpressions
      */
     public function __construct
     (
-        Parser $parser, ProblemGenerator $generatorService, StringsHelper $stringsHelper,
-        VariableFractionService $variableFractionService, RegularExpressions $regularExpressions
+        Parser $parser,
+        ProblemGenerator $generatorService,
+        ParameterParser $parameterParser,
+        StringsHelper $stringsHelper,
+        VariableFractionService $variableFractionService,
+        RegularExpressions $regularExpressions
     )
     {
         $this->parser = $parser;
         $this->generatorService = $generatorService;
+        $this->parameterParser = $parameterParser;
         $this->stringsHelper = $stringsHelper;
         $this->variableFractionService = $variableFractionService;
         $this->regularExpressions = $regularExpressions;
@@ -104,7 +115,7 @@ class MathService
      */
     public function extractVariableCoefficients(EquationTemplateNP $standardized, array $parValuesArr, bool $withLinearCoefficient = true): array
     {
-        $final = $this->stringsHelper::passValues($standardized->getStandardized(), $parValuesArr);
+        $final = $this->parameterParser->passValues($standardized->getStandardized(), $parValuesArr);
 
         if($withLinearCoefficient){
             $matches = Strings::matchAll($final, '~' . sprintf($this->regularExpressions::RE_VARIABLE_COEFFICIENT, $standardized->getVariable()) . '~');

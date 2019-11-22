@@ -16,7 +16,7 @@ interface IParser
 {
     /**
      * @param string $input
-     * @return string
+     * @return mixed
      */
-    public static function parse(string $input): string;
+    public static function parse(string $input);
 }

@@ -11,7 +11,6 @@ namespace App\TeacherModule\Components\Forms\ProblemTemplateForm\LinearEqTemplat
 
 use App\TeacherModule\Components\Forms\ProblemTemplateForm\ProblemTemplateFormControl;
 use App\CoreModule\Helpers\ConstHelper;
-use App\CoreModule\Helpers\StringsHelper;
 use App\CoreModule\Model\Persistent\Functionality\ProblemTemplate\LinearEquationTemplateFunctionality;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
@@ -19,6 +18,7 @@ use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\TeacherModule\Services\ParameterParser;
 use App\TeacherModule\Services\ProblemTemplateSession;
 use App\CoreModule\Services\Validator;
 use App\TeacherModule\Model\NonPersistent\Entity\LinearEquationTemplateNP;
@@ -80,7 +80,7 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param PluginContainer $pluginContainer
-     * @param StringsHelper $stringsHelper
+     * @param ParameterParser $parameterParser
      * @param ConstHelper $constHelper
      * @param ProblemTemplateSession $problemTemplateSession
      * @param LinearEquationTemplateFunctionality $functionality
@@ -95,7 +95,7 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
         ProblemConditionTypeRepository $problemConditionTypeRepository,
         ProblemConditionRepository $problemConditionRepository,
         PluginContainer $pluginContainer,
-        StringsHelper $stringsHelper,
+        ParameterParser $parameterParser,
         ConstHelper $constHelper,
         ProblemTemplateSession $problemTemplateSession,
         LinearEquationTemplateFunctionality $functionality
@@ -107,7 +107,8 @@ class LinearEqTemplateFormControl extends ProblemTemplateFormControl
             $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
             $problemConditionTypeRepository, $problemConditionRepository,
             $pluginContainer,
-            $stringsHelper, $constHelper,
+            $parameterParser,
+            $constHelper,
             $problemTemplateSession
         );
         $this->functionality = $functionality;

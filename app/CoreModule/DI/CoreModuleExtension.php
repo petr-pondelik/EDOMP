@@ -108,6 +108,7 @@ use App\CoreModule\Services\FileService;
 use App\CoreModule\Services\MailService;
 use App\CoreModule\Services\PasswordGenerator;
 use App\CoreModule\Services\Validator;
+use App\TeacherModule\Services\ParameterParser;
 use Nette\DI\ContainerBuilder;
 
 /**
@@ -173,6 +174,9 @@ class CoreModuleExtension extends ModuleExtension
 
         $builder->addDefinition($this->prefix('passwordGenerator'))
             ->setType(PasswordGenerator::class);
+
+        $builder->addDefinition($this->prefix('parameterParser'))
+            ->setType(ParameterParser::class);
 
 
         // Helpers definitions

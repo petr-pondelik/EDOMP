@@ -14,7 +14,6 @@ use App\CoreModule\Components\Forms\EntityFormControl;
 use App\TeacherModule\Exceptions\NewtonApiException;
 use App\TeacherModule\Exceptions\ProblemTemplateException;
 use App\CoreModule\Helpers\ConstHelper;
-use App\CoreModule\Helpers\StringsHelper;
 use App\CoreModule\Model\Persistent\Entity\ProblemConditionType;
 use App\CoreModule\Model\Persistent\Entity\ProblemType;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
@@ -27,6 +26,7 @@ use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\TeacherModule\Model\NonPersistent\TemplateData\ParametersData;
 use App\TeacherModule\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
 use App\TeacherModule\Plugins\ProblemPlugin;
+use App\TeacherModule\Services\ParameterParser;
 use App\TeacherModule\Services\ProblemTemplateSession;
 use App\CoreModule\Services\Validator;
 use App\TeacherModule\Services\PluginContainer;
@@ -79,9 +79,9 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     protected $pluginContainer;
 
     /**
-     * @var StringsHelper
+     * @var ParameterParser
      */
-    protected $stringsHelper;
+    protected $parameterParser;
 
     /**
      * @var ConstHelper
@@ -128,7 +128,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param PluginContainer $pluginContainer
-     * @param StringsHelper $stringsHelper
+     * @param ParameterParser $parameterParser
      * @param ConstHelper $constHelper
      * @param ProblemTemplateSession $problemTemplateSession
      */
@@ -142,7 +142,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         ProblemConditionTypeRepository $problemConditionTypeRepository,
         ProblemConditionRepository $problemConditionRepository,
         PluginContainer $pluginContainer,
-        StringsHelper $stringsHelper,
+        ParameterParser $parameterParser,
         ConstHelper $constHelper,
         ProblemTemplateSession $problemTemplateSession
     )
@@ -154,7 +154,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->pluginContainer = $pluginContainer;
-        $this->stringsHelper = $stringsHelper;
+        $this->parameterParser = $parameterParser;
         $this->constHelper = $constHelper;
         $this->problemTemplateSession = $problemTemplateSession;
     }
@@ -335,7 +335,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
             bdump('FIRST VALIDATION AFTER REDIRECT');
 
-            $entityNew->setParametersData(new ParametersData($this->stringsHelper::extractParametersInfo($entityNew->getBody())));
+            $entityNew->setParametersData(new ParametersData($this->parameterParser::extractParametersInfo($entityNew->getBody())));
 
             // STANDARDIZE THE INPUT
             $entityNew = $this->preprocess($entityNew);
@@ -449,7 +449,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
             bdump('FIRST VALIDATION AFTER REDIRECT');
 
-            $entityNew->setParametersData(new ParametersData($this->stringsHelper::extractParametersInfo($entityNew->getBody())));
+            $entityNew->setParametersData(new ParametersData($this->parameterParser::extractParametersInfo($entityNew->getBody())));
 
             // STANDARDIZE THE INPUT
             $entityNew = $this->preprocess($entityNew);

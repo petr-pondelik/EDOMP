@@ -10,7 +10,6 @@ namespace App\TeacherModule\Components\Forms\ProblemTemplateForm\QuadraticEqTemp
 
 use App\TeacherModule\Components\Forms\ProblemTemplateForm\ProblemTemplateFormControl;
 use App\CoreModule\Helpers\ConstHelper;
-use App\CoreModule\Helpers\StringsHelper;
 use App\CoreModule\Model\Persistent\Functionality\ProblemTemplate\QuadraticEquationTemplateFunctionality;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
@@ -18,6 +17,7 @@ use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\TeacherModule\Services\ParameterParser;
 use App\TeacherModule\Services\ProblemTemplateSession;
 use App\CoreModule\Services\Validator;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
@@ -79,7 +79,7 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param PluginContainer $pluginContainer
-     * @param StringsHelper $stringsHelper
+     * @param ParameterParser $parameterParser
      * @param ConstHelper $constHelper
      * @param ProblemTemplateSession $problemTemplateSession
      * @param QuadraticEquationTemplateFunctionality $functionality
@@ -94,7 +94,7 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
         ProblemConditionTypeRepository $problemConditionTypeRepository,
         ProblemConditionRepository $problemConditionRepository,
         PluginContainer $pluginContainer,
-        StringsHelper $stringsHelper,
+        ParameterParser $parameterParser,
         ConstHelper $constHelper,
         ProblemTemplateSession $problemTemplateSession,
         QuadraticEquationTemplateFunctionality $functionality
@@ -106,7 +106,7 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
             $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
             $problemConditionTypeRepository, $problemConditionRepository,
             $pluginContainer,
-            $stringsHelper, $constHelper,
+            $parameterParser, $constHelper,
             $problemTemplateSession
         );
         $this->functionality = $functionality;

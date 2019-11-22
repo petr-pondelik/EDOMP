@@ -12,7 +12,6 @@ use App\CoreModule\Interfaces\IGenerator;
 use App\TeacherModule\Exceptions\GeneratorException;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\RegularExpressions;
-use App\CoreModule\Helpers\StringsHelper;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
@@ -24,10 +23,9 @@ use Nette\Utils\Strings;
 class ProblemGenerator implements IGenerator
 {
     /**
-     * @var StringsHelper
+     * @var ParameterParser
      */
-    protected $stringsHelper;
-
+    protected $parameterParser;
     /**
      * @var ConstHelper
      */
@@ -45,18 +43,18 @@ class ProblemGenerator implements IGenerator
 
     /**
      * GeneratorService constructor.
-     * @param StringsHelper $stringsHelper
+     * @param ParameterParser $parameterParser
      * @param ConstHelper $constHelper
      * @param RegularExpressions $regularExpressions
      */
     public function __construct
     (
-        StringsHelper $stringsHelper,
+        ParameterParser $parameterParser,
         ConstHelper $constHelper,
         RegularExpressions $regularExpressions
     )
     {
-        $this->stringsHelper = $stringsHelper;
+        $this->parameterParser = $parameterParser;
         $this->constHelper = $constHelper;
         $this->regularExpressions = $regularExpressions;
 
@@ -219,7 +217,7 @@ class ProblemGenerator implements IGenerator
      */
     protected function generateParams(string $expression): array
     {
-        $expressionSplit = $this->stringsHelper::splitByParameters($expression);
+        $expressionSplit = $this->parameterParser::splitByParameters($expression);
         $parameters = [];
         $paramsCnt = 0;
 
@@ -251,7 +249,7 @@ class ProblemGenerator implements IGenerator
             throw new GeneratorException('Specify ProblemTemplate from which to generate ProblemFinal.');
         }
 
-        $parametrized = $this->stringsHelper::getParametrized($problemTemplate->getBody());
+        $parametrized = $this->parameterParser::parse($problemTemplate->getBody());
 
         // Use JSON matches array of problemPrototype
         $matchesJson = $problemTemplate->getMatches();
@@ -275,6 +273,6 @@ class ProblemGenerator implements IGenerator
             $params = $this->generateParams($problemTemplate->getBody());
         }
 
-        return [$this->stringsHelper::passValues($parametrized->expression, $params), $matchesIndex];
+        return [$this->parameterParser->passValues($parametrized->expression, $params), $matchesIndex];
     }
 }

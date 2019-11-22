@@ -21,6 +21,7 @@ use App\TeacherModule\Services\MathService;
 use App\TeacherModule\Model\NonPersistent\Entity\LinearEquationTemplateNP;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\TeacherModule\Services\NewtonApiClient;
+use App\TeacherModule\Services\ParameterParser;
 use App\TeacherModule\Services\ProblemGenerator;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
@@ -40,6 +41,7 @@ final class LinearEquationPlugin extends EquationPlugin
      * @param ProblemGenerator $problemGenerator
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param LatexParser $latexParser
+     * @param ParameterParser $parameterParser
      * @param StringsHelper $stringsHelper
      * @param ConstHelper $constHelper
      * @param RegularExpressions $regularExpressions
@@ -47,14 +49,20 @@ final class LinearEquationPlugin extends EquationPlugin
      */
     public function __construct
     (
-        NewtonApiClient $newtonApiClient, MathService $mathService, ConditionService $conditionService,
-        ProblemGenerator $problemGenerator, TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexParser $latexParser, StringsHelper $stringsHelper,
-        ConstHelper $constHelper, RegularExpressions $regularExpressions,
+        NewtonApiClient $newtonApiClient,
+        MathService $mathService,
+        ConditionService $conditionService,
+        ProblemGenerator $problemGenerator,
+        TemplateJsonDataFunctionality $templateJsonDataFunctionality,
+        LatexParser $latexParser,
+        ParameterParser $parameterParser,
+        StringsHelper $stringsHelper,
+        ConstHelper $constHelper,
+        RegularExpressions $regularExpressions,
         LinearEquationFinalFunctionality $linearEquationFinalFunctionality
     )
     {
-        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexParser, $stringsHelper, $constHelper, $regularExpressions);
+        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexParser, $parameterParser, $stringsHelper, $constHelper, $regularExpressions);
         $this->functionality = $linearEquationFinalFunctionality;
     }
 

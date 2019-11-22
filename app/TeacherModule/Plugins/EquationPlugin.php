@@ -32,22 +32,15 @@ abstract class EquationPlugin extends ProblemPlugin
     {
         bdump('PREPROCESS EQUATION');
         $expression = $this->latexParser::parse($problemTemplate->getBody());
-        $parameterized = $this->stringsHelper::getParametrized($expression);
-        bdump($parameterized);
+        $parameterized = $this->parameterParser::parse($expression);
         $problemTemplate->setExpression($parameterized->expression);
         $sides = $this->stringsHelper::getEquationSides($parameterized->expression);
         $expression = $this->stringsHelper::mergeEqSides($sides);
-        bdump($expression);
         $expression = $this->newtonApiClient->simplify($expression);
-
-        bdump('BEFORE VAR FRACTIONS CHECK');
-        bdump($expression);
 
         $problemTemplate->setStandardized($expression);
         $problemTemplate = $this->mathService->processVariableFractions($problemTemplate);
 
-        bdump('PREPROCESS RESULT');
-        bdump($problemTemplate);
         return $problemTemplate;
     }
 
@@ -64,7 +57,7 @@ abstract class EquationPlugin extends ProblemPlugin
     {
         bdump('STANDARDIZE EQUATION');
         $expression = $this->latexParser::parse($expression);
-        $parameterized = $this->stringsHelper::getParametrized($expression);
+        $parameterized = $this->parameterParser::parse($expression);
         $sides = $this->stringsHelper::getEquationSides($parameterized->expression);
         $sides->left = $this->newtonApiClient->simplify($sides->left);
         $sides->right = $this->newtonApiClient->simplify($sides->right);
@@ -93,13 +86,13 @@ abstract class EquationPlugin extends ProblemPlugin
         $parsed = $this->latexParser::parse($problemTemplate->getBody());
 
         $this->validateParameters($problemTemplate->getBody());
-        $split = $this->stringsHelper::splitByParameters($parsed);
+        $split = $this->parameterParser::splitByParameters($parsed);
 
         if (empty($problemTemplate->getVariable()) || !$this->stringsHelper::containsVariable($split, $problemTemplate->getVariable())) {
             return 2;
         }
 
-        $parametrized = $this->stringsHelper::getParametrized($parsed);
+        $parametrized = $this->parameterParser::parse($parsed);
 
         try {
             $expression = $this->stringsHelper::mergeEqSides($this->stringsHelper::getEquationSides($parametrized->expression));
