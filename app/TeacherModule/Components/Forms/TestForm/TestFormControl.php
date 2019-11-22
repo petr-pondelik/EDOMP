@@ -23,7 +23,7 @@ use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalReposito
 use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
-use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use App\CoreModule\Services\FileService;
 use App\TeacherModule\Components\LogoDragAndDrop\ILogoDragAndDropFactory;
 use App\TeacherModule\Components\LogoDragAndDrop\LogoDragAndDropControl;
@@ -91,9 +91,9 @@ class TestFormControl extends EntityFormControl
     protected $difficultyRepository;
 
     /**
-     * @var SubCategoryRepository
+     * @var SubThemeRepository
      */
-    protected $subCategoryRepository;
+    protected $subThemeRepository;
 
     /**
      * @var ProblemConditionTypeRepository
@@ -148,7 +148,7 @@ class TestFormControl extends EntityFormControl
      * @param ProblemFinalRepository $problemFinalRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param DifficultyRepository $difficultyRepository
-     * @param SubCategoryRepository $subCategoryRepository
+     * @param SubThemeRepository $subThemeRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ILogoDragAndDropFactory $logoDragAndDropFactory
      * @param IProblemStackFactory $problemStackFactory
@@ -171,7 +171,7 @@ class TestFormControl extends EntityFormControl
         ProblemFinalRepository $problemFinalRepository,
         ProblemTypeRepository $problemTypeRepository,
         DifficultyRepository $difficultyRepository,
-        SubCategoryRepository $subCategoryRepository,
+        SubThemeRepository $subThemeRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository,
         ILogoDragAndDropFactory $logoDragAndDropFactory,
         IProblemStackFactory $problemStackFactory,
@@ -192,7 +192,7 @@ class TestFormControl extends EntityFormControl
         $this->problemFinalRepository = $problemFinalRepository;
         $this->problemTypeRepository = $problemTypeRepository;
         $this->difficultyRepository = $difficultyRepository;
-        $this->subCategoryRepository = $subCategoryRepository;
+        $this->subThemeRepository = $subThemeRepository;
         $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->logoDragAndDropFactory = $logoDragAndDropFactory;
         $this->problemStackFactory = $problemStackFactory;
@@ -391,7 +391,7 @@ class TestFormControl extends EntityFormControl
         }
 
         $difficulties = $this->difficultyRepository->findAssoc([], 'id');
-        $subCategories = $this->subCategoryRepository->findAssoc([], 'id');
+        $subThemes = $this->subThemeRepository->findAssoc([], 'id');
         $problemTypes = $this->problemTypeRepository->findAssoc([], 'id');
 
         $conditionTypesByProblemTypes = [];
@@ -415,12 +415,12 @@ class TestFormControl extends EntityFormControl
                 ->setHtmlAttribute('data-filter-type', 'isTemplate')
                 ->setHtmlId('is_template_' . $i);
 
-            $form->addMultiSelect('subCategory' . $i, 'Téma', $subCategories)
+            $form->addMultiSelect('subTheme' . $i, 'Téma', $subThemes)
                 ->setHtmlAttribute('class', 'form-control filter selectpicker')
                 ->setHtmlAttribute('data-problem-id', $i)
-                ->setHtmlAttribute('data-filter-type', 'subCategory')
+                ->setHtmlAttribute('data-filter-type', 'subTheme')
                 ->setHtmlAttribute('title', 'Zvolte témata')
-                ->setHtmlId('sub_category_' . $i);
+                ->setHtmlId('sub_theme_' . $i);
 
             $form->addMultiSelect('problemType' . $i, 'Typ', $problemTypes)
                 ->setHtmlAttribute('class', 'form-control filter problem-type-filter selectpicker')

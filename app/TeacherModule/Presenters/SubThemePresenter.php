@@ -10,15 +10,15 @@ namespace App\TeacherModule\Presenters;
 
 use App\CoreModule\Arguments\UserInformArgs;
 use App\CoreModule\Arguments\ValidatorArgument;
-use App\TeacherModule\Components\DataGrids\SubCategoryGridFactory;
-use App\TeacherModule\Components\Forms\SubCategoryForm\ISubCategoryFormFactory;
+use App\TeacherModule\Components\DataGrids\SubThemeGridFactory;
+use App\TeacherModule\Components\Forms\SubThemeForm\ISubThemeFormFactory;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\CoreModule\Model\Persistent\Functionality\SubCategoryFunctionality;
-use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
-use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Functionality\SubThemeFunctionality;
+use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
+use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use App\CoreModule\Services\Authorizator;
 use App\TeacherModule\Services\NewtonApiClient;
 use App\CoreModule\Services\Validator;
@@ -26,46 +26,46 @@ use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
- * Class SubCategoryPresenter
+ * Class SubThemePresenter
  * @package App\TeacherModule\Presenters
  */
-class SubCategoryPresenter extends EntityPresenter
+class SubThemePresenter extends EntityPresenter
 {
     /**
-     * @var CategoryRepository
+     * @var ThemeRepository
      */
-    protected $categoryRepository;
+    protected $themeRepository;
 
     /**
-     * SubCategoryPresenter constructor.
+     * SubThemePresenter constructor.
      * @param Authorizator $authorizator
      * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
      * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
-     * @param SubCategoryRepository $subCategoryRepository
-     * @param SubCategoryFunctionality $subCategoryFunctionality
-     * @param CategoryRepository $categoryRepository
-     * @param SubCategoryGridFactory $subCategoryGridFactory
-     * @param ISubCategoryFormFactory $subCategoryFormFactory
+     * @param SubThemeRepository $subThemeRepository
+     * @param SubThemeFunctionality $subThemeFunctionality
+     * @param ThemeRepository $themeRepository
+     * @param SubThemeGridFactory $subThemeGridFactory
+     * @param ISubThemeFormFactory $subThemeFormFactory
      * @param IHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
         Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
         IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        SubCategoryRepository $subCategoryRepository, SubCategoryFunctionality $subCategoryFunctionality,
-        CategoryRepository $categoryRepository,
-        SubCategoryGridFactory $subCategoryGridFactory, ISubCategoryFormFactory $subCategoryFormFactory,
+        SubThemeRepository $subThemeRepository, SubThemeFunctionality $subThemeFunctionality,
+        ThemeRepository $themeRepository,
+        SubThemeGridFactory $subThemeGridFactory, ISubThemeFormFactory $subThemeFormFactory,
         IHelpModalFactory $sectionHelpModalFactory
     )
     {
         parent::__construct(
             $authorizator, $validator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory,
-            $subCategoryRepository, $subCategoryFunctionality, $subCategoryGridFactory, $subCategoryFormFactory
+            $subThemeRepository, $subThemeFunctionality, $subThemeGridFactory, $subThemeFormFactory
         );
-        $this->categoryRepository = $categoryRepository;
+        $this->themeRepository = $themeRepository;
     }
 
     /**
@@ -102,23 +102,23 @@ class SubCategoryPresenter extends EntityPresenter
     }
 
     /**
-     * @param int $subCategoryId
-     * @param $categoryId
+     * @param int $subThemeId
+     * @param $themeId
      * @throws \App\CoreModule\Exceptions\FlashesTranslatorException
      */
-    public function handleCategoryUpdate(int $subCategoryId, $categoryId): void
+    public function handleThemeUpdate(int $subThemeId, $themeId): void
     {
-        bdump('HANDLE CATEGORY UPDATE');
-        bdump($categoryId);
+        bdump('HANDLE THEME UPDATE');
+        bdump($themeId);
         try {
-            $this->functionality->update($subCategoryId,
-                ArrayHash::from(['category' => $categoryId])
+            $this->functionality->update($subThemeId,
+                ArrayHash::from(['theme' => $themeId])
             );
         } catch (\Exception $e) {
-            $this->informUser(new UserInformArgs('category', true, 'error', $e));
+            $this->informUser(new UserInformArgs('theme', true, 'error', $e));
         }
         $this['entityGrid']->reload();
-        $this->informUser(new UserInformArgs('category', true));
+        $this->informUser(new UserInformArgs('theme', true));
     }
 
     /**

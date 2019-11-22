@@ -18,7 +18,7 @@ use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
-use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use App\CoreModule\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
@@ -41,9 +41,9 @@ class ProblemFinalFormControl extends EntityFormControl
     protected $problemTypeRepository;
 
     /**
-     * @var SubCategoryRepository
+     * @var SubThemeRepository
      */
-    protected $subCategoryRepository;
+    protected $subThemeRepository;
 
     /**
      * @var ProblemConditionTypeRepository
@@ -67,7 +67,7 @@ class ProblemFinalFormControl extends EntityFormControl
      * @param ProblemFinalFunctionality $problemFinalFunctionality
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
-     * @param SubCategoryRepository $subCategoryRepository
+     * @param SubThemeRepository $subThemeRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param ConstHelper $constHelper
@@ -79,7 +79,7 @@ class ProblemFinalFormControl extends EntityFormControl
         ProblemFinalFunctionality $problemFinalFunctionality,
         DifficultyRepository $difficultyRepository,
         ProblemTypeRepository $problemTypeRepository,
-        SubCategoryRepository $subCategoryRepository,
+        SubThemeRepository $subThemeRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository,
         ProblemConditionRepository $problemConditionRepository,
         ConstHelper $constHelper
@@ -89,7 +89,7 @@ class ProblemFinalFormControl extends EntityFormControl
         $this->functionality = $problemFinalFunctionality;
         $this->difficultyRepository = $difficultyRepository;
         $this->problemTypeRepository = $problemTypeRepository;
-        $this->subCategoryRepository = $subCategoryRepository;
+        $this->subThemeRepository = $subThemeRepository;
         $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->constHelper = $constHelper;
@@ -104,12 +104,12 @@ class ProblemFinalFormControl extends EntityFormControl
         $form = parent::createComponentForm();
 
         $difficulties = $this->difficultyRepository->findAssoc([], 'id');
-        $subcategories = $this->subCategoryRepository->findAssoc([], 'id');
+        $subThemes = $this->subThemeRepository->findAssoc([], 'id');
 
-        $form->addHidden('is_generatable_hidden');
+        $form->addHidden('is_generated_hidden');
 
-        $form->addSelect('subCategory', 'Podkategorie *', $subcategories)
-            ->setPrompt('Zvolte podkategorii')
+        $form->addSelect('subTheme', 'Podtéma *', $subThemes)
+            ->setPrompt('Zvolte podtéma')
             ->setHtmlAttribute('class', 'form-control');
 
         $form->addSelect('studentVisible', 'Zobrazit ve cvičebnici *', [
@@ -156,12 +156,9 @@ class ProblemFinalFormControl extends EntityFormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->getValues();
-        // First validate problem body, if it's not generatable problem
-        if(!$values->is_generatable_hidden){
-            $validateFields['body'] = new ValidatorArgument($values->body, 'notEmpty');
-        }
+        $validateFields['body'] = new ValidatorArgument($values->body, 'notEmpty');
         $validateFields['difficulty'] = new ValidatorArgument($values->difficulty, 'notEmpty', 'difficulty');
-        $validateFields['subCategory'] = new ValidatorArgument($values->subCategory, 'notEmpty', 'subCategory');
+        $validateFields['subTheme'] = new ValidatorArgument($values->subTheme, 'notEmpty', 'subTheme');
         $this->validator->validate($form, $validateFields);
         $this->redrawErrors();
         $this->redrawFlashes();
@@ -211,12 +208,12 @@ class ProblemFinalFormControl extends EntityFormControl
         }
 
         $this['form']['id']->setDefaultValue($this->entity->getId());
-        $this['form']['is_generatable_hidden']->setDefaultValue($this->entity->isGenerated());
+        $this['form']['is_generated_hidden']->setDefaultValue($this->entity->isGenerated());
         $this['form']['textBefore']->setDefaultValue($this->entity->getTextBefore());
         $this['form']['textAfter']->setDefaultValue($this->entity->getTextAfter());
         $this['form']['result']->setDefaultValue($this->entity->getResult());
         $this['form']['difficulty']->setDefaultValue($this->entity->getDifficulty()->getId());
-        $this['form']['subCategory']->setDefaultValue($this->entity->getSubCategory()->getId());
+        $this['form']['subTheme']->setDefaultValue($this->entity->getSubTheme()->getId());
         $this['form']['studentVisible']->setDefaultValue((int) $this->entity->isStudentVisible());
 
         if($this->entity->isGenerated()){

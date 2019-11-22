@@ -79,12 +79,12 @@ class Filter extends BaseEntity
     protected $difficulties;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\SubCategory")
-     * @ORM\JoinTable(name="filter_sub_category_rel")
+     * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\SubTheme")
+     * @ORM\JoinTable(name="filter_sub_theme_rel")
      *
      * @var ArrayCollection|PersistentCollection
      */
-    protected $subCategories;
+    protected $subThemes;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemCondition")
@@ -107,7 +107,7 @@ class Filter extends BaseEntity
         parent::__construct();
         $this->problemTypes = new ArrayCollection();
         $this->difficulties = new ArrayCollection();
-        $this->subCategories = new ArrayCollection();
+        $this->subThemes = new ArrayCollection();
         $this->problemConditions = new ArrayCollection();
     }
 
@@ -118,7 +118,7 @@ class Filter extends BaseEntity
     {
         $res['Typ'] = $this->getProblemTypes()->getValues();
         $res['Obtížnost'] = $this->getDifficulties()->getValues();
-        $res['Téma'] = $this->getSubCategories()->getValues();
+        $res['Téma'] = $this->getSubThemes()->getValues();
         $res['Podmínky'] = $this->getProblemConditions()->getValues();
         return $res;
     }
@@ -244,28 +244,28 @@ class Filter extends BaseEntity
     /**
      * @return ArrayCollection|PersistentCollection
      */
-    public function getSubCategories()
+    public function getSubThemes()
     {
-        return $this->subCategories;
+        return $this->subThemes;
     }
 
     /**
-     * @param ArrayCollection|PersistentCollection $subCategories
+     * @param ArrayCollection|PersistentCollection $subThemes
      */
-    public function setSubCategories($subCategories): void
+    public function setSubThemes($subThemes): void
     {
-        $this->subCategories = $subCategories;
+        $this->subThemes = $subThemes;
     }
 
     /**
-     * @param SubCategory $subCategory
+     * @param SubTheme $subTheme
      */
-    public function addSubCategory(SubCategory $subCategory): void
+    public function addSubTheme(SubTheme $subTheme): void
     {
-        if($this->subCategories->contains($subCategory)){
+        if($this->subThemes->contains($subTheme)){
             return;
         }
-        $this->subCategories[] = $subCategory;
+        $this->subThemes[] = $subTheme;
     }
 
     /**

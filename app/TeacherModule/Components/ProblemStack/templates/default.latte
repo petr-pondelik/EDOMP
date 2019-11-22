@@ -9,7 +9,7 @@
                     <li n:foreach="$selectedProblems as $selectedProblem" class="col-12 d-inline-block mb-3 hover-pointer" data-problem-key="{$id}" data-problem-id="{$selectedProblem->getId()}">
                         <div class="card card-shadow-light border-0">
                             <div class="d-flex align-items-center card-header py-0 problem-card-header">
-                                Téma: {$selectedProblem->getSubcategory()->getLabel()} | ID: {$selectedProblem->getId()}
+                                Téma: {$selectedProblem->getSubTheme()->getLabel()} | ID: {$selectedProblem->getId()}
                             </div>
                             <div class="card-body py-2">
                                 {$selectedProblem->getBody()}
@@ -32,7 +32,7 @@
                 <li n:foreach="$problems as $problem" class="col-12 d-inline-block mt-3 hover-pointer" data-problem-key="{$id}" data-problem-id="{$problem->getId()}">
                     <div class="card card-shadow-light border-0">
                         <div class="d-flex align-items-center card-header py-0 problem-card-header">
-                            Téma: {$problem->getSubcategory()->getLabel()} | ID: {$problem->getId()}
+                            Téma: {$problem->getSubTheme()->getLabel()} | ID: {$problem->getId()}
                         </div>
                         <div class="card-body py-2">
                             {$problem->getBody()}

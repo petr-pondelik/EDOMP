@@ -117,14 +117,14 @@ abstract class Problem extends BaseEntity
     protected $difficulty;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\CoreModule\Model\Persistent\Entity\SubCategory", cascade={"persist", "merge"})
+     * @ORM\ManyToOne(targetEntity="App\CoreModule\Model\Persistent\Entity\SubTheme", cascade={"persist", "merge"})
      * @Assert\NotBlank(
-     *     message="SubCategory can't be blank."
+     *     message="SubTheme can't be blank."
      * )
      *
-     * @var SubCategory
+     * @var SubTheme
      */
-    protected $subCategory;
+    protected $subTheme;
 
     /**
      * @ORM\ManyToMany(targetEntity="ProblemCondition", cascade={"persist", "merge"})
@@ -265,19 +265,19 @@ abstract class Problem extends BaseEntity
     }
 
     /**
-     * @return SubCategory
+     * @return SubTheme
      */
-    public function getSubCategory(): SubCategory
+    public function getSubTheme(): SubTheme
     {
-        return $this->subCategory;
+        return $this->subTheme;
     }
 
     /**
-     * @param SubCategory $subCategory
+     * @param SubTheme $subTheme
      */
-    public function setSubCategory(SubCategory $subCategory): void
+    public function setSubTheme(SubTheme $subTheme): void
     {
-        $this->subCategory = $subCategory;
+        $this->subTheme = $subTheme;
     }
 
     /**

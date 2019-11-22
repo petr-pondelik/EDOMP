@@ -1,5 +1,5 @@
 {block headingFirst}
-    Kategorie
+    Podtémata
 {/block}
 
 {block headingFirstLink}
@@ -9,7 +9,7 @@
 {/block}
 
 {block icon}
-    <i class="fas fa-archive mr-3"></i>
+    <i class="fas fa-folder-open mr-3"></i>
 {/block}
 
 {block content}
@@ -17,10 +17,10 @@
     <div class="card-header d-flex justify-content-between">
         <h1 class="mb-0 font-weight-bold card-heading">
             {include icon}{include headingFirst}
-        </h1>
-        <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#createModal">
-            <span class="fas fa-plus"></span>
-        </button>
+            </h2>
+            <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#createModal">
+                <span class="fas fa-plus"></span>
+            </button>
     </div>
 
     <div class="card-body">
@@ -39,6 +39,7 @@
             {/snippet}
 
             {control entityGrid}
+
         </div>
 
     </div>
@@ -53,7 +54,7 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h2 class="modal-title" id="createModalLabel">Nová kategorie</h2>
+                    <h2 class="modal-title" id="createModalLabel">Nové podtéma</h2>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

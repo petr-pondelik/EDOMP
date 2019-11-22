@@ -9,18 +9,18 @@
 namespace App\TeacherModule\DI;
 
 use App\CoreModule\DI\ModuleExtension;
-use App\TeacherModule\Components\DataGrids\CategoryGridFactory;
+use App\TeacherModule\Components\DataGrids\ThemeGridFactory;
 use App\TeacherModule\Components\DataGrids\GroupGridFactory;
 use App\TeacherModule\Components\DataGrids\LogoGridFactory;
 use App\TeacherModule\Components\DataGrids\ProblemGridFactory;
 use App\TeacherModule\Components\DataGrids\ProblemTypeGridFactory;
-use App\TeacherModule\Components\DataGrids\SubCategoryGridFactory;
+use App\TeacherModule\Components\DataGrids\SubThemeGridFactory;
 use App\TeacherModule\Components\DataGrids\SuperGroupGridFactory;
 use App\TeacherModule\Components\DataGrids\TemplateGridFactory;
 use App\TeacherModule\Components\DataGrids\TestGridFactory;
 use App\TeacherModule\Components\DataGrids\UserGridFactory;
 use App\TeacherModule\Components\FilterView\IFilterViewFactory;
-use App\TeacherModule\Components\Forms\CategoryForm\ICategoryFormFactory;
+use App\TeacherModule\Components\Forms\ThemeForm\IThemeFormFactory;
 use App\TeacherModule\Components\Forms\GroupForm\IGroupFormFactory;
 use App\TeacherModule\Components\Forms\LogoForm\ILogoFormFactory;
 use App\TeacherModule\Components\Forms\PermissionForm\IPermissionFormFactory;
@@ -29,7 +29,7 @@ use App\TeacherModule\Components\Forms\ProblemTemplateForm\ArithmeticSeqTemplate
 use App\TeacherModule\Components\Forms\ProblemTemplateForm\GeometricSeqTemplateForm\IGeometricSeqTemplateFormFactory;
 use App\TeacherModule\Components\Forms\ProblemTemplateForm\LinearEqTemplateForm\ILinearEqTemplateFormFactory;
 use App\TeacherModule\Components\Forms\ProblemTemplateForm\QuadraticEqTemplateForm\IQuadraticEqTemplateFormFactory;
-use App\TeacherModule\Components\Forms\SubCategoryForm\ISubCategoryFormFactory;
+use App\TeacherModule\Components\Forms\SubThemeForm\ISubThemeFormFactory;
 use App\TeacherModule\Components\Forms\SuperGroupForm\ISuperGroupIFormFactory;
 use App\TeacherModule\Components\Forms\TestForm\ITestFormFactory;
 use App\TeacherModule\Components\Forms\TestTemplateForm\ITestTemplateFormFactory;
@@ -166,11 +166,11 @@ class TeacherModuleExtension extends ModuleExtension
         $builder->addDefinition($this->prefix('userFormFactory'))
             ->setImplement(IUserFormFactory::class);
 
-        $builder->addDefinition($this->prefix('categoryFormFactory'))
-            ->setImplement(ICategoryFormFactory::class);
+        $builder->addDefinition($this->prefix('themeFormFactory'))
+            ->setImplement(IThemeFormFactory::class);
 
-        $builder->addDefinition($this->prefix('subCategoryFormFactory'))
-            ->setImplement(ISubCategoryFormFactory::class);
+        $builder->addDefinition($this->prefix('subThemeFormFactory'))
+            ->setImplement(ISubThemeFormFactory::class);
 
         $builder->addDefinition($this->prefix('problemFinalFormFactory'))
             ->setImplement(IProblemFinalFormFactory::class);
@@ -193,11 +193,11 @@ class TeacherModuleExtension extends ModuleExtension
         $builder->addDefinition($this->prefix('UserGridFactory'))
             ->setType(UserGridFactory::class);
 
-        $builder->addDefinition($this->prefix('categoryGridFactory'))
-            ->setType(CategoryGridFactory::class);
+        $builder->addDefinition($this->prefix('themeGridFactory'))
+            ->setType(ThemeGridFactory::class);
 
-        $builder->addDefinition($this->prefix('subCategoryGridFactory'))
-            ->setType(SubCategoryGridFactory::class);
+        $builder->addDefinition($this->prefix('subThemeGridFactory'))
+            ->setType(SubThemeGridFactory::class);
 
         $builder->addDefinition($this->prefix('problemGridFactory'))
             ->setType(ProblemGridFactory::class);

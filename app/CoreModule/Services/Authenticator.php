@@ -8,7 +8,7 @@
 
 namespace App\CoreModule\Services;
 
-use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
@@ -28,19 +28,19 @@ class Authenticator implements IAuthenticator
     protected $userRepository;
 
     /**
-     * @var CategoryRepository
+     * @var ThemeRepository
      */
-    protected $categoryRepository;
+    protected $themeRepository;
 
     /**
      * Authenticator constructor.
      * @param UserRepository $userRepository
-     * @param CategoryRepository $categoryRepository
+     * @param ThemeRepository $themeRepository
      */
-    public function __construct(UserRepository $userRepository, CategoryRepository $categoryRepository)
+    public function __construct(UserRepository $userRepository, ThemeRepository $themeRepository)
     {
         $this->userRepository = $userRepository;
-        $this->categoryRepository = $categoryRepository;
+        $this->themeRepository = $themeRepository;
     }
 
     /**
@@ -69,20 +69,20 @@ class Authenticator implements IAuthenticator
 
         $role = $user->getRole();
 
-        $categories = [];
+        $themes = [];
 
         if (!strcmp('student', $role->getKey())) {
-            $categoryIds = $user->getCategoriesId();
-            foreach ($categoryIds as $categoryId) {
-                $categories[$categoryId] = $this->categoryRepository->find($categoryId)->getLabel();
+            $themeIds = $user->getThemesId();
+            foreach ($themeIds as $themeId) {
+                $themes[$themeId] = $this->themeRepository->find($themeId)->getLabel();
             }
         } else {
-            $categories = $this->categoryRepository->findPairs([], 'label');
+            $themes = $this->themeRepository->findPairs([], 'label');
         }
 
         return new Identity($user->getId(), $role->getKey(), [
             'username' => $user->getUsername(),
-            'categories' => $categories,
+            'themes' => $themes,
             'roleLabel' => $role->getLabel(),
             'firstName' => $user->getFirstName(),
             'lastName' => $user->getLastName()

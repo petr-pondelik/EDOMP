@@ -37,20 +37,20 @@ class ProblemFinalRepository extends SecuredRepository
     }
 
     /**
-     * @param int $categoryId
+     * @param int $themeId
      * @param array $filters
      * @return int
      */
-    public function getStudentFilteredCnt(int $categoryId, array $filters): int
+    public function getStudentFilteredCnt(int $themeId, array $filters): int
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('pf')
             ->addSelect('sc')
             ->from(ProblemFinal::class, 'pf')
-            ->innerJoin('pf.subCategory', 'sc')
-            ->where('sc.category = :categoryId')
+            ->innerJoin('pf.subTheme', 'sc')
+            ->where('sc.theme = :themeId')
             ->andWhere('pf.studentVisible = true')
-            ->setParameter('categoryId', $categoryId);
+            ->setParameter('themeId', $themeId);
 
         $qb = $this->applyFilters($qb, $filters);
 
@@ -59,22 +59,22 @@ class ProblemFinalRepository extends SecuredRepository
     }
 
     /**
-     * @param int $categoryId
+     * @param int $themeId
      * @param int $limit
      * @param int $offset
      * @param array $filters
      * @return array
      */
-    public function getStudentFiltered(int $categoryId, int $limit, int $offset, array $filters): array
+    public function getStudentFiltered(int $themeId, int $limit, int $offset, array $filters): array
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('pf')
             ->addSelect('sc')
             ->from(ProblemFinal::class, 'pf')
-            ->innerJoin('pf.subCategory', 'sc')
-            ->where('sc.category = :categoryId')
+            ->innerJoin('pf.subTheme', 'sc')
+            ->where('sc.theme = :themeId')
             ->andWhere('pf.studentVisible = true')
-            ->setParameter('categoryId', $categoryId);
+            ->setParameter('themeId', $themeId);
 
         $qb = $this->applyFilters($qb, $filters);
 
@@ -97,10 +97,10 @@ class ProblemFinalRepository extends SecuredRepository
                 ->setParameter('difficultyIds', $filters['difficulty']);
         }
 
-        // Filter subcategory (theme) condition
+        // Filter subtheme (theme) condition
         if(isset($filters['theme'])){
-            $qb->andWhere('pf.subCategory IN (:subCategoryIds)')
-                ->setParameter('subCategoryIds', $filters['theme']);
+            $qb->andWhere('pf.subTheme IN (:subThemeIds)')
+                ->setParameter('subThemeIds', $filters['theme']);
         }
 
         // Filter result condition

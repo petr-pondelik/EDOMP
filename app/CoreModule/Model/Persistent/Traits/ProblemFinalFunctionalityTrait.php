@@ -14,7 +14,7 @@ use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
-use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
@@ -46,7 +46,7 @@ trait ProblemFinalFunctionalityTrait
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param DifficultyRepository $difficultyRepository
-     * @param SubCategoryRepository $subCategoryRepository
+     * @param SubThemeRepository $subThemeRepository
      * @param ProblemRepository $problemRepository
      * @param UserRepository $userRepository
      * @param FormatterHelper $formatterHelper
@@ -56,7 +56,7 @@ trait ProblemFinalFunctionalityTrait
         ProblemTypeRepository $problemTypeRepository,
         ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository,
-        SubCategoryRepository $subCategoryRepository,
+        SubThemeRepository $subThemeRepository,
         ProblemRepository $problemRepository,
         UserRepository $userRepository,
         FormatterHelper $formatterHelper
@@ -65,7 +65,7 @@ trait ProblemFinalFunctionalityTrait
         $this->problemTypeRepository = $problemTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->difficultyRepository = $difficultyRepository;
-        $this->subCategoryRepository = $subCategoryRepository;
+        $this->subThemeRepository = $subThemeRepository;
         $this->problemRepository = $problemRepository;
         $this->userRepository = $userRepository;
         $this->formatterHelper = $formatterHelper;
@@ -93,8 +93,8 @@ trait ProblemFinalFunctionalityTrait
             $entity->setDifficulty($this->difficultyRepository->find($data->difficulty));
         }
 
-        if (isset($data->subCategory)) {
-            $entity->setSubCategory($this->subCategoryRepository->find($data->subCategory));
+        if (isset($data->subTheme)) {
+            $entity->setSubTheme($this->subThemeRepository->find($data->subTheme));
         }
 
         if (isset($data->result)) {

@@ -15,12 +15,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class Category
+ * Class Theme
  * @package App\CoreModule\Model\Persistent\Entity
  *
- * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\CategoryRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\ThemeRepository")
  */
-class Category extends BaseEntity
+class Theme extends BaseEntity
 {
     use LabelTrait;
 
@@ -32,27 +32,27 @@ class Category extends BaseEntity
     protected $toStringAttr = 'label';
 
     /**
-     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\SubCategory", mappedBy="category", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\SubTheme", mappedBy="theme", cascade={"all"})
      */
-    protected $subCategories;
+    protected $subThemes;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\Group", mappedBy="categories", cascade={"persist", "merge"})
+     * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\Group", mappedBy="themes", cascade={"persist", "merge"})
      */
     protected $groups;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\SuperGroup", mappedBy="categories", cascade={"persist", "merge"})
+     * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\SuperGroup", mappedBy="themes", cascade={"persist", "merge"})
      */
     protected $superGroups;
 
     /**
-     * Category constructor.
+     * Theme constructor.
      */
     public function __construct()
     {
         parent::__construct();
-        $this->subCategories = new ArrayCollection();
+        $this->subThemes = new ArrayCollection();
         $this->groups = new ArrayCollection();
         $this->superGroups = new ArrayCollection();
     }
@@ -60,17 +60,17 @@ class Category extends BaseEntity
     /**
      * @return Collection
      */
-    public function getSubCategories(): ?Collection
+    public function getSubThemes(): ?Collection
     {
-        return $this->subCategories;
+        return $this->subThemes;
     }
 
     /**
-     * @param Collection $subCategories
+     * @param Collection $subThemes
      */
-    public function setSubCategories(Collection $subCategories): void
+    public function setSubThemes(Collection $subThemes): void
     {
-        $this->subCategories = $subCategories;
+        $this->subThemes = $subThemes;
     }
 
     /**

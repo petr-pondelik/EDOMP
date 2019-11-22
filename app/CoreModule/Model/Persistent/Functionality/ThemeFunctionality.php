@@ -11,16 +11,16 @@ declare(strict_types=1);
 namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
-use App\CoreModule\Model\Persistent\Entity\Category;
+use App\CoreModule\Model\Persistent\Entity\Theme;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
-use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\UserRepository;
 
 /**
- * Class CategoryFunctionality
+ * Class ThemeFunctionality
  * @package App\CoreModule\Model\Persistent\Functionality
  */
-class CategoryFunctionality extends BaseFunctionality
+class ThemeFunctionality extends BaseFunctionality
 {
     /**
      * @var UserRepository
@@ -28,20 +28,20 @@ class CategoryFunctionality extends BaseFunctionality
     protected $userRepository;
 
     /**
-     * CategoryFunctionality constructor.
+     * ThemeFunctionality constructor.
      * @param ConstraintEntityManager $entityManager
-     * @param CategoryRepository $categoryRepository
+     * @param ThemeRepository $themeRepository
      * @param UserRepository $userRepository
      */
     public function __construct
     (
         ConstraintEntityManager $entityManager,
-        CategoryRepository $categoryRepository,
+        ThemeRepository $themeRepository,
         UserRepository $userRepository
     )
     {
         parent::__construct($entityManager);
-        $this->repository = $categoryRepository;
+        $this->repository = $themeRepository;
         $this->userRepository = $userRepository;
     }
 
@@ -53,14 +53,14 @@ class CategoryFunctionality extends BaseFunctionality
      */
     public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
-        $category = new Category();
-        $category->setLabel($data->label);
-        $category->setCreatedBy($this->userRepository->find($data->userId));
-        $this->em->persist($category);
+        $theme = new Theme();
+        $theme->setLabel($data->label);
+        $theme->setCreatedBy($this->userRepository->find($data->userId));
+        $this->em->persist($theme);
         if($flush){
             $this->em->flush();
         }
-        return $category;
+        return $theme;
     }
 
     /**
@@ -72,12 +72,12 @@ class CategoryFunctionality extends BaseFunctionality
      */
     public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
-        $category = $this->repository->find($id);
-        $category->setLabel($data->label);
-        $this->em->persist($category);
+        $theme = $this->repository->find($id);
+        $theme->setLabel($data->label);
+        $this->em->persist($theme);
         if($flush){
             $this->em->flush();
         }
-        return $category;
+        return $theme;
     }
 }

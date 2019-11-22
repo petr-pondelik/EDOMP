@@ -14,7 +14,7 @@ use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\SecuredRepository;
-use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
@@ -39,9 +39,9 @@ class TemplateGridFactory extends BaseGrid
     protected $problemTypeRepository;
 
     /**
-     * @var SubCategoryRepository
+     * @var SubThemeRepository
      */
-    protected $subCategoryRepository;
+    protected $subThemeRepository;
 
     /**
      * @var ConstHelper
@@ -53,14 +53,14 @@ class TemplateGridFactory extends BaseGrid
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTemplateRepository $problemTemplateRepository
      * @param ProblemTypeRepository $problemTypeRepository
-     * @param SubCategoryRepository $subCategoryRepository
+     * @param SubThemeRepository $subThemeRepository
      * @param ConstHelper $constHelper
      */
     public function __construct(
         DifficultyRepository $difficultyRepository,
         ProblemTemplateRepository $problemTemplateRepository,
         ProblemTypeRepository $problemTypeRepository,
-        SubCategoryRepository $subCategoryRepository,
+        SubThemeRepository $subThemeRepository,
         ConstHelper $constHelper
     )
     {
@@ -68,7 +68,7 @@ class TemplateGridFactory extends BaseGrid
         $this->difficultyRepository = $difficultyRepository;
         $this->problemTemplateRepository = $problemTemplateRepository;
         $this->problemTypeRepository = $problemTypeRepository;
-        $this->subCategoryRepository = $subCategoryRepository;
+        $this->subThemeRepository = $subThemeRepository;
         $this->constHelper = $constHelper;
     }
 
@@ -86,7 +86,7 @@ class TemplateGridFactory extends BaseGrid
         $grid = parent::create($container, $name);
 
         $difficultyOptions = $this->difficultyRepository->findAssoc([], 'id');
-        $subCategoryOptions = $this->subCategoryRepository->findAllowed($container->user);
+        $subThemeOptions = $this->subThemeRepository->findAllowed($container->user);
 
         $grid->setPrimaryKey('id');
 
@@ -125,14 +125,14 @@ class TemplateGridFactory extends BaseGrid
             1 => 'Ano'
         ]);
 
-        $grid->addColumnStatus('subCategory', 'Téma', 'subCategory.id')
+        $grid->addColumnStatus('subTheme', 'Téma', 'subTheme.id')
             ->setSortable('er.id')
             ->addAttributes(['class' => 'text-center'])
-            ->setOptions($subCategoryOptions)
-            ->onChange[] = [$container, 'handleSubCategoryUpdate'];
+            ->setOptions($subThemeOptions)
+            ->onChange[] = [$container, 'handleSubThemeUpdate'];
 
 
-        $grid->addFilterMultiSelect('subCategory', '', $subCategoryOptions);
+        $grid->addFilterMultiSelect('subTheme', '', $subThemeOptions);
 
         $grid->addColumnStatus('difficulty', 'Obtížnost', 'difficulty.id')
             ->setSortable('er.id')

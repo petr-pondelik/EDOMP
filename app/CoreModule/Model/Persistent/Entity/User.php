@@ -85,14 +85,28 @@ class User extends BaseEntity
     protected $isAdmin = false;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", nullable=false)
+     * @Assert\Type(
+     *     type="string",
+     *     message="FirstName must be {{ type }}."
+     * )
+     * @Assert\NotBlank(
+     *     message="FirstName can't be blank."
+     * )
      *
      * @var string
      */
     protected $firstName;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", nullable=false)
+     * @Assert\Type(
+     *     type="string",
+     *     message="LastName must be {{ type }}."
+     * )
+     * @Assert\NotBlank(
+     *     message="LastName can't be blank."
+     * )
      *
      * @var string
      */
@@ -154,13 +168,13 @@ class User extends BaseEntity
     /**
      * @return array
      */
-    public function getCategoriesId(): array
+    public function getThemesId(): array
     {
         $res = [];
         foreach($this->groups as $groupKey => $group) {
-            foreach ($group->getCategories() as $catKey => $category) {
-                if(!in_array($category->getId(), $res)){
-                    $res[] = $category->getId();
+            foreach ($group->getThemes() as $catKey => $theme) {
+                if(!in_array($theme->getId(), $res)){
+                    $res[] = $theme->getId();
                 }
             }
         }

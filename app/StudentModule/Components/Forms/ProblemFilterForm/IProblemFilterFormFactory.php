@@ -18,8 +18,8 @@ use App\CoreModule\Components\Forms\IFormFactory;
 interface IProblemFilterFormFactory extends IFormFactory
 {
     /**
-     * @param int|null $categoryId
+     * @param int|null $themeId
      * @return ProblemFilterFormControl
      */
-    public function create(int $categoryId = null): ProblemFilterFormControl;
+    public function create(int $themeId = null): ProblemFilterFormControl;
 }

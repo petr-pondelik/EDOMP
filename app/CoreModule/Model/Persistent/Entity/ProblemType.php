@@ -42,17 +42,6 @@ class ProblemType extends BaseEntity
     protected $toStringAttr = 'label';
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
-     * @Assert\Type(
-     *     type="bool",
-     *     message="isGeneratable must be {{ type }}."
-     * )
-     *
-     * @var bool
-     */
-    protected $isGeneratable;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal", mappedBy="problemType", cascade={"persist", "merge"})
      *
      * @var ArrayCollection|ProblemFinal[]
@@ -71,7 +60,6 @@ class ProblemType extends BaseEntity
     public function __construct()
     {
         parent::__construct();
-        $this->isGeneratable = false;
         $this->problems = new ArrayCollection();
         $this->conditionTypes = new ArrayCollection();
     }
@@ -106,22 +94,6 @@ class ProblemType extends BaseEntity
     public function setConditionTypes($conditionTypes): void
     {
         $this->conditionTypes = $conditionTypes;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isGeneratable(): bool
-    {
-        return $this->isGeneratable;
-    }
-
-    /**
-     * @param bool $isGeneratable
-     */
-    public function setIsGeneratable(bool $isGeneratable): void
-    {
-        $this->isGeneratable = $isGeneratable;
     }
 
     /**

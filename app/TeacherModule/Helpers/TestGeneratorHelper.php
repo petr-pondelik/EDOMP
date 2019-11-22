@@ -115,7 +115,7 @@ class TestGeneratorHelper
         $filters['isTemplate'] = $data['isTemplate' . $seq];
         $filters['problemType'] = $data['problemType' . $seq];
         $filters['difficulty'] = $data['difficulty' . $seq];
-        $filters['subCategory'] = $data['subCategory' . $seq];
+        $filters['subTheme'] = $data['subTheme' . $seq];
         $filters['conditionType'] = [];
         foreach ($this->problemConditionTypesId as $item) {
             $filters['conditionType'][$item] = [];

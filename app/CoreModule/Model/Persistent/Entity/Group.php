@@ -48,10 +48,10 @@ class Group extends BaseEntity
     protected $users;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\Category", inversedBy="groups", cascade={"persist", "merge"})
-     * @ORM\JoinTable(name="group_category_rel")
+     * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\Theme", inversedBy="groups", cascade={"persist", "merge"})
+     * @ORM\JoinTable(name="group_theme_rel")
      */
-    protected $categories;
+    protected $themes;
 
     /**
      * Group constructor.
@@ -61,7 +61,7 @@ class Group extends BaseEntity
         parent::__construct();
         $this->teacherLevelSecured = true;
         $this->users = new ArrayCollection();
-        $this->categories = new ArrayCollection();
+        $this->themes = new ArrayCollection();
     }
 
     /**
@@ -83,38 +83,38 @@ class Group extends BaseEntity
     /**
      * @return mixed
      */
-    public function getCategories()
+    public function getThemes()
     {
-        return $this->categories;
+        return $this->themes;
     }
 
     /**
-     * @param mixed $categories
+     * @param mixed $themes
      */
-    public function setCategories($categories): void
+    public function setThemes($themes): void
     {
-        $this->categories = $categories;
+        $this->themes = $themes;
     }
 
     /**
-     * @param Category $category
+     * @param Theme $theme
      */
-    public function addCategory(Category $category): void
+    public function addTheme(Theme $theme): void
     {
-        if ($this->categories->contains($category)) {
+        if ($this->themes->contains($theme)) {
             return;
         }
-        $this->categories[] = $category;
+        $this->themes[] = $theme;
     }
 
     /**
      * @return array
      */
-    public function getCategoriesId(): array
+    public function getThemesId(): array
     {
         $res = [];
-        foreach ($this->getCategories()->getValues() as $key => $category) {
-            $res[] = $category->getId();
+        foreach ($this->getThemes()->getValues() as $key => $theme) {
+            $res[] = $theme->getId();
         }
         return $res;
     }

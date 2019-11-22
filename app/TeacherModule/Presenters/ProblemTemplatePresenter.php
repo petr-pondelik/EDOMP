@@ -176,19 +176,19 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
     }
 
     /**
-     * @param int $subCategoryId
+     * @param int $subThemeId
      * @param int $templateId
      * @throws \App\CoreModule\Exceptions\FlashesTranslatorException
      */
-    public function handleSubCategoryUpdate(int $templateId, int $subCategoryId): void
+    public function handleSubThemeUpdate(int $templateId, int $subThemeId): void
     {
         try {
-            $this->functionality->update($templateId, ArrayHash::from(['subCategory' => $subCategoryId]), true, true);
+            $this->functionality->update($templateId, ArrayHash::from(['subTheme' => $subThemeId]), true, true);
         } catch (\Exception $e) {
-            $this->informUser(new UserInformArgs('subCategory', true, 'error', $e, true));
+            $this->informUser(new UserInformArgs('subTheme', true, 'error', $e, true));
         }
         $this['entityGrid']->reload();
-        $this->informUser(new UserInformArgs('subCategory', true, 'success', null, true));
+        $this->informUser(new UserInformArgs('subTheme', true, 'success', null, true));
     }
 
     /**

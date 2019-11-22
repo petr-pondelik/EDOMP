@@ -19,7 +19,7 @@ use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\GeometricSequence
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
-use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\TemplateJsonDataRepository;
 use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use App\CoreModule\Model\Persistent\Traits\ProblemTemplateFunctionalityTrait;
@@ -46,7 +46,7 @@ class GeometricSequenceTemplateFunctionality extends BaseFunctionality
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param DifficultyRepository $difficultyRepository
-     * @param SubCategoryRepository $subCategoryRepository
+     * @param SubThemeRepository $subThemeRepository
      * @param TemplateJsonDataRepository $templateJsonDataRepository
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      */
@@ -59,7 +59,7 @@ class GeometricSequenceTemplateFunctionality extends BaseFunctionality
         ProblemConditionTypeRepository $problemConditionTypeRepository,
         ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository,
-        SubCategoryRepository $subCategoryRepository,
+        SubThemeRepository $subThemeRepository,
         TemplateJsonDataRepository $templateJsonDataRepository,
         TemplateJsonDataFunctionality $templateJsonDataFunctionality
     )
@@ -70,7 +70,7 @@ class GeometricSequenceTemplateFunctionality extends BaseFunctionality
         $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->difficultyRepository = $difficultyRepository;
-        $this->subCategoryRepository = $subCategoryRepository;
+        $this->subThemeRepository = $subThemeRepository;
         $this->templateJsonDataRepository = $templateJsonDataRepository;
         $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
         $this->repository = $repository;

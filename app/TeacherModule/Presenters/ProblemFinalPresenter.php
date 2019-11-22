@@ -112,19 +112,19 @@ class ProblemFinalPresenter extends EntityPresenter
 
     /**
      * @param int $problemId
-     * @param int $subCategoryId
+     * @param int $subThemeId
      * @throws \Exception
      */
-    public function handleSubCategoryUpdate(int $problemId, int $subCategoryId): void
+    public function handleSubThemeUpdate(int $problemId, int $subThemeId): void
     {
         try {
-            $this->functionality->update($problemId, ArrayHash::from(['subCategory' => $subCategoryId]), true, false);
+            $this->functionality->update($problemId, ArrayHash::from(['subTheme' => $subThemeId]), true, false);
         } catch (\Exception $e) {
-            $this->informUser(new UserInformArgs('subCategory', true, 'error', $e));
+            $this->informUser(new UserInformArgs('subTheme', true, 'error', $e));
             return;
         }
         $this['entityGrid']->reload();
-        $this->informUser(new UserInformArgs('subCategory', true));
+        $this->informUser(new UserInformArgs('subTheme', true));
     }
 
     /**

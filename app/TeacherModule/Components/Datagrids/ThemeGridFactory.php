@@ -9,32 +9,32 @@
 namespace App\TeacherModule\Components\DataGrids;
 
 use App\CoreModule\Components\DataGrids\BaseGrid;
-use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
- * Class CategoryGridFactory
+ * Class ThemeGridFactory
  * @package App\TeacherModule\Components\DataGrids
  */
-class CategoryGridFactory extends BaseGrid
+class ThemeGridFactory extends BaseGrid
 {
 
     /**
-     * @var CategoryRepository
+     * @var ThemeRepository
      */
-    protected $categoryRepository;
+    protected $themeRepository;
 
     /**
-     * CategoryGridFactory constructor.
-     * @param CategoryRepository $categoryRepository
+     * ThemeGridFactory constructor.
+     * @param ThemeRepository $themeRepository
      */
     public function __construct
     (
-         CategoryRepository $categoryRepository
+         ThemeRepository $themeRepository
     )
     {
         parent::__construct();
-        $this->categoryRepository = $categoryRepository;
+        $this->themeRepository = $themeRepository;
     }
 
     /**
@@ -50,7 +50,7 @@ class CategoryGridFactory extends BaseGrid
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->categoryRepository->getSecuredQueryBuilder($container->user));
+        $grid->setDataSource($this->themeRepository->getSecuredQueryBuilder($container->user));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()

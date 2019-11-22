@@ -14,7 +14,7 @@ use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
-use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\TemplateJsonDataRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Nette\Utils\ArrayHash;
@@ -47,9 +47,9 @@ trait ProblemTemplateFunctionalityTrait
     protected $difficultyRepository;
 
     /**
-     * @var SubCategoryRepository
+     * @var SubThemeRepository
      */
-    protected $subCategoryRepository;
+    protected $subThemeRepository;
 
     /**
      * @var TemplateJsonDataRepository
@@ -101,8 +101,8 @@ trait ProblemTemplateFunctionalityTrait
         if (isset($data->difficulty)) {
             $template->setDifficulty($this->difficultyRepository->find($data->difficulty));
         }
-        if (isset($data->subCategory)) {
-            $template->setSubCategory($this->subCategoryRepository->find($data->subCategory));
+        if (isset($data->subTheme)) {
+            $template->setSubTheme($this->subThemeRepository->find($data->subTheme));
         }
         if (isset($data->matches)) {
             $template->setMatches($data->matches);

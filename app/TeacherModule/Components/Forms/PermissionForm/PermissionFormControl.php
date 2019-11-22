@@ -13,7 +13,7 @@ use App\CoreModule\Components\Forms\FormControl;
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Functionality\GroupFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\SuperGroupFunctionality;
-use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
 use App\CoreModule\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
@@ -31,9 +31,9 @@ class PermissionFormControl extends FormControl
     protected $superGroupFunctionality;
 
     /**
-     * @var CategoryRepository
+     * @var ThemeRepository
      */
-    protected $categoryRepository;
+    protected $themeRepository;
 
     /**
      * @var BaseEntity
@@ -50,21 +50,21 @@ class PermissionFormControl extends FormControl
      * @param Validator $validator
      * @param GroupFunctionality $groupFunctionality
      * @param SuperGroupFunctionality $superGroupFunctionality
-     * @param CategoryRepository $categoryRepository
+     * @param ThemeRepository $themeRepository
      * @param bool $super
      */
     public function __construct
     (
         Validator $validator,
         GroupFunctionality $groupFunctionality, SuperGroupFunctionality $superGroupFunctionality,
-        CategoryRepository $categoryRepository,
+        ThemeRepository $themeRepository,
         bool $super = false
     )
     {
         parent::__construct($validator);
         $this->functionality = $groupFunctionality;
         $this->superGroupFunctionality = $superGroupFunctionality;
-        $this->categoryRepository = $categoryRepository;
+        $this->themeRepository = $themeRepository;
         $this->super = $super;
     }
 
@@ -75,10 +75,10 @@ class PermissionFormControl extends FormControl
     public function createComponentForm(): Form
     {
         $form = parent::createComponentForm();
-        $categoryOptions = $this->categoryRepository->findAssoc([], 'id');
-        $form->addMultiSelect('categories', 'Kategorie', $categoryOptions)
+        $themeOptions = $this->themeRepository->findAssoc([], 'id');
+        $form->addMultiSelect('themes', 'Téma', $themeOptions)
             ->setHtmlAttribute('class', 'form-control selectpicker')
-            ->setHtmlAttribute('title', 'Zvolte kategorie');
+            ->setHtmlAttribute('title', 'Zvolte témata');
         $form['submit']->caption = 'Uložit';
         if ($this->super){
             $form->onSuccess[] = [$this, 'handleSuperFormSuccess'];
@@ -102,7 +102,7 @@ class PermissionFormControl extends FormControl
     {
         bdump('HANDLE FORM SUCCESS');
         try{
-            $this->functionality->updatePermissions($this->entity->getId(), $values->categories);
+            $this->functionality->updatePermissions($this->entity->getId(), $values->themes);
             $this->onSuccess();
         } catch (\Exception $e){
             // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
@@ -121,7 +121,7 @@ class PermissionFormControl extends FormControl
     {
         bdump('HANDLE SUPER FORM SUCCESS');
         try{
-            $this->superGroupFunctionality->updatePermissions($this->entity->getId(), $values->categories);
+            $this->superGroupFunctionality->updatePermissions($this->entity->getId(), $values->themes);
             $this->onSuccess();
         } catch (\Exception $e){
             // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
@@ -147,6 +147,6 @@ class PermissionFormControl extends FormControl
      */
     public function setDefaults(BaseEntity $entity): void
     {
-        $this['form']['categories']->setDefaultValue($entity->getCategoriesId());
+        $this['form']['themes']->setDefaultValue($entity->getThemesId());
     }
 }

@@ -15,8 +15,8 @@ import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
         $.fn.filepond.setOptions({
             allowMultiple: false,
             server: {
-                process: '?logo_id=' + logoId + '&do=updateFile',
-                revert: '?logo_id=' + logoId + '&do=revertFileUpdate'
+                process: '?logo_id=' + logoId + '&do=updateLogoFile',
+                revert: '?logo_id=' + logoId + '&do=revertLogoFileUpdate'
             },
             allowImagePreview: true,
             allowFileTypeValidation: true,
@@ -31,8 +31,8 @@ import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
         $.fn.filepond.setOptions({
             allowMultiple: false,
             server: {
-                process: '?do=uploadFile',
-                revert: '?do=revertFileUpload'
+                process: '?do=uploadLogoFile',
+                revert: '?do=revertLogoFileUpload'
             },
             allowImagePreview: true,
             allowFileTypeValidation: true,

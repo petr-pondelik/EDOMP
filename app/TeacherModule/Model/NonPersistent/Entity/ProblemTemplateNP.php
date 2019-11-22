@@ -37,7 +37,7 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     /**
      * @var int|null
      */
-    protected $subCategory;
+    protected $subTheme;
 
     /**
      * @var string|null
@@ -203,17 +203,17 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     /**
      * @return int|null
      */
-    public function getSubCategory(): ?int
+    public function getSubTheme(): ?int
     {
-        return $this->subCategory;
+        return $this->subTheme;
     }
 
     /**
-     * @param int|null $subCategory
+     * @param int|null $subTheme
      */
-    public function setSubCategory(?int $subCategory): void
+    public function setSubTheme(?int $subTheme): void
     {
-        $this->subCategory = $subCategory;
+        $this->subTheme = $subTheme;
     }
 
     /**

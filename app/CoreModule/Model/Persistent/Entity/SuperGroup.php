@@ -36,10 +36,10 @@ class SuperGroup extends BaseEntity
     protected $groups;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\Category", inversedBy="superGroups", cascade={"persist", "merge"})
-     * @ORM\JoinTable(name="super_group_category_rel")
+     * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\Theme", inversedBy="superGroups", cascade={"persist", "merge"})
+     * @ORM\JoinTable(name="super_group_theme_rel")
      */
-    protected $categories;
+    protected $themes;
 
     /**
      * SuperGroup constructor.
@@ -49,7 +49,7 @@ class SuperGroup extends BaseEntity
         parent::__construct();
         $this->teacherLevelSecured = true;
         $this->groups = new ArrayCollection();
-        $this->categories = new ArrayCollection();
+        $this->themes = new ArrayCollection();
     }
 
     /**
@@ -71,36 +71,36 @@ class SuperGroup extends BaseEntity
     /**
      * @return mixed
      */
-    public function getCategories()
+    public function getThemes()
     {
-        return $this->categories;
+        return $this->themes;
     }
 
     /**
-     * @param mixed $categories
+     * @param mixed $themes
      */
-    public function setCategories($categories): void
+    public function setThemes($themes): void
     {
-        $this->categories = $categories;
+        $this->themes = $themes;
     }
 
     /**
      * @return array
      */
-    public function getCategoriesId(): array
+    public function getThemesId(): array
     {
         $res = [];
-        foreach ($this->getCategories()->getValues() as $key => $category) {
-            $res[] = $category->getId();
+        foreach ($this->getThemes()->getValues() as $key => $theme) {
+            $res[] = $theme->getId();
         }
         return $res;
     }
 
-    public function addCategory(Category $category): void
+    public function addTheme(Theme $theme): void
     {
-        if ($this->categories->contains($category)) {
+        if ($this->themes->contains($theme)) {
             return;
         }
-        $this->categories[] = $category;
+        $this->themes[] = $theme;
     }
 }

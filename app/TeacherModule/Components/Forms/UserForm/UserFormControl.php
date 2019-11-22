@@ -21,7 +21,6 @@ use App\CoreModule\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\Random;
 
 /**
  * Class UserFormControl
@@ -129,6 +128,8 @@ class UserFormControl extends EntityFormControl
         $validateFields['username'] = new ValidatorArgument($values->username, 'username');
         $validateFields['role'] = new ValidatorArgument($values->role, 'notEmpty');
         $validateFields['groups'] = new ValidatorArgument($values->groups, 'arrayNotEmpty');
+        $validateFields['firstName'] = new ValidatorArgument($values->firstName, 'notEmpty');
+        $validateFields['lastName'] = new ValidatorArgument($values->lastName, 'notEmpty');
 
         $this->validator->validate($form, $validateFields);
 
@@ -151,7 +152,6 @@ class UserFormControl extends EntityFormControl
                 $values->username = $values->email;
             }
             $user = $this->functionality->create($values, false);
-            bdump($values);
             $this->entityManager->flush();
             $this->mailService->sendInvitationEmail($user, $values->password);
             $this->onSuccess();

@@ -7,12 +7,12 @@
             {input type, "id" => "type"}
 
             <div class="form-group">
-                {label subCategory}
-                {input subCategory}
-                {snippet subCategoryErrorSnippet}
+                {label subTheme}
+                {input subTheme}
+                {snippet subThemeErrorSnippet}
                     {var $form = $control['form']}
                     <div n:if="$form->hasErrors()" class="mt-2">
-                        <p n:foreach="$form['subCategory']->errors as $error"
+                        <p n:foreach="$form['subTheme']->errors as $error"
                                 class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                             {$error}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">

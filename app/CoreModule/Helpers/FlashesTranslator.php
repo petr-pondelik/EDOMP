@@ -33,7 +33,7 @@ class FlashesTranslator
                 'update' => 'Šablona úspěšně editována.',
                 'delete' => 'Šablona úspěšně odstraněna.',
                 'difficulty' => 'Obtížnost úspěšně změněna.',
-                'subCategory' => 'Téma úspěšně změněno.',
+                'subTheme' => 'Téma úspěšně změněno.',
                 'studentVisible' => 'Viditelnost úlohy ve sbírce změněna.',
             ],
 
@@ -42,7 +42,7 @@ class FlashesTranslator
                 'update' => 'Chyba při editaci šablony.',
                 'delete' => 'Chyba při odstraňování šablony.',
                 'difficulty' => 'Chyba při změně obtížnosti.',
-                'subCategory' => 'Chyba při změně tématu.',
+                'subTheme' => 'Chyba při změně tématu.',
                 'studentVisible' => 'Chyba při změně viditelnosti úlohy ve sbírce.',
             ],
 
@@ -56,7 +56,7 @@ class FlashesTranslator
                 'update' => 'Šablona úspěšně editována.',
                 'delete' => 'Šablona úspěšně odstraněna.',
                 'difficulty' => 'Obtížnost úspěšně změněna.',
-                'subCategory' => 'Téma úspěšně změněno.',
+                'subTheme' => 'Téma úspěšně změněno.',
                 'studentVisible' => 'Viditelnost úlohy ve sbírce změněna.'
             ],
 
@@ -65,7 +65,7 @@ class FlashesTranslator
                 'update' => 'Chyba při editaci šablony.',
                 'delete' => 'Chyba při odstraňování šablony.',
                 'difficulty' => 'Chyba při změně obtížnosti.',
-                'subCategory' => 'Chyba při změně tématu.',
+                'subTheme' => 'Chyba při změně tématu.',
                 'studentVisible' => 'Chyba při změně viditelnosti úlohy ve sbírce.',
             ],
 
@@ -79,7 +79,7 @@ class FlashesTranslator
                 'update' => 'Šablona úspěšně editována.',
                 'delete' => 'Šablona úspěšně odstraněna.',
                 'difficulty' => 'Obtížnost úspěšně změněna.',
-                'subCategory' => 'Téma úspěšně změněno.',
+                'subTheme' => 'Téma úspěšně změněno.',
                 'studentVisible' => 'Viditelnost úlohy ve sbírce změněna.',
             ],
 
@@ -88,7 +88,7 @@ class FlashesTranslator
                 'update' => 'Chyba při editaci šablony.',
                 'delete' => 'Chyba při odstraňování šablony.',
                 'difficulty' => 'Chyba při změně obtížnosti.',
-                'subCategory' => 'Chyba při změně tématu.',
+                'subTheme' => 'Chyba při změně tématu.',
                 'studentVisible' => 'Chyba při změně viditelnosti úlohy ve sbírce.',
             ],
 
@@ -102,7 +102,7 @@ class FlashesTranslator
                 'update' => 'Šablona úspěšně editována.',
                 'delete' => 'Šablona úspěšně odstraněna.',
                 'difficulty' => 'Obtížnost úspěšně změněna.',
-                'subCategory' => 'Téma úspěšně změněno.',
+                'subTheme' => 'Téma úspěšně změněno.',
                 'studentVisible' => 'Viditelnost úlohy ve sbírce změněna.',
             ],
 
@@ -111,7 +111,7 @@ class FlashesTranslator
                 'update' => 'Chyba při editaci šablony.',
                 'delete' => 'Chyba při odstraňování šablony.',
                 'difficulty' => 'Chyba při změně obtížnosti.',
-                'subCategory' => 'Chyba při změně tématu.',
+                'subTheme' => 'Chyba při změně tématu.',
                 'studentVisible' => 'Chyba při změně viditelnosti úlohy ve sbírce.',
             ],
 
@@ -125,7 +125,7 @@ class FlashesTranslator
                 'update' => 'Příklad úspěšně editován.',
                 'delete' => 'Příklad úspěšně odstraněn.',
                 'difficulty' => 'Obtížnost úspěšně změněna.',
-                'subCategory' => 'Téma úspěšně změněno.',
+                'subTheme' => 'Téma úspěšně změněno.',
                 'getRes' => 'Výsledek úspěšně získán.',
                 'studentVisible' => 'Viditelnost úlohy ve sbírce změněna.',
             ],
@@ -135,7 +135,7 @@ class FlashesTranslator
                 'update' => 'Chyba při editaci příkladu.',
                 'delete' => 'Chyba při odstraňování příkladu.',
                 'difficulty' => 'Chyba při změně obtížnosti.',
-                'subCategory' => 'Chyba při změně tématu.',
+                'subTheme' => 'Chyba při změně tématu.',
                 'getRes' => 'Při výpočtu výsledku nastala chyba.',
                 'studentVisible' => 'Chyba při změně viditelnosti úlohy ve sbírce.',
             ],
@@ -160,41 +160,41 @@ class FlashesTranslator
 
         ],
 
-        'Teacher:Category' => [
+        'Teacher:Theme' => [
 
             'success' => [
-                'default' => 'Kategorie úspěšně vytvořena.',
-                'update' => 'Kategorie úspěšně editována.',
-                'delete' => 'Kategorie úspěšně odstraněna.',
+                'default' => 'Téma úspěšně vytvořeno.',
+                'update' => 'Téma úspěšně editováno.',
+                'delete' => 'Téma úspěšně odstraněno.',
             ],
 
             'error' => [
-                'default' => 'Chyba při vytváření kategorie.',
-                'update' => 'Chyba při editaci kategorie.',
-                'delete' => 'Chyba při odstraňování kategorie.',
+                'default' => 'Chyba při vytváření tématu.',
+                'update' => 'Chyba při editaci tématu.',
+                'delete' => 'Chyba při odstraňování tématu.',
             ],
 
-            'constraintViolation' => 'Ke kategorii existují úlohy.'
+            'constraintViolation' => 'V tématu existují úlohy.'
 
         ],
 
-        'Teacher:SubCategory' => [
+        'Teacher:SubTheme' => [
 
             'success' => [
-                'default' => 'Podkategorie úspěšně vytvořena.',
-                'update' => 'Podkategorie úspěšně editována.',
-                'delete' => 'Podkategorie úspěšně odstraněna.',
-                'category' => 'Kategorie úspěšně změněna.'
+                'default' => 'Podtéma úspěšně vytvořeno.',
+                'update' => 'Podtéma úspěšně editováno.',
+                'delete' => 'Podtéma úspěšně odstraněno.',
+                'theme' => 'Téma úspěšně změněna.'
             ],
 
             'error' => [
-                'default' => 'Chyba při vytváření podkategorie.',
-                'update' => 'Chyba při editaci podkategorie.',
-                'delete' => 'Chyba při odstraňování podkategorie.',
-                'category' => 'Chybě při změně kategorie.'
+                'default' => 'Chyba při vytváření podtématu.',
+                'update' => 'Chyba při editaci podtématu.',
+                'delete' => 'Chyba při odstraňování podtématu.',
+                'theme' => 'Chybě při změně tématu.'
             ],
 
-            'constraintViolation' => 'K podkategorii existují úlohy.'
+            'constraintViolation' => 'V podtématu existují úlohy.'
 
         ],
 

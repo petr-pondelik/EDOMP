@@ -48,11 +48,33 @@
         <div class="form-group col-12">
             {label firstName}
             {input firstName}
+            {snippet firstNameErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['firstName']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
+                        {$error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </p>
+                </div>
+            {/snippet}
         </div>
 
         <div class="form-group col-12">
             {label lastName}
             {input lastName}
+            {snippet lastNameErrorSnippet}
+                {var $form = $control['form']}
+                <div n:if="$form->hasErrors()" class="mt-2">
+                    <p n:foreach="$form['lastName']->errors as $error" class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
+                        {$error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </p>
+                </div>
+            {/snippet}
         </div>
 
         <div class="form-group col-12">

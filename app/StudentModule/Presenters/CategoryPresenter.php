@@ -13,22 +13,22 @@ use App\StudentModule\Components\Forms\ProblemFilterForm\IProblemFilterFormFacto
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
 use App\CoreModule\Services\Authorizator;
 use IPub\VisualPaginator\Components as VisualPaginator;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class CategoryPresenter
+ * Class ThemePresenter
  * @package App\StudentModule\Presenters
  */
-class CategoryPresenter extends StudentPresenter
+class ThemePresenter extends StudentPresenter
 {
     /**
-     * @var CategoryRepository
+     * @var ThemeRepository
      */
-    protected $categoryRepository;
+    protected $themeRepository;
 
     /**
      * @var ProblemFinalRepository
@@ -56,12 +56,12 @@ class CategoryPresenter extends StudentPresenter
     public $id;
 
     /**
-     * CategoryPresenter constructor.
+     * ThemePresenter constructor.
      * @param Authorizator $authorizator
      * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
-     * @param CategoryRepository $categoryRepository
+     * @param ThemeRepository $themeRepository
      * @param ProblemFinalRepository $problemFinalRepository
      * @param IProblemFilterFormFactory $problemFilterFormFactory
      */
@@ -69,12 +69,12 @@ class CategoryPresenter extends StudentPresenter
     (
         Authorizator $authorizator,
         IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        CategoryRepository $categoryRepository, ProblemFinalRepository $problemFinalRepository,
+        ThemeRepository $themeRepository, ProblemFinalRepository $problemFinalRepository,
         IProblemFilterFormFactory $problemFilterFormFactory
     )
     {
         parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
-        $this->categoryRepository = $categoryRepository;
+        $this->themeRepository = $themeRepository;
         $this->problemFinalRepository = $problemFinalRepository;
         $this->problemFilterFormFactory = $problemFilterFormFactory;
     }
@@ -88,7 +88,7 @@ class CategoryPresenter extends StudentPresenter
      */
     public function actionDefault(int $id, bool $clear_filters = false, int $page = 1, array $filters = null): void
     {
-        if(!$this->authorizator->isCategoryAllowed($this->user->identity, $id)){
+        if(!$this->authorizator->isThemeAllowed($this->user->identity, $id)){
             $this->flashMessage('Nedostatečná přístupová práva.', 'danger');
             $this->redirect('Homepage:default');
         }
@@ -107,13 +107,13 @@ class CategoryPresenter extends StudentPresenter
      */
     public function renderDefault(int $id): void
     {
-        $category = $this->categoryRepository->find($id);
+        $theme = $this->themeRepository->find($id);
 
-        if (!$category) {
+        if (!$theme) {
             bdump('NOT FOUND');
         }
 
-        $this->template->label = $category->getLabel();
+        $this->template->label = $theme->getLabel();
 
         $problemsCnt = $this->problemFinalRepository->getStudentFilteredCnt($id, $this->filters);
 
@@ -186,7 +186,7 @@ class CategoryPresenter extends StudentPresenter
     {
         $control = $this->problemFilterFormFactory->create($this->getParameter('id'));
         $control->onSuccess[] = function (){
-            $this->redirect('Category:default', $this->id, false, 1,  $this->filters);
+            $this->redirect('Theme:default', $this->id, false, 1,  $this->filters);
         };
         return $control;
     }
@@ -197,6 +197,6 @@ class CategoryPresenter extends StudentPresenter
     public function actionClearFilters(): void
     {
         $this->clearFilters();
-        $this->redirect('Category:default', $this->id, false, 1,  $this->filters);
+        $this->redirect('Theme:default', $this->id, false, 1,  $this->filters);
     }
 }

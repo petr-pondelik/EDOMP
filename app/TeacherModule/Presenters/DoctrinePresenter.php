@@ -22,7 +22,7 @@ use App\CoreModule\Model\Persistent\Functionality\TestFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\TestVariantFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\UserFunctionality;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
-use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\FilterRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
@@ -55,9 +55,9 @@ class DoctrinePresenter extends TeacherPresenter
     protected $problemFinalRepository;
 
     /**
-     * @var CategoryRepository
+     * @var ThemeRepository
      */
-    protected $categoryRepository;
+    protected $themeRepository;
 
     /**
      * @var TemplateJsonDataRepository
@@ -168,7 +168,7 @@ class DoctrinePresenter extends TeacherPresenter
      * @param FlashesTranslator $flashesTranslator
      * @param ConstraintEntityManager $em
      * @param ProblemFinalRepository $problemFinalRepository
-     * @param CategoryRepository $categoryRepository
+     * @param ThemeRepository $themeRepository
      * @param TemplateJsonDataRepository $templateJsonDataRepository
      * @param ProblemTemplateRepository $problemTemplateRepository
      * @param QuadraticEquationTemplateRepository $quadraticEqTemplRepository
@@ -194,7 +194,7 @@ class DoctrinePresenter extends TeacherPresenter
     (
         Authorizator $authorizator, NewtonApiClient $newtonApiClient,
         IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        ConstraintEntityManager $em, ProblemFinalRepository $problemFinalRepository, CategoryRepository $categoryRepository,
+        ConstraintEntityManager $em, ProblemFinalRepository $problemFinalRepository, ThemeRepository $themeRepository,
         TemplateJsonDataRepository $templateJsonDataRepository,
         ProblemTemplateRepository $problemTemplateRepository, QuadraticEquationTemplateRepository $quadraticEqTemplRepository,
         Validator $validator,
@@ -216,7 +216,7 @@ class DoctrinePresenter extends TeacherPresenter
     {
         parent::__construct($authorizator, $validator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory);
         $this->problemFinalRepository = $problemFinalRepository;
-        $this->categoryRepository = $categoryRepository;
+        $this->themeRepository = $themeRepository;
         $this->templateJsonDataRepository = $templateJsonDataRepository;
         $this->problemTemplateRepository = $problemTemplateRepository;
         $this->quadraticEqTemplRepository = $quadraticEqTemplRepository;
@@ -407,9 +407,9 @@ class DoctrinePresenter extends TeacherPresenter
 //        $this->em->persist($testVariant);
 //        $this->em->flush();
 
-//        $category = new Category();
-//        $category->setLabel("TESTCATEGORY1");
-//        //$this->em->persist($category);
+//        $theme = new Theme();
+//        $theme->setLabel("TESTTHEME1");
+//        //$this->em->persist($theme);
 //
 //        $difficulty = new Difficulty();
 //        $difficulty->setLabel("TESTDIFFICULTY1");
@@ -419,10 +419,10 @@ class DoctrinePresenter extends TeacherPresenter
 //        /*$group = new Group();
 //        $this->em->persist($group);*/
 //
-//        $subCategory = new SubCategory();
-//        $subCategory->setLabel("TESTSUBCATEGORY1");
-//        $subCategory->setCategory($category);
-//        //$this->em->persist($subCategory);
+//        $subTheme = new SubTheme();
+//        $subTheme->setLabel("TESTSUBTHEME1");
+//        $subTheme->setTheme($theme);
+//        //$this->em->persist($subTheme);
 //
 //        /*$entity = new ProblemConditionType();
 //        $errors = $this->validator->validate($entity);
@@ -447,7 +447,7 @@ class DoctrinePresenter extends TeacherPresenter
         $errors = $this->validator->validate($entity);
         //bdump($errors);*/
 
-        /*$res = $this->categoryRepository->delete(500);
+        /*$res = $this->themeRepository->delete(500);
         //bdump($res);*/
 
         /*$problemFinal = new ProblemFinal();
@@ -455,7 +455,7 @@ class DoctrinePresenter extends TeacherPresenter
         $problemFinal->setDifficulty($difficulty);
         $problemFinal->setVariable("x");
         $problemFinal->setProblemType($problemType);
-        $problemFinal->setSubCategory($subCategory);
+        $problemFinal->setSubTheme($subTheme);
         $this->em->persist($problemFinal);
 
         $test = new Test();
@@ -463,7 +463,7 @@ class DoctrinePresenter extends TeacherPresenter
         $test->setSchoolYear("2018-19");
         $this->em->persist($test);*/
 
-        /*$this->em->persist($category);*/
+        /*$this->em->persist($theme);*/
 
         ////bdump($this->latexParser::parse('$$ \bigg \langle15 x + 5\bigg \rangle $$'));
 

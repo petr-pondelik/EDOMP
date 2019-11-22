@@ -14,7 +14,7 @@ use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
-use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use Nette\Utils\Strings;
 
 /**
@@ -34,9 +34,9 @@ class FilterFunctionality extends BaseFunctionality
     protected $difficultyRepository;
 
     /**
-     * @var SubCategoryRepository
+     * @var SubThemeRepository
      */
-    protected $subCategoryRepository;
+    protected $subThemeRepository;
 
     /**
      * @var ProblemConditionRepository
@@ -48,7 +48,7 @@ class FilterFunctionality extends BaseFunctionality
      * @param ConstraintEntityManager $entityManager
      * @param ProblemTypeRepository $problemTypeRepository
      * @param DifficultyRepository $difficultyRepository
-     * @param SubCategoryRepository $subCategoryRepository
+     * @param SubThemeRepository $subThemeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      */
     public function __construct
@@ -56,14 +56,14 @@ class FilterFunctionality extends BaseFunctionality
         ConstraintEntityManager $entityManager,
         ProblemTypeRepository $problemTypeRepository,
         DifficultyRepository $difficultyRepository,
-        SubCategoryRepository $subCategoryRepository,
+        SubThemeRepository $subThemeRepository,
         ProblemConditionRepository $problemConditionRepository
     )
     {
         parent::__construct($entityManager);
         $this->problemTypeRepository = $problemTypeRepository;
         $this->difficultyRepository = $difficultyRepository;
-        $this->subCategoryRepository = $subCategoryRepository;
+        $this->subThemeRepository = $subThemeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
     }
 
@@ -124,7 +124,7 @@ class FilterFunctionality extends BaseFunctionality
         bdump('FILTER: ATTACH ENTITIES');
 
         $difficulties = $this->difficultyRepository->findAssoc([], 'id');
-        $subCategories = $this->subCategoryRepository->findAssoc([], 'id');
+        $subThemes = $this->subThemeRepository->findAssoc([], 'id');
         $problemTypes = $this->problemTypeRepository->findAssoc([], 'id');
         $problemConditions = $this->problemConditionRepository->findAssocByTypeAndAccessor();
 
@@ -144,8 +144,8 @@ class FilterFunctionality extends BaseFunctionality
             }
         }
 
-        foreach ($selectedFilters['subCategory'] as $id) {
-            $entity->addSubCategory($subCategories[$id]);
+        foreach ($selectedFilters['subTheme'] as $id) {
+            $entity->addSubTheme($subThemes[$id]);
         }
 
         foreach ($selectedFilters['problemType'] as $id) {

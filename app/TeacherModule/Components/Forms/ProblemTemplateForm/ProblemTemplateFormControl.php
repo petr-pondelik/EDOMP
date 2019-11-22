@@ -21,7 +21,7 @@ use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
-use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
 use App\TeacherModule\Model\NonPersistent\TemplateData\ParametersData;
 use App\TeacherModule\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
@@ -54,9 +54,9 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     protected $problemTypeRepository;
 
     /**
-     * @var SubCategoryRepository
+     * @var SubThemeRepository
      */
-    protected $subCategoryRepository;
+    protected $subThemeRepository;
 
     /**
      * @var ProblemConditionTypeRepository
@@ -124,7 +124,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      * @param ConstraintEntityManager $entityManager
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
-     * @param SubCategoryRepository $subCategoryRepository
+     * @param SubThemeRepository $subThemeRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param PluginContainer $pluginContainer
@@ -138,7 +138,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         ConstraintEntityManager $entityManager,
         DifficultyRepository $difficultyRepository,
         ProblemTypeRepository $problemTypeRepository,
-        SubCategoryRepository $subCategoryRepository,
+        SubThemeRepository $subThemeRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository,
         ProblemConditionRepository $problemConditionRepository,
         PluginContainer $pluginContainer,
@@ -150,7 +150,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         parent::__construct($validator, $entityManager);
         $this->difficultyRepository = $difficultyRepository;
         $this->problemTypeRepository = $problemTypeRepository;
-        $this->subCategoryRepository = $subCategoryRepository;
+        $this->subThemeRepository = $subThemeRepository;
         $this->problemConditionTypeRepository = $problemConditionTypeRepository;
         $this->problemConditionRepository = $problemConditionRepository;
         $this->pluginContainer = $pluginContainer;
@@ -190,14 +190,14 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         $form = parent::createComponentForm();
 
         $difficulties = $this->difficultyRepository->findAssoc([], 'id');
-        $subcategories = $this->subCategoryRepository->findAssoc([], 'id');
+        $subThemes = $this->subThemeRepository->findAssoc([], 'id');
 
         $form->addHidden('type')
             ->setHtmlId('type');
         $form['type']->setDefaultValue($this->problemType->getId());
 
-        $form->addSelect('subCategory', 'Podkategorie *', $subcategories)
-            ->setPrompt('Zvolte podkategorii')
+        $form->addSelect('subTheme', 'Podtéma *', $subThemes)
+            ->setPrompt('Zvolte podtéma')
             ->setHtmlAttribute('class', 'form-control');
 
         $form->addSelect('studentVisible', 'Zobrazit ve cvičebnici *', [
@@ -662,7 +662,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         }
 
         $this['form']['id']->setDefaultValue($this->entity->getId());
-        $this['form']['subCategory']->setDefaultValue($this->entity->getSubCategory()->getId());
+        $this['form']['subTheme']->setDefaultValue($this->entity->getSubTheme()->getId());
         $this['form']['textBefore']->setDefaultValue($this->entity->getTextBefore());
         $this['form']['body']->setDefaultValue($this->entity->getBody());
         $this['form']['textAfter']->setDefaultValue($this->entity->getTextAfter());

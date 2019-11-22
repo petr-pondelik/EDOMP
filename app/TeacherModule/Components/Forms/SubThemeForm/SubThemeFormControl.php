@@ -2,53 +2,71 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 8.4.19
- * Time: 17:28
+ * Date: 23.5.19
+ * Time: 15:01
  */
 
-namespace App\TeacherModule\Components\Forms\CategoryForm;
+namespace App\TeacherModule\Components\Forms\SubThemeForm;
 
 use App\CoreModule\Arguments\ValidatorArgument;
 use App\CoreModule\Components\Forms\EntityFormControl;
-use App\CoreModule\Model\Persistent\Functionality\CategoryFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\SubThemeFunctionality;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
+use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
 use App\CoreModule\Services\Validator;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
 /**
- * Class CategoryFormControl
- * @package App\TeacherModule\Components\Forms\CategoryForm
+ * Class SubThemeFormControl
+ * @package App\TeacherModule\Components\Forms\SubThemeForm
  */
-class CategoryFormControl extends EntityFormControl
+class SubThemeFormControl extends EntityFormControl
 {
     /**
-     * CategoryFormControl constructor.
+     * @var ThemeRepository
+     */
+    protected $themeRepository;
+
+    /**
+     * SubThemeFormControl constructor.
      * @param Validator $validator
      * @param ConstraintEntityManager $entityManager
-     * @param CategoryFunctionality $categoryFunctionality
+     * @param SubThemeFunctionality $subThemeFunctionality
+     * @param ThemeRepository $themeRepository
      */
     public function __construct
     (
         Validator $validator,
         ConstraintEntityManager $entityManager,
-        CategoryFunctionality $categoryFunctionality
+        SubThemeFunctionality $subThemeFunctionality,
+        ThemeRepository $themeRepository
     )
     {
         parent::__construct($validator, $entityManager);
-        $this->functionality = $categoryFunctionality;
+        $this->functionality = $subThemeFunctionality;
+        $this->themeRepository = $themeRepository;
     }
 
     /**
-     * @return \Nette\Application\UI\Form
+     * @return Form
+     * @throws \Exception
      */
     public function createComponentForm(): Form
     {
         $form = parent::createComponentForm();
+
+        $themeOptions = $this->themeRepository->findAllowed($this->presenter->user);
+
         $form->addText('label', 'Název *')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Zadejte název kategorie.');
+            ->setHtmlAttribute('placeholder', 'Zadejte název podtématu.');
+
+        $form->addSelect('theme', 'Téma *', $themeOptions)
+            ->setPrompt('Zvolte téma')
+            ->setHtmlAttribute('class', 'form-control');
+
         return $form;
     }
 
@@ -60,6 +78,7 @@ class CategoryFormControl extends EntityFormControl
     {
         $values = $form->values;
         $validateFields['label'] = new ValidatorArgument($values->label, 'stringNotEmpty');
+        $validateFields['theme'] = new ValidatorArgument($values->theme, 'notEmpty');
         $this->validator->validate($form, $validateFields);
         $this->redrawErrors();
         $this->redrawFlashes();
@@ -109,5 +128,6 @@ class CategoryFormControl extends EntityFormControl
         }
         $this['form']['id']->setDefaultValue($this->entity->getId());
         $this['form']['label']->setDefaultValue($this->entity->getLabel());
+        $this['form']['theme']->setDefaultValue($this->entity->getTheme()->getId());
     }
 }

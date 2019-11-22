@@ -11,7 +11,7 @@ namespace App\StudentModule\Components\Forms\ProblemFilterForm;
 
 use App\CoreModule\Components\Forms\FormControl;
 use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
-use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use App\CoreModule\Services\Validator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -23,9 +23,9 @@ use Nette\Utils\ArrayHash;
 class ProblemFilterFormControl extends FormControl
 {
     /**
-     * @var SubCategoryRepository
+     * @var SubThemeRepository
      */
-    protected $subCategoryRepository;
+    protected $subThemeRepository;
 
     /**
      * @var DifficultyRepository
@@ -35,26 +35,26 @@ class ProblemFilterFormControl extends FormControl
     /**
      * @var int
      */
-    protected $categoryId;
+    protected $themeId;
 
     /**
      * ProblemFilterFormControl constructor.
      * @param Validator $validator
-     * @param SubCategoryRepository $subCategoryRepository
+     * @param SubThemeRepository $subThemeRepository
      * @param DifficultyRepository $difficultyRepository
-     * @param int $categoryId
+     * @param int $themeId
      */
     public function __construct
     (
         Validator $validator,
-        SubCategoryRepository $subCategoryRepository, DifficultyRepository $difficultyRepository,
-        int $categoryId
+        SubThemeRepository $subThemeRepository, DifficultyRepository $difficultyRepository,
+        int $themeId
     )
     {
         parent::__construct($validator);
-        $this->subCategoryRepository = $subCategoryRepository;
+        $this->subThemeRepository = $subThemeRepository;
         $this->difficultyRepository = $difficultyRepository;
-        $this->categoryId = $categoryId;
+        $this->themeId = $themeId;
     }
 
     /**
@@ -68,7 +68,7 @@ class ProblemFilterFormControl extends FormControl
         $form->getElementPrototype()->class('border-0 ajax');
 
         $difficultyOptions = $this->difficultyRepository->findAssoc([],"id");
-        $themeOptions = $this->subCategoryRepository->findAssoc(["category" => $this->categoryId], "id");
+        $themeOptions = $this->subThemeRepository->findAssoc(["theme" => $this->themeId], "id");
 
         $form->addMultiSelect("difficulty", "Obtížnost", $difficultyOptions)
             ->setHtmlAttribute("class", "form-control selectpicker");

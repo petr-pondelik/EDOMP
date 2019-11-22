@@ -9,23 +9,23 @@
 namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
-use App\CoreModule\Model\Persistent\Entity\SubCategory;
+use App\CoreModule\Model\Persistent\Entity\SubTheme;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
-use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
-use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
+use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\UserRepository;
 
 /**
- * Class SubCategoryFunctionality
+ * Class SubThemeFunctionality
  * @package App\CoreModule\Model\Persistent\Functionality
  */
-class SubCategoryFunctionality extends BaseFunctionality
+class SubThemeFunctionality extends BaseFunctionality
 {
 
     /**
-     * @var CategoryRepository
+     * @var ThemeRepository
      */
-    protected $categoryRepository;
+    protected $themeRepository;
 
     /**
      * @var UserRepository
@@ -33,23 +33,23 @@ class SubCategoryFunctionality extends BaseFunctionality
     protected $userRepository;
 
     /**
-     * SubCategoryFunctionality constructor.
+     * SubThemeFunctionality constructor.
      * @param ConstraintEntityManager $entityManager
-     * @param SubCategoryRepository $subCategoryRepository
-     * @param CategoryRepository $categoryRepository
+     * @param SubThemeRepository $subThemeRepository
+     * @param ThemeRepository $themeRepository
      * @param UserRepository $userRepository
      */
     public function __construct
     (
         ConstraintEntityManager $entityManager,
-        SubCategoryRepository $subCategoryRepository,
-        CategoryRepository $categoryRepository,
+        SubThemeRepository $subThemeRepository,
+        ThemeRepository $themeRepository,
         UserRepository $userRepository
     )
     {
         parent::__construct($entityManager);
-        $this->repository = $subCategoryRepository;
-        $this->categoryRepository = $categoryRepository;
+        $this->repository = $subThemeRepository;
+        $this->themeRepository = $themeRepository;
         $this->userRepository = $userRepository;
     }
 
@@ -61,16 +61,16 @@ class SubCategoryFunctionality extends BaseFunctionality
      */
     public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
-        $subcategory = new SubCategory();
-        $category = $this->categoryRepository->find($data->category);
-        $subcategory->setLabel($data->label);
-        $subcategory->setCategory($category);
-        $subcategory->setCreatedBy($this->userRepository->find($data->userId));
-        $this->em->persist($subcategory);
+        $subtheme = new SubTheme();
+        $theme = $this->themeRepository->find($data->theme);
+        $subtheme->setLabel($data->label);
+        $subtheme->setTheme($theme);
+        $subtheme->setCreatedBy($this->userRepository->find($data->userId));
+        $this->em->persist($subtheme);
         if ($flush) {
             $this->em->flush();
         }
-        return $subcategory;
+        return $subtheme;
     }
 
     /**
@@ -82,18 +82,18 @@ class SubCategoryFunctionality extends BaseFunctionality
      */
     public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
-        $subcategory = $this->repository->find($id);
+        $subtheme = $this->repository->find($id);
         if(!empty($data->label)){
-            $subcategory->setLabel($data->label);
+            $subtheme->setLabel($data->label);
         }
-        if(!empty($data->category)) {
-            $category = $this->categoryRepository->find($data->category);
-            $subcategory->setCategory($category);
+        if(!empty($data->theme)) {
+            $theme = $this->themeRepository->find($data->theme);
+            $subtheme->setTheme($theme);
         }
-        $this->em->persist($subcategory);
+        $this->em->persist($subtheme);
         if ($flush) {
             $this->em->flush();
         }
-        return $subcategory;
+        return $subtheme;
     }
 }

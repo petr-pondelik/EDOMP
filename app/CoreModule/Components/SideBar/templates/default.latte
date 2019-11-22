@@ -67,14 +67,14 @@
                         <i class="fas fa-calculator mr-2"></i> Příklady
                     </a>
                 </li>
-                <li n:class="$presenter->isLinkCurrent('SubCategory:*') ? active">
-                    <a href={plink :Teacher:SubCategory:default}>
-                        <i class="fas fa-folder-open mr-2"></i> Podkategorie
+                <li n:class="$presenter->isLinkCurrent('SubTheme:*') ? active">
+                    <a href={plink :Teacher:SubTheme:default}>
+                        <i class="fas fa-folder-open mr-2"></i> Podtémata
                     </a>
                 </li>
-                <li n:class="$presenter->isLinkCurrent('Category:*') ? active">
-                    <a href={plink :Teacher:Category:default}>
-                        <i class="fas fa-archive mr-2"></i> Kategorie
+                <li n:class="$presenter->isLinkCurrent('Theme:*') ? active">
+                    <a href={plink :Teacher:Theme:default}>
+                        <i class="fas fa-archive mr-2"></i> Témata
                     </a>
                 </li>
                 <li class="nav-small-cap">
@@ -137,14 +137,14 @@
                     </a>
                 </li>
 
-                <li n:class="$presenter->isLinkCurrent('Category:*') ? active">
+                <li n:class="$presenter->isLinkCurrent('Theme:*') ? active">
                     <a href="javascript:void(0)" class="submenu-indicator-minus">
                         <i class="fas fa-archive mr-3"></i>Sbírky
                     </a>
                     <ul class="submenu">
-                        {foreach $user->identity->categories as $key => $category}
-                            <li n:class="$presenter->isLinkCurrent('Category:default', $key) ? active">
-                                <a href={plink Category:default 'id' => $key, 'clear_filters' => true}>{$category}</a>
+                        {foreach $user->identity->themes as $key => $theme}
+                            <li n:class="$presenter->isLinkCurrent('Theme:default', $key) ? active">
+                                <a href={plink Theme:default 'id' => $key, 'clear_filters' => true}>{$theme}</a>
                             </li>
                         {/foreach}
                     </ul>

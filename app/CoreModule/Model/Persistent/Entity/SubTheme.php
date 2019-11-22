@@ -16,12 +16,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\SubCategoryRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\SubThemeRepository")
  *
- * Class SubCategory
+ * Class SubTheme
  * @package App\CoreModule\Model\Persistent\Entity
  */
-class SubCategory extends BaseEntity
+class SubTheme extends BaseEntity
 {
     use LabelTrait;
 
@@ -33,24 +33,24 @@ class SubCategory extends BaseEntity
     protected $toStringAttr = 'label';
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\CoreModule\Model\Persistent\Entity\Category", inversedBy="subCategories", cascade={"persist", "merge"})
+     * @ORM\ManyToOne(targetEntity="App\CoreModule\Model\Persistent\Entity\Theme", inversedBy="subThemes", cascade={"persist", "merge"})
      * @Assert\NotBlank(
-     *     message="Category can't be blank."
+     *     message="Theme can't be blank."
      * )
      *
-     * @var Category
+     * @var Theme
      */
-    protected $category;
+    protected $theme;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal", mappedBy="subCategory", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal", mappedBy="subTheme", cascade={"all"})
      *
      * @var Collection
      */
     protected $problems;
 
     /**
-     * SubCategory constructor.
+     * SubTheme constructor.
      */
     public function __construct()
     {
@@ -76,18 +76,18 @@ class SubCategory extends BaseEntity
     }
 
     /**
-     * @return Category
+     * @return Theme
      */
-    public function getCategory(): Category
+    public function getTheme(): Theme
     {
-        return $this->category;
+        return $this->theme;
     }
 
     /**
-     * @param Category $category
+     * @param Theme $theme
      */
-    public function setCategory(Category $category): void
+    public function setTheme(Theme $theme): void
     {
-        $this->category = $category;
+        $this->theme = $theme;
     }
 }

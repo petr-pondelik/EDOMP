@@ -9,9 +9,9 @@
 namespace App\CoreModule\Model\Persistent\Repository;
 
 /**
- * Class CategoryRepository
+ * Class ThemeRepository
  * @package App\CoreModule\Model\Persistent\Repository
  */
-class CategoryRepository extends SecuredRepository
+class ThemeRepository extends SecuredRepository
 {
 }

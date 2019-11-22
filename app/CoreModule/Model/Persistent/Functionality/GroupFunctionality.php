@@ -11,7 +11,7 @@ namespace App\CoreModule\Model\Persistent\Functionality;
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\Group;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
-use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\GroupRepository;
 use App\CoreModule\Model\Persistent\Repository\SuperGroupRepository;
 use App\CoreModule\Model\Persistent\Repository\UserRepository;
@@ -29,9 +29,9 @@ class GroupFunctionality extends BaseFunctionality
     protected $superGroupRepository;
 
     /**
-     * @var CategoryRepository
+     * @var ThemeRepository
      */
-    protected $categoryRepository;
+    protected $themeRepository;
 
     /**
      * @var UserRepository
@@ -43,20 +43,20 @@ class GroupFunctionality extends BaseFunctionality
      * @param ConstraintEntityManager $entityManager
      * @param GroupRepository $repository
      * @param SuperGroupRepository $superGroupRepository
-     * @param CategoryRepository $categoryRepository
+     * @param ThemeRepository $themeRepository
      * @param UserRepository $userRepository
      */
     public function __construct
     (
         ConstraintEntityManager $entityManager, GroupRepository $repository,
-        SuperGroupRepository $superGroupRepository, CategoryRepository $categoryRepository,
+        SuperGroupRepository $superGroupRepository, ThemeRepository $themeRepository,
         UserRepository $userRepository
     )
     {
         parent::__construct($entityManager);
         $this->repository = $repository;
         $this->superGroupRepository = $superGroupRepository;
-        $this->categoryRepository = $categoryRepository;
+        $this->themeRepository = $themeRepository;
         $this->userRepository = $userRepository;
     }
 
@@ -109,15 +109,15 @@ class GroupFunctionality extends BaseFunctionality
 
     /**
      * @param int $id
-     * @param array $categories
+     * @param array $themes
      * @param bool $flush
      * @throws \App\CoreModule\Exceptions\EntityException
      */
-    public function updatePermissions(int $id, array $categories, bool $flush = true): void
+    public function updatePermissions(int $id, array $themes, bool $flush = true): void
     {
         $group = $this->repository->find($id);
-        $group->setCategories(new ArrayCollection());
-        $group = $this->attachCategories($group, $categories);
+        $group->setThemes(new ArrayCollection());
+        $group = $this->attachThemes($group, $themes);
         $this->em->persist($group);
         if($flush){
             $this->em->flush();
@@ -126,13 +126,13 @@ class GroupFunctionality extends BaseFunctionality
 
     /**
      * @param Group $group
-     * @param array $categories
+     * @param array $themes
      * @return Group
      */
-    protected function attachCategories(Group $group, array $categories): Group
+    protected function attachThemes(Group $group, array $themes): Group
     {
-        foreach ($categories as $category){
-            $group->addCategory($this->categoryRepository->find($category));
+        foreach ($themes as $theme){
+            $group->addTheme($this->themeRepository->find($theme));
         }
         return $group;
     }

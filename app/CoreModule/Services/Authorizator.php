@@ -34,13 +34,13 @@ class Authorizator implements IAuthorizator
 
     /**
      * @param IIdentity $userIdentity
-     * @param int $categoryId
+     * @param int $themeId
      * @return bool
      */
-    public function isCategoryAllowed(IIdentity $userIdentity, int $categoryId): bool
+    public function isThemeAllowed(IIdentity $userIdentity, int $themeId): bool
     {
-        foreach ($userIdentity->categories as $key => $category) {
-            if ($key === $categoryId) {
+        foreach ($userIdentity->themes as $key => $theme) {
+            if ($key === $themeId) {
                 return true;
             }
         }

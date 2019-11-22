@@ -9,15 +9,15 @@
 namespace App\TeacherModule\Presenters;
 
 use App\CoreModule\Arguments\ValidatorArgument;
-use App\TeacherModule\Components\DataGrids\CategoryGridFactory;
-use App\TeacherModule\Components\Forms\CategoryForm\ICategoryFormFactory;
+use App\TeacherModule\Components\DataGrids\ThemeGridFactory;
+use App\TeacherModule\Components\Forms\ThemeForm\IThemeFormFactory;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\CoreModule\Model\Persistent\Entity\Category;
-use App\CoreModule\Model\Persistent\Functionality\CategoryFunctionality;
-use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Entity\Theme;
+use App\CoreModule\Model\Persistent\Functionality\ThemeFunctionality;
+use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
 use App\CoreModule\Services\Authorizator;
 use App\TeacherModule\Services\NewtonApiClient;
 use App\CoreModule\Services\Validator;
@@ -25,37 +25,37 @@ use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
- * Class CategoryPresenter
+ * Class ThemePresenter
  * @package App\TeacherModule\Presenters
  */
-class CategoryPresenter extends EntityPresenter
+class ThemePresenter extends EntityPresenter
 {
     /**
-     * CategoryPresenter constructor.
+     * ThemePresenter constructor.
      * @param Authorizator $authorizator
      * @param Validator $validator
      * @param NewtonApiClient $newtonApiClient
      * @param IHeaderBarFactory $headerBarFactory
      * @param ISideBarFactory $sideBarFactory
      * @param FlashesTranslator $flashesTranslator
-     * @param CategoryRepository $categoryRepository
-     * @param CategoryFunctionality $categoryFunctionality
-     * @param CategoryGridFactory $categoryGridFactory
-     * @param ICategoryFormFactory $categoryFormFactory
+     * @param ThemeRepository $themeRepository
+     * @param ThemeFunctionality $themeFunctionality
+     * @param ThemeGridFactory $themeGridFactory
+     * @param IThemeFormFactory $themeFormFactory
      * @param IHelpModalFactory $sectionHelpModalFactory
      */
     public function __construct
     (
         Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
         IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        CategoryRepository $categoryRepository, CategoryFunctionality $categoryFunctionality,
-        CategoryGridFactory $categoryGridFactory, ICategoryFormFactory $categoryFormFactory,
+        ThemeRepository $themeRepository, ThemeFunctionality $themeFunctionality,
+        ThemeGridFactory $themeGridFactory, IThemeFormFactory $themeFormFactory,
         IHelpModalFactory $sectionHelpModalFactory
     )
     {
         parent::__construct(
             $authorizator, $validator, $newtonApiClient, $headerBarFactory, $sideBarFactory, $flashesTranslator, $sectionHelpModalFactory,
-            $categoryRepository, $categoryFunctionality, $categoryGridFactory, $categoryFormFactory
+            $themeRepository, $themeFunctionality, $themeGridFactory, $themeFormFactory
         );
     }
 
@@ -70,12 +70,12 @@ class CategoryPresenter extends EntityPresenter
         $grid->addAction('delete', '', 'delete!')
             ->setIcon('trash')
             ->setClass('btn btn-danger btn-sm ajax')
-            ->setTitle('Odstranit kategorii.');
+            ->setTitle('Odstranit téma.');
 
         $grid->addAction('update', '', 'update!')
             ->setIcon('edit')
             ->setClass('btn btn-primary btn-sm')
-            ->setTitle('Editovat kategorii.');
+            ->setTitle('Editovat téma.');
 
         $grid->addInlineEdit()
             ->setIcon('pencil-alt')
@@ -85,7 +85,7 @@ class CategoryPresenter extends EntityPresenter
                 $container->addText('label', '');
             };
 
-        $grid->getInlineEdit()->onSetDefaults[] = static function ($cont, Category $item) {
+        $grid->getInlineEdit()->onSetDefaults[] = static function ($cont, Theme $item) {
             $cont->setDefaults([ 'label' => $item->getLabel() ]);
         };
 

@@ -19,10 +19,9 @@ use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\FlashesTranslator;
 use App\CoreModule\Helpers\FormatterHelper;
-use App\TeacherModule\Services\LatexParser;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
-use App\CoreModule\Model\Persistent\Entity\Category;
+use App\CoreModule\Model\Persistent\Entity\Theme;
 use App\CoreModule\Model\Persistent\Entity\Difficulty;
 use App\CoreModule\Model\Persistent\Entity\Filter;
 use App\CoreModule\Model\Persistent\Entity\Group;
@@ -43,14 +42,14 @@ use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\QuadraticEquationTemplate;
 use App\CoreModule\Model\Persistent\Entity\ProblemType;
 use App\CoreModule\Model\Persistent\Entity\Role;
-use App\CoreModule\Model\Persistent\Entity\SubCategory;
+use App\CoreModule\Model\Persistent\Entity\SubTheme;
 use App\CoreModule\Model\Persistent\Entity\SuperGroup;
 use App\CoreModule\Model\Persistent\Entity\TemplateJsonData;
 use App\CoreModule\Model\Persistent\Entity\Test;
 use App\CoreModule\Model\Persistent\Entity\TestVariant;
 use App\CoreModule\Model\Persistent\Entity\User;
 use App\CoreModule\Model\Persistent\Entity\ValidationFunction;
-use App\CoreModule\Model\Persistent\Functionality\CategoryFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\ThemeFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\FilterFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\GroupFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\LogoFunctionality;
@@ -66,7 +65,7 @@ use App\CoreModule\Model\Persistent\Functionality\ProblemTemplate\GeometricSeque
 use App\CoreModule\Model\Persistent\Functionality\ProblemTemplate\LinearEquationTemplateFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\ProblemTemplate\QuadraticEquationTemplateFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\ProblemTypeFunctionality;
-use App\CoreModule\Model\Persistent\Functionality\SubCategoryFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\SubThemeFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\SuperGroupFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\TestFunctionality;
@@ -74,7 +73,7 @@ use App\CoreModule\Model\Persistent\Functionality\TestVariantFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\UserFunctionality;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Manager\HomepageStatisticsManager;
-use App\CoreModule\Model\Persistent\Repository\CategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\FilterRepository;
 use App\CoreModule\Model\Persistent\Repository\GroupRepository;
@@ -95,7 +94,7 @@ use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRe
 use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\QuadraticEquationTemplateRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\RoleRepository;
-use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\SuperGroupRepository;
 use App\CoreModule\Model\Persistent\Repository\TemplateJsonDataRepository;
 use App\CoreModule\Model\Persistent\Repository\TestRepository;
@@ -267,13 +266,13 @@ class CoreModuleExtension extends ModuleExtension
             ->setType(DifficultyRepository::class)
             ->setTags([ 'doctrine.repositoryEntity' => Difficulty::class ]);
 
-        $builder->addDefinition($this->prefix('subCategoryRepository'))
-            ->setType(SubCategoryRepository::class)
-            ->setTags([ 'doctrine.repositoryEntity' => SubCategory::class ]);
+        $builder->addDefinition($this->prefix('subThemeRepository'))
+            ->setType(SubThemeRepository::class)
+            ->setTags([ 'doctrine.repositoryEntity' => SubTheme::class ]);
 
-        $builder->addDefinition($this->prefix('categoryRepository'))
-            ->setType(CategoryRepository::class)
-            ->setTags([ 'doctrine.repositoryEntity' => Category::class ]);
+        $builder->addDefinition($this->prefix('themeRepository'))
+            ->setType(ThemeRepository::class)
+            ->setTags([ 'doctrine.repositoryEntity' => Theme::class ]);
 
         $builder->addDefinition($this->prefix('problemConditionTypeRepository'))
             ->setType(ProblemConditionTypeRepository::class)
@@ -356,11 +355,11 @@ class CoreModuleExtension extends ModuleExtension
         $builder->addDefinition($this->prefix('geometricSequenceFinalFunctionality'))
             ->setType(GeometricSequenceFinalFunctionality::class);
 
-        $builder->addDefinition($this->prefix('categoryFunctionality'))
-            ->setType(CategoryFunctionality::class);
+        $builder->addDefinition($this->prefix('themeFunctionality'))
+            ->setType(ThemeFunctionality::class);
 
-        $builder->addDefinition($this->prefix('subCategoryFunctionality'))
-            ->setType(SubCategoryFunctionality::class);
+        $builder->addDefinition($this->prefix('subThemeFunctionality'))
+            ->setType(SubThemeFunctionality::class);
 
         $builder->addDefinition($this->prefix('problemFunctionality'))
             ->setType(ProblemFunctionality::class);

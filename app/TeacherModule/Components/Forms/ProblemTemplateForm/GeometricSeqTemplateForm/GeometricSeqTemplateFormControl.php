@@ -18,7 +18,7 @@ use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
-use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use App\TeacherModule\Services\ParameterParser;
 use App\TeacherModule\Services\ProblemTemplateSession;
 use App\CoreModule\Services\Validator;
@@ -44,8 +44,8 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
             'validation' => 'variable'
         ],
         [
-            'field' => 'subCategory',
-            'getter' => 'getSubCategory',
+            'field' => 'subTheme',
+            'getter' => 'getSubTheme',
             'validation' => 'notEmpty'
         ],
         [
@@ -82,7 +82,7 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
      * @param ConstraintEntityManager $entityManager
      * @param DifficultyRepository $difficultyRepository
      * @param ProblemTypeRepository $problemTypeRepository
-     * @param SubCategoryRepository $subCategoryRepository
+     * @param SubThemeRepository $subThemeRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param PluginContainer $pluginContainer
@@ -97,7 +97,7 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
         ConstraintEntityManager $entityManager,
         DifficultyRepository $difficultyRepository,
         ProblemTypeRepository $problemTypeRepository,
-        SubCategoryRepository $subCategoryRepository,
+        SubThemeRepository $subThemeRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository,
         ProblemConditionRepository $problemConditionRepository,
         PluginContainer $pluginContainer,
@@ -110,7 +110,7 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
         parent::__construct
         (
             $validator, $entityManager,
-            $difficultyRepository, $problemTypeRepository, $subCategoryRepository,
+            $difficultyRepository, $problemTypeRepository, $subThemeRepository,
             $problemConditionTypeRepository, $problemConditionRepository,
             $pluginContainer,
             $parameterParser,

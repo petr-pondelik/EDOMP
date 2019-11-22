@@ -116,7 +116,6 @@ class Validator
     /**
      * Validator constructor.
      * @param NewtonApiClient $newtonApiClient
-     * @param Validators $validators
      * @param UserRepository $userRepository
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param ConstHelper $constHelper
@@ -359,22 +358,22 @@ class Validator
         $this->validationMessages = [
 
             'email' => [
-                0 => 'Zadejte e-mail.',
-                1 => 'E-mail nesmí být delší než 128 znaků.',
-                2 => 'Zadejte validní e-mail.'
+                0 => 'Zadejte e-mail',
+                1 => 'E-mail nesmí být delší než 128 znaků',
+                2 => 'Zadejte validní e-mail'
             ],
 
             'username' => [
-                0 => 'Uživatelské jméno nesmí být delší než 128 znaků.',
+                0 => 'Uživatelské jméno nesmí být delší než 128 znaků',
             ],
 
             'login' => [
-                0 => 'Zadejte e-mail či uživatelské jméno.',
-                1 => 'Údaj nesmí být delší než 128 znaků.'
+                0 => 'Zadejte e-mail či uživatelské jméno',
+                1 => 'Údaj nesmí být delší než 128 znaků'
             ],
 
             'password' => [
-                0 => 'Zadejte heslo.'
+                0 => 'Zadejte heslo'
             ],
 
             'passwordConfirm' => [
@@ -383,12 +382,12 @@ class Validator
             ],
 
             'groups' => [
-                0 => 'Zvolte alespoň jednu skupinu.'
+                0 => 'Zvolte alespoň jednu skupinu'
             ],
 
             'label' => [
-                0 => 'Název musí být vyplněn.',
-                1 => 'Název nesmí být delší než 128 znaků.'
+                0 => 'Název musí být vyplněn',
+                1 => 'Název nesmí být delší než 128 znaků'
             ],
 
             'logo' => [
@@ -432,12 +431,12 @@ class Validator
                 1 => 'Počet prvních členů musí být kladný.'
             ],
 
-            'category' => [
-                0 => 'Zvolte prosím kategorii.'
+            'theme' => [
+                0 => 'Zvolte prosím téma.'
             ],
 
-            'subCategory' => [
-                0 => 'Zvolte prosím podkategorii.'
+            'subTheme' => [
+                0 => 'Zvolte prosím podtéma.'
             ],
 
             'difficulty' => [
@@ -481,21 +480,29 @@ class Validator
                 1 => 'Chybný formát vstupního LaTeXu.',
                 2 => 'Překročen povolený počet parametrů. (maximálně ' . $this->constHelper::PARAMETERS_MAX . ').',
                 3 => 'Překročena povolená složitost parametrů. (maximálně ' . $this->constHelper::COMPLEXITY_MAX . ').',
-                4 => 'Podmínka není splnitelná.'
+                4 => 'Podmínka není splnitelná.',
             ],
 
             'role' => [
-                0 => 'Zvolte prosím roli.'
+                0 => 'Zvolte roli',
             ],
 
             'superGroup' => [
-                0 => 'Zvolte prosím superskupinu.'
+                0 => 'Zvolte superskupinu',
             ],
 
             'templateContent' => [
-                0 => 'Obsah šablony nesmí být prázdný.',
-                1 => 'PHP kód šablony nesmí být změněn.'
-            ]
+                0 => 'Obsah šablony nesmí být prázdný',
+                1 => 'PHP kód šablony nesmí být změněn',
+            ],
+
+            'firstName' => [
+                0 => 'Zadejte jméno',
+            ],
+
+            'lastName' => [
+                0 => 'Zadejte příjmení',
+            ],
 
         ];
     }

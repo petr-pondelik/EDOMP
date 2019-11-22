@@ -18,7 +18,7 @@ use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemFinal\QuadraticEquationFinalRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
-use App\CoreModule\Model\Persistent\Repository\SubCategoryRepository;
+use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use App\CoreModule\Model\Persistent\Traits\ProblemFinalFunctionalityTrait;
 use Doctrine\ORM\EntityNotFoundException;
@@ -40,7 +40,7 @@ class QuadraticEquationFinalFunctionality extends BaseFunctionality
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
      * @param DifficultyRepository $difficultyRepository
-     * @param SubCategoryRepository $subCategoryRepository
+     * @param SubThemeRepository $subThemeRepository
      * @param FormatterHelper $formatterHelper
      */
     public function __construct
@@ -52,13 +52,13 @@ class QuadraticEquationFinalFunctionality extends BaseFunctionality
         ProblemTypeRepository $problemTypeRepository,
         ProblemConditionRepository $problemConditionRepository,
         DifficultyRepository $difficultyRepository,
-        SubCategoryRepository $subCategoryRepository,
+        SubThemeRepository $subThemeRepository,
         FormatterHelper $formatterHelper
     )
     {
         parent::__construct($entityManager);
         $this->repository = $repository;
-        $this->injectRepositories($problemTypeRepository, $problemConditionRepository, $difficultyRepository, $subCategoryRepository, $problemRepository, $userRepository, $formatterHelper);
+        $this->injectRepositories($problemTypeRepository, $problemConditionRepository, $difficultyRepository, $subThemeRepository, $problemRepository, $userRepository, $formatterHelper);
     }
 
     /**

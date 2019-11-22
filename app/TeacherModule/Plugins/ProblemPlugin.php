@@ -175,7 +175,7 @@ abstract class ProblemPlugin implements IProblemPlugin
             'textAfter' => $problemTemplate->getTextAfter(),
             'difficulty' => $problemTemplate->getDifficulty()->getId(),
             'problemType' => $problemTemplate->getProblemType()->getId(),
-            'subCategory' => $problemTemplate->getSubCategory()->getId(),
+            'subTheme' => $problemTemplate->getSubTheme()->getId(),
             'problemTemplateId' => $problemTemplate->getId(),
             'matchesIndex' => $matchesIndex,
             'isGenerated' => true,

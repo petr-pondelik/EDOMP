@@ -85,7 +85,7 @@ class GroupGridFactory extends BaseGrid
 
         if (!$isPermissions) {
             $grid->addColumnStatus('superGroup', 'Superskupina', 'superGroup.id')
-                ->setSortable('er.category')
+                ->setSortable('er.theme')
                 ->addAttributes(['class' => 'text-center'])
                 ->setOptions($superGroupOptions)
                 ->onChange[] = [$container, 'handleSuperGroupUpdate'];
