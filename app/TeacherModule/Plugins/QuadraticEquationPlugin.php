@@ -30,7 +30,7 @@ use Nette\Utils\Strings;
  * Class QuadraticEquationPlugin
  * @package App\TeacherModule\Plugins
  */
-class QuadraticEquationPlugin extends EquationPlugin
+final class QuadraticEquationPlugin extends EquationPlugin
 {
     /**
      * QuadraticEquationPlugin constructor.

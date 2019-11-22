@@ -30,9 +30,9 @@ abstract class SequencePlugin extends ProblemPlugin
      * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function standardize(ProblemTemplateNP $problemTemplate): ProblemTemplateNP
+    public function preprocess(ProblemTemplateNP $problemTemplate): ProblemTemplateNP
     {
-        bdump('STANDARDIZE SEQUENCE');
+        bdump('PREPROCESS SEQUENCE');
 
         $expression = $this->latexHelper::parseLatex($problemTemplate->getBody());
         $problemTemplate->setExpression($expression);

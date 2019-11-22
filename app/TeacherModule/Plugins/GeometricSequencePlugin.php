@@ -28,7 +28,7 @@ use Nette\Utils\Json;
  * Class GeometricSequencePlugin
  * @package App\TeacherModule\Plugins
  */
-class GeometricSequencePlugin extends SequencePlugin
+final class GeometricSequencePlugin extends SequencePlugin
 {
     /**
      * GeometricSequencePlugin constructor.

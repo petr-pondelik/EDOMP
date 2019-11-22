@@ -28,9 +28,9 @@ abstract class EquationPlugin extends ProblemPlugin
      * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function standardize(ProblemTemplateNP $problemTemplate): ProblemTemplateNP
+    public function preprocess(ProblemTemplateNP $problemTemplate): ProblemTemplateNP
     {
-        bdump('STANDARDIZE EQUATION');
+        bdump('PREPROCESS EQUATION');
         $expression = $this->latexHelper::parseLatex($problemTemplate->getBody());
         $parameterized = $this->stringsHelper::getParametrized($expression);
         bdump($parameterized);
@@ -46,7 +46,7 @@ abstract class EquationPlugin extends ProblemPlugin
         $problemTemplate->setStandardized($expression);
         $problemTemplate = $this->mathService->processVariableFractions($problemTemplate);
 
-        bdump('STANDARDIZE RESULT');
+        bdump('PREPROCESS RESULT');
         bdump($problemTemplate);
         return $problemTemplate;
     }

@@ -30,7 +30,7 @@ use Nette\Utils\Strings;
  * Class LinearEquationPlugin
  * @package App\TeacherModule\Plugins
  */
-class LinearEquationPlugin extends EquationPlugin
+final class LinearEquationPlugin extends EquationPlugin
 {
     /**
      * LinearEquationPlugin constructor.

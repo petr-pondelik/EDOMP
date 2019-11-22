@@ -592,7 +592,7 @@ class TestFormControl extends EntityFormControl
      * @param ArrayHash $values
      * @throws \Exception
      */
-    public function handleEditFormSuccess(Form $form, ArrayHash $values): void
+    public function handleUpdateFormSuccess(Form $form, ArrayHash $values): void
     {
         bdump('HANDLE EDIT FORM SUCCESS');
         try {

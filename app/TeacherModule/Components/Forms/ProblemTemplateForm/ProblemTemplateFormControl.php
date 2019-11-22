@@ -307,7 +307,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
             // Actualize entityOld with actual values
             $entity->setValues($data);
-            $entity = $this->standardize($entity);
+            $entity = $this->preprocess($entity);
 
             // If the body has changes, set all the validation states to false
             if (Strings::trim($bodyOld) !== Strings::trim($entityNew->getBody())) {
@@ -338,7 +338,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
             $entityNew->setParametersData(new ParametersData($this->stringsHelper::extractParametersInfo($entityNew->getBody())));
 
             // STANDARDIZE THE INPUT
-            $entityNew = $this->standardize($entityNew);
+            $entityNew = $this->preprocess($entityNew);
             if ($entityNew === null) {
                 $this->redrawErrors();
                 return;
@@ -410,7 +410,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
             // Actualize entityOld with actual values
             $entity->setValues($values);
-            $entity = $this->standardize($entity);
+            $entity = $this->preprocess($entity);
 
             // If the body has changes, set all the validation states to false
             if (Strings::trim($bodyOld) !== Strings::trim($entityNew->getBody())) {
@@ -452,7 +452,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
             $entityNew->setParametersData(new ParametersData($this->stringsHelper::extractParametersInfo($entityNew->getBody())));
 
             // STANDARDIZE THE INPUT
-            $entityNew = $this->standardize($entityNew);
+            $entityNew = $this->preprocess($entityNew);
             if ($entityNew === null) {
                 $this->redrawErrors();
                 return;
@@ -586,7 +586,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleEditFormSuccess(Form $form, ArrayHash $values): void
+    public function handleUpdateFormSuccess(Form $form, ArrayHash $values): void
     {
         bdump('HANDLE FORM SUCCESS');
         try {
@@ -697,5 +697,5 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      * @param ProblemTemplateNP $problemTemplate
      * @return ProblemTemplateNP|null
      */
-    abstract public function standardize(ProblemTemplateNP $problemTemplate): ?ProblemTemplateNP;
+    abstract public function preprocess(ProblemTemplateNP $problemTemplate): ?ProblemTemplateNP;
 }

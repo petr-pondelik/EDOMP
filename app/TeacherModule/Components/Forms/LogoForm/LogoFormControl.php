@@ -114,6 +114,7 @@ class LogoFormControl extends EntityFormControl
 
     /**
      * @param Form $form
+     * @throws \App\CoreModule\Exceptions\ValidatorException
      */
     public function handleFormValidate(Form $form): void
     {
@@ -157,7 +158,7 @@ class LogoFormControl extends EntityFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleEditFormSuccess(Form $form, ArrayHash $values): void
+    public function handleUpdateFormSuccess(Form $form, ArrayHash $values): void
     {
         bdump('HANDLE EDIT FORM SUCCESS');
         bdump($values);

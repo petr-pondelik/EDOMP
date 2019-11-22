@@ -56,7 +56,7 @@ abstract class EntityFormControl extends FormControl
             $form->addInteger('id', 'ID')
                 ->setHtmlAttribute('class', 'form-control')
                 ->setDisabled();
-            $form->onSuccess[] = [$this, 'handleEditFormSuccess'];
+            $form->onSuccess[] = [$this, 'handleUpdateFormSuccess'];
         }
         else{
             $form->onSuccess[] = [$this, 'handleFormSuccess'];
@@ -97,7 +97,7 @@ abstract class EntityFormControl extends FormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    abstract public function handleEditFormSuccess(Form $form, ArrayHash $values): void;
+    abstract public function handleUpdateFormSuccess(Form $form, ArrayHash $values): void;
 
     abstract public function setDefaults(): void;
 }

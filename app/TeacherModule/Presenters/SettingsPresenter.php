@@ -210,6 +210,7 @@ class SettingsPresenter extends TeacherPresenter
      * @param $name
      * @return DataGrid
      * @throws \Ublaboo\DataGrid\Exception\DataGridException
+     * @throws \Doctrine\ORM\Query\QueryException
      */
     public function createComponentSuperGroupGrid($name): DataGrid
     {

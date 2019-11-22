@@ -28,7 +28,7 @@ use Nette\Utils\Json;
  * Class ArithmeticSequencePlugin
  * @package App\TeacherModule\Plugins
  */
-class ArithmeticSequencePlugin extends SequencePlugin
+final class ArithmeticSequencePlugin extends SequencePlugin
 {
     /**
      * ArithmeticSequencePlugin constructor.

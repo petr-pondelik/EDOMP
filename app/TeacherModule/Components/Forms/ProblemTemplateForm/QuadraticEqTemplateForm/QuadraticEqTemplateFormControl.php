@@ -146,15 +146,15 @@ class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
      * @param ProblemTemplateNP $problemTemplate
      * @return ProblemTemplateNP|null
      */
-    public function standardize(ProblemTemplateNP $problemTemplate): ?ProblemTemplateNP
+    public function preprocess(ProblemTemplateNP $problemTemplate): ?ProblemTemplateNP
     {
         try{
-            $standardized = $this->pluginContainer->getPlugin($this->problemType->getKeyLabel())->standardize($problemTemplate);
+            $preprocessed = $this->pluginContainer->getPlugin($this->problemType->getKeyLabel())->preprocess($problemTemplate);
         } catch (\Exception $e){
             $this['form']['body']->addError($e->getMessage());
             return null;
         }
-        return $standardized;
+        return $preprocessed;
     }
 
     public function setDefaults(): void

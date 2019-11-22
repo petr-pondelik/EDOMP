@@ -88,7 +88,7 @@ class CategoryFormControl extends EntityFormControl
      * @param Form $form
      * @param ArrayHash $values
      */
-    public function handleEditFormSuccess(Form $form, ArrayHash $values): void
+    public function handleUpdateFormSuccess(Form $form, ArrayHash $values): void
     {
         try {
             $this->functionality->update($this->entity->getId(), $values);
