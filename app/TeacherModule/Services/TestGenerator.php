@@ -23,6 +23,7 @@ use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
 use App\CoreModule\Model\Persistent\Repository\TestRepository;
 use Nette\Application\UI\ITemplate;
+use Nette\Application\UI\ITemplateFactory;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
@@ -94,6 +95,11 @@ class TestGenerator
     protected $testGeneratorHelper;
 
     /**
+     * @var ITemplateFactory
+     */
+    protected $templateFactory;
+
+    /**
      * TestGenerator constructor.
      * @param ConstraintEntityManager $entityManager
      * @param ProblemRepository $problemRepository
@@ -107,18 +113,23 @@ class TestGenerator
      * @param ProblemDuplicity $problemDuplicityModel
      * @param FilterFunctionality $filterFunctionality
      * @param TestGeneratorHelper $testGeneratorHelper
+     * @param ITemplateFactory $templateFactory
      */
     public function __construct
     (
         ConstraintEntityManager $entityManager,
-        ProblemRepository $problemRepository, TestRepository $testRepository,
-        ProblemFinalFunctionality $problemFinalFunctionality, TestFunctionality $testFunctionality, TestVariantFunctionality $testVariantFunctionality,
+        ProblemRepository $problemRepository,
+        TestRepository $testRepository,
+        ProblemFinalFunctionality $problemFinalFunctionality,
+        TestFunctionality $testFunctionality,
+        TestVariantFunctionality $testVariantFunctionality,
         ProblemGenerator $generatorService,
         FileService $fileService,
         PluginContainer $pluginContainer,
         ProblemDuplicity $problemDuplicityModel,
         FilterFunctionality $filterFunctionality,
-        TestGeneratorHelper $testGeneratorHelper
+        TestGeneratorHelper $testGeneratorHelper,
+        ITemplateFactory $templateFactory
     )
     {
         $this->entityManager = $entityManager;
@@ -133,6 +144,7 @@ class TestGenerator
         $this->problemDuplicityModel = $problemDuplicityModel;
         $this->filterFunctionality = $filterFunctionality;
         $this->testGeneratorHelper = $testGeneratorHelper;
+        $this->templateFactory = $templateFactory;
     }
 
     /**
@@ -241,8 +253,6 @@ class TestGenerator
         Test $test, TestVariant $testVariant, Variant $variant, ArrayHash $data, int $problemSeq, Test $original = null
     ): TestVariant
     {
-        bdump('GENERATE PROBLEM VARIANT: ' . $variant->getLabel() . ' - ' . $problemSeq);
-
         $problemTemplate = null;
         $selectedProblems = $this->testGeneratorHelper::getSelectedProblems($problemSeq, $data, $original);
 
@@ -251,11 +261,7 @@ class TestGenerator
 
             // Get all problems that match the filters
             $filters = $this->testGeneratorHelper->getProblemFilters($problemSeq, $data, $original);
-
             $problems = $this->problemRepository->findFiltered($filters);
-
-            bdump('SHOW PROBLEMS');
-            bdump($problems);
 
             if(!$problems){
                 throw new GeneratorException('V rámci ' . ($problemSeq + 1) . '. úlohy nejsou k dispozici žádné záznamy.');
@@ -341,15 +347,11 @@ class TestGenerator
             $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
 
             try {
-                bdump($problemTemplate);
                 $problem = $this->pluginContainer->getPlugin($problemTypeKeyLabel)->createFinal($problemTemplate, $this->problemDuplicityModel->getTemplateState()->getTemplateUsed($problemTemplate));
             } catch (GeneratorException $e) {
                 throw new ProblemDuplicityException('Test nelze vygenerovat bez opakujících se úloh.');
             }
 
-
-            bdump('FINAL FROM TEMPLATE - ADD USED');
-            bdump($problem);
             $this->problemDuplicityModel->getTemplateState()->addUsed($problem);
 
         }
@@ -467,14 +469,15 @@ class TestGenerator
 
     /**
      * @param Test $test
-     * @param ITemplate $template
      */
-    public function createTestData(Test $test, ITemplate $template): void
+    public function createTestData(Test $test): void
     {
-        // TODO: INJECT TEMPLATE FACTORY AND CREATE TEMPLATE HERE
-        // TODO: MOVE INTO FILE SERVICE
+        bdump('CREATE TEST DATA');
         FileSystem::createDir(DATA_DIR . '/tests/' . $test->getId());
+        $template = $this->templateFactory->createTemplate();
+        $template->setFile(TEST_TEMPLATES_DIR . 'active.latte');
         $template->test = $test;
+        bdump($template);
         foreach ($test->getTestVariants()->getValues() as $testVariant) {
             $template->testVariant = $testVariant;
             file_put_contents(DATA_DIR . '/tests/' . $test->getId() . '/variant_' . Strings::lower($testVariant->getLabel()) . '.tex', (string) $template);
