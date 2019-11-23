@@ -92,7 +92,7 @@ class TestTemplateFormControl extends FormControl
 
     public function setDefaults(): void
     {
-        $templateString = $this->fileService->read(TEACHER_MODULE_TEMPLATES_DIR . '/pdf/testPdf/active.latte');
+        $templateString = $this->fileService->readUserTemplate();
         $this['form']['templateContent']->setValue($templateString);
         $this->template->templateContent = $templateString;
     }

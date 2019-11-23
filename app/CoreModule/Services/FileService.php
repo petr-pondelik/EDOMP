@@ -10,6 +10,7 @@ namespace App\CoreModule\Services;
 
 use App\CoreModule\Model\Persistent\Entity\Logo;
 use App\CoreModule\Model\Persistent\Entity\Test;
+use App\CoreModule\Model\Persistent\Entity\TestVariant;
 use App\CoreModule\Model\Persistent\Functionality\LogoFunctionality;
 use App\CoreModule\Model\Persistent\Repository\LogoRepository;
 use App\CoreModule\Model\Persistent\Repository\TestRepository;
@@ -17,6 +18,7 @@ use Doctrine\ORM\EntityNotFoundException;
 use Nette\FileNotFoundException;
 use Nette\Http\IRequest;
 use Nette\IOException;
+use Nette\Security\User;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
@@ -54,6 +56,11 @@ class FileService
     protected $teacherTemplatesDir;
 
     /**
+     * @var string
+     */
+    protected $testTemplatesDataDir;
+
+    /**
      * @var TestRepository
      */
     protected $testRepository;
@@ -69,15 +76,22 @@ class FileService
     protected $logoFunctionality;
 
     /**
+     * @var User
+     */
+    protected $user;
+
+    /**
      * FileService constructor.
      * @param string $logosDir
      * @param string $logosTmpDir
      * @param string $coreTemplatesDir
      * @param string $studentTemplatesDir
      * @param string $teacherTemplatesDir
+     * @param string $testTemplatesDataDir
      * @param TestRepository $testRepository
      * @param LogoRepository $logoRepository
      * @param LogoFunctionality $logoFunctionality
+     * @param User $user
      */
     public function __construct
     (
@@ -86,9 +100,11 @@ class FileService
         string $coreTemplatesDir,
         string $studentTemplatesDir,
         string $teacherTemplatesDir,
+        string $testTemplatesDataDir,
         TestRepository $testRepository,
         LogoRepository $logoRepository,
-        LogoFunctionality $logoFunctionality
+        LogoFunctionality $logoFunctionality,
+        User $user
     )
     {
         $this->logosDir = $logosDir;
@@ -96,9 +112,11 @@ class FileService
         $this->coreTemplatesDir = $coreTemplatesDir;
         $this->studentTemplatesDir = $studentTemplatesDir;
         $this->teacherTemplatesDir = $teacherTemplatesDir;
+        $this->testTemplatesDataDir = $testTemplatesDataDir;
         $this->testRepository = $testRepository;
         $this->logoRepository = $logoRepository;
         $this->logoFunctionality = $logoFunctionality;
+        $this->user = $user;
     }
 
     /**
@@ -111,20 +129,46 @@ class FileService
     }
 
     /**
+     * @return string
+     */
+    public function getUserCustomTestTemplatePath(): string
+    {
+        return $this->testTemplatesDataDir . $this->user->getId() . DIRECTORY_SEPARATOR . 'testTemplate.latte';
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserTestTemplatePath(): string
+    {
+        $userCustomTemplatePath = $this->getUserCustomTestTemplatePath();
+        try {
+            FileSystem::read($userCustomTemplatePath);
+        } catch (IOException $e) {
+            return TEACHER_TEST_TEMPLATE_DIR . 'default.latte';
+        }
+        return $userCustomTemplatePath;
+    }
+
+    /**
+     * @return string
+     */
+    public function readUserTemplate(): string
+    {
+        return $this->read($this->getUserTestTemplatePath());
+    }
+
+    /**
      * @param string $templateStr
      */
     public function updateTestTemplate(string $templateStr): void
     {
-        FileSystem::write($this->teacherTemplatesDir . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR . 'testPdf' . DIRECTORY_SEPARATOR . 'active.latte', $templateStr);
+        FileSystem::write($this->testTemplatesDataDir . $this->user->getId() . DIRECTORY_SEPARATOR . 'testTemplate.latte', $templateStr);
     }
 
     public function resetTestTemplate(): void
     {
-        FileSystem::copy
-        (
-            $this->teacherTemplatesDir . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR . 'testPdf' . DIRECTORY_SEPARATOR . 'default.latte',
-            $this->teacherTemplatesDir . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR . 'testPdf' . DIRECTORY_SEPARATOR . 'active.latte'
-        );
+        FileSystem::delete($this->testTemplatesDataDir . $this->user->getId());
     }
 
     public function clearLogosTmpDir(): void
@@ -166,7 +210,7 @@ class FileService
 
         FileSystem::createDir($this->logosTmpDir . DIRECTORY_SEPARATOR . $id);
 
-        if(!copy($httpRequest->getFile('logo'), $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension)) {
+        if (!copy($httpRequest->getFile('logo'), $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension)) {
             throw new IOException('Chyba při ukládání souboru.');
         }
 
@@ -193,8 +237,7 @@ class FileService
         // Delete logo from DB based on it's ID
         try {
             $this->logoFunctionality->delete($id);
-        }
-        catch (EntityNotFoundException $e){
+        } catch (EntityNotFoundException $e) {
             return '';
         }
 
@@ -215,13 +258,13 @@ class FileService
 
         FileSystem::createDir($this->logosTmpDir . DIRECTORY_SEPARATOR . $id);
 
-        if(!copy($httpRequest->getFile('logo'), $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension)){
+        if (!copy($httpRequest->getFile('logo'), $this->logosTmpDir . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'file' . $extension)) {
             throw new IOException('Chyba při ukládání souboru.');
         }
 
         //Update logo DB record's temporary extension column
         $this->logoFunctionality->update($id, ArrayHash::from([
-           'extension_tmp' => $extension
+            'extension_tmp' => $extension
         ]));
 
         return $id;
@@ -262,6 +305,15 @@ class FileService
     }
 
     /**
+     * @param TestVariant $testVariant
+     * @param string $template
+     */
+    public function createTestVariantFile(TestVariant $testVariant, string $template): void
+    {
+        FileSystem::write(TEST_DATA_DIR . $testVariant->getTest()->getId() . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($testVariant->getLabel()) . '.tex', $template);
+    }
+
+    /**
      * @param Test $test
      */
     public function createTestZip(Test $test): void
@@ -270,8 +322,8 @@ class FileService
 
         //Check files existence
         $testVariants = $test->getTestVariants()->getValues();
-        foreach ($testVariants as $testVariant){
-            if(!file_exists(DATA_DIR  . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $test->getId() . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($testVariant) . '.tex' )){
+        foreach ($testVariants as $testVariant) {
+            if (!file_exists(TEST_DATA_DIR . $test->getId() . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($testVariant) . '.tex')) {
                 throw new FileNotFoundException('Soubor s testem nenalezen.');
             }
         }
@@ -280,17 +332,17 @@ class FileService
         $logoExt = $test->getLogo()->getExtension();
 
         //Check logo file existence
-        if(!file_exists(LOGOS_DIR . DIRECTORY_SEPARATOR . $logoId . DIRECTORY_SEPARATOR . 'file' . $logoExt)){
-            throw new FileNotFoundException('Soubor s logem nenalezen');
+        if (!file_exists(LOGOS_DIR . DIRECTORY_SEPARATOR . $logoId . DIRECTORY_SEPARATOR . 'file' . $logoExt)) {
+            throw new FileNotFoundException('Soubor s logem nenalezen.');
         }
 
-        if(!$zip->open(DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $test->getId() . DIRECTORY_SEPARATOR . 'test_' . $test->getId() . '.zip', \ZipArchive::CREATE)){
+        if (!$zip->open(TEST_DATA_DIR . $test->getId() . DIRECTORY_SEPARATOR . 'test_' . $test->getId() . '.zip', \ZipArchive::CREATE)) {
             throw new IOException('Zip archiv nemohl být vytvořen.');
         }
 
-        foreach ($testVariants as $testVariant){
+        foreach ($testVariants as $testVariant) {
             $zip->addFile(
-                DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $test->getId() . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($testVariant) . '.tex',
+                TEST_DATA_DIR . $test->getId() . DIRECTORY_SEPARATOR . 'variant_' . Strings::lower($testVariant) . '.tex',
                 'variant_' . Strings::lower($testVariant) . '.tex'
             );
         }
@@ -306,8 +358,8 @@ class FileService
     public function moveTestDirToPublic(int $testId): void
     {
         FileSystem::copy(
-            DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $testId . DIRECTORY_SEPARATOR . 'test_' . $testId . '.zip',
+            TEST_DATA_DIR . $testId . DIRECTORY_SEPARATOR . 'test_' . $testId . '.zip',
             DATA_PUBLIC_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'test_' . $testId . '.zip'
-            );
+        );
     }
 }

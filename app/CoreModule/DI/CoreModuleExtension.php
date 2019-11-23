@@ -123,6 +123,7 @@ class CoreModuleExtension extends ModuleExtension
         'coreTemplatesDir' => CORE_MODULE_TEMPLATES_DIR,
         'studentTemplatesDir' => STUDENT_MODULE_TEMPLATES_DIR,
         'teacherTemplatesDir' => TEACHER_MODULE_TEMPLATES_DIR,
+        'testTemplatesDataDir' => TEST_TEMPLATES_DATA_DIR,
         'logosDir' => LOGOS_DIR,
         'logosTmpDir' => LOGOS_TMP_DIR,
         'loginURL' => null
@@ -158,7 +159,8 @@ class CoreModuleExtension extends ModuleExtension
                 'logosTmpDir' => $this->config['logosTmpDir'],
                 'coreTemplatesDir' => $this->config['coreTemplatesDir'],
                 'studentTemplatesDir' => $this->config['studentTemplatesDir'],
-                'teacherTemplatesDir' => $this->config['teacherTemplatesDir']
+                'teacherTemplatesDir' => $this->config['teacherTemplatesDir'],
+                'testTemplatesDataDir' => $this->config['testTemplatesDataDir']
             ]);
 
         $builder->addDefinition($this->prefix('mailService'))

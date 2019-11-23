@@ -165,16 +165,16 @@
                                 class="d-flex justify-content-between align-items-center col-12 btn btn-card-header-toggle"
                                 data-toggle="collapse"
                                 data-target="#problem-card-body-{$i}"
-                                aria-expanded="false"
+                                aria-expanded="true"
                                 aria-controls="#problem-card-body-{$i}"
                         >
                             Úloha č. {$i+1}
-                            <i class="fas fa-chevron-down"></i>
-                            <i class="fas fa-chevron-up d-none"></i>
+                            <i class="fas fa-chevron-down d-none"></i>
+                            <i class="fas fa-chevron-up"></i>
                         </button>
                     </h4>
 
-                    <div class="card-body {*collapse*}" id="problem-card-body-{$i}">
+                    <div class="card-body show" id="problem-card-body-{$i}">
 
                         <div>
 

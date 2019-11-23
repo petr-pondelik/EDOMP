@@ -16,7 +16,6 @@ use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\User;
 use App\CoreModule\Model\Persistent\Functionality\UserFunctionality;
 use App\CoreModule\Model\Persistent\Repository\UserRepository;
@@ -151,6 +150,8 @@ class UserPresenter extends EntityPresenter
     {
         $validationFields['email'] = new ValidatorArgument($row->email, 'email');
         $validationFields['username'] = new ValidatorArgument($row->username, 'username');
+        $validationFields['firstName'] = new ValidatorArgument($row->firstName, 'notEmpty');
+        $validationFields['lastName'] = new ValidatorArgument($row->lastName, 'notEmpty');
         return $this->validator->validatePlain($validationFields);
     }
 }

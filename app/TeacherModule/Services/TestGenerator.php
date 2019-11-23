@@ -473,14 +473,12 @@ class TestGenerator
     public function createTestData(Test $test): void
     {
         bdump('CREATE TEST DATA');
-        FileSystem::createDir(DATA_DIR . '/tests/' . $test->getId());
         $template = $this->templateFactory->createTemplate();
-        $template->setFile(TEST_TEMPLATES_DIR . 'active.latte');
+        $template->setFile($this->fileService->getUserTestTemplatePath());
         $template->test = $test;
-        bdump($template);
         foreach ($test->getTestVariants()->getValues() as $testVariant) {
             $template->testVariant = $testVariant;
-            file_put_contents(DATA_DIR . '/tests/' . $test->getId() . '/variant_' . Strings::lower($testVariant->getLabel()) . '.tex', (string) $template);
+            $this->fileService->createTestVariantFile($testVariant, (string) $template);
         }
         $this->fileService->createTestZip($test);
     }

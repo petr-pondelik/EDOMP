@@ -451,8 +451,7 @@ class TestFormControl extends EntityFormControl
             }
 
             $form->addTextArea('problem' . $i, 'Zvolené úlohy')
-                // hidden
-                ->setHtmlAttribute('class', 'form-control filter selected-problems')
+                ->setHtmlAttribute('class', 'form-control filter selected-problems hidden')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlAttribute('data-filter-type', 'selected')
                 ->setHtmlId('problem-' . $i);
