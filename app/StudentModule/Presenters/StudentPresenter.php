@@ -11,7 +11,6 @@ namespace App\StudentModule\Presenters;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\CoreModule\Presenters\BasePresenter;
 use App\CoreModule\Presenters\SecuredPresenter;
 use App\CoreModule\Services\Authorizator;
 

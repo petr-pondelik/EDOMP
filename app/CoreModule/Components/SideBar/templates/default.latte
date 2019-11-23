@@ -142,7 +142,7 @@
                         <i class="fas fa-archive mr-3"></i>Sbírky
                     </a>
                     <ul class="submenu">
-                        {foreach $user->identity->themes as $key => $theme}
+                        {foreach $themes as $key => $theme}
                             <li n:class="$presenter->isLinkCurrent('Theme:default', $key) ? active">
                                 <a href={plink Theme:default 'id' => $key, 'clear_filters' => true}>{$theme}</a>
                             </li>

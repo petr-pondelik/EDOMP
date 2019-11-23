@@ -171,9 +171,9 @@ class User extends BaseEntity
     public function getThemesId(): array
     {
         $res = [];
-        foreach($this->groups as $groupKey => $group) {
+        foreach ($this->groups as $groupKey => $group) {
             foreach ($group->getThemes() as $catKey => $theme) {
-                if(!in_array($theme->getId(), $res)){
+                if (!in_array($theme->getId(), $res)) {
                     $res[] = $theme->getId();
                 }
             }
@@ -187,7 +187,7 @@ class User extends BaseEntity
     public function getGroupsId(): array
     {
         $res = [];
-        foreach ($this->getGroups()->getValues() as $key => $group){
+        foreach ($this->getGroups()->getValues() as $key => $group) {
             $res[] = $group->getId();
         }
         return $res;
@@ -247,7 +247,7 @@ class User extends BaseEntity
      */
     public function addGroup(Group $group): void
     {
-        if($this->groups->contains($group)){
+        if ($this->groups->contains($group)) {
             return;
         }
         $this->groups[] = $group;

@@ -15,7 +15,7 @@ use App\CoreModule\Presenters\BaseSignPresenter;
  * Class SignPresenter
  * @package App\StudentModule\Presenters
  */
-class SignPresenter extends BaseSignPresenter
+final class SignPresenter extends BaseSignPresenter
 {
     /**
      * @var bool

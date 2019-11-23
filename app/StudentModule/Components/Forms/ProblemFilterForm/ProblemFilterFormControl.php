@@ -71,16 +71,19 @@ class ProblemFilterFormControl extends FormControl
         $themeOptions = $this->subThemeRepository->findAssoc(["theme" => $this->themeId], "id");
 
         $form->addMultiSelect("difficulty", "Obtížnost", $difficultyOptions)
-            ->setHtmlAttribute("class", "form-control selectpicker");
+            ->setHtmlAttribute("class", "form-control selectpicker")
+            ->setHtmlAttribute('title', 'Zvolte obtížnosti');
 
         $form->addMultiSelect("theme", "Témata", $themeOptions)
-            ->setHtmlAttribute("class", "form-control selectpicker");
+            ->setHtmlAttribute("class", "form-control selectpicker")
+            ->setHtmlAttribute('title', 'Zvolte témata');
 
         $form->addMultiSelect("result", "S řešením", [
             0 => "Ano",
             1 => "Ne"
         ])
-            ->setHtmlAttribute("class", "form-control selectpicker");
+            ->setHtmlAttribute("class", "form-control selectpicker")
+            ->setHtmlAttribute('title', 'Zvolte');
 
         $form->addSelect("sort_by_difficulty", "Řadit dle obtížnost", [
             0 => "Neřadit",

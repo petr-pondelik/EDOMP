@@ -33,13 +33,13 @@ class Authorizator implements IAuthorizator
     }
 
     /**
-     * @param IIdentity $userIdentity
+     * @param User $user
      * @param int $themeId
      * @return bool
      */
-    public function isThemeAllowed(IIdentity $userIdentity, int $themeId): bool
+    public function isThemeAllowed(User $user, int $themeId): bool
     {
-        foreach ($userIdentity->themes as $key => $theme) {
+        foreach ($user->identity->themes as $key => $theme) {
             if ($key === $themeId) {
                 return true;
             }
@@ -54,7 +54,6 @@ class Authorizator implements IAuthorizator
      */
     public function isEntityAllowed(User $user, BaseEntity $entity): bool
     {
-        bdump('IS ENTITY ALLOWED');
         // If the user has admin role, entity is always allowed
         if ($user->isInRole('admin')) {
             return true;
@@ -62,10 +61,8 @@ class Authorizator implements IAuthorizator
 
         // If the user has teacher role
         if ($user->isInRole('teacher')) {
-            bdump('TEACHER ROLE');
             // If the entity is not teacher-level secured, it's allowed
             if (!$entity->isTeacherLevelSecured()) {
-                bdump('NOT TEACHER LEVEL SECURED');
                 return true;
             }
             // If the entity is teacher-level secured, it's allowed only for it's author

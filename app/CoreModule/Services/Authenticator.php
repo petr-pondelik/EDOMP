@@ -8,6 +8,7 @@
 
 namespace App\CoreModule\Services;
 
+use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use Nette\Security\AuthenticationException;
@@ -33,42 +34,54 @@ class Authenticator implements IAuthenticator
     protected $themeRepository;
 
     /**
+     * @var ConstHelper
+     */
+    protected $constHelper;
+
+    /**
      * Authenticator constructor.
      * @param UserRepository $userRepository
      * @param ThemeRepository $themeRepository
+     * @param ConstHelper $constHelper
      */
-    public function __construct(UserRepository $userRepository, ThemeRepository $themeRepository)
+    public function __construct
+    (
+        UserRepository $userRepository,
+        ThemeRepository $themeRepository,
+        ConstHelper $constHelper
+    )
     {
         $this->userRepository = $userRepository;
         $this->themeRepository = $themeRepository;
+        $this->constHelper = $constHelper;
     }
 
     /**
      * @param array $credentials
      * @return Identity|IIdentity
      * @throws AuthenticationException
+     * @throws \Doctrine\ORM\Query\QueryException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function authenticate(array $credentials)
     {
         [$username, $password, $admin] = $credentials;
 
+        bdump($admin);
+
         if (!$admin) {
-            $user = $this->userRepository->findOneBy([
-                'username' => $username
-            ]);
+            $user = $this->userRepository->findForAuthentication($username);
         } else {
-            $user = $this->userRepository->findOneBy([
-                'username' => $username,
-                'role' => [1, 2]
-            ]);
+            $user = $this->userRepository->findForAuthentication($username, [$this->constHelper::ADMIN_ROLE, $this->constHelper::TEACHER_ROLE]);
         }
+
+        bdump($user);
 
         if (!$user || !Passwords::verify($password, $user->getPassword())) {
             throw new AuthenticationException('Zadáno neplatné uživatelské jméno nebo heslo.');
         }
 
         $role = $user->getRole();
-
         $themes = [];
 
         if (!strcmp('student', $role->getKey())) {
@@ -76,6 +89,8 @@ class Authenticator implements IAuthenticator
             foreach ($themeIds as $themeId) {
                 $themes[$themeId] = $this->themeRepository->find($themeId)->getLabel();
             }
+        } elseif (!strcmp('teacher', $role->getKey())) {
+            $this->themeRepository->findTeacherThemes($user);
         } else {
             $themes = $this->themeRepository->findPairs([], 'label');
         }

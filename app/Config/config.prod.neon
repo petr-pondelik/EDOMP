@@ -19,3 +19,11 @@ webpack:
 	    name: manifest.json
 	devServer:
 	    enabled: false
+
+mail:
+    smtp: true
+    host: smtp.endora.cz
+    secure: ssl
+    port: 465
+    username: edomp@wiedzmin.4fan.cz
+    password: 6ysaz7dt

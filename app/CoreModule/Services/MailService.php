@@ -72,6 +72,7 @@ class MailService
         $this->templateFactory = $templateFactory;
         $this->coreTemplatesDir = $coreTemplatesDir;
         $this->loginURL = $loginURL;
+        bdump($this->mailer);
     }
 
     /**

@@ -8,6 +8,8 @@
 
 namespace App\CoreModule\Presenters;
 
+use App\CoreModule\Components\ForgetPassword\ForgetPasswordControl;
+use App\CoreModule\Components\ForgetPassword\IForgetPasswordFactory;
 use App\CoreModule\Components\Forms\SignForm\SignFormControl;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
@@ -38,6 +40,11 @@ abstract class BaseSignPresenter extends BasePresenter
     protected $signFormFactory;
 
     /**
+     * @var IForgetPasswordFactory
+     */
+    protected $forgetPasswordFactory;
+
+    /**
      * @var bool
      */
     protected $admin;
@@ -50,19 +57,24 @@ abstract class BaseSignPresenter extends BasePresenter
      * @param FlashesTranslator $flashesTranslator
      * @param Validator $validator
      * @param ISignFormFactory $signFormFactory
+     * @param IForgetPasswordFactory $forgetPasswordFactory
      */
     public function __construct
     (
         Authenticator $authenticator,
-        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        IHeaderBarFactory $headerBarFactory,
+        ISideBarFactory $sideBarFactory,
+        FlashesTranslator $flashesTranslator,
         Validator $validator,
-        ISignFormFactory $signFormFactory
+        ISignFormFactory $signFormFactory,
+        IForgetPasswordFactory $forgetPasswordFactory
     )
     {
         parent::__construct($headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->authenticator = $authenticator;
         $this->validator = $validator;
         $this->signFormFactory = $signFormFactory;
+        $this->forgetPasswordFactory = $forgetPasswordFactory;
     }
 
     /**
@@ -80,10 +92,17 @@ abstract class BaseSignPresenter extends BasePresenter
             $this->redirect('Homepage:default');
         };
         $control->onError[] = static function ($e) {
-            bdump('ON ERROR');
             bdump($e);
         };
         return $control;
+    }
+
+    /**
+     * @return ForgetPasswordControl
+     */
+    public function createComponentForgetPassword(): ForgetPasswordControl
+    {
+        return $this->forgetPasswordFactory->create();
     }
 
     public function handleLogout(): void

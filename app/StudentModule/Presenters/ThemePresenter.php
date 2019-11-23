@@ -8,6 +8,7 @@
 
 namespace App\StudentModule\Presenters;
 
+use App\CoreModule\Model\Persistent\Entity\Theme;
 use App\StudentModule\Components\Forms\ProblemFilterForm\ProblemFilterFormControl;
 use App\StudentModule\Components\Forms\ProblemFilterForm\IProblemFilterFormFactory;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
@@ -41,6 +42,11 @@ class ThemePresenter extends StudentPresenter
     protected $problemFilterFormFactory;
 
     /**
+     * @var Theme
+     */
+    protected $theme;
+
+    /**
      * @persistent
      */
     public $filters = [];
@@ -68,8 +74,11 @@ class ThemePresenter extends StudentPresenter
     public function __construct
     (
         Authorizator $authorizator,
-        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        ThemeRepository $themeRepository, ProblemFinalRepository $problemFinalRepository,
+        IHeaderBarFactory $headerBarFactory,
+        ISideBarFactory $sideBarFactory,
+        FlashesTranslator $flashesTranslator,
+        ThemeRepository $themeRepository,
+        ProblemFinalRepository $problemFinalRepository,
         IProblemFilterFormFactory $problemFilterFormFactory
     )
     {
@@ -77,6 +86,29 @@ class ThemePresenter extends StudentPresenter
         $this->themeRepository = $themeRepository;
         $this->problemFinalRepository = $problemFinalRepository;
         $this->problemFilterFormFactory = $problemFilterFormFactory;
+    }
+
+    /**
+     * @param Theme|null $theme
+     * @throws \Nette\Application\AbortException
+     */
+    public function lazySecure(Theme $theme = null): void
+    {
+        if (!$theme) {
+            $this->flashMessage('Téma nenalezeno.', 'danger');
+            $this->redirect('Homepage:default');
+        }
+        if ($this->user->isInRole('student')) {
+            if (!$this->authorizator->isThemeAllowed($this->user, $theme->getId())) {
+                $this->flashMessage('Nedostatečná přístupová práva.', 'danger');
+                $this->redirect('Homepage:default');
+            }
+        } elseif (!$this->authorizator->isEntityAllowed($this->user, $theme)) {
+                $this->flashMessage('Nedostatečná přístupová práva.', 'danger');
+                $this->redirect('Homepage:default');
+        }
+
+        $this->theme = $theme;
     }
 
     /**
@@ -88,16 +120,20 @@ class ThemePresenter extends StudentPresenter
      */
     public function actionDefault(int $id, bool $clear_filters = false, int $page = 1, array $filters = null): void
     {
-        if(!$this->authorizator->isThemeAllowed($this->user->identity, $id)){
-            $this->flashMessage('Nedostatečná přístupová práva.', 'danger');
-            $this->redirect('Homepage:default');
-        }
-        if($filters){
+        /**
+         * @var Theme $theme
+         */
+        $theme = $this->themeRepository->find($id);
+        $this->lazySecure($theme);
+
+        if ($filters) {
             $this->filters = $filters;
         }
-        if($clear_filters){
+
+        if ($clear_filters) {
             $this->clearFilters();
         }
+
         $this->setFilters();
     }
 
@@ -107,14 +143,7 @@ class ThemePresenter extends StudentPresenter
      */
     public function renderDefault(int $id): void
     {
-        $theme = $this->themeRepository->find($id);
-
-        if (!$theme) {
-            bdump('NOT FOUND');
-        }
-
-        $this->template->label = $theme->getLabel();
-
+        $this->template->label = $this->theme->getLabel();
         $problemsCnt = $this->problemFinalRepository->getStudentFilteredCnt($id, $this->filters);
 
         $visualPaginator = $this['visualPaginator'];
@@ -126,7 +155,6 @@ class ThemePresenter extends StudentPresenter
 
         $this->template->problems = $problems;
         $this->template->paginator = $paginator;
-
         $this->id = $id;
 
         $this->redrawControl('paginatorSnippet');
@@ -146,8 +174,8 @@ class ThemePresenter extends StudentPresenter
     public function setFilters(ArrayHash $filters = null): void
     {
         //Set filters values to the filter form
-        if($filters === null){
-            foreach($this->filters as $filterKey => $filter){
+        if ($filters === null) {
+            foreach ($this->filters as $filterKey => $filter) {
                 $this['problemFilterForm']['form'][$filterKey]->setDefaultValue($filter);
             }
             return;
@@ -156,8 +184,8 @@ class ThemePresenter extends StudentPresenter
         $this->clearFilters();
 
         //Set new filters
-        foreach($filters as $filterKey => $filter){
-            if( (is_array($filter) && count($filter) > 0) || !is_array($filter) ){
+        foreach ($filters as $filterKey => $filter) {
+            if ((is_array($filter) && count($filter) > 0) || !is_array($filter)) {
                 $this->filters[$filterKey] = $filter;
             }
         }
@@ -171,7 +199,7 @@ class ThemePresenter extends StudentPresenter
         $paginator = new VisualPaginator\Control;
         $paginator->enableAjax();
         $paginator->setTemplateFile(STUDENT_MODULE_TEMPLATES_DIR . '/VisualPaginator/frontProblemCollection.latte');
-        $paginator->onShowPage[] = function() {
+        $paginator->onShowPage[] = function () {
             $this->redrawControl('paginatorSnippet');
             $this->redrawControl('problemsSnippet');
             $this->redrawControl('mathJaxRender');
@@ -185,8 +213,8 @@ class ThemePresenter extends StudentPresenter
     public function createComponentProblemFilterForm(): ProblemFilterFormControl
     {
         $control = $this->problemFilterFormFactory->create($this->getParameter('id'));
-        $control->onSuccess[] = function (){
-            $this->redirect('Theme:default', $this->id, false, 1,  $this->filters);
+        $control->onSuccess[] = function () {
+            $this->redirect('Theme:default', $this->id, false, 1, $this->filters);
         };
         return $control;
     }
@@ -197,6 +225,6 @@ class ThemePresenter extends StudentPresenter
     public function actionClearFilters(): void
     {
         $this->clearFilters();
-        $this->redirect('Theme:default', $this->id, false, 1,  $this->filters);
+        $this->redirect('Theme:default', $this->id, false, 1, $this->filters);
     }
 }
