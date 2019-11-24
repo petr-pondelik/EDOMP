@@ -73,8 +73,8 @@ class ConstraintEntityManager
     public function validateEntity($entity): void
     {
         $violations = $this->validator->validate($entity);
-        if($violations->count()){
-            throw new EntityException((string) $violations);
+        if ($violations->count()) {
+            throw new EntityException((string)$violations);
         }
     }
 

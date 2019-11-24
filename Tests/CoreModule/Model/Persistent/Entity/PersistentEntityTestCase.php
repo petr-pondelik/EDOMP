@@ -2,29 +2,29 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 2.6.19
- * Time: 23:45
+ * Date: 24.11.19
+ * Time: 21:35
  */
 
-namespace Tests\Model\Entity;
+namespace App\Tests\CoreModule\Model\Persistent\Entity;
 
 
-use PHPUnit\Framework\TestCase;
+use App\Tests\EDOMPTestCase;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * Class AppTestCase
- * @package AppTests
+ * Class PersistentEntityTestCase
+ * @package App\Tests\CoreModule\Model\Persistent\Entity
  */
-abstract class EntityTestCase extends TestCase
+abstract class PersistentEntityTestCase extends EDOMPTestCase
 {
     /**
      * @var ValidatorInterface
      */
     protected $validator;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->validator = Validation::createValidatorBuilder()
@@ -32,9 +32,7 @@ abstract class EntityTestCase extends TestCase
             ->getValidator();
     }
 
-    abstract public function testValues(): void;
+    abstract public function testValidState(): void;
 
-    abstract public function testCreateSuccess(): void;
-
-    abstract public function testCreateError(): void;
+    abstract public function testInvalidState(): void;
 }
