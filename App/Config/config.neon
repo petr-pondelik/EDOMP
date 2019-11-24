@@ -11,7 +11,6 @@ extensions:
     translation: Kdyby\Translation\DI\TranslationExtension
     validator: Kdyby\Validator\DI\ValidatorExtension
     doctrine: Kdyby\Doctrine\DI\OrmExtension
-    assetMacro: Webrouse\AssetMacro\DI\Extension
     visualPaginator: IPub\VisualPaginator\DI\VisualPaginatorExtension
     webpack: Oops\WebpackNetteAdapter\DI\WebpackExtension(%debugMode%)
     ajaxHistory: VojtechDobes\NetteAjax\HistoryExtension
@@ -37,7 +36,7 @@ session:
 
 # Set tracy max lenght and depth for dumps
 tracy:
-    maxLength: 2000
+    maxLen: 2000
     maxDepth: 5
 
 services:

@@ -7,6 +7,9 @@
 	"require": {
 		"php": ">= 7.2",
 		"ext-json": "*",
+		"ext-pcntl": "^7.2",
+		"ext-zip": "^1.15",
+		"guzzlehttp/guzzle": "^6.3",
 		"nette/application": "^2.4",
 		"nette/bootstrap": "^2.4.2",
 		"nette/caching": "^2.5",
@@ -20,24 +23,18 @@
 		"nette/security": "^2.4",
 		"nette/utils": "^2.4",
 		"latte/latte": "~2.4.0",
-		"tracy/tracy": "^2.4",
-		"webrouse/n-asset-macro": "^2.0",
-		"components/bootstrap": "^4.1",
-		"ublaboo/datagrid": "^5.7",
-		"guzzlehttp/guzzle": "^6.3",
-		"ext-zip": "^1.15",
-		"phospr/fraction": "^1.2",
+		"jlawrence/eos": "^3.2",
+		"ublaboo/datagrid": "5.7.2",
 		"ipub/visual-paginator": "@dev",
-		"kdyby/doctrine": "^4.0@dev",
+		"kdyby/doctrine": "~3.3.1",
 		"kdyby/events": "^3.1",
 		"doctrine/annotations": "^1.6",
 		"kdyby/validator": "^0.6.1",
-		"jlawrence/eos": "^3.2",
 		"oops/webpack-nette-adapter": "^1.1",
-		"vojtech-dobes/nette-ajax-history": "^2.0",
-		"ext-pcntl": "^7.2"
+		"vojtech-dobes/nette-ajax-history": "^2.0"
 	},
 	"require-dev": {
+		"tracy/tracy": "^2.4",
 		"phpunit/phpunit": "^8.1"
 	},
 	"config": {
