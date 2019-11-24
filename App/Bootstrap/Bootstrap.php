@@ -22,6 +22,8 @@ class Bootstrap
         // DIRECTORY_SEPARATOR is PHP constant holding system dir. separator (\ for Win and / for Linux)
         define('APP_DIR', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
 
+        define('DOCTRINE_DIR', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
+
         define('CORE_MODULE_DIR', APP_DIR . 'CoreModule' . DIRECTORY_SEPARATOR);
         define('CORE_MODULE_TEMPLATES_DIR', CORE_MODULE_DIR . 'templates' . DIRECTORY_SEPARATOR);
 
@@ -76,6 +78,7 @@ class Bootstrap
         //$configurator->addConfig(__DIR__ . '/../Config/config.' . ENVIRONMENT . '.neon');
 
         $configurator->addParameters([
+            'appDir' => APP_DIR,
             'coreTemplatesDir' => CORE_MODULE_TEMPLATES_DIR,
             'studentTemplatesDir' => STUDENT_MODULE_TEMPLATES_DIR,
             'teacherTemplatesDir' => TEACHER_MODULE_TEMPLATES_DIR,
