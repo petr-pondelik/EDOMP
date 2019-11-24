@@ -1,6 +1,13 @@
 <?php
 
-$container = require __DIR__ . '/../App/bootstrap.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-$container->getByType(Nette\Application\Application::class)
-	->run();
+\App\Bootstrap\Bootstrap::boot()
+    ->createContainer()
+    ->getByType(Nette\Application\Application::class)
+    ->run();
+
+//$container = require __DIR__ . '/../App/Bootstrap/bootstrap.php';
+//
+//$container->getByType(Nette\Application\Application::class)
+//	->run();
