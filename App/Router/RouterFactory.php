@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Router;
 
 use Nette;
 use Nette\Application\Routers\Route;
@@ -8,7 +8,7 @@ use Nette\Application\Routers\RouteList;
 
 /**
  * Class RouterFactory
- * @package App
+ * @package App\Router
  */
 final class RouterFactory
 {
@@ -17,7 +17,7 @@ final class RouterFactory
 	/**
 	 * @return Nette\Application\IRouter
 	 */
-	public static function createRouter()
+	public static function createRouter(): Nette\Application\IRouter
 	{
 		$router = new RouteList;
 

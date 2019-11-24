@@ -41,19 +41,6 @@ $configurator->setTempDirectory(__DIR__ . '/../temp');
 // Get environment
 require __DIR__ . '/environment.php';
 
-// Load unit tests directory to robot loader
-if(ENVIRONMENT === 'devel'){
-    $configurator->createRobotLoader()
-        ->addDirectory(__DIR__)
-        ->addDirectory(__DIR__ . '/../tests')
-        ->register();
-}
-else{
-    $configurator->createRobotLoader()
-        ->addDirectory(__DIR__)
-        ->register();
-}
-
 // Load configurations based on environment
 $configurator->addConfig(__DIR__ . '/Config/config.neon');
 $configurator->addConfig(__DIR__ . '/Config/config.local.neon');

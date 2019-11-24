@@ -9,8 +9,6 @@
 namespace App\TeacherModule\Services;
 
 
-use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
-use App\TeacherModule\Helpers\ProblemConditionsMatrix;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
 use Nette\NotSupportedException;
 

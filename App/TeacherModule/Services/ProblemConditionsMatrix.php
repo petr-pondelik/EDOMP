@@ -6,7 +6,7 @@
  * Time: 11:30
  */
 
-namespace App\TeacherModule\Helpers;
+namespace App\TeacherModule\Services;
 
 /**
  * Class ProblemConditionsMatrix
