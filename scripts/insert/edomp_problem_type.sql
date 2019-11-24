@@ -1,4 +1,0 @@
-INSERT INTO edomp.problem_type (id, is_generatable, created, label, key_label) VALUES (1, 1, '2019-04-05 19:19:49', 'Lineární rovnice', 'LinearEquation');
-INSERT INTO edomp.problem_type (id, is_generatable, created, label, key_label) VALUES (2, 1, '2019-04-05 19:19:49', 'Kvadratická rovnice', 'QuadraticEquation');
-INSERT INTO edomp.problem_type (id, is_generatable, created, label, key_label) VALUES (3, 1, '2019-04-05 19:19:49', 'Aritmetická posloupnost', 'ArithmeticSequence');
-INSERT INTO edomp.problem_type (id, is_generatable, created, label, key_label) VALUES (4, 1, '2019-04-05 19:19:49', 'Geometická posloupnost', 'GeometricSequence');

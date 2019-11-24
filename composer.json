@@ -47,7 +47,7 @@
 	"autoload-dev": {
 		"psr-4": {
 			"App\\Tests\\": "Tests",
-			"App\\Migrations\\": "Migrations"
+			"Migrations\\": "Migrations"
 		}
 	},
 	"config": {

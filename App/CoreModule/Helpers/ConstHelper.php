@@ -18,6 +18,7 @@ class ConstHelper
     public const ADMIN_ROLE = 1;
     public const TEACHER_ROLE = 2;
 
+    // Groups
     public const ADMIN_GROUP = 1;
     public const ADMIN_SUPER_GROUP = 1;
 

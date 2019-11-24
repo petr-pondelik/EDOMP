@@ -8,12 +8,28 @@
 
 namespace App\CoreModule\Model\Persistent\Repository;
 
+
+use Doctrine\ORM\QueryBuilder;
+use Nette\Security\User;
+
 /**
  * Class UserRepository
  * @package App\CoreModule\Model\Persistent\Repository
  */
 class UserRepository extends SecuredRepository
 {
+    /**
+     * @param User $user
+     * @return QueryBuilder
+     * @throws \Doctrine\ORM\Query\QueryException
+     */
+    public function getSecuredQueryBuilder(User $user): QueryBuilder
+    {
+        $qb = parent::getSecuredQueryBuilder($user);
+        $qb->andWhere('er.isAdmin = FALSE');
+        return $qb;
+    }
+
     /**
      * @param string $login
      * @param array $rolesRequested
@@ -22,9 +38,6 @@ class UserRepository extends SecuredRepository
      */
     public function findForAuthentication(string $login, array $rolesRequested = [])
     {
-        bdump($login);
-        bdump($rolesRequested);
-
         $qb = $this->createQueryBuilder('er');
 
         $qb->where('er.email = :login')
@@ -35,8 +48,6 @@ class UserRepository extends SecuredRepository
             $qb->andWhere('er.role IN (:rolesRequested)')
                 ->setParameter('rolesRequested', $rolesRequested);
         }
-
-        bdump($qb->getQuery());
 
         return $qb->getQuery()->getOneOrNullResult();
     }

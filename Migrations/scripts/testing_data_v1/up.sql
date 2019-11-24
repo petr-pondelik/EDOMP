@@ -17,11 +17,11 @@ INSERT INTO edomp.super_group (created_by_id, created, label, teacher_level_secu
 INSERT INTO edomp.super_group (created_by_id, created, label, teacher_level_secured) VALUES (3, '2019-06-20 13:30:27', 'Externisté', 1);
 
 INSERT INTO edomp.`group` (super_group_id, created_by_id, created, label, teacher_level_secured) VALUES (1, null, '2019-05-02 10:56:53', 'Administrators', 1);
+INSERT INTO edomp.`group` (super_group_id, created_by_id, created, label, teacher_level_secured) VALUES (1, 3, '2019-06-20 13:32:19', 'Učitelé', 1);
 INSERT INTO edomp.`group` (super_group_id, created_by_id, created, label, teacher_level_secured) VALUES (2, 2, '2019-06-20 13:30:39', '1.A', 1);
 INSERT INTO edomp.`group` (super_group_id, created_by_id, created, label, teacher_level_secured) VALUES (2, 2, '2019-06-20 13:30:49', '2.B', 1);
 INSERT INTO edomp.`group` (super_group_id, created_by_id, created, label, teacher_level_secured) VALUES (2, 2, '2019-06-20 13:30:53', '2.A', 1);
 INSERT INTO edomp.`group` (super_group_id, created_by_id, created, label, teacher_level_secured) VALUES (3, 3, '2019-06-20 13:31:09', 'Odpolední skupina', 1);
-INSERT INTO edomp.`group` (super_group_id, created_by_id, created, label, teacher_level_secured) VALUES (3, 3, '2019-06-20 13:32:19', 'Učitelé', 1);
 
 INSERT INTO edomp.role (`key`, created, label) VALUES ('admin', '2019-05-01 20:39:35', 'Administrátor');
 INSERT INTO edomp.role (`key`, created, label) VALUES ('teacher', '2019-05-01 20:39:51', 'Učitel');
@@ -57,49 +57,6 @@ INSERT INTO edomp.user (created_by_id, role_id, email, username, password, is_ad
 INSERT INTO edomp.user (created_by_id, role_id, email, username, password, is_admin, first_name, last_name,created, teacher_level_secured) VALUES (3, 3, 'scorbettr@wufoo.com', 'scorbettr@wufoo.com', '$2y$10$E7uP70dMpG56mwA/b62VeOwR7bheongU0Wa7lP7S7kozNCsOyqIeO', 0, 'Sherill', 'Corbett', '2019-06-20 11:21:18', 1);
 INSERT INTO edomp.user (created_by_id, role_id, email, username, password, is_admin, first_name, last_name,created, teacher_level_secured) VALUES (3, 3, 'bgrunguers@google.fr', 'bgrunguers@google.fr', '$2y$10$E7uP70dMpG56mwA/b62VeOwR7bheongU0Wa7lP7S7kozNCsOyqIeO', 0, 'Benjie', 'Grunguer', '2019-06-20 11:21:18', 1);
 
-INSERT INTO edomp.problem_type (created, label, key_label, teacher_level_secured) VALUES ('2019-04-05 19:19:49', 'Lineární rovnice', 'LinearEquation', 0);
-INSERT INTO edomp.problem_type (created, label, key_label, teacher_level_secured) VALUES ('2019-04-05 19:19:49', 'Kvadratická rovnice', 'QuadraticEquation', 0);
-INSERT INTO edomp.problem_type (created, label, key_label, teacher_level_secured) VALUES ('2019-04-05 19:19:49', 'Aritmetická posloupnost', 'ArithmeticSequence', 0);
-INSERT INTO edomp.problem_type (created, label, key_label, teacher_level_secured) VALUES ('2019-04-05 19:19:49', 'Geometická posloupnost', 'GeometricSequence', 0);
-
-INSERT INTO edomp.problem_condition_type (prompt, created, label, is_validation, teacher_level_secured) VALUES ('Zvolte podmínky výsledku', '2019-04-27 11:42:36', 'Podmínka výsledku', 0, 0);
-INSERT INTO edomp.problem_condition_type (prompt, created, label, is_validation, teacher_level_secured) VALUES ('Zvolte podmínky diskriminantu', '2019-04-27 11:42:58', 'Podmínka diskriminantu', 0, 0);
-INSERT INTO edomp.problem_condition_type (prompt, created, label, is_validation, teacher_level_secured) VALUES (null, '2019-07-28 07:46:22', 'Podmínka aritmetické posloupnosti (typ)', 1, 0);
-INSERT INTO edomp.problem_condition_type (prompt, created, label, is_validation, teacher_level_secured) VALUES (null, '2019-07-28 11:53:58', 'Podmínka geometrické posloupnosti (typ)', 1, 0);
-INSERT INTO edomp.problem_condition_type (prompt, created, label, is_validation, teacher_level_secured) VALUES (null, '2019-08-16 16:36:31', 'Podmínka lineární rovnice (typ)', 1, 0);
-INSERT INTO edomp.problem_condition_type (prompt, created, label, is_validation, teacher_level_secured) VALUES (null, '2019-08-16 20:11:38', 'Podmínka kvadratické rovnice (typ)', 1, 0);
-
-INSERT INTO edomp.problem_condition (validation_function_id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (null, 1, 0, '2019-04-27 11:49:59', 'Bez omezení', 0);
-INSERT INTO edomp.problem_condition (validation_function_id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (5, 1, 1, '2019-04-27 11:49:59', 'Kladný', 0);
-INSERT INTO edomp.problem_condition (validation_function_id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (6, 1, 2, '2019-04-27 11:49:59', 'Nulový', 0);
-INSERT INTO edomp.problem_condition (validation_function_id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (7, 1, 3, '2019-04-27 11:49:59', 'Záporný', 0);
-INSERT INTO edomp.problem_condition (validation_function_id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (null, 2, 0, '2019-04-27 11:49:59', 'Bez omezení', 0);
-INSERT INTO edomp.problem_condition (validation_function_id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (5, 2, 1, '2019-04-27 11:49:59', 'Kladný', 0);
-INSERT INTO edomp.problem_condition (validation_function_id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (6, 2, 2, '2019-04-27 11:49:59', 'Nulový', 0);
-INSERT INTO edomp.problem_condition (validation_function_id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (7, 2, 3, '2019-04-27 11:49:59', 'Záporný', 0);
-INSERT INTO edomp.problem_condition (validation_function_id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (9, 2, 4, '2019-04-27 11:49:59', 'Celočíselný', 0);
-INSERT INTO edomp.problem_condition (validation_function_id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (8, 2, 5, '2019-04-27 11:49:59', 'Kladný a odmocnitelný', 0);
-INSERT INTO edomp.problem_condition (validation_function_id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (3, 3, 0, '2019-07-28 07:46:49', 'Aritmetická posloupnost (typ)', 0);
-INSERT INTO edomp.problem_condition (validation_function_id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (4, 4, 0, '2019-07-28 07:46:55', 'Geometrická posloupnost (typ)', 0);
-INSERT INTO edomp.problem_condition (validation_function_id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (1, 5, 0, '2019-08-16 16:37:06', 'Lineární rovnice (typ)', 0);
-INSERT INTO edomp.problem_condition (validation_function_id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (2, 6, 0, '2019-08-16 20:15:16', 'Kvadratická rovnice (typ)', 0);
-
-INSERT INTO edomp.validation_function (created, label, teacher_level_secured) VALUES ('2019-08-02 15:10:20', 'linearEquationType', 0);
-INSERT INTO edomp.validation_function (created, label, teacher_level_secured) VALUES ('2019-08-02 15:10:20', 'quadraticEquationType', 0);
-INSERT INTO edomp.validation_function (created, label, teacher_level_secured) VALUES ('2019-08-02 15:10:20', 'arithmeticSequenceType', 0);
-INSERT INTO edomp.validation_function (created, label, teacher_level_secured) VALUES ('2019-08-02 15:10:20', 'geometricSequenceType', 0);
-INSERT INTO edomp.validation_function (created, label, teacher_level_secured) VALUES ('2019-08-02 15:10:20', 'positive', 0);
-INSERT INTO edomp.validation_function (created, label, teacher_level_secured) VALUES ('2019-08-02 15:10:20', 'zero', 0);
-INSERT INTO edomp.validation_function (created, label, teacher_level_secured) VALUES ('2019-08-02 15:10:20', 'negative', 0);
-INSERT INTO edomp.validation_function (created, label, teacher_level_secured) VALUES ('2019-08-16 16:37:26', 'positiveSquare', 0);
-INSERT INTO edomp.validation_function (created, label, teacher_level_secured) VALUES ('2019-08-16 20:15:48', 'integer', 0);
-
-INSERT INTO edomp.super_group_theme_rel (super_group_id, theme_id) VALUES (2, 1);
-INSERT INTO edomp.super_group_theme_rel (super_group_id, theme_id) VALUES (2, 2);
-
-INSERT INTO edomp.group_theme_rel (group_id, theme_id) VALUES (5, 1);
-INSERT INTO edomp.group_theme_rel (group_id, theme_id) VALUES (6, 4);
-
 INSERT INTO edomp.user_group_rel (user_id, group_id) VALUES (1, 1);
 INSERT INTO edomp.user_group_rel (user_id, group_id) VALUES (5, 2);
 INSERT INTO edomp.user_group_rel (user_id, group_id) VALUES (6, 2);
@@ -127,6 +84,39 @@ INSERT INTO edomp.user_group_rel (user_id, group_id) VALUES (27, 3);
 INSERT INTO edomp.user_group_rel (user_id, group_id) VALUES (28, 3);
 INSERT INTO edomp.user_group_rel (user_id, group_id) VALUES (29, 3);
 INSERT INTO edomp.user_group_rel (user_id, group_id) VALUES (30, 3);
+
+INSERT INTO edomp.problem_type (created, label, key_label, teacher_level_secured) VALUES ('2019-04-05 19:19:49', 'Lineární rovnice', 'LinearEquation', 0);
+INSERT INTO edomp.problem_type (created, label, key_label, teacher_level_secured) VALUES ('2019-04-05 19:19:49', 'Kvadratická rovnice', 'QuadraticEquation', 0);
+INSERT INTO edomp.problem_type (created, label, key_label, teacher_level_secured) VALUES ('2019-04-05 19:19:49', 'Aritmetická posloupnost', 'ArithmeticSequence', 0);
+INSERT INTO edomp.problem_type (created, label, key_label, teacher_level_secured) VALUES ('2019-04-05 19:19:49', 'Geometická posloupnost', 'GeometricSequence', 0);
+
+INSERT INTO edomp.problem_condition_type (prompt, created, label, is_validation, teacher_level_secured) VALUES ('Zvolte podmínky výsledku', '2019-04-27 11:42:36', 'Podmínka výsledku', 0, 0);
+INSERT INTO edomp.problem_condition_type (prompt, created, label, is_validation, teacher_level_secured) VALUES ('Zvolte podmínky diskriminantu', '2019-04-27 11:42:58', 'Podmínka diskriminantu', 0, 0);
+INSERT INTO edomp.problem_condition_type (prompt, created, label, is_validation, teacher_level_secured) VALUES (null, '2019-07-28 07:46:22', 'Podmínka aritmetické posloupnosti (typ)', 1, 0);
+INSERT INTO edomp.problem_condition_type (prompt, created, label, is_validation, teacher_level_secured) VALUES (null, '2019-07-28 11:53:58', 'Podmínka geometrické posloupnosti (typ)', 1, 0);
+INSERT INTO edomp.problem_condition_type (prompt, created, label, is_validation, teacher_level_secured) VALUES (null, '2019-08-16 16:36:31', 'Podmínka lineární rovnice (typ)', 1, 0);
+INSERT INTO edomp.problem_condition_type (prompt, created, label, is_validation, teacher_level_secured) VALUES (null, '2019-08-16 20:11:38', 'Podmínka kvadratické rovnice (typ)', 1, 0);
+
+INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (1, 0, '2019-04-27 11:49:59', 'Bez omezení', 0);
+INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (1, 1, '2019-04-27 11:49:59', 'Kladný', 0);
+INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (1, 2, '2019-04-27 11:49:59', 'Nulový', 0);
+INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (1, 3, '2019-04-27 11:49:59', 'Záporný', 0);
+INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (2, 0, '2019-04-27 11:49:59', 'Bez omezení', 0);
+INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (2, 1, '2019-04-27 11:49:59', 'Kladný', 0);
+INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (2, 2, '2019-04-27 11:49:59', 'Nulový', 0);
+INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (2, 3, '2019-04-27 11:49:59', 'Záporný', 0);
+INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (2, 4, '2019-04-27 11:49:59', 'Celočíselný', 0);
+INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (2, 5, '2019-04-27 11:49:59', 'Kladný a odmocnitelný', 0);
+INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (3, 0, '2019-07-28 07:46:49', 'Aritmetická posloupnost (typ)', 0);
+INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (4, 0, '2019-07-28 07:46:55', 'Geometrická posloupnost (typ)', 0);
+INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (5, 0, '2019-08-16 16:37:06', 'Lineární rovnice (typ)', 0);
+INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (6, 0, '2019-08-16 20:15:16', 'Kvadratická rovnice (typ)', 0);
+
+INSERT INTO edomp.super_group_theme_rel (super_group_id, theme_id) VALUES (2, 1);
+INSERT INTO edomp.super_group_theme_rel (super_group_id, theme_id) VALUES (2, 2);
+
+INSERT INTO edomp.group_theme_rel (group_id, theme_id) VALUES (5, 1);
+INSERT INTO edomp.group_theme_rel (group_id, theme_id) VALUES (6, 4);
 
 INSERT INTO edomp.problem_tp_problem_condition_tp_rel (problem_type_id, problem_condition_type_id) VALUES (1, 1);
 INSERT INTO edomp.problem_tp_problem_condition_tp_rel (problem_type_id, problem_condition_type_id) VALUES (2, 2);
