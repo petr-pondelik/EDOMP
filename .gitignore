@@ -4,7 +4,6 @@ vendor/
 temp/*
 log/*
 
-composer.lock
 package-lock.json
 
 data/
