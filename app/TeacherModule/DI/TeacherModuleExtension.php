@@ -39,6 +39,7 @@ use App\TeacherModule\Components\LogoView\ILogoViewFactory;
 use App\TeacherModule\Components\ProblemStack\IProblemStackFactory;
 use App\TeacherModule\Helpers\FilterViewHelper;
 use App\TeacherModule\Helpers\NewtonParser;
+use App\TeacherModule\Helpers\ProblemConditionsMatrix;
 use App\TeacherModule\Helpers\TestGeneratorHelper;
 use App\TeacherModule\Plugins\ArithmeticSequencePlugin;
 use App\TeacherModule\Plugins\GeometricSequencePlugin;
@@ -54,6 +55,7 @@ use App\TeacherModule\Services\ProblemDuplicity;
 use App\TeacherModule\Services\ProblemGenerator;
 use App\TeacherModule\Services\ProblemTemplateSession;
 use App\TeacherModule\Services\TestGenerator;
+use App\TeacherModule\Services\ValidationFunctionsBox;
 use App\TeacherModule\Services\VariableFractionService;
 use jlawrence\eos\Parser;
 use Nette\DI\ContainerBuilder;
@@ -121,6 +123,13 @@ class TeacherModuleExtension extends ModuleExtension
 
         $builder->addDefinition($this->prefix('latexParser'))
             ->setType(LatexParser::class);
+
+        $builder->addDefinition($this->prefix('validationFunctionsBox'))
+            ->setType(ValidationFunctionsBox::class);
+
+        $builder->addDefinition($this->prefix('problemConditionsMatrix'))
+            ->setType(ProblemConditionsMatrix::class);
+
 
         // Problem Plugins definitions
 

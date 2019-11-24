@@ -48,7 +48,6 @@ use App\CoreModule\Model\Persistent\Entity\TemplateJsonData;
 use App\CoreModule\Model\Persistent\Entity\Test;
 use App\CoreModule\Model\Persistent\Entity\TestVariant;
 use App\CoreModule\Model\Persistent\Entity\User;
-use App\CoreModule\Model\Persistent\Entity\ValidationFunction;
 use App\CoreModule\Model\Persistent\Functionality\ThemeFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\FilterFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\GroupFunctionality;
@@ -327,10 +326,6 @@ class CoreModuleExtension extends ModuleExtension
         $builder->addDefinition($this->prefix('templateJsonDataRepository'))
             ->setType(TemplateJsonDataRepository::class)
             ->setTags([ 'doctrine.repositoryEntity' => TemplateJsonData::class ]);
-
-        $builder->addDefinition($this->prefix('validationFunctionRepository'))
-            ->setType(ValidationFunctionRepository::class)
-            ->setTags([ 'doctrine.repositoryEntity' => ValidationFunction::class ]);
 
         $builder->addDefinition($this->prefix('filterRepository'))
             ->setType(FilterRepository::class)
