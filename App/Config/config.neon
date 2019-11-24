@@ -6,6 +6,7 @@ extensions:
 
     # Vendor extensions
     console: Kdyby\Console\DI\ConsoleExtension
+#    console: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
     events: Kdyby\Events\DI\EventsExtension
     annotations: Kdyby\Annotations\DI\AnnotationsExtension
     translation: Kdyby\Translation\DI\TranslationExtension
@@ -14,6 +15,7 @@ extensions:
     visualPaginator: IPub\VisualPaginator\DI\VisualPaginatorExtension
     webpack: Oops\WebpackNetteAdapter\DI\WebpackExtension(%debugMode%)
     ajaxHistory: VojtechDobes\NetteAjax\HistoryExtension
+    migrations: Nettrine\Migrations\DI\MigrationsExtension
 
     # Own extensions
     coreModule: App\CoreModule\DI\CoreModuleExtension
@@ -25,11 +27,20 @@ application:
 	mapping:
 		*: App\*Module\Presenters\*Presenter
 
+migrations:
+    directory: %appDir%/../Migrations
+
 coreModule:
     loginURL: %loginURL%
 
 teacherModule:
     newtonApiHost: %newtonApiHost%
+
+decorator:
+    Symfony\Component\Console\Command\Command:
+        tags: [kdyby.console.command]
+    Symfony\Component\Console\Helper\Helper:
+        tags: [kdyby.console.helper]
 
 session:
 	expiration: 14 days

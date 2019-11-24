@@ -31,7 +31,9 @@
 		"doctrine/annotations": "^1.6",
 		"kdyby/validator": "^0.6.1",
 		"oops/webpack-nette-adapter": "^1.1",
-		"vojtech-dobes/nette-ajax-history": "^2.0"
+		"vojtech-dobes/nette-ajax-history": "^2.0",
+		"nettrine/migrations": "0.5",
+		"contributte/console": "0.5"
 	},
 	"require-dev": {
 		"tracy/tracy": "^2.4",
@@ -44,7 +46,8 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"App\\Tests\\": "Tests"
+			"App\\Tests\\": "Tests",
+			"App\\Migrations\\": "Migrations"
 		}
 	},
 	"config": {
