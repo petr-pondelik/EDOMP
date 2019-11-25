@@ -12,6 +12,7 @@ use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\Logo;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\LogoRepository;
+use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use Doctrine\ORM\EntityNotFoundException;
 
 /**
@@ -21,18 +22,26 @@ use Doctrine\ORM\EntityNotFoundException;
 class LogoFunctionality extends BaseFunctionality
 {
     /**
+     * @var UserRepository
+     */
+    protected $userRepository;
+
+    /**
      * LogoFunctionality constructor.
      * @param ConstraintEntityManager $entityManager
      * @param LogoRepository $logoRepository
+     * @param UserRepository $userRepository
      */
     public function __construct
     (
         ConstraintEntityManager $entityManager,
-        LogoRepository $logoRepository
+        LogoRepository $logoRepository,
+        UserRepository $userRepository
     )
     {
         parent::__construct($entityManager);
         $this->repository = $logoRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -44,12 +53,20 @@ class LogoFunctionality extends BaseFunctionality
     public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $logo = new Logo();
+
         $logo->setExtensionTmp($data->extension_tmp);
         $logo->setLabel('label');
+
+        if (isset($data->createdBy)) {
+            $logo->setCreatedBy($this->userRepository->find($data->createdBy));
+        }
+
         $this->em->persist($logo);
-        if($flush){
+
+        if ($flush) {
             $this->em->flush();
         }
+
         return $logo;
     }
 
@@ -63,26 +80,39 @@ class LogoFunctionality extends BaseFunctionality
      */
     public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
+        bdump('UPDATE');
+        bdump($data);
+        /**
+         * @var Logo $logo
+         */
         $logo = $this->repository->find($id);
-        if(!$logo){
+
+        if (!$logo) {
             throw new EntityNotFoundException('Entity for update not found.');
         }
-        if(isset($data->extension_tmp)){
+        if (isset($data->extension_tmp)) {
             $logo->setExtensionTmp($data->extension_tmp);
         }
-        if(isset($data->extension)){
+        if (isset($data->extension)) {
             $logo->setExtension($data->extension);
         }
-        if(isset($data->path)){
+        if (isset($data->path)) {
             $logo->setPath($data->path);
         }
-        if(isset($data->label)){
+        if (isset($data->label)) {
             $logo->setLabel($data->label);
         }
+        if (isset($data->createdBy)) {
+            $logo->setCreatedBy($this->userRepository->find($data->createdBy));
+        }
+
+
         $this->em->persist($logo);
-        if($flush){
+
+        if ($flush) {
             $this->em->flush();
         }
+
         return $logo;
     }
 

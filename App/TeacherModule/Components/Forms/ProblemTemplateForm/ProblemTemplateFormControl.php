@@ -190,7 +190,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         $form = parent::createComponentForm();
 
         $difficulties = $this->difficultyRepository->findAssoc([], 'id');
-        $subThemes = $this->subThemeRepository->findAssoc([], 'id');
+        $subThemes = $this->subThemeRepository->findAllowed($this->presenter->user);
 
         $form->addHidden('type')
             ->setHtmlId('type');

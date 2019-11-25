@@ -96,11 +96,11 @@ class UserFormControl extends EntityFormControl
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte uživatelské jméno');
 
-        $form->addText('firstName', 'Jméno')
+        $form->addText('firstName', 'Jméno *')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte jméno uživatele');
 
-        $form->addText('lastName', 'Příjmení')
+        $form->addText('lastName', 'Příjmení *')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte příjmení uživatele');
 

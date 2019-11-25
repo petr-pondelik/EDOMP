@@ -112,12 +112,6 @@ INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, create
 INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (5, 0, '2019-08-16 16:37:06', 'Lineární rovnice (typ)', 0);
 INSERT INTO edomp.problem_condition (problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (6, 0, '2019-08-16 20:15:16', 'Kvadratická rovnice (typ)', 0);
 
-INSERT INTO edomp.super_group_theme_rel (super_group_id, theme_id) VALUES (2, 1);
-INSERT INTO edomp.super_group_theme_rel (super_group_id, theme_id) VALUES (2, 2);
-
-INSERT INTO edomp.group_theme_rel (group_id, theme_id) VALUES (5, 1);
-INSERT INTO edomp.group_theme_rel (group_id, theme_id) VALUES (6, 4);
-
 INSERT INTO edomp.problem_tp_problem_condition_tp_rel (problem_type_id, problem_condition_type_id) VALUES (1, 1);
 INSERT INTO edomp.problem_tp_problem_condition_tp_rel (problem_type_id, problem_condition_type_id) VALUES (2, 2);
 INSERT INTO edomp.problem_tp_problem_condition_tp_rel (problem_type_id, problem_condition_type_id) VALUES (3, 3);

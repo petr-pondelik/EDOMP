@@ -142,7 +142,11 @@ class LogoFormControl extends EntityFormControl
         if($values->logo) {
             try{
                 $this->fileService->finalStore($values->logo);
-                $this->functionality->update($values->logo, ArrayHash::from([ 'label' => $values->label ]));
+                $values->createdBy = $this->presenter->user->getId();
+                $this->functionality->update($values->logo, ArrayHash::from([
+                    'label' => $values->label,
+                    'createdBy' => $values->createdBy
+                ]));
                 $this->onSuccess();
             } catch (\Exception $e){
                 // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.

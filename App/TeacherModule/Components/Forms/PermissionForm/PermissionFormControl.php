@@ -75,7 +75,7 @@ class PermissionFormControl extends FormControl
     public function createComponentForm(): Form
     {
         $form = parent::createComponentForm();
-        $themeOptions = $this->themeRepository->findAssoc([], 'id');
+        $themeOptions = $this->themeRepository->findAllowed($this->presenter->user);
         $form->addMultiSelect('themes', 'Téma', $themeOptions)
             ->setHtmlAttribute('class', 'form-control selectpicker')
             ->setHtmlAttribute('title', 'Zvolte témata');

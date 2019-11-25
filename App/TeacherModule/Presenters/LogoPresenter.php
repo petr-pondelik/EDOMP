@@ -116,7 +116,7 @@ class LogoPresenter extends EntityPresenter
      * @throws \Nette\Application\AbortException
      * @throws \Exception
      */
-    public function handleUploadFile(): void
+    public function handleUploadLogoFile(): void
     {
         $this->sendResponse( new TextResponse($this->fileService->uploadFile($this->getHttpRequest())) );
     }
@@ -125,7 +125,7 @@ class LogoPresenter extends EntityPresenter
      * @throws \Nette\Application\AbortException
      * @throws \Exception
      */
-    public function handleRevertFileUpload(): void
+    public function handleRevertLogoFileUpload(): void
     {
         $this->sendResponse( new TextResponse($this->fileService->revertFileUpload($this->getHttpRequest())) );
     }
@@ -134,7 +134,7 @@ class LogoPresenter extends EntityPresenter
      * @throws \Nette\Application\AbortException
      * @throws \Exception
      */
-    public function handleUpdateFile(): void
+    public function handleUpdateLogoFile(): void
     {
         $this->sendResponse( new TextResponse($this->fileService->updateFile($this->getHttpRequest())) );
     }
@@ -142,7 +142,7 @@ class LogoPresenter extends EntityPresenter
     /**
      * @throws \Nette\Application\AbortException
      */
-    public function handleRevertFileUpdate(): void
+    public function handleRevertLogoFileUpdate(): void
     {
         $this->sendResponse( new TextResponse($this->fileService->revertFileUpdate($this->getHttpRequest())) );
     }
@@ -165,6 +165,7 @@ class LogoPresenter extends EntityPresenter
     {
         $control = $this->formFactory->create();
         $control->onError[] = function ($e) use ($control) {
+            bdump($e);
             if($e instanceof IOException){
                 $control->flashMessage('Opakujte prosím volbu souboru loga.', 'danger');
                 return;

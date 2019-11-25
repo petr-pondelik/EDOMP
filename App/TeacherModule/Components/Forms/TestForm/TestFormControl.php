@@ -252,7 +252,6 @@ class TestFormControl extends EntityFormControl
     public function fillComponents(iterable $args = null): void
     {
         if ($this->isCreate()) {
-
             $problems = $this->problemRepository->findFiltered([
                 'isGenerated' => false,
                 'createdBy' => $this->presenter->user->id
@@ -261,9 +260,7 @@ class TestFormControl extends EntityFormControl
             $problemsCnt = count($problems);
 
             for ($i = 0; $i < $this->maxProblems; $i++) {
-
                 if (!isset($args[$i])) {
-
                     // Problem stack paginator
                     $paginator = $this['paginator' . $i]->getPaginator();
                     $paginator->itemsPerPage = 10;
@@ -271,14 +268,9 @@ class TestFormControl extends EntityFormControl
 
                     $problemsInterval = array_slice($problems, $paginator->offset, $paginator->itemsPerPage);
 
-                    bdump($problemsInterval);
-
                     $this['problemStack' . $i]->setProblems($problemsInterval);
-
                 }
-
             }
-
         }
 
         if (!$this->isCreate()) {
@@ -303,9 +295,6 @@ class TestFormControl extends EntityFormControl
         $paginatorControl->setTemplateFile(TEACHER_MODULE_TEMPLATES_DIR . '/VisualPaginator/problemStack.latte');
 
         $paginatorControl->onShowPage[] = function ($filters) use ($id) {
-            bdump('ON SHOW PAGE');
-            bdump($filters);
-            bdump($this->filterSession->getFilters());
             $this->handleFilterChange($id, $this->filterSession->getFilters());
         };
 
@@ -329,7 +318,7 @@ class TestFormControl extends EntityFormControl
         $form = parent::createComponentForm();
 
         $groups = $this->groupRepository->findAllowed($this->presenter->user);
-        $logos = $this->logoRepository->findAssoc([], 'id');
+        $logos = $this->logoRepository->findAllowed($this->presenter->user);
 
         $form->addSelect('variantsCnt', 'Počet variant *', [
             1 => 1,
@@ -383,6 +372,7 @@ class TestFormControl extends EntityFormControl
      * @return Form
      * @throws ComponentException
      * @throws \Nette\Utils\JsonException
+     * @throws \Doctrine\ORM\Query\QueryException
      */
     public function prepareCreateForm(Form $form): Form
     {
@@ -391,7 +381,7 @@ class TestFormControl extends EntityFormControl
         }
 
         $difficulties = $this->difficultyRepository->findAssoc([], 'id');
-        $subThemes = $this->subThemeRepository->findAssoc([], 'id');
+        $subThemes = $this->subThemeRepository->findAllowed($this->presenter->user);
         $problemTypes = $this->problemTypeRepository->findAssoc([], 'id');
 
         $conditionTypesByProblemTypes = [];
