@@ -3,66 +3,68 @@
  * Created by PhpStorm.
  * User: wiedzmin
  * Date: 26.11.19
- * Time: 19:48
+ * Time: 23:24
  */
 
 namespace App\Tests\CoreModule\Model\Persistent\Entity;
 
-use App\CoreModule\Model\Persistent\Entity\SuperGroup;
+use App\CoreModule\Model\Persistent\Entity\Group;
 use App\CoreModule\Model\Persistent\Entity\Theme;
-use App\Tests\Traits\GroupMockSetUpTrait;
+use App\Tests\Traits\SuperGroupMockSetUpTrait;
 use App\Tests\Traits\ThemeMockSetUpTrait;
 use App\Tests\Traits\UserMockSetUpTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Class SuperGroupUnitTest
+ * Class GroupUnitTest
  * @package App\Tests\CoreModule\Model\Persistent\Entity
  */
-class SuperGroupUnitTest extends PersistentEntityTestCase
+class GroupUnitTest extends PersistentEntityTestCase
 {
-    use GroupMockSetUpTrait;
-    use ThemeMockSetUpTrait;
     use UserMockSetUpTrait;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpThemeMock();
-        $this->setUpGroupMock();
-        $this->setUpUserMock();
-    }
+    use SuperGroupMockSetUpTrait;
+    use ThemeMockSetUpTrait;
 
     /**
      * @var array
      */
     protected $errorMessages = [
-        0 => "Label can't be blank."
+        0 => "SuperGroup can't be blank.",
+        1 => "Label can't be blank.",
     ];
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->setUpUserMock();
+        $this->setUpSuperGroupMock();
+        $this->setUpThemeMock();
+    }
 
     public function testValidState(): void
     {
-        $entity = new SuperGroup();
+        $entity = new Group();
         $label = 'TEST_LABEL';
-        $groups = new ArrayCollection([$this->groupMock]);
+        $users = new ArrayCollection([$this->userMock]);
         $themes = new ArrayCollection([$this->themeMock]);
 
         $entity->setLabel($label);
+        $entity->setSuperGroup($this->superGroupMock);
 
         $this->assertEquals(true, $entity->isTeacherLevelSecured());
         $this->assertEquals($label, $entity->getLabel());
-        $this->assertEquals(new ArrayCollection([]), $entity->getGroups());
         $this->assertEquals(new ArrayCollection([]), $entity->getThemes());
+        $this->assertEquals(new ArrayCollection([]), $entity->getUsers());
 
-        $entity->setGroups($groups);
         $entity->setThemes($themes);
+        $entity->setUsers($users);
 
-        $this->assertEquals($groups, $entity->getGroups());
+        $this->assertEquals($users, $entity->getUsers());
         $this->assertEquals($themes, $entity->getThemes());
 
         $entity->addTheme($this->themeMock);
         $this->assertCount(1, $entity->getThemes());
-        $this->assertEquals($entity->getThemes(), $themes);
+        $this->assertEquals($themes, $entity->getThemes());
 
         /**
          * @var Theme $themeMockSecond
@@ -80,7 +82,7 @@ class SuperGroupUnitTest extends PersistentEntityTestCase
 
     public function testInvalidState(): void
     {
-        $entity = new SuperGroup();
+        $entity = new Group();
         $this->assertValidatorViolations($entity);
     }
 }

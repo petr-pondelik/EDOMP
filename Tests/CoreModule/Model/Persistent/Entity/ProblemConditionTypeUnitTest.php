@@ -41,8 +41,6 @@ class ProblemConditionTypeUnitTest extends PersistentEntityTestCase
     public function testInvalidState(): void
     {
         $entity = new ProblemConditionType();
-        $errors = $this->validator->validate($entity);
-        $this->assertEquals($errors->count(), 1);
         $this->assertValidatorViolations($entity);
     }
 }

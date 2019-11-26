@@ -118,4 +118,20 @@ class Group extends BaseEntity
         }
         return $res;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * @param mixed $users
+     */
+    public function setUsers($users): void
+    {
+        $this->users = $users;
+    }
 }

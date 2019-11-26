@@ -8,7 +8,6 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
 use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -42,13 +41,6 @@ class ProblemType extends BaseEntity
     protected $toStringAttr = 'label';
 
     /**
-     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal", mappedBy="problemType", cascade={"persist", "merge"})
-     *
-     * @var ArrayCollection|ProblemFinal[]
-     */
-    protected $problems;
-
-    /**
      * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemConditionType", inversedBy="problemTypes", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="problem_tp_problem_condition_tp_rel")
      */
@@ -60,24 +52,7 @@ class ProblemType extends BaseEntity
     public function __construct()
     {
         parent::__construct();
-        $this->problems = new ArrayCollection();
         $this->conditionTypes = new ArrayCollection();
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getProblems(): ?Collection
-    {
-        return $this->problems;
-    }
-
-    /**
-     * @param Collection $problems
-     */
-    public function setProblems($problems): void
-    {
-        $this->problems = $problems;
     }
 
     /**
