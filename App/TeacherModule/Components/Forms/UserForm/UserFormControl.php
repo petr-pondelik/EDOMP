@@ -11,6 +11,7 @@ namespace App\TeacherModule\Components\Forms\UserForm;
 
 use App\CoreModule\Arguments\ValidatorArgument;
 use App\CoreModule\Components\Forms\EntityFormControl;
+use App\CoreModule\Model\Persistent\Entity\User;
 use App\CoreModule\Model\Persistent\Functionality\UserFunctionality;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\GroupRepository;
@@ -178,7 +179,6 @@ class UserFormControl extends EntityFormControl
                 $values->username = $values->email;
             }
             $this->functionality->update($this->entity->getId(), $values);
-            bdump('TEST');
             $this->onSuccess();
         } catch (\Exception $e) {
             // The exception that is thrown when user attempts to terminate the current presenter or application. This is special "silent exception" with no error message or code.
@@ -191,7 +191,6 @@ class UserFormControl extends EntityFormControl
 
     public function setDefaults(): void
     {
-        bdump($this->entity);
         $this['form']['id']->setDefaultValue($this->entity->getId());
         $this['form']['email']->setDefaultValue($this->entity->getEmail());
         $this['form']['username']->setDefaultValue($this->entity->getUsername());

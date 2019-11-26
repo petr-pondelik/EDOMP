@@ -5,9 +5,10 @@ INSERT INTO edomp.difficulty (id, created, label, teacher_level_secured) VALUES 
 INSERT INTO edomp.difficulty (id, created, label, teacher_level_secured) VALUES (3, '2019-02-17 10:29:19', 'Těžká', 0);
 
 INSERT INTO edomp.super_group (id, created_by_id, created, label, teacher_level_secured) VALUES (1, null, '2019-05-02 10:46:13', 'Administrators', 1);
+INSERT INTO edomp.super_group (id, created_by_id, created, label, teacher_level_secured) VALUES (2, null, '2019-05-02 10:46:13', 'Učitelé', 1);
 
 INSERT INTO edomp.`group` (id, super_group_id, created_by_id, created, label, teacher_level_secured) VALUES (1, 1, null, '2019-05-02 10:56:53', 'Administrators', 1);
-INSERT INTO edomp.`group` (id, super_group_id, created_by_id, created, label, teacher_level_secured) VALUES (2, 1, 3, '2019-06-20 13:32:19', 'Učitelé', 1);
+INSERT INTO edomp.`group` (id, super_group_id, created_by_id, created, label, teacher_level_secured) VALUES (2, 2, 3, '2019-06-20 13:32:19', 'Učitelé', 1);
 
 INSERT INTO edomp.role (id, `key`, created, label) VALUES (1, 'admin', '2019-05-01 20:39:35', 'Administrátor');
 INSERT INTO edomp.role (id, `key`, created, label) VALUES (2, 'teacher', '2019-05-01 20:39:51', 'Učitel');

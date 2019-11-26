@@ -53,7 +53,7 @@ class ProblemFinal extends Problem
     protected $problemTemplate;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinalTestVariantAssociation", mappedBy="problemFinal", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinalTestVariantAssociation", mappedBy="problemFinal", cascade={"persist", "merge"})
      *
      * @var ProblemFinalTestVariantAssociation[]
      */

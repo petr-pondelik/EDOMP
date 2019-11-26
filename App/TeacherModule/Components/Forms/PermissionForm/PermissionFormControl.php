@@ -11,6 +11,8 @@ namespace App\TeacherModule\Components\Forms\PermissionForm;
 
 use App\CoreModule\Components\Forms\FormControl;
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
+use App\CoreModule\Model\Persistent\Entity\Group;
+use App\CoreModule\Model\Persistent\Entity\SuperGroup;
 use App\CoreModule\Model\Persistent\Functionality\GroupFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\SuperGroupFunctionality;
 use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
@@ -134,6 +136,7 @@ class PermissionFormControl extends FormControl
 
     /**
      * @param BaseEntity $entity
+     * @throws \App\CoreModule\Exceptions\EntityException
      */
     public function setEntity(BaseEntity $entity): void
     {
@@ -144,9 +147,13 @@ class PermissionFormControl extends FormControl
 
     /**
      * @param BaseEntity $entity
+     * @throws \App\CoreModule\Exceptions\EntityException
      */
     public function setDefaults(BaseEntity $entity): void
     {
-        $this['form']['themes']->setDefaultValue($entity->getThemesId());
+        /**
+         * @var Group|SuperGroup $entity
+         */
+        $this['form']['themes']->setDefaultValue($entity->getPropertyKeyArray('themes'));
     }
 }

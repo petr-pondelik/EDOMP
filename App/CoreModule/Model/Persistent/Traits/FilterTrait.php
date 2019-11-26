@@ -47,11 +47,7 @@ trait FilterTrait
     public function findFiltered(array $filters, array $excludeId = null): array
     {
         bdump('FIND FILTERED');
-        bdump($filters);
-
         $filtersProcessed = self::processFilters($filters);
-        bdump($filtersProcessed);
-
         $filteredBase = $this->findAssoc($filtersProcessed, 'id');
 
         if (isset($filters['problemType'])) {
@@ -70,12 +66,8 @@ trait FilterTrait
 
             // Apply filters by problem conditions
             foreach ($problemTypes as $problemType) {
-
                 foreach ($problemType->getConditionTypes()->getValues() as $problemConditionType) {
-
                     if (isset($filters['conditionType'][$problemConditionType->getId()]) && count($filters['conditionType'][$problemConditionType->getId()])) {
-
-                        bdump('FILTERING BY CONDITION');
 
                         $conditionFilter = true;
 

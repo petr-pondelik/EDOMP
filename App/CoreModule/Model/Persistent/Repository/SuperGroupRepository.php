@@ -27,6 +27,6 @@ class SuperGroupRepository extends SecuredRepository
     public function __construct($em, Mapping\ClassMetadata $class, ConstHelper $constHelper)
     {
         parent::__construct($em, $class, $constHelper);
-        $this->exclude[] = $this->constHelper::ADMIN_SUPER_GROUP;
+        $this->exclude = [$this->constHelper::ADMIN_SUPER_GROUP, $this->constHelper::TEACHER_SUPER_GROUP];
     }
 }

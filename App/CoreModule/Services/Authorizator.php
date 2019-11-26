@@ -9,9 +9,11 @@
 namespace App\CoreModule\Services;
 
 
+use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
+use App\CoreModule\Model\Persistent\Entity\Group;
+use App\CoreModule\Model\Persistent\Entity\SuperGroup;
 use Nette\Security\IAuthorizator;
-use Nette\Security\IIdentity;
 use Nette\Security\User;
 
 /**
@@ -20,6 +22,20 @@ use Nette\Security\User;
  */
 class Authorizator implements IAuthorizator
 {
+    /**
+     * @var ConstHelper
+     */
+    protected $constHelper;
+
+    /**
+     * Authorizator constructor.
+     * @param ConstHelper $constHelper
+     */
+    public function __construct(ConstHelper $constHelper)
+    {
+        $this->constHelper = $constHelper;
+    }
+
     /**
      * Performs a role-based authorization.
      * @param  string|null
@@ -54,6 +70,16 @@ class Authorizator implements IAuthorizator
      */
     public function isEntityAllowed(User $user, BaseEntity $entity): bool
     {
+        // Restriction for system required entity
+        if ($entity instanceof SuperGroup && in_array($entity->getId(), $this->constHelper::ADMIN_TEACHER_SUPER_GROUPS, true)) {
+            return false;
+        }
+
+        // Restriction for system required entity
+        if ($entity instanceof Group && in_array($entity->getId(), $this->constHelper::ADMIN_TEACHER_GROUPS, true)) {
+            return false;
+        }
+
         // If the user has admin role, entity is always allowed
         if ($user->isInRole('admin')) {
             return true;

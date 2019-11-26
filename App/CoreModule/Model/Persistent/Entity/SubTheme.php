@@ -13,6 +13,7 @@ use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -45,7 +46,7 @@ class SubTheme extends BaseEntity
     /**
      * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal", mappedBy="subTheme", cascade={"all"})
      *
-     * @var Collection
+     * @var ArrayCollection|PersistentCollection
      */
     protected $problems;
 
@@ -57,23 +58,6 @@ class SubTheme extends BaseEntity
         parent::__construct();
         $this->teacherLevelSecured = true;
         $this->problems = new ArrayCollection();
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getProblems(): ?Collection
-    {
-        return $this->problems;
-    }
-
-    /**
-     * @param Collection $problems
-     * @return void
-     */
-    public function setProblems($problems): void
-    {
-        $this->problems = $problems;
     }
 
     /**
@@ -90,5 +74,21 @@ class SubTheme extends BaseEntity
     public function setTheme(Theme $theme): void
     {
         $this->theme = $theme;
+    }
+
+    /**
+     * @return ArrayCollection|PersistentCollection
+     */
+    public function getProblems()
+    {
+        return $this->problems;
+    }
+
+    /**
+     * @param ArrayCollection|PersistentCollection $problems
+     */
+    public function setProblems($problems): void
+    {
+        $this->problems = $problems;
     }
 }

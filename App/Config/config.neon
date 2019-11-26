@@ -47,7 +47,7 @@ session:
 
 # Set tracy max lenght and depth for dumps
 tracy:
-    maxLen: 2000
+    maxLength: 20000
     maxDepth: 5
 
 services:

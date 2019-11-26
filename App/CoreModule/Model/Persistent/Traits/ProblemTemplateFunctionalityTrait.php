@@ -120,21 +120,15 @@ trait ProblemTemplateFunctionalityTrait
             $attached = $this->attachConditions($template, $data);
             $template = $attached->template;
 
-            bdump($templateId);
-
             if (!$templateId) {
                 $templateId = $this->repository->getSequenceVal();
             }
 
             $templateJsonData = [];
 
-            bdump('BEFORE TEMPLATE MATCHES INTERSECT');
-            bdump($templateId);
-
             if ($templateJsons = $this->templateJsonDataRepository->findBy(['templateId' => $templateId])) {
 
                 $templateJsonData = Json::decode($templateJsons[0]->getJsonData());
-                bdump($templateJsonData);
 
                 // Unset picked template JSON
                 unset($templateJsons[0]);
@@ -144,7 +138,6 @@ trait ProblemTemplateFunctionalityTrait
                     $problemConditionTypeId = $json->getProblemConditionType()->getId();
                     if (isset($data->{'condition_' . $problemConditionTypeId}) && $data->{'condition_' . $problemConditionTypeId} !== 0) {
                         $arr = Json::decode($json->getJsonData());
-                        bdump($arr);
                         $templateJsonData = $this->intersectJsonDataArrays($templateJsonData, $arr);
                     }
                 }
@@ -154,7 +147,6 @@ trait ProblemTemplateFunctionalityTrait
             if ($templateJsonData) {
                 // Reindex array key to start from 0 (array_values) and encode data to JSON string
                 $templateJsonData = Json::encode(array_values($templateJsonData));
-                bdump($templateJsonData);
                 $template->setMatches($templateJsonData);
             }
 

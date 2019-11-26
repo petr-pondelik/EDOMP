@@ -337,6 +337,7 @@ class FlashesTranslator
         bdump('TRANSLATE');
 
         if ($e instanceof ForeignKeyConstraintViolationException) {
+            bdump($e->getMessage());
             if (!isset(self::$presenterMessages[$presenterName]['constraintViolation'])) {
                 throw new FlashesTranslatorException('Non existing message.');
             }

@@ -68,7 +68,7 @@ class GroupGridFactory extends BaseGrid
 
         $grid->setPrimaryKey('id');
 
-        $grid->setDataSource($this->groupRepository->getSecuredQueryBuilder($container->user));
+        $grid->setDataSource($this->groupRepository->getSecuredQueryBuilder($container->user, true));
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()

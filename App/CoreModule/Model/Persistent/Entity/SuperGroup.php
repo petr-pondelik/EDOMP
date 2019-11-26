@@ -9,6 +9,7 @@
 namespace App\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Traits\CreatedByTrait;
+use App\CoreModule\Model\Persistent\Traits\KeyArrayTrait;
 use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -22,8 +23,8 @@ use Doctrine\ORM\Mapping as ORM;
 class SuperGroup extends BaseEntity
 {
     use LabelTrait;
-
     use CreatedByTrait;
+    use KeyArrayTrait;
 
     /**
      * @var string
@@ -82,18 +83,6 @@ class SuperGroup extends BaseEntity
     public function setThemes($themes): void
     {
         $this->themes = $themes;
-    }
-
-    /**
-     * @return array
-     */
-    public function getThemesId(): array
-    {
-        $res = [];
-        foreach ($this->getThemes()->getValues() as $key => $theme) {
-            $res[] = $theme->getId();
-        }
-        return $res;
     }
 
     public function addTheme(Theme $theme): void

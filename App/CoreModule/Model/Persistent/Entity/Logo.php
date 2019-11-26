@@ -55,17 +55,6 @@ class Logo extends BaseEntity
     protected $extensionTmp;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
-     * @Assert\Type(
-     *     type="bool",
-     *     message="IsUsed must be {{ type }}."
-     * )
-     *
-     * @var bool
-     */
-    protected $isUsed = false;
-
-    /**
      * Logo constructor.
      */
     public function __construct()
@@ -128,21 +117,5 @@ class Logo extends BaseEntity
     public function setExtensionTmp(string $extensionTmp): void
     {
         $this->extensionTmp = $extensionTmp;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isUsed(): bool
-    {
-        return $this->isUsed;
-    }
-
-    /**
-     * @param bool $isUsed
-     */
-    public function setIsUsed(bool $isUsed): void
-    {
-        $this->isUsed = $isUsed;
     }
 }

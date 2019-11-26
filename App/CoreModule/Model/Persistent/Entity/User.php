@@ -9,6 +9,7 @@
 namespace App\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Traits\CreatedByTrait;
+use App\CoreModule\Model\Persistent\Traits\KeyArrayTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
@@ -24,6 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class User extends BaseEntity
 {
     use CreatedByTrait;
+    use KeyArrayTrait;
 
     /**
      * @var string
@@ -131,11 +133,9 @@ class User extends BaseEntity
     protected $groups;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\SuperGroup", mappedBy="createdBy", cascade={"all"})
-     *
-     * @var ArrayCollection|PersistentCollection
+     * Create attributes serves for CLEARING user's authority entities after his DELETION
+     * ORDER OF _CREATED ATTRIBUTES IS IMPORTANT!!! IT MUST MATCH ALLOWED DELETION PATH!!!
      */
-    protected $superGroupsCreated;
 
     /**
      * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\Test", mappedBy="createdBy", cascade={"all"})
@@ -143,6 +143,34 @@ class User extends BaseEntity
      * @var ArrayCollection|PersistentCollection
      */
     protected $testsCreated;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal", mappedBy="createdBy", cascade={"all"})
+     *
+     * @var ArrayCollection|PersistentCollection
+     */
+    protected $problemFinalsCreated;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate", mappedBy="createdBy", cascade={"all"})
+     *
+     * @var ArrayCollection|PersistentCollection
+     */
+    protected $problemTemplatesCreated;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\SuperGroup", mappedBy="createdBy", cascade={"all"})
+     *
+     * @var ArrayCollection|PersistentCollection
+     */
+    protected $superGroupsCreated;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\Theme", mappedBy="createdBy", cascade={"all"})
+     *
+     * @var ArrayCollection|PersistentCollection
+     */
+    protected $themesCreated;
 
     /**
      * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\Logo", mappedBy="createdBy", cascade={"all"})
@@ -172,7 +200,7 @@ class User extends BaseEntity
         $res = [];
         foreach ($this->groups as $groupKey => $group) {
             foreach ($group->getThemes() as $catKey => $theme) {
-                if (!in_array($theme->getId(), $res)) {
+                if (!in_array($theme->getId(), $res, true)) {
                     $res[] = $theme->getId();
                 }
             }
@@ -285,22 +313,6 @@ class User extends BaseEntity
     }
 
     /**
-     * @return mixed
-     */
-    public function getSuperGroupsCreated()
-    {
-        return $this->superGroupsCreated;
-    }
-
-    /**
-     * @param mixed $superGroupsCreated
-     */
-    public function setSuperGroupsCreated($superGroupsCreated): void
-    {
-        $this->superGroupsCreated = $superGroupsCreated;
-    }
-
-    /**
      * @return string|null
      */
     public function getFirstName(): ?string
@@ -346,21 +358,5 @@ class User extends BaseEntity
     public function setEmail(string $email): void
     {
         $this->email = $email;
-    }
-
-    /**
-     * @return ArrayCollection|PersistentCollection
-     */
-    public function getLogosCreated()
-    {
-        return $this->logosCreated;
-    }
-
-    /**
-     * @param ArrayCollection|PersistentCollection $logosCreated
-     */
-    public function setLogosCreated($logosCreated): void
-    {
-        $this->logosCreated = $logosCreated;
     }
 }

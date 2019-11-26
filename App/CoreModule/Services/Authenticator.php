@@ -67,8 +67,6 @@ class Authenticator implements IAuthenticator
     {
         [$username, $password, $admin] = $credentials;
 
-        bdump($admin);
-
         if (!$admin) {
             $user = $this->userRepository->findForAuthentication($username);
         } else {

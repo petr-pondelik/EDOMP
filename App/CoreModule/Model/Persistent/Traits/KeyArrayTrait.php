@@ -24,18 +24,16 @@ trait KeyArrayTrait
      */
     public function getPropertyKeyArray(string $property): array
     {
-        bdump($this->{$property});
-
-        if(!property_exists(static::class, $property)){
+        if (!property_exists(static::class, $property)) {
             throw new EntityException('Property does not exist.');
         }
-        if(!($this->{$property} instanceof Collection)){
+        if (!($this->{$property} instanceof Collection)) {
             throw new EntityException('Property does not implement Doctrine Collection interface.');
         }
 
         $res = [];
 
-        foreach ($this->{$property}->getValues() as $key => $item){
+        foreach ($this->{$property}->getValues() as $key => $item) {
             $res[] = $item->getId();
         }
 

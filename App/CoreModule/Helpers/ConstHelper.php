@@ -19,8 +19,13 @@ class ConstHelper
     public const TEACHER_ROLE = 2;
 
     // Groups
-    public const ADMIN_GROUP = 1;
     public const ADMIN_SUPER_GROUP = 1;
+    public const TEACHER_SUPER_GROUP = 2;
+    public const ADMIN_TEACHER_SUPER_GROUPS = [self::ADMIN_SUPER_GROUP, self::TEACHER_SUPER_GROUP];
+
+    public const ADMIN_GROUP = 1;
+    public const TEACHER_GROUP = 2;
+    public const ADMIN_TEACHER_GROUPS = [self::ADMIN_GROUP, self::TEACHER_GROUP];
 
     // Result conditions constants
     public const RESULT = 1;
