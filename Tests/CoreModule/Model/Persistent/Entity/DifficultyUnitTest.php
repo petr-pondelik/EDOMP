@@ -10,21 +10,21 @@ namespace App\Tests\CoreModule\Model\Persistent\Entity;
 
 
 use App\CoreModule\Model\Persistent\Entity\Difficulty;
-use App\Tests\Traits\ProblemFinalSetUpTrait;
+use App\Tests\Traits\ProblemFinalMockSetUpTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class DifficultyTest
  * @package App\Tests\CoreModule\Model\Persistent\Entity
  */
-final class DifficultyTest extends PersistentEntityTestCase
+final class DifficultyUnitTest extends PersistentEntityTestCase
 {
-    use ProblemFinalSetUpTrait;
+    use ProblemFinalMockSetUpTrait;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpProblemFinal();
+        $this->setUpProblemFinalMock();
     }
 
     public function testValidState(): void
@@ -36,9 +36,9 @@ final class DifficultyTest extends PersistentEntityTestCase
         $this->assertEquals($entity->getLabel(), 'TEST_LABEL');
         $this->assertEquals($entity->getProblems(), new ArrayCollection());
 
-        $entity->setProblems(new ArrayCollection([$this->problemFinal]));
+        $entity->setProblems(new ArrayCollection([$this->problemFinalMock]));
 
-        $this->assertEquals(new ArrayCollection([$this->problemFinal]), $entity->getProblems());
+        $this->assertEquals(new ArrayCollection([$this->problemFinalMock]), $entity->getProblems());
 
         $violations = $this->validator->validate($entity);
         $this->assertCount(0, $violations);
