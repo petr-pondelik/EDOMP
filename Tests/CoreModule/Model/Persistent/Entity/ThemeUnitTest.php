@@ -26,6 +26,13 @@ class ThemeUnitTest extends PersistentEntityTestCase
     use SubThemeMockSetUpTrait;
     use SuperGroupMockSetUpTrait;
 
+    /**
+     * @var array
+     */
+    protected $errorMessages = [
+        0 => "Label can't be blank."
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -41,6 +48,7 @@ class ThemeUnitTest extends PersistentEntityTestCase
         $entity->setLabel('TEST_LABEL');
         $entity->setCreatedBy($this->userMock);
 
+        $this->assertEquals(true, $entity->isTeacherLevelSecured());
         $this->assertEquals('TEST_LABEL', $entity->getLabel());
         $this->assertEquals($this->userMock, $entity->getCreatedBy());
         $this->assertEquals(new ArrayCollection(), $entity->getGroups());
@@ -55,17 +63,12 @@ class ThemeUnitTest extends PersistentEntityTestCase
         $this->assertEquals(new ArrayCollection([$this->subThemeMock]), $entity->getSubThemes());
         $this->assertEquals(new ArrayCollection([$this->superGroupMock]), $entity->getSuperGroups());
 
-        $violations = $this->validator->validate($entity);
-        $this->assertCount(0, $violations);
+        $this->assertValidByValidator($entity);
     }
 
     public function testInvalidState(): void
     {
         $entity = new Theme();
-
-        $violations = $this->validator->validate($entity);
-
-        $this->assertCount(1, $violations);
-        $this->assertEquals('Label can\'t be blank.', $violations->get(0)->getMessage());
+        $this->assertValidatorViolations($entity);
     }
 }

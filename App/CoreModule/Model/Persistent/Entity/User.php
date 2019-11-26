@@ -156,7 +156,6 @@ class User extends BaseEntity
      */
     public function __construct()
     {
-        bdump('USER ENTITY CONSTRUCT');
         parent::__construct();
         $this->teacherLevelSecured = true;
         $this->groups = new ArrayCollection();

@@ -9,7 +9,6 @@
 namespace App\Tests\Traits;
 
 use App\CoreModule\Model\Persistent\Entity\SuperGroup;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Trait SuperGroupMockSetUpTrait
@@ -18,7 +17,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 trait SuperGroupMockSetUpTrait
 {
     /**
-     * @var MockObject
+     * @var SuperGroup
      */
     protected $superGroupMock;
 

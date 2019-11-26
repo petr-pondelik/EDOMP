@@ -162,6 +162,7 @@ abstract class Problem extends BaseEntity
     public function __construct()
     {
         parent::__construct();
+        $this->teacherLevelSecured = true;
         $this->conditions = new ArrayCollection();
     }
 

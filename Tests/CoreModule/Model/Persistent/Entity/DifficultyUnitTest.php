@@ -21,6 +21,13 @@ final class DifficultyUnitTest extends PersistentEntityTestCase
 {
     use ProblemFinalMockSetUpTrait;
 
+    /**
+     * @var array
+     */
+    protected $errorMessages = [
+        0 => "Label can't be blank."
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -33,6 +40,7 @@ final class DifficultyUnitTest extends PersistentEntityTestCase
 
         $entity->setLabel('TEST_LABEL');
 
+        $this->assertEquals(false, $entity->isTeacherLevelSecured());
         $this->assertEquals($entity->getLabel(), 'TEST_LABEL');
         $this->assertEquals($entity->getProblems(), new ArrayCollection());
 
@@ -40,18 +48,14 @@ final class DifficultyUnitTest extends PersistentEntityTestCase
 
         $this->assertEquals(new ArrayCollection([$this->problemFinalMock]), $entity->getProblems());
 
-        $violations = $this->validator->validate($entity);
-        $this->assertCount(0, $violations);
+        $this->assertValidByValidator($entity);
     }
 
     public function testInvalidState(): void
     {
         $entity = new Difficulty();
 
-        $violations = $this->validator->validate($entity);
-
-        $this->assertCount(1, $violations);
-        $this->assertEquals('Label can\'t be blank.', $violations->get(0)->getMessage());
+        $this->assertValidatorViolations($entity);
 
         $this->expectException(\TypeError::class);
         $this->expectExceptionMessage('Return value of App\CoreModule\Model\Persistent\Entity\Difficulty::getLabel() must be of the type string, null returned');

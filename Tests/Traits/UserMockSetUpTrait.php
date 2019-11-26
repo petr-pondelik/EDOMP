@@ -9,7 +9,6 @@
 namespace App\Tests\Traits;
 
 use App\CoreModule\Model\Persistent\Entity\User;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Trait UserSetUpTrait
@@ -18,7 +17,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 trait UserMockSetUpTrait
 {
     /**
-     * @var MockObject
+     * @var User
      */
     protected $userMock;
 

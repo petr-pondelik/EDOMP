@@ -9,7 +9,6 @@
 namespace App\Tests\Traits;
 
 use App\CoreModule\Model\Persistent\Entity\SubTheme;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Trait SubThemeMockSetUpTrait
@@ -18,7 +17,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 trait SubThemeMockSetUpTrait
 {
     /**
-     * @var MockObject
+     * @var SubTheme
      */
     protected $subThemeMock;
 

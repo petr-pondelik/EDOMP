@@ -9,7 +9,6 @@
 namespace App\Tests\Traits;
 
 use App\CoreModule\Model\Persistent\Entity\Group;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Trait GroupSetUpTrait
@@ -18,7 +17,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 trait GroupMockSetUpTrait
 {
     /**
-     * @var MockObject
+     * @var Group
      */
     protected $groupMock;
 

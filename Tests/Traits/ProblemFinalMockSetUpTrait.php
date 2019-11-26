@@ -9,7 +9,6 @@
 namespace App\Tests\Traits;
 
 use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Trait ProblemFinalSetUpTrait
@@ -18,7 +17,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 trait ProblemFinalMockSetUpTrait
 {
     /**
-     * @var MockObject
+     * @var ProblemFinal
      */
     protected $problemFinalMock;
 

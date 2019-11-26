@@ -66,6 +66,15 @@ class Logo extends BaseEntity
     protected $isUsed = false;
 
     /**
+     * Logo constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->teacherLevelSecured = true;
+    }
+
+    /**
      * @return bool
      */
     public function isPdf(): bool

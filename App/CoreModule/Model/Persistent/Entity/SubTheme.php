@@ -55,6 +55,7 @@ class SubTheme extends BaseEntity
     public function __construct()
     {
         parent::__construct();
+        $this->teacherLevelSecured = true;
         $this->problems = new ArrayCollection();
     }
 

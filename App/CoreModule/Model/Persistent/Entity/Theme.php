@@ -52,6 +52,7 @@ class Theme extends BaseEntity
     public function __construct()
     {
         parent::__construct();
+        $this->teacherLevelSecured = true;
         $this->subThemes = new ArrayCollection();
         $this->groups = new ArrayCollection();
         $this->superGroups = new ArrayCollection();
