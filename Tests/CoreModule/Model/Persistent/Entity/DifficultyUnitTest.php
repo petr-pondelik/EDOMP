@@ -6,6 +6,8 @@
  * Time: 21:33
  */
 
+declare(strict_types = 1);
+
 namespace App\Tests\CoreModule\Model\Persistent\Entity;
 
 

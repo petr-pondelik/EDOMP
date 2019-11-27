@@ -6,6 +6,8 @@
  * Time: 2:01
  */
 
+declare(strict_types = 1);
+
 namespace App\Tests\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Entity\ProblemConditionType;

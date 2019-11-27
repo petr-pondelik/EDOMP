@@ -9,7 +9,6 @@
 namespace App\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Traits\LabelTrait;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -27,17 +26,6 @@ class ProblemCondition extends BaseEntity
      * @var string
      */
     protected $toStringAttr = 'label';
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @Assert\Type(
-     *     type="string",
-     *     message="LabelFull must be {{ type }}."
-     * )
-     *
-     * @var string|null
-     */
-    protected $labelFull;
 
     /**
      * @ORM\Column(type="integer", nullable=false)
@@ -60,20 +48,6 @@ class ProblemCondition extends BaseEntity
     protected $problemConditionType;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal", mappedBy="conditions")
-     */
-    protected $problems;
-
-    /**
-     * ProblemCondition constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->problems = new ArrayCollection();
-    }
-
-    /**
      * @return int
      */
     public function getAccessor(): int
@@ -90,22 +64,6 @@ class ProblemCondition extends BaseEntity
     }
 
     /**
-     * @return mixed
-     */
-    public function getProblems()
-    {
-        return $this->problems;
-    }
-
-    /**
-     * @param mixed $problems
-     */
-    public function setProblems($problems): void
-    {
-        $this->problems = $problems;
-    }
-
-    /**
      * @return ProblemConditionType
      */
     public function getProblemConditionType(): ProblemConditionType
@@ -119,21 +77,5 @@ class ProblemCondition extends BaseEntity
     public function setProblemConditionType(ProblemConditionType $problemConditionType): void
     {
         $this->problemConditionType = $problemConditionType;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getLabelFull(): ?string
-    {
-        return $this->labelFull;
-    }
-
-    /**
-     * @param string|null $labelFull
-     */
-    public function setLabelFull(?string $labelFull): void
-    {
-        $this->labelFull = $labelFull;
     }
 }
