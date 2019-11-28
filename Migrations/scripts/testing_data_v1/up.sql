@@ -24,9 +24,9 @@ INSERT INTO edomp.`group` (id, super_group_id, created_by_id, created, label, te
 INSERT INTO edomp.`group` (id, super_group_id, created_by_id, created, label, teacher_level_secured) VALUES (5, 3, 2, '2019-06-20 13:30:53', '2.A', 1);
 INSERT INTO edomp.`group` (id, super_group_id, created_by_id, created, label, teacher_level_secured) VALUES (6, 4, 3, '2019-06-20 13:31:09', 'Odpolední skupina', 1);
 
-INSERT INTO edomp.role (id, `key`, created, label) VALUES (1, 'admin', '2019-05-01 20:39:35', 'Administrátor');
-INSERT INTO edomp.role (id, `key`, created, label) VALUES (2, 'teacher', '2019-05-01 20:39:51', 'Učitel');
-INSERT INTO edomp.role (id, `key`, created, label) VALUES (3, 'student', '2019-05-01 20:39:51', 'Student');
+INSERT INTO edomp.role (id, `key`, created, label, teacher_level_secured) VALUES (1, 'admin', '2019-05-01 20:39:35', 'Administrátor', 0);
+INSERT INTO edomp.role (id, `key`, created, label, teacher_level_secured) VALUES (2, 'teacher', '2019-05-01 20:39:51', 'Učitel', 0);
+INSERT INTO edomp.role (id, `key`, created, label, teacher_level_secured) VALUES (3, 'student', '2019-05-01 20:39:51', 'Student', 0);
 
 INSERT INTO edomp.user (id, created_by_id, role_id, email, username, password, is_admin, first_name, last_name,created, teacher_level_secured) VALUES (1, null, 1, 'admin@email.com', 'admin', '$2y$10$E7uP70dMpG56mwA/b62VeOwR7bheongU0Wa7lP7S7kozNCsOyqIeO', 1, 'Petr', 'Pondělík', '2019-06-20 11:21:18', 1);
 INSERT INTO edomp.user (id, created_by_id, role_id, email, username, password, is_admin, first_name, last_name,created, teacher_level_secured) VALUES (2, 1, 2, 'jkohneke0@nba.com', 'jkohneke0@nba.com', '$2y$10$E7uP70dMpG56mwA/b62VeOwR7bheongU0Wa7lP7S7kozNCsOyqIeO', 0, 'Joyce', 'Kohneke', '2019-06-20 11:21:18', 1);
