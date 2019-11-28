@@ -56,8 +56,12 @@ abstract class PersistentEntityTestCase extends EDOMPUnitTestCase
     {
         $violations = $this->validator->validate($entity);
         $this->assertCount(count($this->errorMessages), $violations);
+        $messages = [];
         foreach ($violations as $key => $violation) {
-            $this->assertEquals($this->errorMessages[$key], $violation->getMessage());
+            $messages[] = $violation->getMessage();
+        }
+        foreach ($this->errorMessages as $errorMessage) {
+            $this->assertContains($errorMessage, $messages);
         }
     }
 
