@@ -53,17 +53,6 @@ class ArithmeticSequenceTemplate extends ProblemTemplate
     protected $firstN;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
-     * @Assert\Type(
-     *     type="float",
-     *     message="Difference must be {{ type }}."
-     * )
-     *
-     * @var float
-     */
-    protected $difference;
-
-    /**
      * @return int
      */
     public function getFirstN(): int
@@ -77,22 +66,6 @@ class ArithmeticSequenceTemplate extends ProblemTemplate
     public function setFirstN(int $firstN): void
     {
         $this->firstN = $firstN;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getDifference(): ?float
-    {
-        return $this->difference;
-    }
-
-    /**
-     * @param float $difference
-     */
-    public function setDifference(float $difference): void
-    {
-        $this->difference = $difference;
     }
 
     /**

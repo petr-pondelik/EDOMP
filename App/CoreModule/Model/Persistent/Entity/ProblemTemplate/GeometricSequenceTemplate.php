@@ -53,17 +53,6 @@ class GeometricSequenceTemplate extends ProblemTemplate
     protected $firstN;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
-     * @Assert\Type(
-     *     type="float",
-     *     message="Quotient must be {{ type }}."
-     * )
-     *
-     * @var float
-     */
-    protected $quotient;
-
-    /**
      * @return int
      */
     public function getFirstN(): int
@@ -77,22 +66,6 @@ class GeometricSequenceTemplate extends ProblemTemplate
     public function setFirstN(int $firstN): void
     {
         $this->firstN = $firstN;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getQuotient(): ?float
-    {
-        return $this->quotient;
-    }
-
-    /**
-     * @param float $quotient
-     */
-    public function setQuotient(float $quotient): void
-    {
-        $this->quotient = $quotient;
     }
 
     /**
