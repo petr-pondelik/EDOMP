@@ -9,7 +9,7 @@
 namespace App\CoreModule\Model\Persistent\Traits;
 
 use App\CoreModule\Helpers\FormatterHelper;
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
+use App\CoreModule\Model\Persistent\Entity\ProblemFinal;
 use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemRepository;

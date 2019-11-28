@@ -17,14 +17,14 @@ use App\TeacherModule\Services\LatexParser;
 use App\CoreModule\Helpers\StringsHelper;
 use App\TeacherModule\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
 use App\CoreModule\Model\Persistent\Functionality\FilterFunctionality;
-use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\ProblemFinalFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\TestFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\TestVariantFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\UserFunctionality;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\FilterRepository;
-use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinalRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\QuadraticEquationTemplateRepository;
@@ -275,30 +275,30 @@ class DoctrinePresenter extends TeacherPresenter
 
         bdump('Testing ProblemPlugin constructProblemFinalData');
 
-        $problemTemplate = $this->problemRepository->find(38);
-        bdump($problemTemplate);
-        $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
-        $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
-        $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate, []);
-        bdump($linearEquationFinal);
-
-        $problemTemplate = $this->problemTemplateRepository->find(12);
-        $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
-        $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
-        $quadraticEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate, []);
-        bdump($quadraticEquationFinal);
-
-        $problemTemplate = $this->problemTemplateRepository->find(18);
-        $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
-        $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
-        $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate, []);
-        bdump($linearEquationFinal);
-
-        $problemTemplate = $this->problemTemplateRepository->find(22);
-        $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
-        $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
-        $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate, []);
-        bdump($linearEquationFinal);
+//        $problemTemplate = $this->problemRepository->find(38);
+//        bdump($problemTemplate);
+//        $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
+//        $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
+//        $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate, []);
+//        bdump($linearEquationFinal);
+//
+//        $problemTemplate = $this->problemTemplateRepository->find(12);
+//        $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
+//        $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
+//        $quadraticEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate, []);
+//        bdump($quadraticEquationFinal);
+//
+//        $problemTemplate = $this->problemTemplateRepository->find(18);
+//        $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
+//        $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
+//        $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate, []);
+//        bdump($linearEquationFinal);
+//
+//        $problemTemplate = $this->problemTemplateRepository->find(22);
+//        $problemTypeKeyLabel = $problemTemplate->getProblemType()->getKeyLabel();
+//        $problemPlugin = $this->pluginContainer->getPlugin($problemTypeKeyLabel);
+//        $linearEquationFinal = $problemPlugin->constructProblemFinal($problemTemplate, []);
+//        bdump($linearEquationFinal);
 
         bdump($this->latexParser->postprocessFinalBody('0 \big[ 5x + 15 \big] + 4x + 0 \frac{5x}{2} + 0*5 + 0 - 0 + 2'));
 

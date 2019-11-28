@@ -145,7 +145,7 @@ class User extends BaseEntity
     protected $testsCreated;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal", mappedBy="createdBy", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal", mappedBy="createdBy", cascade={"all"})
      *
      * @var ArrayCollection|PersistentCollection
      */

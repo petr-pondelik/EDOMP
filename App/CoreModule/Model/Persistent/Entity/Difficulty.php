@@ -28,7 +28,7 @@ class Difficulty extends BaseEntity
     protected $toStringAttr = 'label';
 
     /**
-     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal", mappedBy="difficulty", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal", mappedBy="difficulty", cascade={"all"})
      *
      * @var ArrayCollection
      */

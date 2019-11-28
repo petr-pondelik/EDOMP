@@ -15,8 +15,8 @@ use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
-use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
+use App\CoreModule\Model\Persistent\Functionality\ProblemFinalFunctionality;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinalRepository;
 use App\CoreModule\Services\Authorizator;
 use App\TeacherModule\Services\PluginContainer;
 use App\TeacherModule\Services\NewtonApiClient;
@@ -98,6 +98,7 @@ class ProblemFinalPresenter extends EntityPresenter
         };
 
         $grid->getInlineEdit()->onSetDefaults[] = static function ($cont, $item) {
+            bdump($cont);
             $cont->setDefaults([
                 'textBefore' => $item->getTextBefore(),
                 'textAfter' => $item->getTextAfter(),

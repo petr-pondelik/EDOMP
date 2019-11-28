@@ -9,12 +9,13 @@
 namespace App\TeacherModule\Plugins;
 
 use App\CoreModule\Helpers\StringsHelper;
+use App\CoreModule\Model\Persistent\Functionality\ProblemFinalFunctionality;
 use App\TeacherModule\Exceptions\InvalidParameterException;
 use App\CoreModule\Helpers\ConstHelper;
 use App\TeacherModule\Services\LatexParser;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\TeacherModule\Interfaces\IProblemPlugin;
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
+use App\CoreModule\Model\Persistent\Entity\ProblemFinal;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use App\CoreModule\Model\Persistent\Functionality\BaseFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
@@ -53,9 +54,9 @@ abstract class ProblemPlugin implements IProblemPlugin
     protected $problemGenerator;
 
     /**
-     * @var BaseFunctionality
+     * @var ProblemFinalFunctionality
      */
-    protected $functionality;
+    protected $problemFinalFunctionality;
 
     /**
      * @var TemplateJsonDataFunctionality
@@ -93,6 +94,7 @@ abstract class ProblemPlugin implements IProblemPlugin
      * @param MathService $mathService
      * @param ConditionService $conditionService
      * @param ProblemGenerator $problemGenerator
+     * @param ProblemFinalFunctionality $problemFinalFunctionality
      * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
      * @param LatexParser $latexParser
      * @param ParameterParser $parameterParser
@@ -106,6 +108,7 @@ abstract class ProblemPlugin implements IProblemPlugin
         MathService $mathService,
         ConditionService $conditionService,
         ProblemGenerator $problemGenerator,
+        ProblemFinalFunctionality $problemFinalFunctionality,
         TemplateJsonDataFunctionality $templateJsonDataFunctionality,
         LatexParser $latexParser,
         ParameterParser $parameterParser,
@@ -118,6 +121,7 @@ abstract class ProblemPlugin implements IProblemPlugin
         $this->mathService = $mathService;
         $this->conditionService = $conditionService;
         $this->problemGenerator = $problemGenerator;
+        $this->problemFinalFunctionality = $problemFinalFunctionality;
         $this->templateJsonDataFunctionality = $templateJsonDataFunctionality;
         $this->latexParser = $latexParser;
         $this->parameterParser = $parameterParser;
@@ -199,14 +203,15 @@ abstract class ProblemPlugin implements IProblemPlugin
      * @param ProblemTemplate $problemTemplate
      * @param array|null $usedMatchesInx
      * @return ProblemFinal
+     * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \App\TeacherModule\Exceptions\GeneratorException
      * @throws \Nette\Utils\JsonException
      */
     public function createFinal(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ProblemFinal
     {
         $finalData = $this->constructFinalData($problemTemplate, $usedMatchesInx);
-        $conditions = $problemTemplate->getConditions()->getValues();
-        $problemFinal = $this->functionality->create($finalData, false, $conditions);
+//        $conditions = $problemTemplate->getConditions()->getValues();
+        $problemFinal = $this->problemFinalFunctionality->create($finalData, false);
         return $this->postprocessFinal($problemFinal);
     }
 }

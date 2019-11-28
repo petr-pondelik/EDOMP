@@ -6,19 +6,18 @@
  * Time: 13:15
  */
 
-namespace App\CoreModule\Model\Persistent\Repository\ProblemFinal;
+namespace App\CoreModule\Model\Persistent\Repository;
 
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Model\Persistent\Entity\Problem;
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
-use App\CoreModule\Model\Persistent\Repository\SecuredRepository;
+use App\CoreModule\Model\Persistent\Entity\ProblemFinal;
 use App\CoreModule\Model\Persistent\Traits\FilterTrait;
 use Doctrine\ORM\Mapping;
 use Doctrine\ORM\QueryBuilder;
 
 /**
  * Class ProblemFinalRepository
- * @package App\CoreModule\Model\Persistent\Repository\ProblemFinal
+ * @package App\CoreModule\Model\Persistent\Repository
  */
 class ProblemFinalRepository extends SecuredRepository
 {

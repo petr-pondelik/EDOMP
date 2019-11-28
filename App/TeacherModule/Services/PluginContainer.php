@@ -11,7 +11,7 @@ namespace App\TeacherModule\Services;
 use App\CoreModule\Helpers\ConstHelper;
 use App\TeacherModule\Services\LatexParser;
 use App\CoreModule\Helpers\StringsHelper;
-use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinalRepository;
 use App\TeacherModule\Plugins\ArithmeticSequencePlugin;
 use App\TeacherModule\Plugins\GeometricSequencePlugin;
 use App\TeacherModule\Plugins\LinearEquationPlugin;

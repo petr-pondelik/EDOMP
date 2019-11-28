@@ -141,12 +141,10 @@ INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, 
 INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (2, 3, null, 2, 0, null, '2019-11-26 22:27:07', 0);
 
 # Insert ProblemFinal
-INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (2, 1, 1, 1, 2, '$$ x + 3 = 4 $$', '', '', null, 0, 1, 1, '2019-11-26 22:27:06', 1, 'linearequationfinal');
-INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (3, 1, 1, 1, 2, '$$ x + 3 = 4 $$', '', '', null, 0, 1, 1, '2019-11-26 22:27:07', 1, 'linearequationfinal');
+INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (2, 1, 1, 1, 2, '$$ x + 3 = 4 $$', '', '', null, 0, 1, 1, '2019-11-26 22:27:06', 1, 'problemfinal');
+INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (3, 1, 1, 1, 2, '$$ x + 3 = 4 $$', '', '', null, 0, 1, 1, '2019-11-26 22:27:07', 1, 'problemfinal');
 INSERT INTO edomp.problem_final (id, problem_template_id, matches_index, result) VALUES (2, 1, 8, null);
 INSERT INTO edomp.problem_final (id, problem_template_id, matches_index, result) VALUES (3, 1, 8, null);
-INSERT INTO edomp.linear_equation_final (id, variable) VALUES (2, 'x');
-INSERT INTO edomp.linear_equation_final (id, variable) VALUES (3, 'x');
 
 # Insert Groups relations to the Tests
 INSERT INTO edomp.test_group_rel (test_id, group_id) VALUES (1, 4);

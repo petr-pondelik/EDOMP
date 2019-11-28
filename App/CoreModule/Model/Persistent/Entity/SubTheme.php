@@ -44,7 +44,7 @@ class SubTheme extends BaseEntity
     protected $theme;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal", mappedBy="subTheme", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal", mappedBy="subTheme", cascade={"all"})
      *
      * @var ArrayCollection|PersistentCollection
      */

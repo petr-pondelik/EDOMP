@@ -11,7 +11,7 @@ namespace App\TeacherModule\Components\DataGrids;
 use App\CoreModule\Components\DataGrids\BaseGrid;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
-use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinalRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use Ublaboo\DataGrid\DataGrid;
@@ -57,7 +57,8 @@ class ProblemGridFactory extends BaseGrid
      */
     public function __construct(
         DifficultyRepository $difficultyRepository,
-        ProblemFinalRepository $problemRepository, ProblemTypeRepository $problemTypeRepository,
+        ProblemFinalRepository $problemRepository,
+        ProblemTypeRepository $problemTypeRepository,
         SubThemeRepository $subThemeRepository,
         ConstHelper $constHelper
     )
@@ -87,6 +88,8 @@ class ProblemGridFactory extends BaseGrid
         $grid->setPrimaryKey('id');
 
         $grid->setDataSource($this->problemRepository->getSecuredQueryBuilder($container->user));
+
+        bdump($this->problemRepository->findAll());
 
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()

@@ -19,7 +19,7 @@ use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\GroupRepository;
 use App\CoreModule\Model\Persistent\Repository\LogoRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
-use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinalRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
@@ -526,7 +526,6 @@ class TestFormControl extends EntityFormControl
     {
         bdump('HANDLE FORM VALIDATE');
         $values = $form->getValues();
-        bdump($values);
         $validateFields['logo'] = new ValidatorArgument($values->logo, 'notEmpty');
         $validateFields['groups'] = new ValidatorArgument($values->groups, 'arrayNotEmpty');
         $validateFields['schoolYear'] = new ValidatorArgument($values->schoolYear, 'schoolYear');
@@ -563,8 +562,6 @@ class TestFormControl extends EntityFormControl
      */
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
-        bdump($values);
-        bdump($this->filterSession->getFilters());
         $values->userId = $this->presenter->user->id;
         try {
             $this->testGenerator->generateTest($values);
@@ -623,9 +620,6 @@ class TestFormControl extends EntityFormControl
     public function handleFilterChange(int $key, array $filters): void
     {
         bdump('HANDLE FILTER CHANGE');
-        bdump($filters);
-
-        bdump($key);
 
         if (!isset($filters[$key])) {
             $filters[$key] = [];
@@ -652,8 +646,6 @@ class TestFormControl extends EntityFormControl
         }
 
         $filterRes = $this->problemRepository->findFiltered($problemFilters['filters']);
-        bdump('FILTER RES');
-        bdump($filterRes);
 
         $resFilters[$key] = $problemFilters;
 
@@ -661,9 +653,6 @@ class TestFormControl extends EntityFormControl
 
         $valuesToSetArr = [];
         $valuesToSetObj = [];
-
-        bdump('PROBLEMS SELECTED');
-        bdump($problemFilters['selected']);
 
         if (isset($problemFilters['selected']) && $problemFilters['selected']) {
             foreach ($problemFilters['selected'] as $selected) {
@@ -675,8 +664,6 @@ class TestFormControl extends EntityFormControl
             }
         }
 
-        bdump('VALUES TO SET ARR');
-        bdump($valuesToSetArr);
         $resFilters[$key]['selected'] = $valuesToSetArr;
         $this['form']['problem' . $key]->setValue(Json::encode($valuesToSetArr));
 
@@ -684,14 +671,10 @@ class TestFormControl extends EntityFormControl
         $paginator->itemCount = count($filterRes);
         $paginator->itemsPerPage = 10;
 
-        bdump('FILTER RES');
-        bdump($filterRes);
-
         $filterRes = array_slice($filterRes, $paginator->offset, $paginator->itemsPerPage);
 
         $this['problemStack' . $key]->setProblems($filterRes, $valuesToSetObj);
 
-        bdump($resFilters);
         $this->filterSession->setFilters($resFilters);
 
         $this->presenter->payload->selected = [
@@ -699,11 +682,8 @@ class TestFormControl extends EntityFormControl
             'values' => $valuesToSetArr
         ];
 
-        bdump('REDRAW');
-
         $this['problemStack' . $key]->redrawControl();
         $this['paginator' . $key]->redrawControl();
-
     }
 
     public function setDefaults(): void
@@ -743,8 +723,6 @@ class TestFormControl extends EntityFormControl
     public function render(): void
     {
         bdump('TEST ENTITY FORM RENDER');
-        bdump($this->getComponents());
-        bdump($this->filterSession->getFilters());
         if ($this->isCreate()) {
             $this->template->maxProblems = $this->maxProblems;
             $this->template->problemConditionTypes = $this->problemConditionTypes;

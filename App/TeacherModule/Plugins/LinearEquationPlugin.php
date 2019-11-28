@@ -8,21 +8,11 @@
 
 namespace App\TeacherModule\Plugins;
 
+use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\LinearEquationTemplate;
 use App\TeacherModule\Exceptions\ProblemTemplateException;
-use App\CoreModule\Helpers\ConstHelper;
-use App\TeacherModule\Services\LatexParser;
-use App\CoreModule\Helpers\RegularExpressions;
-use App\CoreModule\Helpers\StringsHelper;
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
-use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\LinearEquationFinalFunctionality;
-use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
-use App\TeacherModule\Services\ConditionService;
-use App\TeacherModule\Services\MathService;
+use App\CoreModule\Model\Persistent\Entity\ProblemFinal;
 use App\TeacherModule\Model\NonPersistent\Entity\LinearEquationTemplateNP;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
-use App\TeacherModule\Services\NewtonApiClient;
-use App\TeacherModule\Services\ParameterParser;
-use App\TeacherModule\Services\ProblemGenerator;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
@@ -34,39 +24,6 @@ use Nette\Utils\Strings;
 final class LinearEquationPlugin extends EquationPlugin
 {
     /**
-     * LinearEquationPlugin constructor.
-     * @param NewtonApiClient $newtonApiClient
-     * @param MathService $mathService
-     * @param ConditionService $conditionService
-     * @param ProblemGenerator $problemGenerator
-     * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
-     * @param LatexParser $latexParser
-     * @param ParameterParser $parameterParser
-     * @param StringsHelper $stringsHelper
-     * @param ConstHelper $constHelper
-     * @param RegularExpressions $regularExpressions
-     * @param LinearEquationFinalFunctionality $linearEquationFinalFunctionality
-     */
-    public function __construct
-    (
-        NewtonApiClient $newtonApiClient,
-        MathService $mathService,
-        ConditionService $conditionService,
-        ProblemGenerator $problemGenerator,
-        TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexParser $latexParser,
-        ParameterParser $parameterParser,
-        StringsHelper $stringsHelper,
-        ConstHelper $constHelper,
-        RegularExpressions $regularExpressions,
-        LinearEquationFinalFunctionality $linearEquationFinalFunctionality
-    )
-    {
-        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexParser, $parameterParser, $stringsHelper, $constHelper, $regularExpressions);
-        $this->functionality = $linearEquationFinalFunctionality;
-    }
-
-    /**
      * @param ProblemTemplateNP $data
      * @return bool
      * @throws ProblemTemplateException
@@ -76,6 +33,10 @@ final class LinearEquationPlugin extends EquationPlugin
     public function validateType(ProblemTemplateNP $data): bool
     {
         bdump('VALIDATE LINEAR EQUATION');
+
+        /**
+         * @var LinearEquationTemplateNP $data
+         */
 
         // Remove all the spaces
         $standardized = $this->stringsHelper::removeWhiteSpaces($data->getStandardized());
@@ -129,17 +90,23 @@ final class LinearEquationPlugin extends EquationPlugin
      * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
      * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
      */
     public function evaluate(ProblemFinal $problem): ArrayHash
     {
         bdump('LINEAR EQUATION EVALUATE');
 
+        /**
+         * @var LinearEquationTemplate $template
+         */
+        $template = $problem->getProblemTemplate();
+
         $standardized = $this->standardizeFinal($problem->getBody());
-        $variable = $problem->getVariable();
+        $variable = $template->getVariable();
         $variableExp = $this->stringsHelper::getLinearVariableExpresion($standardized, $variable);
 
         $res = ArrayHash::from([ $variable => $this->mathService->evaluateExpression($variableExp) ]);
-        $this->functionality->storeResult($problem->getId(), $res);
+        $this->problemFinalFunctionality->storeResult($problem->getId(), $res);
 
         return $res;
     }

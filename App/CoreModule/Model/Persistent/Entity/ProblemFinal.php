@@ -6,17 +6,15 @@
  * Time: 12:29
  */
 
-namespace App\CoreModule\Model\Persistent\Entity\ProblemFinal;
+namespace App\CoreModule\Model\Persistent\Entity;
 
-use App\CoreModule\Model\Persistent\Entity\Problem;
-use App\CoreModule\Model\Persistent\Entity\ProblemFinalTestVariantAssociation;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository")
+ * @ORM\Entity(repositoryClass="App\CoreModule\Model\Persistent\Repository\ProblemFinalRepository")
  *
  * Class ProblemFinal
  * @package App\CoreModule\Model\Persistent\Entity
@@ -132,5 +130,4 @@ class ProblemFinal extends Problem
     {
         $this->matchesIndex = $matchesIndex;
     }
-
 }

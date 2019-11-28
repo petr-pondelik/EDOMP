@@ -21,6 +21,7 @@ use App\CoreModule\Helpers\FlashesTranslator;
 use App\CoreModule\Helpers\FormatterHelper;
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
+use App\CoreModule\Model\Persistent\Entity\ProblemFinal;
 use App\CoreModule\Model\Persistent\Entity\Theme;
 use App\CoreModule\Model\Persistent\Entity\Difficulty;
 use App\CoreModule\Model\Persistent\Entity\Filter;
@@ -29,11 +30,6 @@ use App\CoreModule\Model\Persistent\Entity\Logo;
 use App\CoreModule\Model\Persistent\Entity\Problem;
 use App\CoreModule\Model\Persistent\Entity\ProblemCondition;
 use App\CoreModule\Model\Persistent\Entity\ProblemConditionType;
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ArithmeticSequenceFinal;
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\GeometricSequenceFinal;
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\LinearEquationFinal;
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\QuadraticEquationFinal;
 use App\CoreModule\Model\Persistent\Entity\ProblemFinalTestVariantAssociation;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ArithmeticSequenceTemplate;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\GeometricSequenceTemplate;
@@ -48,15 +44,11 @@ use App\CoreModule\Model\Persistent\Entity\TemplateJsonData;
 use App\CoreModule\Model\Persistent\Entity\Test;
 use App\CoreModule\Model\Persistent\Entity\TestVariant;
 use App\CoreModule\Model\Persistent\Entity\User;
+use App\CoreModule\Model\Persistent\Functionality\ProblemFinalFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\ThemeFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\FilterFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\GroupFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\LogoFunctionality;
-use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\ArithmeticSequenceFinalFunctionality;
-use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\GeometricSequenceFinalFunctionality;
-use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\LinearEquationFinalFunctionality;
-use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
-use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\QuadraticEquationFinalFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\ProblemFinalTestVariantAssociationFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\ProblemFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\ProblemTemplate\ArithmeticSequenceTemplateFunctionality;
@@ -72,6 +64,7 @@ use App\CoreModule\Model\Persistent\Functionality\TestVariantFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\UserFunctionality;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Manager\HomepageStatisticsManager;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinalRepository;
 use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\FilterRepository;
@@ -79,11 +72,6 @@ use App\CoreModule\Model\Persistent\Repository\GroupRepository;
 use App\CoreModule\Model\Persistent\Repository\LogoRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
-use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ArithmeticSequenceFinalRepository;
-use App\CoreModule\Model\Persistent\Repository\ProblemFinal\GeometricSequenceFinalRepository;
-use App\CoreModule\Model\Persistent\Repository\ProblemFinal\LinearEquationFinalRepository;
-use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
-use App\CoreModule\Model\Persistent\Repository\ProblemFinal\QuadraticEquationFinalRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ArithmeticSequenceTemplateRepository;
@@ -99,7 +87,6 @@ use App\CoreModule\Model\Persistent\Repository\TemplateJsonDataRepository;
 use App\CoreModule\Model\Persistent\Repository\TestRepository;
 use App\CoreModule\Model\Persistent\Repository\TestVariantRepository;
 use App\CoreModule\Model\Persistent\Repository\UserRepository;
-use App\CoreModule\Model\Persistent\Repository\ValidationFunctionRepository;
 use App\CoreModule\Services\Authenticator;
 use App\CoreModule\Services\Authorizator;
 use App\CoreModule\Services\FileService;
@@ -239,22 +226,6 @@ class CoreModuleExtension extends ModuleExtension
             ->setType(ProblemFinalRepository::class)
             ->setTags([ 'doctrine.repositoryEntity' => ProblemFinal::class ]);
 
-        $builder->addDefinition($this->prefix('linearEquationFinalRepository'))
-            ->setType(LinearEquationFinalRepository::class)
-            ->setTags([ 'doctrine.repositoryEntity' => LinearEquationFinal::class ]);
-
-        $builder->addDefinition($this->prefix('quadraticEquationFinalRepository'))
-            ->setType(QuadraticEquationFinalRepository::class)
-            ->setTags([ 'doctrine.repositoryEntity' => QuadraticEquationFinal::class ]);
-
-        $builder->addDefinition($this->prefix('arithmeticSequenceFinalRepository'))
-            ->setType(ArithmeticSequenceFinalRepository::class)
-            ->setTags([ 'doctrine.repositoryEntity' => ArithmeticSequenceFinal::class ]);
-
-        $builder->addDefinition($this->prefix('geometricSequenceFinalRepository'))
-            ->setType(GeometricSequenceFinalRepository::class)
-            ->setTags([ 'doctrine.repositoryEntity' => GeometricSequenceFinal::class ]);
-
         $builder->addDefinition($this->prefix('problemTemplateRepository'))
             ->setType(ProblemTemplateRepository::class)
             ->setTags([ 'doctrine.repositoryEntity' => ProblemTemplate::class ]);
@@ -339,18 +310,6 @@ class CoreModuleExtension extends ModuleExtension
 
         $builder->addDefinition($this->prefix('problemFinalFunctionality'))
             ->setType(ProblemFinalFunctionality::class);
-
-        $builder->addDefinition($this->prefix('linearEquationFinalFunctionality'))
-            ->setType(LinearEquationFinalFunctionality::class);
-
-        $builder->addDefinition($this->prefix('quadraticEquationFinalFunctionality'))
-            ->setType(QuadraticEquationFinalFunctionality::class);
-
-        $builder->addDefinition($this->prefix('arithmeticSequenceFinalFunctionality'))
-            ->setType(ArithmeticSequenceFinalFunctionality::class);
-
-        $builder->addDefinition($this->prefix('geometricSequenceFinalFunctionality'))
-            ->setType(GeometricSequenceFinalFunctionality::class);
 
         $builder->addDefinition($this->prefix('themeFunctionality'))
             ->setType(ThemeFunctionality::class);

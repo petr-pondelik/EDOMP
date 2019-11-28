@@ -8,7 +8,7 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
+use App\CoreModule\Model\Persistent\Entity\ProblemFinal;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -47,7 +47,7 @@ class ProblemFinalTestVariantAssociation extends BaseEntity
     protected $successRate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal", inversedBy="testVariantAssociations", cascade={"persist", "merge"})
+     * @ORM\ManyToOne(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal", inversedBy="testVariantAssociations", cascade={"persist", "merge"})
      * @Assert\NotBlank(
      *     message="ProblemFinal can't be blank."
      * )

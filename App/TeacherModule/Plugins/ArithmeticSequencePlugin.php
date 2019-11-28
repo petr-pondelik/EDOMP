@@ -9,19 +9,9 @@
 namespace App\TeacherModule\Plugins;
 
 use App\TeacherModule\Exceptions\ProblemTemplateException;
-use App\CoreModule\Helpers\ConstHelper;
-use App\TeacherModule\Services\LatexParser;
-use App\CoreModule\Helpers\RegularExpressions;
-use App\CoreModule\Helpers\StringsHelper;
+use App\TeacherModule\Model\NonPersistent\Entity\ArithmeticSequenceTemplateNP;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
-use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\ArithmeticSequenceFinalFunctionality;
-use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
-use App\TeacherModule\Services\ConditionService;
-use App\TeacherModule\Services\ParameterParser;
-use App\TeacherModule\Services\ProblemGenerator;
-use App\TeacherModule\Services\MathService;
-use App\TeacherModule\Services\NewtonApiClient;
+use App\CoreModule\Model\Persistent\Entity\ProblemFinal;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 
@@ -32,39 +22,6 @@ use Nette\Utils\Json;
 final class ArithmeticSequencePlugin extends SequencePlugin
 {
     /**
-     * ArithmeticSequencePlugin constructor.
-     * @param NewtonApiClient $newtonApiClient
-     * @param MathService $mathService
-     * @param ConditionService $conditionService
-     * @param ProblemGenerator $problemGenerator
-     * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
-     * @param LatexParser $latexParser
-     * @param ParameterParser $parameterParser
-     * @param StringsHelper $stringsHelper
-     * @param ConstHelper $constHelper
-     * @param RegularExpressions $regularExpressions
-     * @param ArithmeticSequenceFinalFunctionality $arithmeticSequenceFinalFunctionality
-     */
-    public function __construct
-    (
-        NewtonApiClient $newtonApiClient,
-        MathService $mathService,
-        ConditionService $conditionService,
-        ProblemGenerator $problemGenerator,
-        TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexParser $latexParser,
-        ParameterParser $parameterParser,
-        StringsHelper $stringsHelper,
-        ConstHelper $constHelper,
-        RegularExpressions $regularExpressions,
-        ArithmeticSequenceFinalFunctionality $arithmeticSequenceFinalFunctionality
-    )
-    {
-        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexParser, $parameterParser, $stringsHelper, $constHelper, $regularExpressions);
-        $this->functionality = $arithmeticSequenceFinalFunctionality;
-    }
-
-    /**
      * @param ProblemTemplateNP $data
      * @return bool
      * @throws ProblemTemplateException
@@ -73,6 +30,10 @@ final class ArithmeticSequencePlugin extends SequencePlugin
      */
     public function validateType(ProblemTemplateNP $data): bool
     {
+        /**
+         * @var ArithmeticSequenceTemplateNP $data
+         */
+
         if(!parent::validateType($data)){
             throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat aritmetickou posloupnost.');
         }
@@ -114,13 +75,14 @@ final class ArithmeticSequencePlugin extends SequencePlugin
      * @param ProblemFinal $problem
      * @return ArrayHash
      * @throws \App\TeacherModule\Exceptions\EquationException
+     * @throws \Exception
      */
     public function evaluate(ProblemFinal $problem): ArrayHash
     {
         $data = parent::evaluate($problem);
         $difference = (string) round($data->res[$data->seqName . '_{' . '2}'] - $data->res[$data->seqName . '_{' . '1}'], 3);
         $data->res['Diference'] = $difference;
-        $this->functionality->storeResult($problem->getId(), $data->res);
+        $this->problemFinalFunctionality->storeResult($problem->getId(), $data->res);
         return $data->res;
     }
 }

@@ -8,7 +8,7 @@
 
 namespace App\TeacherModule\Interfaces;
 
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
+use App\CoreModule\Model\Persistent\Entity\ProblemFinal;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
 use Nette\Utils\ArrayHash;

@@ -9,7 +9,7 @@
 namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
+use App\CoreModule\Model\Persistent\Entity\ProblemFinal;
 use App\CoreModule\Model\Persistent\Entity\ProblemFinalTestVariantAssociation;
 use App\CoreModule\Model\Persistent\Entity\TestVariant;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;

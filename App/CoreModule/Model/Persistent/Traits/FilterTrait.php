@@ -41,10 +41,9 @@ trait FilterTrait
 
     /**
      * @param array $filters
-     * @param array|null $excludeId
      * @return array
      */
-    public function findFiltered(array $filters, array $excludeId = null): array
+    public function findFiltered(array $filters): array
     {
         bdump('FIND FILTERED');
         $filtersProcessed = self::processFilters($filters);

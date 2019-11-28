@@ -18,12 +18,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({
- *     "problemfinal" = "App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal",
+ *     "problemfinal" = "App\CoreModule\Model\Persistent\Entity\ProblemFinal",
  *     "problemTemplate" = "App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate",
- *     "linearequationfinal" = "App\CoreModule\Model\Persistent\Entity\ProblemFinal\LinearEquationFinal",
- *     "quadraticequationfinal" = "App\CoreModule\Model\Persistent\Entity\ProblemFinal\QuadraticEquationFinal",
- *     "arithmeticsequencefinal" = "App\CoreModule\Model\Persistent\Entity\ProblemFinal\ArithmeticSequenceFinal",
- *     "geometricsequencefinal" = "App\CoreModule\Model\Persistent\Entity\ProblemFinal\GeometricSequenceFinal",
  *     "lineareqtemplate" = "App\CoreModule\Model\Persistent\Entity\ProblemTemplate\LinearEquationTemplate",
  *     "quadraticeqtemplate" = "App\CoreModule\Model\Persistent\Entity\ProblemTemplate\QuadraticEquationTemplate",
  *     "arithmeticseqtemplate" = "App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ArithmeticSequenceTemplate",

@@ -104,18 +104,4 @@ abstract class EquationPlugin extends ProblemPlugin
 
         return -1;
     }
-
-    /**
-     * @param ProblemTemplate $problemTemplate
-     * @param array|null $usedMatchesInx
-     * @return ArrayHash
-     * @throws \App\TeacherModule\Exceptions\GeneratorException
-     * @throws \Nette\Utils\JsonException
-     */
-    public function constructFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash
-    {
-        $finalData = parent::constructFinalData($problemTemplate, $usedMatchesInx);
-        $finalData->variable = $problemTemplate->getVariable();
-        return $finalData;
-    }
 }

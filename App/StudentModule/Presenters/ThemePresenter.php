@@ -15,7 +15,7 @@ use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
 use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
-use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ProblemFinalRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinalRepository;
 use App\CoreModule\Services\Authorizator;
 use IPub\VisualPaginator\Components as VisualPaginator;
 use Nette\Utils\ArrayHash;

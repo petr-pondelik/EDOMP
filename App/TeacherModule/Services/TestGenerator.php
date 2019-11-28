@@ -16,7 +16,7 @@ use App\CoreModule\Services\FileService;
 use App\CoreModule\Model\Persistent\Entity\Test;
 use App\CoreModule\Model\Persistent\Entity\TestVariant;
 use App\CoreModule\Model\Persistent\Functionality\FilterFunctionality;
-use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\ProblemFinalFunctionality;
+use App\CoreModule\Model\Persistent\Functionality\ProblemFinalFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\TestFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\TestVariantFunctionality;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;

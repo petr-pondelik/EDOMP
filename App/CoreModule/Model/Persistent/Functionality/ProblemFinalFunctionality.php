@@ -2,20 +2,19 @@
 /**
  * Created by PhpStorm.
  * User: wiedzmin
- * Date: 11.9.19
- * Time: 20:58
+ * Date: 27.4.19
+ * Time: 16:52
  */
 
-namespace App\CoreModule\Model\Persistent\Functionality\ProblemFinal;
+namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Helpers\FormatterHelper;
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ArithmeticSequenceFinal;
-use App\CoreModule\Model\Persistent\Functionality\BaseFunctionality;
+use App\CoreModule\Model\Persistent\Entity\ProblemFinal;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
-use App\CoreModule\Model\Persistent\Repository\ProblemFinal\ArithmeticSequenceFinalRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemFinalRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
@@ -24,17 +23,17 @@ use App\CoreModule\Model\Persistent\Traits\ProblemFinalFunctionalityTrait;
 use Doctrine\ORM\EntityNotFoundException;
 
 /**
- * Class ArithmeticSequenceFinalFunctionality
- * @package App\CoreModule\Model\Persistent\Functionality\ProblemFinal
+ * Class ProblemFinalFunctionality
+ * @package App\CoreModule\Model\Persistent\Functionality
  */
-class ArithmeticSequenceFinalFunctionality extends BaseFunctionality
+class ProblemFinalFunctionality extends BaseFunctionality
 {
     use ProblemFinalFunctionalityTrait;
 
     /**
-     * ArithmeticSequenceFinalFunctionality constructor.
+     * ProblemFinalFunctionality constructor.
      * @param ConstraintEntityManager $entityManager
-     * @param ArithmeticSequenceFinalRepository $repository
+     * @param ProblemFinalRepository $repository
      * @param ProblemRepository $problemRepository
      * @param UserRepository $userRepository
      * @param ProblemTypeRepository $problemTypeRepository
@@ -46,7 +45,7 @@ class ArithmeticSequenceFinalFunctionality extends BaseFunctionality
     public function __construct
     (
         ConstraintEntityManager $entityManager,
-        ArithmeticSequenceFinalRepository $repository,
+        ProblemFinalRepository $repository,
         ProblemRepository $problemRepository,
         UserRepository $userRepository,
         ProblemTypeRepository $problemTypeRepository,
@@ -64,64 +63,39 @@ class ArithmeticSequenceFinalFunctionality extends BaseFunctionality
     /**
      * @param iterable $data
      * @param bool $flush
-     * @param array|null $conditions
      * @return BaseEntity|null
      * @throws \App\CoreModule\Exceptions\EntityException
      */
-    public function create(iterable $data, bool $flush = true, array $conditions = null): ?BaseEntity
+    public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
-        $entity = new ArithmeticSequenceFinal();
-        $entity = $this->setBasics($entity, $data);
-        $entity->setIndexVariable($data->indexVariable);
-        $entity->setFirstN($data->firstN);
-
-        if($conditions === null){
-            $entity = $this->attachConditions($entity, $data);
-        }
-        else{
-            $entity->setConditions($conditions);
-        }
-
-        $this->em->persist($entity);
-        if($flush){
+        $problemFinal = new ProblemFinal();
+        $problemFinal = $this->setBasics($problemFinal, $data);
+        $this->em->persist($problemFinal);
+        if ($flush) {
             $this->em->flush();
         }
-
-        return $entity;
+        return $problemFinal;
     }
 
     /**
      * @param int $id
      * @param iterable $data
      * @param bool $flush
-     * @param array|null $conditions
      * @return BaseEntity|null
      * @throws EntityNotFoundException
      * @throws \App\CoreModule\Exceptions\EntityException
      */
-    public function update(int $id, iterable $data, bool $flush = true, array $conditions = null): ?BaseEntity
+    public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
-        $entity = $this->repository->find($id);
-        if(!$entity){
+        $problemFinal = $this->repository->find($id);
+        if(!$problemFinal){
             throw new EntityNotFoundException('Entity for update not found.');
         }
-
-        $this->setBasics($entity, $data);
-        $entity->setIndexVariable($data->indexVariable);
-        $entity->setFirstN($data->firstN);
-
-        if($conditions === null){
-            $entity = $this->attachConditions($entity, $data);
-        }
-        else{
-            $entity->setConditions($conditions);
-        }
-
-        $this->em->persist($entity);
-        if($flush){
+        $this->setBasics($problemFinal, $data);
+        $this->em->persist($problemFinal);
+        if ($flush) {
             $this->em->flush();
         }
-
-        return $entity;
+        return $problemFinal;
     }
 }

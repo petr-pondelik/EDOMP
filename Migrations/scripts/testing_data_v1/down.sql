@@ -23,7 +23,6 @@ DELETE FROM edomp.test;
 DELETE FROM edomp.test_variant;
 DELETE FROM edomp.problem_final_test_variant_association;
 DELETE FROM edomp.problem_final;
-DELETE FROM edomp.linear_equation_final;
 DELETE FROM edomp.test_group_rel;
 DELETE FROM edomp.filter;
 

@@ -9,19 +9,9 @@
 namespace App\TeacherModule\Plugins;
 
 use App\TeacherModule\Exceptions\ProblemTemplateException;
-use App\CoreModule\Helpers\ConstHelper;
-use App\TeacherModule\Services\LatexParser;
-use App\CoreModule\Helpers\RegularExpressions;
-use App\CoreModule\Helpers\StringsHelper;
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
-use App\CoreModule\Model\Persistent\Functionality\ProblemFinal\GeometricSequenceFinalFunctionality;
-use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
-use App\TeacherModule\Services\ConditionService;
-use App\TeacherModule\Services\MathService;
+use App\CoreModule\Model\Persistent\Entity\ProblemFinal;
+use App\TeacherModule\Model\NonPersistent\Entity\GeometricSequenceTemplateNP;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
-use App\TeacherModule\Services\NewtonApiClient;
-use App\TeacherModule\Services\ParameterParser;
-use App\TeacherModule\Services\ProblemGenerator;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 
@@ -32,39 +22,6 @@ use Nette\Utils\Json;
 final class GeometricSequencePlugin extends SequencePlugin
 {
     /**
-     * GeometricSequencePlugin constructor.
-     * @param NewtonApiClient $newtonApiClient
-     * @param MathService $mathService
-     * @param ConditionService $conditionService
-     * @param ProblemGenerator $problemGenerator
-     * @param TemplateJsonDataFunctionality $templateJsonDataFunctionality
-     * @param LatexParser $latexParser
-     * @param ParameterParser $parameterParser
-     * @param StringsHelper $stringsHelper
-     * @param ConstHelper $constHelper
-     * @param RegularExpressions $regularExpressions
-     * @param GeometricSequenceFinalFunctionality $geometricSequenceFinalFunctionality
-     */
-    public function __construct
-    (
-        NewtonApiClient $newtonApiClient,
-        MathService $mathService,
-        ConditionService $conditionService,
-        ProblemGenerator $problemGenerator,
-        TemplateJsonDataFunctionality $templateJsonDataFunctionality,
-        LatexParser $latexParser,
-        ParameterParser $parameterParser,
-        StringsHelper $stringsHelper,
-        ConstHelper $constHelper,
-        RegularExpressions $regularExpressions,
-        GeometricSequenceFinalFunctionality $geometricSequenceFinalFunctionality
-    )
-    {
-        parent::__construct($newtonApiClient, $mathService, $conditionService, $problemGenerator, $templateJsonDataFunctionality, $latexParser, $parameterParser, $stringsHelper, $constHelper, $regularExpressions);
-        $this->functionality = $geometricSequenceFinalFunctionality;
-    }
-
-    /**
      * @param ProblemTemplateNP $data
      * @return bool
      * @throws ProblemTemplateException
@@ -73,6 +30,10 @@ final class GeometricSequencePlugin extends SequencePlugin
      */
     public function validateType(ProblemTemplateNP $data): bool
     {
+        /**
+         * @var GeometricSequenceTemplateNP $data
+         */
+
         if(!parent::validateType($data)){
             return false;
         }
@@ -114,13 +75,14 @@ final class GeometricSequencePlugin extends SequencePlugin
      * @param ProblemFinal $problem
      * @return ArrayHash
      * @throws \App\TeacherModule\Exceptions\EquationException
+     * @throws \Exception
      */
     public function evaluate(ProblemFinal $problem): ArrayHash
     {
         $data = parent::evaluate($problem);
         $quotient = (string) round($data->res[$data->seqName . '_{' . '2}'] / $data->res[$data->seqName . '_{' . '1}'], 1);
         $data->res['Kvocient'] = $quotient;
-        $this->functionality->storeResult($problem->getId(), $data->res);
+        $this->problemFinalFunctionality->storeResult($problem->getId(), $data->res);
         return $data->res;
     }
 }

@@ -8,10 +8,12 @@
 
 namespace App\TeacherModule\Plugins;
 
+use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ArithmeticSequenceTemplate;
+use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\GeometricSequenceTemplate;
 use App\TeacherModule\Exceptions\NewtonApiSyntaxException;
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
-use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
+use App\CoreModule\Model\Persistent\Entity\ProblemFinal;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
+use App\TeacherModule\Model\NonPersistent\Entity\SequenceTemplateNP;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 
@@ -67,7 +69,10 @@ abstract class SequencePlugin extends ProblemPlugin
      */
     public function validateType(ProblemTemplateNP $problemTemplate): bool
     {
-        bdump('VALIDATE SEQUENCE');
+        bdump('VALIDATE SEQUENCE TYPE');
+        /**
+         * @var SequenceTemplateNP $problemTemplate
+         */
         if(!Strings::match($problemTemplate->getExpression(), '~' . $this->regularExpressions::getSequenceRE($problemTemplate->getIndexVariable()) . '~')){
             return false;
         }
@@ -81,14 +86,18 @@ abstract class SequencePlugin extends ProblemPlugin
      */
     public function evaluate(ProblemFinal $problem): ArrayHash
     {
+        /**
+         * @var ArithmeticSequenceTemplate|GeometricSequenceTemplate $template
+         */
+        $template = $problem->getProblemTemplate();
         $parsed = $this->latexParser::parse($problem->getBody());
-        $variable = $problem->getVariable();
+        $variable = $template->getIndexVariable();
 
         $sides = $this->stringsHelper::getEquationSides($parsed, false);
         $seqName = $this->stringsHelper::extractSequenceName($sides->left);
 
         //$problem = $this->problemFinalRepository->find($problem->getId());
-        $firstN = $problem->getFirstN();
+        $firstN = $template->getFirstN();
         $res = [];
 
         $sides->right = $this->stringsHelper::fillMultipliers($sides->right, $variable);
@@ -118,6 +127,9 @@ abstract class SequencePlugin extends ProblemPlugin
      */
     public function validateBody(ProblemTemplateNP $problemTemplate): int
     {
+        /**
+         * @var SequenceTemplateNP $problemTemplate
+         */
         if(!$this->latexParser::latexWrapped($problemTemplate->getBody())){
             return 1;
         }
@@ -139,20 +151,5 @@ abstract class SequencePlugin extends ProblemPlugin
         }
 
         return -1;
-    }
-
-    /**
-     * @param ProblemTemplate $problemTemplate
-     * @param array|null $usedMatchesInx
-     * @return ArrayHash
-     * @throws \App\TeacherModule\Exceptions\GeneratorException
-     * @throws \Nette\Utils\JsonException
-     */
-    public function constructFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash
-    {
-        $finalData = parent::constructFinalData($problemTemplate, $usedMatchesInx);
-        $finalData->indexVariable = $problemTemplate->getIndexVariable();
-        $finalData->firstN = $problemTemplate->getFirstN();
-        return $finalData;
     }
 }
