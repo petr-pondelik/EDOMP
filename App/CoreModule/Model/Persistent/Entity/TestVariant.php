@@ -45,7 +45,7 @@ class TestVariant extends BaseEntity
      *     message="ProblemFinalAssociations can't be blank."
      * )
      * @Assert\Count(
-     *     min = 1,
+     *     min="1",
      *     minMessage="TestVariant must contain at least one ProblemFinal."
      * )
      *

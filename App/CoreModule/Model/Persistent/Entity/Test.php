@@ -124,16 +124,22 @@ class Test extends BaseEntity
     /**
      * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\Group", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="test_group_rel")
+     *
      * @Assert\NotBlank(
      *     message="Groups can't be blank."
      * )
+     * @Assert\Count(
+     *     min="1",
+     *     minMessage="Test must be target at least for one group."
+     * )
      *
-     * @var Group[]
+     * @var Collection
      */
     protected $groups;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\CoreModule\Model\Persistent\Entity\Logo", cascade={"persist", "merge"})
+     *
      * @Assert\NotBlank(
      *     message="Logo can't be blank."
      * )
@@ -144,11 +150,16 @@ class Test extends BaseEntity
 
     /**
      * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\TestVariant", mappedBy="test", cascade={"all"})
+     *
      * @Assert\NotBlank(
      *     message="TestVariants can't be blank."
      * )
+     * @Assert\Count(
+     *     min="1",
+     *     minMessage="Test must contain at least one variant."
+     * )
      *
-     * @var TestVariant[]
+     * @var Collection
      */
     protected $testVariants;
 
@@ -299,7 +310,7 @@ class Test extends BaseEntity
     }
 
     /**
-     * @return TestVariant[]|ArrayCollection
+     * @return ArrayCollection|Collection
      */
     public function getTestVariants()
     {
@@ -307,9 +318,9 @@ class Test extends BaseEntity
     }
 
     /**
-     * @param TestVariant[] $testVariants
+     * @param Collection $testVariants
      */
-    public function setTestVariants(array $testVariants): void
+    public function setTestVariants(Collection $testVariants): void
     {
         $this->testVariants = $testVariants;
     }
