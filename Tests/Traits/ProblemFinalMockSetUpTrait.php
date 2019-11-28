@@ -8,7 +8,8 @@
 
 namespace App\Tests\Traits;
 
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal\ProblemFinal;
+
+use App\CoreModule\Model\Persistent\Entity\ProblemFinal;
 
 /**
  * Trait ProblemFinalSetUpTrait

@@ -17,7 +17,7 @@ use App\Tests\Traits\ProblemConditionTypeSetUpTrait;
  * Class ProblemConditionUnitTest
  * @package App\Tests\CoreModule\Model\Persistent\Entity
  */
-class ProblemConditionUnitTest extends PersistentEntityTestCase
+final class ProblemConditionUnitTest extends PersistentEntityTestCase
 {
     use ProblemConditionTypeSetUpTrait;
 

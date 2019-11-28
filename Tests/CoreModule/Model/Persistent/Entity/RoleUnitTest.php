@@ -16,7 +16,7 @@ use App\CoreModule\Model\Persistent\Entity\Role;
  * Class RoleUnitTest
  * @package App\Tests\CoreModule\Model\Persistent\Entity
  */
-class RoleUnitTest extends PersistentEntityTestCase
+final class RoleUnitTest extends PersistentEntityTestCase
 {
     /**
      * @var array

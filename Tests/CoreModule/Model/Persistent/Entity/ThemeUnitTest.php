@@ -21,7 +21,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Class CategoryTest
  * @package App\Tests\CoreModule\Model\Persistent\Entity
  */
-class ThemeUnitTest extends PersistentEntityTestCase
+final class ThemeUnitTest extends PersistentEntityTestCase
 {
     use GroupMockSetUpTrait;
     use UserMockSetUpTrait;

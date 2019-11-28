@@ -21,7 +21,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Class SubThemeUnitTest
  * @package App\Tests\CoreModule\Model\Persistent\Entity
  */
-class SubThemeUnitTest extends PersistentEntityTestCase
+final class SubThemeUnitTest extends PersistentEntityTestCase
 {
     use ProblemFinalMockSetUpTrait;
     use ThemeMockSetUpTrait;

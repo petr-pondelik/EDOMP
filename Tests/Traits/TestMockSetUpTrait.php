@@ -21,7 +21,7 @@ trait TestMockSetUpTrait
      */
     protected $testMock;
 
-    public function setUpProblemTypeMock(): void
+    public function setUpTestMock(): void
     {
         $this->testMock = $this->getMockBuilder(Test::class)->disableOriginalConstructor()->getMock();
     }

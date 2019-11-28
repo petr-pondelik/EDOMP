@@ -22,7 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Class FilterUnitTest
  * @package App\Tests\CoreModule\Model\Persistent\Entity
  */
-class FilterUnitTest extends PersistentEntityTestCase
+final class FilterUnitTest extends PersistentEntityTestCase
 {
     use TestMockSetUpTrait;
     use ProblemTypeSetUpMockTrait;

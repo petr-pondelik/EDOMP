@@ -8,7 +8,6 @@
 
 namespace App\CoreModule\Model\Persistent\Entity;
 
-use App\CoreModule\Model\Persistent\Entity\ProblemFinal;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;

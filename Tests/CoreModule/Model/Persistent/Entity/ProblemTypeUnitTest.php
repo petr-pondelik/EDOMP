@@ -18,7 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Class ProblemTypeUnitTest
  * @package App\Tests\CoreModule\Model\Persistent\Entity
  */
-class ProblemTypeUnitTest extends PersistentEntityTestCase
+final class ProblemTypeUnitTest extends PersistentEntityTestCase
 {
     use ProblemConditionTypeSetUpTrait;
 

@@ -21,7 +21,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Class SuperGroupUnitTest
  * @package App\Tests\CoreModule\Model\Persistent\Entity
  */
-class SuperGroupUnitTest extends PersistentEntityTestCase
+final class SuperGroupUnitTest extends PersistentEntityTestCase
 {
     use GroupMockSetUpTrait;
     use ThemeMockSetUpTrait;

@@ -11,6 +11,7 @@ namespace App\CoreModule\Model\Persistent\Entity;
 use App\CoreModule\Model\Persistent\Traits\CreatedByTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -126,7 +127,7 @@ abstract class Problem extends BaseEntity
      * @ORM\ManyToMany(targetEntity="ProblemCondition", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="problem_condition_problem_rel")
      *
-     * @var ProblemCondition[]
+     * @var PersistentCollection|ArrayCollection
      */
     protected $conditions;
 
@@ -189,7 +190,7 @@ abstract class Problem extends BaseEntity
     /**
      * @param string|null $textBefore
      */
-    public function setTextBefore(string $textBefore = null): void
+    public function setTextBefore(?string $textBefore): void
     {
         $this->textBefore = $textBefore;
     }
@@ -278,7 +279,7 @@ abstract class Problem extends BaseEntity
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection|PersistentCollection
      */
     public function getConditions()
     {
@@ -286,7 +287,7 @@ abstract class Problem extends BaseEntity
     }
 
     /**
-     * @param mixed $conditions
+     * @param $conditions
      */
     public function setConditions($conditions): void
     {

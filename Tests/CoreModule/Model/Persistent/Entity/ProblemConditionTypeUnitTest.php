@@ -17,7 +17,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Class ProblemConditionTypeUnitTest
  * @package App\Tests\CoreModule\Model\Persistent\Entity
  */
-class ProblemConditionTypeUnitTest extends PersistentEntityTestCase
+final class ProblemConditionTypeUnitTest extends PersistentEntityTestCase
 {
     /**
      * @var array

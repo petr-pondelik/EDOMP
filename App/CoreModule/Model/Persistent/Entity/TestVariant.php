@@ -11,6 +11,7 @@ namespace App\CoreModule\Model\Persistent\Entity;
 use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -43,8 +44,12 @@ class TestVariant extends BaseEntity
      * @Assert\NotBlank(
      *     message="ProblemFinalAssociations can't be blank."
      * )
+     * @Assert\Count(
+     *     min = 1,
+     *     minMessage="TestVariant must contain at least one ProblemFinal."
+     * )
      *
-     * @var ProblemFinalTestVariantAssociation[]
+     * @var PersistentCollection|ArrayCollection
      */
     protected $problemFinalAssociations;
 
@@ -74,7 +79,7 @@ class TestVariant extends BaseEntity
     }
 
     /**
-     * @return ProblemFinalTestVariantAssociation[]|ArrayCollection
+     * @return PersistentCollection|ArrayCollection
      */
     public function getProblemFinalAssociations()
     {

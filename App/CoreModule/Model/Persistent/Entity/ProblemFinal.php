@@ -11,6 +11,7 @@ namespace App\CoreModule\Model\Persistent\Entity;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -53,7 +54,7 @@ class ProblemFinal extends Problem
     /**
      * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinalTestVariantAssociation", mappedBy="problemFinal", cascade={"persist", "merge"})
      *
-     * @var ProblemFinalTestVariantAssociation[]
+     * @var PersistentCollection|ArrayCollection
      */
     protected $testVariantAssociations;
 
@@ -100,17 +101,17 @@ class ProblemFinal extends Problem
     }
 
     /**
-     * @return ProblemFinalTestVariantAssociation[]
+     * @return ArrayCollection|PersistentCollection
      */
-    public function getTestVariantAssociations(): array
+    public function getTestVariantAssociations()
     {
         return $this->testVariantAssociations;
     }
 
     /**
-     * @param ProblemFinalTestVariantAssociation[] $testVariantAssociations
+     * @param $testVariantAssociations
      */
-    public function setTestVariantAssociations(array $testVariantAssociations): void
+    public function setTestVariantAssociations($testVariantAssociations): void
     {
         $this->testVariantAssociations = $testVariantAssociations;
     }

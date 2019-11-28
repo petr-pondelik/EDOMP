@@ -17,7 +17,7 @@ use App\Tests\Traits\ProblemConditionTypeSetUpTrait;
  * Class TemplateJsonDataUnitTest
  * @package App\Tests\CoreModule\Model\Persistent\Entity
  */
-class TemplateJsonDataUnitTest extends PersistentEntityTestCase
+final class TemplateJsonDataUnitTest extends PersistentEntityTestCase
 {
     use ProblemConditionTypeSetUpTrait;
 

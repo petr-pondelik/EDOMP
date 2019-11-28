@@ -15,7 +15,7 @@ use App\Tests\Traits\UserMockSetUpTrait;
  * Class LogoUnitTest
  * @package App\Tests\CoreModule\Model\Persistent\Entity
  */
-class LogoUnitTest extends PersistentEntityTestCase
+final class LogoUnitTest extends PersistentEntityTestCase
 {
     use UserMockSetUpTrait;
 
