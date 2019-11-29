@@ -15,7 +15,7 @@ use Nette\Security\User;
  * Class SecuredRepositoryTestCase
  * @package App\Tests\CoreModule\Model\Persistent\Repository
  */
-abstract class SecuredRepositoryTestCase extends RepositoryIntegrationTestCase
+abstract class SecuredRepositoryTestCase extends RepositoryUnitTestCase
 {
     /**
      * @var User

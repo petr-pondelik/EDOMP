@@ -58,8 +58,8 @@ class ProblemStackControl extends EDOMPControl
      */
     public function filterStackBySelected(array $problems, array $selectedProblems): array
     {
-        foreach ($selectedProblems as $key => $selectedProblem){
-            if(array_key_exists($key, $problems)){
+        foreach ($selectedProblems as $key => $selectedProblem) {
+            if (array_key_exists($key, $problems)) {
                 unset($problems[$key]);
             }
         }
@@ -72,10 +72,9 @@ class ProblemStackControl extends EDOMPControl
      */
     public function setProblems(array $problems, ?array $selectedProblems = null): void
     {
-        if($selectedProblems){
+        if ($selectedProblems) {
             $this->problems = $this->filterStackBySelected($problems, $selectedProblems);
-        }
-        else{
+        } else {
             $this->problems = $problems;
         }
         $this->selectedProblems = $selectedProblems;

@@ -12,10 +12,10 @@ use App\CoreModule\Model\Persistent\Entity\SuperGroup;
 use App\CoreModule\Model\Persistent\Repository\SuperGroupRepository;
 
 /**
- * Class SuperGroupRepositoryIntegrationTest
+ * Class SuperGroupRepositoryUnitTest
  * @package App\Tests\CoreModule\Model\Persistent\Repository
  */
-class SuperGroupRepositoryIntegrationTest extends SecuredRepositoryTestCase
+class SuperGroupRepositoryUnitTest extends SecuredRepositoryTestCase
 {
     protected function setUp(): void
     {
@@ -23,7 +23,7 @@ class SuperGroupRepositoryIntegrationTest extends SecuredRepositoryTestCase
         $this->repository = $this->container->getByType(SuperGroupRepository::class);
     }
 
-    public function testFindAll(): void
+    public function testFind(): void
     {
         $labels = [ 'Administrators', 'Učitelé', 'Střední škola', 'Externisté' ];
         $found = $this->repository->findAll();

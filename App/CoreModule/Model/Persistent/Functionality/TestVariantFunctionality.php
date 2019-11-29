@@ -75,6 +75,7 @@ class TestVariantFunctionality extends BaseFunctionality
         $association = new ProblemFinalTestVariantAssociation();
         $association->setTestVariant($testVariant);
         $association->setProblemFinal($problemFinal);
+        $association->setProblemTemplate($problemFinal->getProblemTemplate());
         $association->setNextPage($newPage);
         $this->em->persist($association);
         $testVariant->addProblemFinalAssociation($association);

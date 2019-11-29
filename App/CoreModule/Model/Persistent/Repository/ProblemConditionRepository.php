@@ -8,6 +8,8 @@
 
 namespace App\CoreModule\Model\Persistent\Repository;
 
+use App\CoreModule\Model\Persistent\Entity\ProblemCondition;
+
 /**
  * Class ProblemConditionRepository
  * @package App\CoreModule\Model\Persistent\Repository
@@ -19,6 +21,7 @@ class ProblemConditionRepository extends BaseRepository
      */
     public function findAssocByTypeAndAccessor(): array
     {
+        /** @var ProblemCondition[] $problemConditions */
         $problemConditions = $this->findBy(['problemConditionType.isValidation' => false]);
         $res = [];
         foreach ($problemConditions as $problemCondition) {

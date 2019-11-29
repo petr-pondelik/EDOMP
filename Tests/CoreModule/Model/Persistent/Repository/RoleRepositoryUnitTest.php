@@ -14,10 +14,10 @@ use Nette\Security\User;
 use Nette\Utils\DateTime;
 
 /**
- * Class RoleRepositoryIntegrationTest
+ * Class RoleRepositoryUnitTest
  * @package App\Tests\CoreModule\Model\Persistent\Repository
  */
-final class RoleRepositoryIntegrationTest extends RepositoryIntegrationTestCase
+final class RoleRepositoryUnitTest extends RepositoryUnitTestCase
 {
     /**
      * @var RoleRepository
@@ -79,7 +79,7 @@ final class RoleRepositoryIntegrationTest extends RepositoryIntegrationTestCase
     /**
      * @throws \Exception
      */
-    public function testFindAll(): void
+    public function testFind(): void
     {
         $expected = [$this->adminRole, $this->teacherRole, $this->studentRole];
         $found = $this->repository->findAll();

@@ -7,6 +7,7 @@ SET FOREIGN_KEY_CHECKS=0;
 # INSERT Themes
 INSERT INTO edomp.theme (id, label, created, created_by_id, teacher_level_secured) VALUES (1, '1. Rovnice', '2019-06-16 10:12:16', 2, 1);
 INSERT INTO edomp.theme (id, label, created, created_by_id, teacher_level_secured) VALUES (2, '2. Posloupnosti', '2019-06-16 10:12:25', 2, 1);
+INSERT INTO edomp.theme (id, label, created, created_by_id, teacher_level_secured) VALUES (3, '1. Začátečníci', '2019-06-16 10:12:25', 3, 1);
 
 
 # INSERT SubThemes
@@ -14,6 +15,7 @@ INSERT INTO edomp.sub_theme (id, created_by_id, theme_id, created, label, teache
 INSERT INTO edomp.sub_theme (id, created_by_id, theme_id, created, label, teacher_level_secured) VALUES (2, 2, 1, '2019-06-16 10:14:52', '1.2. Kvadratické rovnice', 1);
 INSERT INTO edomp.sub_theme (id, created_by_id, theme_id, created, label, teacher_level_secured) VALUES (3, 2, 2, '2019-06-16 10:15:10', '2.1. Aritmetické posloupnosti', 1);
 INSERT INTO edomp.sub_theme (id, created_by_id, theme_id, created, label, teacher_level_secured) VALUES (4, 2, 2, '2019-06-20 13:05:03', '2.2. Geometrické posloupnosti', 1);
+INSERT INTO edomp.sub_theme (id, created_by_id, theme_id, created, label, teacher_level_secured) VALUES (5, 3, 2, '2019-06-20 13:05:03', '1.1. První lekce', 1);
 
 
 # INSERT Difficulties
@@ -295,16 +297,16 @@ INSERT INTO edomp.test_variant (id, test_id, created, teacher_level_secured, lab
 
 
 # INSERT ProblemFinal - TestVariant associations
-INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (1, 31, null, 1, 0, null, '2019-11-29 16:27:03', 0);
-INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (2, 32, null, 2, 0, null, '2019-11-29 16:27:04', 0);
-INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (3, 33, null, 3, 0, null, '2019-11-29 16:27:04', 0);
-INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (4, 34, null, 4, 0, null, '2019-11-29 16:27:04', 0);
-INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (5, 35, null, 5, 0, null, '2019-11-29 16:27:04', 0);
-INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (6, 36, null, 6, 0, null, '2019-11-29 16:28:57', 0);
-INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (7, 37, null, 7, 0, null, '2019-11-29 16:28:57', 0);
-INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (8, 38, null, 8, 0, null, '2019-11-29 16:28:57', 0);
-INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (9, 39, null, 9, 0, null, '2019-11-29 16:28:57', 0);
-INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (10, 40, null, 10, 0, null, '2019-11-29 16:28:57', 0);
+INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (1, 31, 8, 1, 0, null, '2019-11-29 16:27:03', 0);
+INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (2, 32, 1, 2, 0, null, '2019-11-29 16:27:04', 0);
+INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (3, 33, 6, 3, 0, null, '2019-11-29 16:27:04', 0);
+INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (4, 34, 6, 4, 0, null, '2019-11-29 16:27:04', 0);
+INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (5, 35, 7, 5, 0, null, '2019-11-29 16:27:04', 0);
+INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (6, 36, 15, 6, 0, null, '2019-11-29 16:28:57', 0);
+INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (7, 37, 15, 7, 0, null, '2019-11-29 16:28:57', 0);
+INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (8, 38, 11, 8, 0, null, '2019-11-29 16:28:57', 0);
+INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (9, 39, 11, 9, 0, null, '2019-11-29 16:28:57', 0);
+INSERT INTO edomp.problem_final_test_variant_association (id, problem_final_id, problem_template_id, test_variant_id, next_page, success_rate, created, teacher_level_secured) VALUES (10, 40, 15, 10, 0, null, '2019-11-29 16:28:57', 0);
 
 
 # INSERT Groups relations to the Tests

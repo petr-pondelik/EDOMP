@@ -73,8 +73,6 @@ class Authenticator implements IAuthenticator
             $user = $this->userRepository->findForAuthentication($username, [$this->constHelper::ADMIN_ROLE, $this->constHelper::TEACHER_ROLE]);
         }
 
-        bdump($user);
-
         if (!$user || !Passwords::verify($password, $user->getPassword())) {
             throw new AuthenticationException('Zadáno neplatné uživatelské jméno nebo heslo.');
         }
@@ -87,10 +85,6 @@ class Authenticator implements IAuthenticator
             foreach ($themeIds as $themeId) {
                 $themes[$themeId] = $this->themeRepository->find($themeId)->getLabel();
             }
-        } elseif (!strcmp('teacher', $role->getKey())) {
-            $this->themeRepository->findTeacherThemes($user);
-        } else {
-            $themes = $this->themeRepository->findPairs([], 'label');
         }
 
         return new Identity($user->getId(), $role->getKey(), [

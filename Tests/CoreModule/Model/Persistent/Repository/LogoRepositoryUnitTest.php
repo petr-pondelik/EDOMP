@@ -13,10 +13,10 @@ use App\CoreModule\Model\Persistent\Repository\LogoRepository;
 use Doctrine\ORM\Query\QueryException;
 
 /**
- * Class DifficultyRepositoryIntegrationTest
+ * Class DifficultyRepositoryUnitTest
  * @package App\Tests\CoreModule\Model\Persistent\Repository
  */
-final class LogoRepositoryIntegrationTest extends SecuredRepositoryTestCase
+final class LogoRepositoryUnitTest extends SecuredRepositoryTestCase
 {
     /**
      * @var array
@@ -29,7 +29,7 @@ final class LogoRepositoryIntegrationTest extends SecuredRepositoryTestCase
         $this->repository = $this->container->getByType(LogoRepository::class);
     }
 
-    public function testFindAll(): void
+    public function testFind(): void
     {
         /**
          * @var Logo[] $found

@@ -8,7 +8,6 @@
 
 namespace App\CoreModule\Model\Persistent\Repository;
 
-
 use App\CoreModule\Helpers\ConstHelper;
 use Doctrine\ORM\Mapping;
 

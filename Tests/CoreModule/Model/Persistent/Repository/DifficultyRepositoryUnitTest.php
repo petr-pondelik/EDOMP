@@ -13,10 +13,10 @@ use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use Nette\Utils\DateTime;
 
 /**
- * Class DifficultyRepositoryIntegrationTest
+ * Class DifficultyRepositoryUnitTest
  * @package App\Tests\CoreModule\Model\Persistent\Repository
  */
-final class DifficultyRepositoryIntegrationTest extends RepositoryIntegrationTestCase
+final class DifficultyRepositoryUnitTest extends RepositoryUnitTestCase
 {
     protected function setUp(): void
     {
@@ -27,7 +27,7 @@ final class DifficultyRepositoryIntegrationTest extends RepositoryIntegrationTes
     /**
      * @throws \Exception
      */
-    public function testFindAll(): void
+    public function testFind(): void
     {
         $easyDifficulty = new Difficulty();
         $easyDifficulty->setId(1);

@@ -10,13 +10,13 @@ namespace App\Tests\CoreModule\Model\Persistent\Repository;
 
 
 use App\CoreModule\Model\Persistent\Repository\BaseRepository;
-use App\Tests\EDOMPIntegrationTestCase;
+use App\Tests\EDOMPUnitTestCase;
 
 /**
- * Class RepositoryIntegrationTestCase
+ * Class RepositoryUnitTestCase
  * @package App\Tests\CoreModule\Model\Persistent\Repository
  */
-abstract class RepositoryIntegrationTestCase extends EDOMPIntegrationTestCase
+abstract class RepositoryUnitTestCase extends EDOMPUnitTestCase
 {
     /**
      * @var BaseRepository
@@ -29,5 +29,5 @@ abstract class RepositoryIntegrationTestCase extends EDOMPIntegrationTestCase
         $this->repository = null;
     }
 
-    abstract public function testFindAll(): void;
+    abstract public function testFind(): void;
 }

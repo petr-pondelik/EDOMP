@@ -252,11 +252,13 @@ class TestFormControl extends EntityFormControl
     public function fillComponents(iterable $args = null): void
     {
         if ($this->isCreate()) {
-            $problems = $this->problemRepository->findFiltered([
-                'isGenerated' => false,
-                'createdBy' => $this->presenter->user->id
-            ]);
 
+            $filters = [ 'isGenerated' => false ];
+            if (!$this->presenter->user->isInRole('admin')) {
+                $filters['createdBy'] = $this->presenter->user->id;
+            }
+
+            $problems = $this->problemRepository->findFiltered($filters);
             $problemsCnt = count($problems);
 
             for ($i = 0; $i < $this->maxProblems; $i++) {

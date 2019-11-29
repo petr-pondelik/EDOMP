@@ -13,10 +13,10 @@ use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use Nette\Utils\DateTime;
 
 /**
- * Class ProblemTypeRepositoryIntegrationTest
+ * Class ProblemTypeRepositoryUnitTest
  * @package App\Tests\CoreModule\Model\Persistent\Repository
  */
-final class ProblemTypeRepositoryIntegrationTest extends RepositoryIntegrationTestCase
+final class ProblemTypeRepositoryUnitTest extends RepositoryUnitTestCase
 {
     protected function setUp(): void
     {
@@ -27,7 +27,7 @@ final class ProblemTypeRepositoryIntegrationTest extends RepositoryIntegrationTe
     /**
      * @throws \Exception
      */
-    public function testFindAll(): void
+    public function testFind(): void
     {
         $expected = [
             [
