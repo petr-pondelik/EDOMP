@@ -23,15 +23,15 @@ class RoleRepository extends BaseRepository
      */
     public function findAllowed(User $user)
     {
-        $qb = $this->createQueryBuilder("r")
-            ->select("r")
-            ->where("r.id != :adminRoleId")
-            ->indexBy("r", "r.id")
-            ->setParameter("adminRoleId", $this->constHelper::ADMIN_ROLE);
+        $qb = $this->createQueryBuilder('r')
+            ->select('r')
+            ->where('r.id != :adminRoleId')
+            ->indexBy('r', 'r.id')
+            ->setParameter('adminRoleId', $this->constHelper::ADMIN_ROLE);
 
-        if(!$user->isInRole('admin')){
-            $qb = $qb->andWhere("r.id != :teacherRoleId")
-                ->setParameter("teacherRoleId", $this->constHelper::TEACHER_ROLE);
+        if (!$user->isInRole('admin')) {
+            $qb = $qb->andWhere('r.id != :teacherRoleId')
+                ->setParameter('teacherRoleId', $this->constHelper::TEACHER_ROLE);
         }
 
         return $qb->getQuery()->getResult();

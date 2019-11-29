@@ -17,5 +17,5 @@ use App\Tests\EDOMPIntegrationTestCase;
  */
 abstract class RepositoryIntegrationTestCase extends EDOMPIntegrationTestCase
 {
-    abstract public function testFind(): void;
+    abstract public function testFindAll(): void;
 }

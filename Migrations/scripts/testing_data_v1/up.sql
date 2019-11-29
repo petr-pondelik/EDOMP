@@ -121,8 +121,9 @@ INSERT INTO edomp.problem_tp_problem_condition_tp_rel (problem_type_id, problem_
 INSERT INTO edomp.problem_tp_problem_condition_tp_rel (problem_type_id, problem_condition_type_id) VALUES (3, 3);
 INSERT INTO edomp.problem_tp_problem_condition_tp_rel (problem_type_id, problem_condition_type_id) VALUES (4, 3);
 
-# Insert logo
-INSERT INTO edomp.logo (id, created_by_id, path, extension, extension_tmp, created, teacher_level_secured, label) VALUES (1, 2, '/data_public/logos/1/file.jpg', '.jpg', '.jpg', '2019-11-26 22:22:48', 1, 'Viking village logo');
+# Insert logos
+INSERT INTO edomp.logo (id, created_by_id, path, extension, extension_tmp, created, teacher_level_secured, label) VALUES (1, 2, '/data_public/logos/1/file.jpg', '.jpg', '.jpg', '2019-11-26 22:22:48', 1, 'Testing logo 1');
+INSERT INTO edomp.logo (id, created_by_id, path, extension, extension_tmp, created, teacher_level_secured, label) VALUES (2, 1, '/data_public/logos/2/file.jpg', '.jpg', '.jpg', '2019-11-26 22:22:48', 1, 'Testing logo 2');
 
 # Insert ProblemTemplate
 INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (1, 1, 1, 1, 2, '$$ x + <par min="-5" max="15"/> = 4 $$', '', '', null, 1, 0, 1, '2019-11-26 22:26:08', 1, 'lineareqtemplate');

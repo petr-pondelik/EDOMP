@@ -26,37 +26,4 @@ class Difficulty extends BaseEntity
      * @var string
      */
     protected $toStringAttr = 'label';
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemFinal", mappedBy="difficulty", cascade={"all"})
-     *
-     * @var ArrayCollection
-     */
-    protected $problems;
-
-    /**
-     * Difficulty constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->problems = new ArrayCollection();
-    }
-
-    /**
-     * @return ArrayCollection|null
-     */
-    public function getProblems(): ?ArrayCollection
-    {
-        return $this->problems;
-    }
-
-    /**
-     * @param $problems
-     * @return void
-     */
-    public function setProblems($problems): void
-    {
-        $this->problems = $problems;
-    }
 }
