@@ -154,10 +154,6 @@ class Test extends BaseEntity
      * @Assert\NotBlank(
      *     message="TestVariants can't be blank."
      * )
-     * @Assert\Count(
-     *     min="1",
-     *     minMessage="Test must contain at least one variant."
-     * )
      *
      * @var Collection
      */

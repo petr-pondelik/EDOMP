@@ -76,6 +76,10 @@ final class LogoRepositoryIntegrationTest extends RepositoryIntegrationTestCase
         $this->user->logout(true);
     }
 
+    /**
+     * @throws \Doctrine\ORM\Query\QueryException
+     * @throws \Nette\Security\AuthenticationException
+     */
     public function testTeacherFindAllowed(): void
     {
         $this->user->login('jkohneke0@nba.com', '12345678');

@@ -28,8 +28,7 @@ final class TestVariantUnitTest extends PersistentEntityTestCase
      */
     protected $errorMessages = [
         "Label can't be blank.",
-        "Test can't be blank.",
-        'TestVariant must contain at least one ProblemFinal.'
+        "Test can't be blank."
     ];
 
     protected function setUp(): void

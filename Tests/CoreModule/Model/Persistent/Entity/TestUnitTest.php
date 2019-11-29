@@ -38,7 +38,6 @@ final class TestUnitTest extends PersistentEntityTestCase
         4 => "Term can't be blank.",
         5 => "Logo can't be blank.",
         6 => 'Test must be target at least for one group.',
-        7 => 'Test must contain at least one variant.'
     ];
 
     protected function setUp(): void
