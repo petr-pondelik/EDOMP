@@ -18,15 +18,10 @@ use Nette\Utils\DateTime;
  */
 final class DifficultyRepositoryIntegrationTest extends RepositoryIntegrationTestCase
 {
-    /**
-     * @var DifficultyRepository
-     */
-    protected $difficultyRepository;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->difficultyRepository = $this->container->getByType(DifficultyRepository::class);
+        $this->repository = $this->container->getByType(DifficultyRepository::class);
     }
 
     /**
@@ -50,14 +45,8 @@ final class DifficultyRepositoryIntegrationTest extends RepositoryIntegrationTes
         $hardDifficulty->setLabel('Těžká');
 
         $expected = [$easyDifficulty, $mediumDifficulty, $hardDifficulty];
-        $found = $this->difficultyRepository->findAll();
+        $found = $this->repository->findAll();
         $this->assertCount(3, $found);
         $this->assertEquals($expected, $found);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $this->difficultyRepository = null;
     }
 }

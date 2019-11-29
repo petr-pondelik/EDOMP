@@ -10,24 +10,14 @@ namespace App\Tests\CoreModule\Model\Persistent\Repository;
 
 use App\CoreModule\Model\Persistent\Entity\Logo;
 use App\CoreModule\Model\Persistent\Repository\LogoRepository;
-use Nette\Security\User;
+use Doctrine\ORM\Query\QueryException;
 
 /**
  * Class DifficultyRepositoryIntegrationTest
  * @package App\Tests\CoreModule\Model\Persistent\Repository
  */
-final class LogoRepositoryIntegrationTest extends RepositoryIntegrationTestCase
+final class LogoRepositoryIntegrationTest extends SecuredRepositoryTestCase
 {
-    /**
-     * @var LogoRepository
-     */
-    protected $logoRepository;
-
-    /**
-     * @var User
-     */
-    protected $user;
-
     /**
      * @var array
      */
@@ -36,8 +26,7 @@ final class LogoRepositoryIntegrationTest extends RepositoryIntegrationTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->logoRepository = $this->container->getByType(LogoRepository::class);
-        $this->user = $this->container->getByType(User::class);
+        $this->repository = $this->container->getByType(LogoRepository::class);
     }
 
     public function testFindAll(): void
@@ -45,7 +34,7 @@ final class LogoRepositoryIntegrationTest extends RepositoryIntegrationTestCase
         /**
          * @var Logo[] $found
          */
-        $found = $this->logoRepository->findAll();
+        $found = $this->repository->findAll();
         $this->assertCount(2, $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(Logo::class, $item);
@@ -54,10 +43,10 @@ final class LogoRepositoryIntegrationTest extends RepositoryIntegrationTestCase
     }
 
     /**
-     * @throws \Doctrine\ORM\Query\QueryException
+     * @throws QueryException
      * @throws \Nette\Security\AuthenticationException
      */
-    public function testAdminFindAllowed(): void
+    public function testFindAllowed(): void
     {
         $this->user->login('admin', '12345678');
 
@@ -66,7 +55,7 @@ final class LogoRepositoryIntegrationTest extends RepositoryIntegrationTestCase
         /**
          * @var Logo[] $found
          */
-        $found = $this->logoRepository->findAllowed($this->user);
+        $found = $this->repository->findAllowed($this->user);
         $this->assertCount(2, $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(Logo::class, $item);
@@ -74,22 +63,15 @@ final class LogoRepositoryIntegrationTest extends RepositoryIntegrationTestCase
         }
 
         $this->user->logout(true);
-    }
 
-    /**
-     * @throws \Doctrine\ORM\Query\QueryException
-     * @throws \Nette\Security\AuthenticationException
-     */
-    public function testTeacherFindAllowed(): void
-    {
         $this->user->login('jkohneke0@nba.com', '12345678');
 
         $labels = [ 1 => $this->labels[0] ];
 
         /**
-        * @var Logo[] $found
-        */
-        $found = $this->logoRepository->findAllowed($this->user);
+         * @var Logo[] $found
+         */
+        $found = $this->repository->findAllowed($this->user);
         $this->assertCount(1, $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(Logo::class, $item);
@@ -97,13 +79,5 @@ final class LogoRepositoryIntegrationTest extends RepositoryIntegrationTestCase
         }
 
         $this->user->logout(true);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $this->user->logout(true);
-        $this->logoRepository = null;
-        $this->user = null;
     }
 }

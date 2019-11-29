@@ -22,7 +22,7 @@ final class RoleRepositoryIntegrationTest extends RepositoryIntegrationTestCase
     /**
      * @var RoleRepository
      */
-    protected $roleRepository;
+    protected $repository;
 
     /**
      * @var User
@@ -51,7 +51,7 @@ final class RoleRepositoryIntegrationTest extends RepositoryIntegrationTestCase
     {
         parent::setUp();
 
-        $this->roleRepository = $this->container->getByType(RoleRepository::class);
+        $this->repository = $this->container->getByType(RoleRepository::class);
         $this->user = $this->container->getByType(User::class);
 
         $adminRole = new Role();
@@ -82,11 +82,11 @@ final class RoleRepositoryIntegrationTest extends RepositoryIntegrationTestCase
     public function testFindAll(): void
     {
         $expected = [$this->adminRole, $this->teacherRole, $this->studentRole];
-        $found = $this->roleRepository->findAll();
+        $found = $this->repository->findAll();
 
         $this->assertCount(3, $found);
         $this->assertEquals($expected, $found);
-        $this->assertEquals(4, $this->roleRepository->getSequenceVal());
+        $this->assertEquals(4, $this->repository->getSequenceVal());
     }
 
     /**
@@ -99,7 +99,7 @@ final class RoleRepositoryIntegrationTest extends RepositoryIntegrationTestCase
         $expected[3] = $this->studentRole;
 
         $this->user->login('jkohneke0@nba.com', '12345678');
-        $found = $this->roleRepository->findAllowed($this->user);
+        $found = $this->repository->findAllowed($this->user);
 
         $this->assertCount(1, $found);
         $this->assertEquals($expected, $found);
@@ -119,7 +119,7 @@ final class RoleRepositoryIntegrationTest extends RepositoryIntegrationTestCase
         ];
 
         $this->user->login('admin', '12345678');
-        $found = $this->roleRepository->findAllowed($this->user);
+        $found = $this->repository->findAllowed($this->user);
 
         $this->assertCount(2, $found);
         $this->assertEquals($expected, $found);
@@ -128,7 +128,6 @@ final class RoleRepositoryIntegrationTest extends RepositoryIntegrationTestCase
     public function tearDown(): void
     {
         parent::tearDown();
-        $this->roleRepository = null;
         $this->adminRole = null;
         $this->teacherRole = null;
         $this->studentRole = null;

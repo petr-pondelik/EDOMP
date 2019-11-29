@@ -114,7 +114,7 @@ INSERT INTO edomp.user_group_rel (user_id, group_id) VALUES (30, 6);
 INSERT INTO edomp.problem_type (id, created, label, key_label, teacher_level_secured) VALUES (1, '2019-04-05 19:19:49', 'Lineární rovnice', 'LinearEquation', 0);
 INSERT INTO edomp.problem_type (id, created, label, key_label, teacher_level_secured) VALUES (2, '2019-04-05 19:19:49', 'Kvadratická rovnice', 'QuadraticEquation', 0);
 INSERT INTO edomp.problem_type (id, created, label, key_label, teacher_level_secured) VALUES (3, '2019-04-05 19:19:49', 'Aritmetická posloupnost', 'ArithmeticSequence', 0);
-INSERT INTO edomp.problem_type (id, created, label, key_label, teacher_level_secured) VALUES (4, '2019-04-05 19:19:49', 'Geometická posloupnost', 'GeometricSequence', 0);
+INSERT INTO edomp.problem_type (id, created, label, key_label, teacher_level_secured) VALUES (4, '2019-04-05 19:19:49', 'Geometrická posloupnost', 'GeometricSequence', 0);
 
 
 # INSERT ProblemConditionTypes
