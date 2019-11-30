@@ -44,4 +44,14 @@ final class ProblemConditionTypeRepositoryUnitTest extends RepositoryUnitTestCas
             $this->assertEquals($expected[$key], (string) $item);
         }
     }
+
+    public function testFindAssocByProblemTypes(): void
+    {
+        $expected = [
+            '1' => [ '1' ],
+            '2' => [ '2' ]
+        ];
+        $found = $this->repository->findIdAssocByProblemTypes();
+        $this->assertEquals($expected, $found);
+    }
 }

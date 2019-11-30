@@ -45,7 +45,6 @@ trait FilterTrait
      */
     public function findFiltered(array $filters): array
     {
-        bdump('FIND FILTERED');
         $filtersProcessed = self::processFilters($filters);
         $filteredBase = $this->findAssoc($filtersProcessed, 'id');
 

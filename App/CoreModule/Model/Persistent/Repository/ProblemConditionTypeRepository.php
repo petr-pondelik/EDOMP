@@ -9,6 +9,7 @@
 namespace App\CoreModule\Model\Persistent\Repository;
 
 use App\CoreModule\Model\Persistent\Entity\ProblemConditionType;
+use App\CoreModule\Model\Persistent\Entity\ProblemType;
 
 /**
  * Class ProblemConditionTypeRepository
@@ -29,5 +30,27 @@ class ProblemConditionTypeRepository extends BaseRepository
             ->setParameter('ptID', $problemTypeId);
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @return array
+     */
+    public function findIdAssocByProblemTypes(): array
+    {
+        $res = [];
+
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->select('pt.id as ptId, pt.label as ptLabel, pct.id AS pctId, pct.label AS pctLabel')
+            ->from(ProblemType::class, 'pt')
+            ->innerJoin('pt.conditionTypes', 'pct', 'WITH', 'pct.isValidation = FALSE');
+        $qbRes = $qb->getQuery()->getArrayResult();
+
+        foreach ($qbRes as $qbResItem) {
+            $res[$qbResItem['ptId']][] = $qbResItem['pctId'];
+        }
+
+        bdump($res);
+
+        return $res;
     }
 }

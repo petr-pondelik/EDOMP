@@ -9,6 +9,8 @@
 namespace App\TeacherModule\Components\Forms\TestForm;
 
 use App\CoreModule\Arguments\ValidatorArgument;
+use App\CoreModule\Model\Persistent\Entity\Logo;
+use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\TeacherModule\Components\FilterView\IFilterViewFactory;
 use App\CoreModule\Components\Forms\EntityFormControl;
 use App\CoreModule\Exceptions\ComponentException;
@@ -101,6 +103,11 @@ class TestFormControl extends EntityFormControl
     protected $problemConditionTypeRepository;
 
     /**
+     * @var ProblemConditionRepository
+     */
+    protected $problemConditionRepository;
+
+    /**
      * @var ILogoDragAndDropFactory
      */
     protected $logoDragAndDropFactory;
@@ -136,6 +143,11 @@ class TestFormControl extends EntityFormControl
     protected $maxProblems;
 
     /**
+     * @var Logo[]
+     */
+    protected $logos;
+
+    /**
      * TestEntityFormControl constructor.
      * @param Validator $validator
      * @param ConstraintEntityManager $entityManager
@@ -150,6 +162,7 @@ class TestFormControl extends EntityFormControl
      * @param DifficultyRepository $difficultyRepository
      * @param SubThemeRepository $subThemeRepository
      * @param ProblemConditionTypeRepository $problemConditionTypeRepository
+     * @param ProblemConditionRepository $problemConditionRepository
      * @param ILogoDragAndDropFactory $logoDragAndDropFactory
      * @param IProblemStackFactory $problemStackFactory
      * @param ILogoViewFactory $logoViewFactory
@@ -173,6 +186,7 @@ class TestFormControl extends EntityFormControl
         DifficultyRepository $difficultyRepository,
         SubThemeRepository $subThemeRepository,
         ProblemConditionTypeRepository $problemConditionTypeRepository,
+        ProblemConditionRepository $problemConditionRepository,
         ILogoDragAndDropFactory $logoDragAndDropFactory,
         IProblemStackFactory $problemStackFactory,
         ILogoViewFactory $logoViewFactory,
@@ -194,16 +208,19 @@ class TestFormControl extends EntityFormControl
         $this->difficultyRepository = $difficultyRepository;
         $this->subThemeRepository = $subThemeRepository;
         $this->problemConditionTypeRepository = $problemConditionTypeRepository;
+        $this->problemConditionRepository = $problemConditionRepository;
         $this->logoDragAndDropFactory = $logoDragAndDropFactory;
         $this->problemStackFactory = $problemStackFactory;
         $this->logoViewFactory = $logoViewFactory;
         $this->filterViewFactory = $filterViewFactory;
         $this->filterSession = $filterSession;
+
         $this->problemConditionTypes = $this->problemConditionTypeRepository->findAssoc([], 'id');
     }
 
     /**
      * @param array $params
+     * @throws \Doctrine\ORM\Query\QueryException
      * @throws \Nette\Application\BadRequestException
      */
     public function loadState(array $params): void
@@ -213,6 +230,7 @@ class TestFormControl extends EntityFormControl
         if (!$this->presenter->isAjax()) {
             $this->filterSession->erase();
         }
+        $this->logos = $this->logoRepository->findAllowed($this->presenter->user);
     }
 
     /**
@@ -320,7 +338,6 @@ class TestFormControl extends EntityFormControl
         $form = parent::createComponentForm();
 
         $groups = $this->groupRepository->findAllowed($this->presenter->user);
-        $logos = $this->logoRepository->findAllowed($this->presenter->user);
 
         $form->addSelect('variantsCnt', 'Počet variant *', [
             1 => 1,
@@ -338,7 +355,7 @@ class TestFormControl extends EntityFormControl
         $form->addHidden('problemsPerVariant')->setDefaultValue(1)
             ->setHtmlId('problemsPerVariant');
 
-        $form->addSelect('logo', 'Logo *', $logos)
+        $form->addSelect('logo', 'Logo *', $this->logos)
             ->setPrompt('Zvolte logo')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('test-logo');
@@ -385,15 +402,7 @@ class TestFormControl extends EntityFormControl
         $difficulties = $this->difficultyRepository->findAssoc([], 'id');
         $subThemes = $this->subThemeRepository->findAllowed($this->presenter->user);
         $problemTypes = $this->problemTypeRepository->findAssoc([], 'id');
-
-        $conditionTypesByProblemTypes = [];
-        foreach ($problemTypes as $id => $problemType) {
-            foreach ($problemType->getConditionTypes()->getValues() as $conditionType) {
-                if (!$conditionType->isValidation()) {
-                    $conditionTypesByProblemTypes[$id] = $conditionType->getId();
-                }
-            }
-        }
+        $conditionTypesByProblemTypes = $this->problemConditionTypeRepository->findIdAssocByProblemTypes();
 
         for ($i = 0; $i < $this->maxProblems; $i++) {
 
@@ -729,6 +738,7 @@ class TestFormControl extends EntityFormControl
             $this->template->maxProblems = $this->maxProblems;
             $this->template->problemConditionTypes = $this->problemConditionTypes;
         }
+        $this['logoDragAndDrop']->setLogos($this->logos);
         parent::render();
     }
 }

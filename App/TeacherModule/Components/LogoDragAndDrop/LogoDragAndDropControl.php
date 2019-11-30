@@ -9,7 +9,7 @@
 namespace App\TeacherModule\Components\LogoDragAndDrop;
 
 use App\CoreModule\Components\EDOMPControl;
-use App\CoreModule\Model\Persistent\Repository\LogoRepository;
+use App\CoreModule\Model\Persistent\Entity\Logo;
 
 /**
  * Class LogoDragAndDropControl
@@ -18,26 +18,33 @@ use App\CoreModule\Model\Persistent\Repository\LogoRepository;
 class LogoDragAndDropControl extends EDOMPControl
 {
     /**
-     * @var LogoRepository
+     * @var Logo[]
      */
-    protected $logoRepository;
+    protected $logos;
 
     /**
-     * LogoDragAndDropControl constructor.
-     * @param LogoRepository $logoRepository
+     * @param array $logos
+     * @throws \ReflectionException
      */
-    public function __construct(LogoRepository $logoRepository)
+    public function render(array $logos = null): void
     {
-        parent::__construct();
-        $this->logoRepository = $logoRepository;
+        $this->template->logos = $this->logos;
+        parent::render();
     }
 
     /**
-     * @throws \Exception
+     * @return Logo[]
      */
-    public function render(): void
+    public function getLogos(): array
     {
-        $this->template->logos = $this->logoRepository->findAssoc([], 'id');
-        parent::render();
+        return $this->logos;
+    }
+
+    /**
+     * @param Logo[] $logos
+     */
+    public function setLogos(array $logos): void
+    {
+        $this->logos = $logos;
     }
 }

@@ -28,6 +28,4 @@ abstract class RepositoryUnitTestCase extends EDOMPUnitTestCase
         parent::tearDown();
         $this->repository = null;
     }
-
-    abstract public function testFind(): void;
 }

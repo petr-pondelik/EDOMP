@@ -39,6 +39,4 @@ abstract class SecuredRepositoryTestCase extends RepositoryUnitTestCase
         $this->user->logout(true);
         $this->user = null;
     }
-
-    abstract public function testFindAllowed(): void;
 }
