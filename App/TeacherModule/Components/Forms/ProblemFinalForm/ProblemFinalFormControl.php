@@ -125,12 +125,8 @@ class ProblemFinalFormControl extends EntityFormControl
 
         $form->addTextArea('body', 'Úloha *')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder','Sem patří samotné zadání úlohy.')
+            ->setHtmlAttribute('placeholder', 'Sem patří samotné zadání úlohy.')
             ->setHtmlId('structure');
-
-        $form->addText('variable', 'Neznámá')
-            ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlId('variable');
 
         $form->addTextArea('textAfter', 'Dodatek k zadání')
             ->setHtmlAttribute('class', 'form-control')
@@ -156,7 +152,9 @@ class ProblemFinalFormControl extends EntityFormControl
     public function handleFormValidate(Form $form): void
     {
         $values = $form->getValues();
-        $validateFields['body'] = new ValidatorArgument($values->body, 'notEmpty');
+        if (!($this->entity && $this->entity->isGenerated())) {
+            $validateFields['body'] = new ValidatorArgument($values->body, 'notEmpty');
+        }
         $validateFields['difficulty'] = new ValidatorArgument($values->difficulty, 'notEmpty', 'difficulty');
         $validateFields['subTheme'] = new ValidatorArgument($values->subTheme, 'notEmpty', 'subTheme');
         $this->validator->validate($form, $validateFields);
@@ -170,7 +168,7 @@ class ProblemFinalFormControl extends EntityFormControl
      */
     public function handleFormSuccess(Form $form, ArrayHash $values): void
     {
-        try{
+        try {
             bdump($values);
             $values->userId = $this->presenter->user->id;
             $this->functionality->create($values);
@@ -190,7 +188,10 @@ class ProblemFinalFormControl extends EntityFormControl
      */
     public function handleUpdateFormSuccess(Form $form, ArrayHash $values): void
     {
-        try{
+        try {
+            if ($this->entity && $this->entity->isGenerated()) {
+                unset($values['body']);
+            }
             $this->functionality->update($this->entity->getId(), $values);
             $this->onSuccess();
         } catch (\Exception $e) {
@@ -203,7 +204,7 @@ class ProblemFinalFormControl extends EntityFormControl
 
     public function setDefaults(): void
     {
-        if(!$this->entity){
+        if (!$this->entity) {
             return;
         }
 
@@ -214,9 +215,9 @@ class ProblemFinalFormControl extends EntityFormControl
         $this['form']['result']->setDefaultValue($this->entity->getResult());
         $this['form']['difficulty']->setDefaultValue($this->entity->getDifficulty()->getId());
         $this['form']['subTheme']->setDefaultValue($this->entity->getSubTheme()->getId());
-        $this['form']['studentVisible']->setDefaultValue((int) $this->entity->isStudentVisible());
+        $this['form']['studentVisible']->setDefaultValue((int)$this->entity->isStudentVisible());
 
-        if($this->entity->isGenerated()){
+        if ($this->entity->isGenerated()) {
             $this['form']['body']->setDisabled();
         }
 

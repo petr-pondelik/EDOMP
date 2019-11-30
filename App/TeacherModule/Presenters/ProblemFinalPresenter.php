@@ -119,7 +119,7 @@ class ProblemFinalPresenter extends EntityPresenter
     public function handleSubThemeUpdate(int $problemId, int $subThemeId): void
     {
         try {
-            $this->functionality->update($problemId, ArrayHash::from(['subTheme' => $subThemeId]), true, false);
+            $this->functionality->update($problemId, ArrayHash::from(['subTheme' => $subThemeId]));
         } catch (\Exception $e) {
             $this->informUser(new UserInformArgs('subTheme', true, 'error', $e));
             return;
@@ -136,7 +136,7 @@ class ProblemFinalPresenter extends EntityPresenter
     public function handleDifficultyUpdate(int $problemId, int $difficultyId): void
     {
         try {
-            $this->functionality->update($problemId, ArrayHash::from(['difficulty' => $difficultyId]), true, false);
+            $this->functionality->update($problemId, ArrayHash::from(['difficulty' => $difficultyId]));
         } catch (\Exception $e) {
             $this->informUser(new UserInformArgs('difficulty', true, 'error', $e));
             return;
@@ -153,7 +153,7 @@ class ProblemFinalPresenter extends EntityPresenter
     public function handleStudentVisibleUpdate(int $problemId, bool $visible): void
     {
         try {
-            $this->functionality->update($problemId, ArrayHash::from(['studentVisible' => $visible]), true, false);
+            $this->functionality->update($problemId, ArrayHash::from(['studentVisible' => $visible]));
         } catch (\Exception $e) {
             $this->informUser(new UserInformArgs('studentVisible', true, 'error', $e));
             return;

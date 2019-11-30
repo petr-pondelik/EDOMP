@@ -54,7 +54,6 @@ class ProblemFinalRepository extends SecuredRepository
         $qb = $this->applyFilters($qb, $filters);
 
         return count($qb->getQuery()->getResult());
-
     }
 
     /**
@@ -90,36 +89,39 @@ class ProblemFinalRepository extends SecuredRepository
      */
     public function applyFilters(QueryBuilder $qb, array $filters): QueryBuilder
     {
+        bdump($filters);
         // Filter difficulty condition
-        if(isset($filters['difficulty'])){
+        if (isset($filters['difficulty'])) {
             $qb->andWhere('pf.difficulty IN (:difficultyIds)')
                 ->setParameter('difficultyIds', $filters['difficulty']);
         }
 
-        // Filter subtheme (theme) condition
-        if(isset($filters['theme'])){
+        // Filter SubTheme condition
+        if (isset($filters['subTheme'])) {
             $qb->andWhere('pf.subTheme IN (:subThemeIds)')
-                ->setParameter('subThemeIds', $filters['theme']);
+                ->setParameter('subThemeIds', $filters['subTheme']);
         }
 
         // Filter result condition
-        if(isset($filters['result'])){
-            if( in_array('0', $filters['result']) && !in_array('1', $filters['result']) ){
+        if (isset($filters['result']) && $filters['result']) {
+            if ((int) $filters['result'] === 1) {
                 $qb->andWhere('pf.result IS NOT NULL')
                     ->andWhere("pf.result <> ''");
-            }
-            else if( !in_array('0', $filters['result']) && in_array('1', $filters['result'])){
-                $qb->andWhere("pf.result = ''");
+            } else if ((int) $filters['result'] === 2) {
+                $qb->andWhere("pf.result IS NULL OR pf.result = ''");
             }
         }
 
-        if(isset($filters['sort_by_difficulty'])){
-            switch($filters['sort_by_difficulty']){
-                case 0: $qb = $qb->orderBy('pf.id', 'ASC');
+        if (isset($filters['sort_by_difficulty'])) {
+            switch ($filters['sort_by_difficulty']) {
+                case 0:
+                    $qb = $qb->orderBy('pf.id', 'ASC');
                     break;
-                case 1: $qb = $qb->orderBy('pf.difficulty', 'ASC');
+                case 1:
+                    $qb = $qb->orderBy('pf.difficulty', 'ASC');
                     break;
-                case 2: $qb = $qb->orderBy('pf.difficulty', 'DESC');
+                case 2:
+                    $qb = $qb->orderBy('pf.difficulty', 'DESC');
                     break;
             }
         }

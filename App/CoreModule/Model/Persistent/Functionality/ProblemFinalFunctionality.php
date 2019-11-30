@@ -88,7 +88,7 @@ class ProblemFinalFunctionality extends BaseFunctionality
     public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         $problemFinal = $this->repository->find($id);
-        if(!$problemFinal){
+        if (!$problemFinal) {
             throw new EntityNotFoundException('Entity for update not found.');
         }
         $this->setBasics($problemFinal, $data);

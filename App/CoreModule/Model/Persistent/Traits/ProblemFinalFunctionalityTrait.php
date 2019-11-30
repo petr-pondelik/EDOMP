@@ -113,7 +113,9 @@ trait ProblemFinalFunctionalityTrait
             $entity->setProblemTemplate($this->problemRepository->find($data->problemTemplateId));
         }
 
-        $entity->setIsGenerated(isset($data->isGenerated) && $data->isGenerated);
+        if (isset($data->isGenerated)) {
+            $entity->setIsGenerated($data->isGenerated);
+        }
 
         if (isset($data->matchesIndex)) {
             $entity->setMatchesIndex($data->matchesIndex);

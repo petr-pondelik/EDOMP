@@ -68,21 +68,22 @@ class ProblemFilterFormControl extends FormControl
         $form->getElementPrototype()->class('border-0 ajax');
 
         $difficultyOptions = $this->difficultyRepository->findAssoc([],'id');
-        $themeOptions = $this->subThemeRepository->findAssoc(['theme' => $this->themeId], 'id');
+        $subThemeOptions = $this->subThemeRepository->findAssoc(['theme' => $this->themeId], 'id');
 
         $form->addMultiSelect('difficulty', 'Obtížnost', $difficultyOptions)
             ->setHtmlAttribute('class', 'form-control selectpicker')
             ->setHtmlAttribute('title', 'Zvolte obtížnosti');
 
-        $form->addMultiSelect('theme', 'Témata', $themeOptions)
+        $form->addMultiSelect('subTheme', 'Témata', $subThemeOptions)
             ->setHtmlAttribute('class', 'form-control selectpicker')
             ->setHtmlAttribute('title', 'Zvolte témata');
 
-        $form->addMultiSelect('result', 'S řešením', [
-            0 => 'Ano',
-            1 => 'Ne'
+        $form->addSelect('result', 'S řešením', [
+            0 => 'Nefiltrovat',
+            1 => 'Ano',
+            2 => 'Ne'
         ])
-            ->setHtmlAttribute('class', 'form-control selectpicker')
+            ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('title', 'Zvolte');
 
         $form->addSelect('sort_by_difficulty', 'Řadit dle obtížnost', [

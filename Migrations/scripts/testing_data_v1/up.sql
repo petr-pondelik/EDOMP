@@ -15,7 +15,7 @@ INSERT INTO edomp.sub_theme (id, created_by_id, theme_id, created, label, teache
 INSERT INTO edomp.sub_theme (id, created_by_id, theme_id, created, label, teacher_level_secured) VALUES (2, 2, 1, '2019-06-16 10:14:52', '1.2. Kvadratické rovnice', 1);
 INSERT INTO edomp.sub_theme (id, created_by_id, theme_id, created, label, teacher_level_secured) VALUES (3, 2, 2, '2019-06-16 10:15:10', '2.1. Aritmetické posloupnosti', 1);
 INSERT INTO edomp.sub_theme (id, created_by_id, theme_id, created, label, teacher_level_secured) VALUES (4, 2, 2, '2019-06-20 13:05:03', '2.2. Geometrické posloupnosti', 1);
-INSERT INTO edomp.sub_theme (id, created_by_id, theme_id, created, label, teacher_level_secured) VALUES (5, 3, 2, '2019-06-20 13:05:03', '1.1. První lekce', 1);
+INSERT INTO edomp.sub_theme (id, created_by_id, theme_id, created, label, teacher_level_secured) VALUES (5, 3, 3, '2019-06-20 13:05:03', '1.1. První lekce', 1);
 
 
 # INSERT Difficulties
@@ -332,15 +332,16 @@ INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, cre
 INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (32, 1, 1, 1, 2, '$$ x - 1 = 4 $$', '', '', null, 0, 1, 1, '2019-11-29 16:27:04', 1, 'problemfinal');
 INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (33, 1, 2, 1, 2, '$$ \\frac{ -2 x}{ -1 } + \\frac{ 0 x}{ 2 } = 1 $$', '', '', null, 0, 1, 1, '2019-11-29 16:27:04', 1, 'problemfinal');
 INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (34, 1, 2, 1, 2, '$$ \\frac{ -2 x}{ -2 } + \\frac{ 0 x}{ -2 } = 2 $$', '', '', null, 0, 1, 1, '2019-11-29 16:27:04', 1, 'problemfinal');
-INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (35, 1, 1, 1, 2, '$$ x = $$', '', '', null, 0, 1, 1, '2019-11-29 16:27:04', 1, 'problemfinal');
-INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (36, 2, 2, 2, 2, '$$ 1 = \\frac{x - 1 + 4}{x^2 + x} + \\frac{ 3 }{x} $$', '', '', null, 0, 1, 1, '2019-11-29 16:28:57', 1, 'problemfinal');
+INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (35, 1, 1, 1, 2, '$$ x = $$', '', '', null, 0, 1, 0, '2019-11-29 16:27:04', 1, 'problemfinal');
+INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (36, 2, 2, 2, 2, '$$ 1 = \\frac{x - 1 + 4}{x^2 + x} + \\frac{ 3 }{x} $$', '', '', null, 0, 1, 0, '2019-11-29 16:28:57', 1, 'problemfinal');
 INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (37, 2, 2, 2, 2, '$$ 1 = \\frac{x - 1 + 4}{x^2 + x} + \\frac{ 3 }{x} $$', '', '', null, 0, 1, 1, '2019-11-29 16:28:57', 1, 'problemfinal');
-INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (38, 2, 1, 2, 2, '$$ -5 x^2 + x + 5 = 4 $$', '', '', null, 0, 1, 1, '2019-11-29 16:28:57', 1, 'problemfinal');
+INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (38, 2, 1, 2, 2, '$$ -5 x^2 + x + 5 = 4 $$', '', '', null, 0, 1, 0, '2019-11-29 16:28:57', 1, 'problemfinal');
 INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (39, 2, 1, 2, 2, '$$ -5 x^2 + x + 5 = 4 $$', '', '', null, 0, 1, 1, '2019-11-29 16:28:57', 1, 'problemfinal');
 INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (40, 2, 2, 2, 2, '$$ 1 = \\frac{x - 2 + 4}{x^2 + x} + \\frac{ -1 }{x} $$', '', '', null, 0, 1, 1, '2019-11-29 16:28:57', 1, 'problemfinal');
+INSERT INTO edomp.problem (id, problem_type_id, difficulty_id, sub_theme_id, created_by_id, body, text_before, text_after, success_rate, is_template, is_generated, student_visible, created, teacher_level_secured, discr) VALUES (41, null, 1, 5, 3, '$$ 2 * \\big( 5 - 4 + 5 \\big) + 8 x + 4 x $$', 'Upravte následující výraz', '', null, 0, 0, 1, '2019-11-30 11:37:28', 1, 'problemfinal');
 
-INSERT INTO edomp.problem_final (id, problem_template_id, matches_index, result) VALUES (31, 8, 1, null);
-INSERT INTO edomp.problem_final (id, problem_template_id, matches_index, result) VALUES (32, 1, 4, null);
+INSERT INTO edomp.problem_final (id, problem_template_id, matches_index, result) VALUES (31, 8, 1, '$$ x = \\frac{13}{5} $$');
+INSERT INTO edomp.problem_final (id, problem_template_id, matches_index, result) VALUES (32, 1, 4, '$$ x = 5 $$');
 INSERT INTO edomp.problem_final (id, problem_template_id, matches_index, result) VALUES (33, 6, 291, null);
 INSERT INTO edomp.problem_final (id, problem_template_id, matches_index, result) VALUES (34, 6, 169, null);
 INSERT INTO edomp.problem_final (id, problem_template_id, matches_index, result) VALUES (35, 7, 0, null);
@@ -349,6 +350,6 @@ INSERT INTO edomp.problem_final (id, problem_template_id, matches_index, result)
 INSERT INTO edomp.problem_final (id, problem_template_id, matches_index, result) VALUES (38, 11, 0, null);
 INSERT INTO edomp.problem_final (id, problem_template_id, matches_index, result) VALUES (39, 11, 0, null);
 INSERT INTO edomp.problem_final (id, problem_template_id, matches_index, result) VALUES (40, 15, 74, null);
-
+INSERT INTO edomp.problem_final (id, problem_template_id, matches_index, result) VALUES (41, null, null, '');
 
 SET FOREIGN_KEY_CHECKS=1;
