@@ -55,7 +55,6 @@ use App\CoreModule\Model\Persistent\Functionality\ProblemTemplate\ArithmeticSequ
 use App\CoreModule\Model\Persistent\Functionality\ProblemTemplate\GeometricSequenceTemplateFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\ProblemTemplate\LinearEquationTemplateFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\ProblemTemplate\QuadraticEquationTemplateFunctionality;
-use App\CoreModule\Model\Persistent\Functionality\ProblemTypeFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\SubThemeFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\SuperGroupFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
@@ -319,9 +318,6 @@ class CoreModuleExtension extends ModuleExtension
 
         $builder->addDefinition($this->prefix('problemFunctionality'))
             ->setType(ProblemFunctionality::class);
-
-        $builder->addDefinition($this->prefix('problemTypeFunctionality'))
-            ->setType(ProblemTypeFunctionality::class);
 
         $builder->addDefinition($this->prefix('problemFinalTestVariantAssociationFunctionality'))
             ->setType(ProblemFinalTestVariantAssociationFunctionality::class);
