@@ -216,7 +216,7 @@ class FileService
 
         //Insert logo into DB with temporary extension column
         $this->logoFunctionality->create(ArrayHash::from([
-            'extension_tmp' => $extension
+            'extensionTmp' => $extension
         ]));
 
         return $id;
@@ -264,7 +264,7 @@ class FileService
 
         //Update logo DB record's temporary extension column
         $this->logoFunctionality->update($id, ArrayHash::from([
-            'extension_tmp' => $extension
+            'extensionTmp' => $extension
         ]));
 
         return $id;

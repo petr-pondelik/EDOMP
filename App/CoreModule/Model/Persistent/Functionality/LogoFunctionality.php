@@ -10,10 +10,12 @@ namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\Logo;
+use App\CoreModule\Model\Persistent\Entity\User;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\LogoRepository;
 use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use Doctrine\ORM\EntityNotFoundException;
+use Nette\Utils\DateTime;
 
 /**
  * Class LogoFunctionality
@@ -49,16 +51,26 @@ class LogoFunctionality extends BaseFunctionality
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\CoreModule\Exceptions\EntityException
+     * @throws EntityNotFoundException
      */
     public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $logo = new Logo();
 
-        $logo->setExtensionTmp($data->extension_tmp);
-        $logo->setLabel('label');
+        $logo->setExtensionTmp($data['extensionTmp']);
+        $logo->setLabel($data['label']);
 
-        if (isset($data->createdBy)) {
-            $logo->setCreatedBy($this->userRepository->find($data->createdBy));
+        if (isset($data['createdBy'])) {
+            /** @var User|null $user */
+            $user = $this->userRepository->find($data['createdBy']);
+            if (!$user) {
+                throw new EntityNotFoundException('User not found.');
+            }
+            $logo->setCreatedBy($user);
+        }
+
+        if (isset($data['created'])) {
+            $logo->setCreated(DateTime::from($data['created']));
         }
 
         $this->em->persist($logo);
@@ -80,29 +92,31 @@ class LogoFunctionality extends BaseFunctionality
      */
     public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
-        bdump('UPDATE');
-        bdump($data);
-
         /** @var Logo $logo */
         $logo = $this->repository->find($id);
-
         if (!$logo) {
-            throw new EntityNotFoundException('Entity for update not found.');
+            throw new EntityNotFoundException('Logo for update not found.');
         }
-        if (isset($data->extension_tmp)) {
-            $logo->setExtensionTmp($data->extension_tmp);
+
+        if (isset($data['extensionTmp'])) {
+            $logo->setExtensionTmp($data['extensionTmp']);
         }
-        if (isset($data->extension)) {
-            $logo->setExtension($data->extension);
+        if (isset($data['extension'])) {
+            $logo->setExtension($data['extension']);
         }
-        if (isset($data->path)) {
-            $logo->setPath($data->path);
+        if (isset($data['path'])) {
+            $logo->setPath($data['path']);
         }
-        if (isset($data->label)) {
-            $logo->setLabel($data->label);
+        if (isset($data['label'])) {
+            $logo->setLabel($data['label']);
         }
-        if (isset($data->createdBy)) {
-            $logo->setCreatedBy($this->userRepository->find($data->createdBy));
+        if (isset($data['createdBy'])) {
+            /** @var User|null $user */
+            $user = $this->userRepository->find($data['createdBy']);
+            if (!$user) {
+                throw new EntityNotFoundException('User not found.');
+            }
+            $logo->setCreatedBy($user);
         }
 
         $this->em->persist($logo);
