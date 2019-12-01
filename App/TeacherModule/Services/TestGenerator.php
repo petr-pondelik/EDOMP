@@ -200,6 +200,7 @@ class TestGenerator
      * @param Test|null $original
      * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \ReflectionException
+     * @throws \Doctrine\ORM\EntityNotFoundException
      */
     protected function createPersistentFilter(Test $test, ArrayHash $data, array $selectedProblems, int $problemSeq, Test $original = null): void
     {
@@ -220,6 +221,7 @@ class TestGenerator
      * @param int $seq
      * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \ReflectionException
+     * @throws \Doctrine\ORM\EntityNotFoundException
      */
     protected function recreatePersistentFilter(Test $test, Test $original, int $seq): void
     {
@@ -247,6 +249,7 @@ class TestGenerator
      * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      * @throws \ReflectionException
+     * @throws \Doctrine\ORM\EntityNotFoundException
      */
     protected function generateProblemVariant
     (
@@ -383,6 +386,7 @@ class TestGenerator
      * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      * @throws \ReflectionException
+     * @throws \Doctrine\ORM\EntityNotFoundException
      */
     protected function generateTestVariant(Test $test, Variant $variant, ArrayHash $data, Test $original = null): Test
     {
@@ -417,6 +421,7 @@ class TestGenerator
      * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      * @throws \ReflectionException
+     * @throws \Doctrine\ORM\EntityNotFoundException
      */
     public function generateTest(ArrayHash $data): ?Test
     {
@@ -447,6 +452,7 @@ class TestGenerator
      * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
      * @throws \ReflectionException
+     * @throws \Doctrine\ORM\EntityNotFoundException
      */
     public function regenerateTest(int $id, ArrayHash $data): ?Test
     {

@@ -6,7 +6,7 @@
  * Time: 16:24
  */
 
-namespace App\Tests\Traits;
+namespace App\Tests\MockTraits\Entity;
 
 use App\CoreModule\Model\Persistent\Entity\ProblemFinalTestVariantAssociation;
 

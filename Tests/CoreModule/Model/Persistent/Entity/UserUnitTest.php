@@ -9,9 +9,9 @@
 namespace App\Tests\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Entity\User;
-use App\Tests\Traits\GroupMockSetUpTrait;
-use App\Tests\Traits\RoleMockSetUpTrait;
-use App\Tests\Traits\UserMockSetUpTrait;
+use App\Tests\MockTraits\Entity\GroupMockSetUpTrait;
+use App\Tests\MockTraits\Entity\RoleMockSetUpTrait;
+use App\Tests\MockTraits\Entity\UserMockSetUpTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Nette\Security\Passwords;
 

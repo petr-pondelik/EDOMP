@@ -69,7 +69,7 @@ class SuperGroupFunctionality extends BaseFunctionality
     {
         $superGroup = new SuperGroup();
         $superGroup->setLabel($data->label);
-        if(isset($data->userId)){
+        if (isset($data->userId)) {
             $superGroup->setCreatedBy($this->userRepository->find($data->userId));
         }
         $this->em->persist($superGroup);
@@ -108,7 +108,7 @@ class SuperGroupFunctionality extends BaseFunctionality
         $superGroup = $this->repository->find($id);
         $superGroup->setThemes(new ArrayCollection());
         $superGroup = $this->attachThemes($superGroup, $themes);
-        foreach ($superGroup->getGroups()->getValues() as $group){
+        foreach ($superGroup->getGroups()->getValues() as $group) {
             $this->groupFunctionality->updatePermissions($group->getId(), $themes);
         }
         $this->em->persist($superGroup);
@@ -124,7 +124,7 @@ class SuperGroupFunctionality extends BaseFunctionality
      */
     protected function attachThemes(SuperGroup $superGroup, array $themes): SuperGroup
     {
-        foreach ($themes as $theme){
+        foreach ($themes as $theme) {
             $superGroup->addTheme($this->themeRepository->find($theme));
         }
         return $superGroup;

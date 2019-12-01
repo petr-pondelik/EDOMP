@@ -15,6 +15,7 @@ use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\Strings;
 
 /**
@@ -71,13 +72,13 @@ class FilterFunctionality extends BaseFunctionality
      * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
+     * @throws EntityNotFoundException
      * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \ReflectionException
      */
     public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         bdump('CREATE FILTER FUNCTIONALITY');
-        bdump($data);
 
         $entity = new Filter();
         $reflection = new \ReflectionClass(Filter::class);
@@ -90,8 +91,6 @@ class FilterFunctionality extends BaseFunctionality
         }
 
         $this->attachEntities($entity, $data);
-
-        bdump($entity);
 
         $this->em->persist($entity);
 
@@ -117,7 +116,7 @@ class FilterFunctionality extends BaseFunctionality
      * @param Filter $entity
      * @param iterable $data
      * @return Filter
-     * @throws \Exception
+     * @throws EntityNotFoundException
      */
     public function attachEntities(Filter $entity, iterable $data): Filter
     {
@@ -131,24 +130,34 @@ class FilterFunctionality extends BaseFunctionality
         $selectedFilters = $data['selectedFilters'];
 
         foreach ($selectedFilters['difficulty'] as $id) {
+            if (!isset($difficulties[$id])) {
+                throw new EntityNotFoundException('Difficulty not found.');
+            }
             $entity->addDifficulty($difficulties[$id]);
         }
 
         foreach ($selectedFilters['conditionType'] as $typeId => $accessors) {
-            bdump($accessors);
             if ($accessors) {
                 foreach ($accessors as $accessor) {
-                    bdump($accessor);
+                    if (!isset($problemConditions[$problemConditions[$typeId][$accessor]])) {
+                        throw new EntityNotFoundException('ProblemConditionType not found.');
+                    }
                     $entity->addProblemCondition($problemConditions[$typeId][$accessor]);
                 }
             }
         }
 
         foreach ($selectedFilters['subTheme'] as $id) {
+            if (!isset($subThemes[$id])) {
+                throw new EntityNotFoundException('SubTheme not found.');
+            }
             $entity->addSubTheme($subThemes[$id]);
         }
 
         foreach ($selectedFilters['problemType'] as $id) {
+            if (!isset($problemTypes[$id])) {
+                throw new EntityNotFoundException('ProblemType not found.');
+            }
             $entity->addProblemType($problemTypes[$id]);
         }
 

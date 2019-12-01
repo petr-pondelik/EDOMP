@@ -11,11 +11,11 @@ declare(strict_types = 1);
 namespace App\Tests\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Entity\Filter;
-use App\Tests\Traits\DifficultySetUpTrait;
-use App\Tests\Traits\ProblemConditionSetUpTrait;
-use App\Tests\Traits\ProblemTypeSetUpMockTrait;
-use App\Tests\Traits\SubThemeMockSetUpTrait;
-use App\Tests\Traits\TestMockSetUpTrait;
+use App\Tests\MockTraits\Entity\DifficultySetUpTrait;
+use App\Tests\MockTraits\Entity\ProblemConditionSetUpTrait;
+use App\Tests\MockTraits\Entity\ProblemTypeSetUpMockTrait;
+use App\Tests\MockTraits\Entity\SubThemeMockSetUpTrait;
+use App\Tests\MockTraits\Entity\TestMockSetUpTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**

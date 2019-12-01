@@ -11,10 +11,10 @@ declare(strict_types = 1);
 namespace App\Tests\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Entity\Theme;
-use App\Tests\Traits\GroupMockSetUpTrait;
-use App\Tests\Traits\SubThemeMockSetUpTrait;
-use App\Tests\Traits\SuperGroupMockSetUpTrait;
-use App\Tests\Traits\UserMockSetUpTrait;
+use App\Tests\MockTraits\Entity\GroupMockSetUpTrait;
+use App\Tests\MockTraits\Entity\SubThemeMockSetUpTrait;
+use App\Tests\MockTraits\Entity\SuperGroupMockSetUpTrait;
+use App\Tests\MockTraits\Entity\UserMockSetUpTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**

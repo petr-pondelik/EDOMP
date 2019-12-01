@@ -15,6 +15,7 @@ use App\CoreModule\Model\Persistent\Entity\Theme;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\ThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\UserRepository;
+use Nette\Utils\DateTime;
 
 /**
  * Class ThemeFunctionality
@@ -56,10 +57,17 @@ class ThemeFunctionality extends BaseFunctionality
         $theme = new Theme();
         $theme->setLabel($data->label);
         $theme->setCreatedBy($this->userRepository->find($data->userId));
+
+        if (isset($data->created)) {
+            $theme->setCreated(DateTime::from($data->created));
+        }
+
         $this->em->persist($theme);
-        if($flush){
+
+        if ($flush) {
             $this->em->flush();
         }
+
         return $theme;
     }
 
@@ -75,7 +83,7 @@ class ThemeFunctionality extends BaseFunctionality
         $theme = $this->repository->find($id);
         $theme->setLabel($data->label);
         $this->em->persist($theme);
-        if($flush){
+        if ($flush) {
             $this->em->flush();
         }
         return $theme;

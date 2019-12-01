@@ -82,9 +82,8 @@ class LogoFunctionality extends BaseFunctionality
     {
         bdump('UPDATE');
         bdump($data);
-        /**
-         * @var Logo $logo
-         */
+
+        /** @var Logo $logo */
         $logo = $this->repository->find($id);
 
         if (!$logo) {
@@ -105,7 +104,6 @@ class LogoFunctionality extends BaseFunctionality
         if (isset($data->createdBy)) {
             $logo->setCreatedBy($this->userRepository->find($data->createdBy));
         }
-
 
         $this->em->persist($logo);
 

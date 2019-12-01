@@ -11,7 +11,7 @@ declare(strict_types = 1);
 namespace App\Tests\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Entity\ProblemType;
-use App\Tests\Traits\ProblemConditionTypeSetUpTrait;
+use App\Tests\MockTraits\Entity\ProblemConditionTypeSetUpTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**

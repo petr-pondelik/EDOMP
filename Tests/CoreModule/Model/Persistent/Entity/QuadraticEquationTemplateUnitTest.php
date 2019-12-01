@@ -9,9 +9,9 @@
 namespace App\Tests\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\QuadraticEquationTemplate;
-use App\Tests\Traits\DifficultySetUpTrait;
-use App\Tests\Traits\SubThemeMockSetUpTrait;
-use App\Tests\Traits\UserMockSetUpTrait;
+use App\Tests\MockTraits\Entity\DifficultySetUpTrait;
+use App\Tests\MockTraits\Entity\SubThemeMockSetUpTrait;
+use App\Tests\MockTraits\Entity\UserMockSetUpTrait;
 
 /**
  * Class QuadraticEquationTemplateUnitTest

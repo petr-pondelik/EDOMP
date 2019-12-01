@@ -10,8 +10,8 @@ namespace App\Tests\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Entity\ProblemFinalTestVariantAssociation;
 use App\CoreModule\Model\Persistent\Entity\TestVariant;
-use App\Tests\Traits\ProblemFinalTestVariantAssociationSetUpMockTrait;
-use App\Tests\Traits\TestMockSetUpTrait;
+use App\Tests\MockTraits\Entity\ProblemFinalTestVariantAssociationSetUpMockTrait;
+use App\Tests\MockTraits\Entity\TestMockSetUpTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**

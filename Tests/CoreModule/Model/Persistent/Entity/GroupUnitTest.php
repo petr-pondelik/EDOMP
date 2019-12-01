@@ -12,9 +12,9 @@ namespace App\Tests\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Entity\Group;
 use App\CoreModule\Model\Persistent\Entity\Theme;
-use App\Tests\Traits\SuperGroupMockSetUpTrait;
-use App\Tests\Traits\ThemeMockSetUpTrait;
-use App\Tests\Traits\UserMockSetUpTrait;
+use App\Tests\MockTraits\Entity\SuperGroupMockSetUpTrait;
+use App\Tests\MockTraits\Entity\ThemeMockSetUpTrait;
+use App\Tests\MockTraits\Entity\UserMockSetUpTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**

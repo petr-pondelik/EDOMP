@@ -9,7 +9,7 @@
 namespace App\Tests\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Entity\Logo;
-use App\Tests\Traits\UserMockSetUpTrait;
+use App\Tests\MockTraits\Entity\UserMockSetUpTrait;
 
 /**
  * Class LogoUnitTest

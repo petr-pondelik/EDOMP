@@ -10,10 +10,10 @@ namespace App\Tests\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Entity\Test;
 use App\CoreModule\Model\Persistent\Entity\TestVariant;
-use App\Tests\Traits\GroupMockSetUpTrait;
-use App\Tests\Traits\LogoMockSetUpTrait;
-use App\Tests\Traits\TestVariantMockSetUpTrait;
-use App\Tests\Traits\UserMockSetUpTrait;
+use App\Tests\MockTraits\Entity\GroupMockSetUpTrait;
+use App\Tests\MockTraits\Entity\LogoMockSetUpTrait;
+use App\Tests\MockTraits\Entity\TestVariantMockSetUpTrait;
+use App\Tests\MockTraits\Entity\UserMockSetUpTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**

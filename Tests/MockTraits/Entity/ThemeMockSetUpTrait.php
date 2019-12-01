@@ -6,7 +6,7 @@
  * Time: 1:08
  */
 
-namespace App\Tests\Traits;
+namespace App\Tests\MockTraits\Entity;
 
 use App\CoreModule\Model\Persistent\Entity\Theme;
 

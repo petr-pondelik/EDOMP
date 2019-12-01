@@ -9,9 +9,9 @@
 namespace App\Tests\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Entity\ProblemFinalTestVariantAssociation;
-use App\Tests\Traits\ProblemFinalMockSetUpTrait;
-use App\Tests\Traits\ProblemTemplateSetUpMockTrait;
-use App\Tests\Traits\TestVariantMockSetUpTrait;
+use App\Tests\MockTraits\Entity\ProblemFinalMockSetUpTrait;
+use App\Tests\MockTraits\Entity\ProblemTemplateSetUpMockTrait;
+use App\Tests\MockTraits\Entity\TestVariantMockSetUpTrait;
 
 /**
  * Class ProblemFinalTestVariantAssociationUniTest

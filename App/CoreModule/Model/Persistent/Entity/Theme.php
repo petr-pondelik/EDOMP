@@ -23,7 +23,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Theme extends BaseEntity
 {
     use LabelTrait;
-
     use CreatedByTrait;
 
     /**
