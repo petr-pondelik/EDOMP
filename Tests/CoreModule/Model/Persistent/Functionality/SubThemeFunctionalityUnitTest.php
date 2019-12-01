@@ -115,5 +115,21 @@ final class SubThemeFunctionalityUnitTest extends FunctionalityUnitTestCase
         // Update Theme and test it against expected
         $updated = $this->functionality->update(1, $data);
         $this->assertEquals($expected, $updated);
+
+        // Test non-valid update
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('SubTheme for update not found.');
+        $this->functionality->update(50, $data);
+    }
+
+    /**
+     * @throws \Doctrine\ORM\EntityNotFoundException
+     */
+    public function testDelete(): void
+    {
+        $this->assertTrue($this->functionality->delete(1));
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('Entity for deletion was not found.');
+        $this->functionality->delete(50);
     }
 }

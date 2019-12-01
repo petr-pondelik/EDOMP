@@ -68,26 +68,24 @@ class SubThemeFunctionality extends BaseFunctionality
     {
         $subTheme = new SubTheme();
 
+        $subTheme->setLabel($data['label']);
+
         /** @var Theme|null $theme */
-        $theme = $this->themeRepository->find($data->theme);
+        $theme = $this->themeRepository->find($data['theme']);
         if (!$theme) {
             throw new EntityNotFoundException('Theme not found.');
         }
-
-        $subTheme->setLabel($data->label);
         $subTheme->setTheme($theme);
 
         /** @var User|null $user */
-        $user = $this->userRepository->find($data->userId);
-
+        $user = $this->userRepository->find($data['userId']);
         if (!$user) {
             throw new EntityNotFoundException('User not found.');
         }
-
         $subTheme->setCreatedBy($user);
 
-        if (isset($data->created)) {
-            $subTheme->setCreated(DateTime::from($data->created));
+        if (isset($data['created'])) {
+            $subTheme->setCreated(DateTime::from($data['created']));
         }
 
         $this->em->persist($subTheme);
@@ -113,7 +111,7 @@ class SubThemeFunctionality extends BaseFunctionality
         $subTheme = $this->repository->find($id);
 
         if (!$subTheme) {
-            throw new EntityNotFoundException('SubTheme to update not found.');
+            throw new EntityNotFoundException('SubTheme for update not found.');
         }
 
         if (isset($data->label)) {

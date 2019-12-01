@@ -70,7 +70,7 @@ trait SubThemeRepositoryMockTrait
             });
 
         // Set ThemeRepository expected return values for findAssoc
-        $this->difficultyRepositoryMock->expects($this->any())
+        $this->subThemeRepositoryMock->expects($this->any())
             ->method('findAssoc')
             ->willReturnCallback(static function ($arg) use ($firstSubTheme, $secondSubTheme) {
                 switch ($arg) {

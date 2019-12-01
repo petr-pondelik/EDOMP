@@ -34,6 +34,9 @@ trait ThemeRepositoryMockTrait
      */
     protected $secondTheme;
 
+    /**
+     * @throws \Exception
+     */
     protected function setUpThemeRepositoryMock(): void
     {
         $this->themeRepositoryMock = $this->getMockBuilder(ThemeRepository::class)

@@ -64,14 +64,18 @@ abstract class BaseFunctionality
      */
     public function delete(int $id, bool $flush = true): bool
     {
-        $theme = $this->repository->find($id);
-        if(!$theme){
+        $entity = $this->repository->find($id);
+
+        if (!$entity) {
             throw new EntityNotFoundException('Entity for deletion was not found.');
         }
-        $this->em->remove($theme);
-        if($flush){
+
+        $this->em->remove($entity);
+
+        if ($flush) {
             $this->em->flush();
         }
+
         return true;
     }
 }

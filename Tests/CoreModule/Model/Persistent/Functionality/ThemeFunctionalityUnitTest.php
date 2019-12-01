@@ -12,6 +12,7 @@ use App\CoreModule\Model\Persistent\Entity\Theme;
 use App\CoreModule\Model\Persistent\Functionality\ThemeFunctionality;
 use App\Tests\MockTraits\Repository\ThemeRepositoryMockTrait;
 use App\Tests\MockTraits\Repository\UserRepositoryMockTrait;
+use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
 
@@ -24,6 +25,9 @@ final class ThemeFunctionalityUnitTest extends FunctionalityUnitTestCase
     use ThemeRepositoryMockTrait;
     use UserRepositoryMockTrait;
 
+    /**
+     * @throws \Exception
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -55,6 +59,20 @@ final class ThemeFunctionalityUnitTest extends FunctionalityUnitTestCase
         $this->assertEquals($expected, $created);
     }
 
+    public function testCreateUserNotFound(): void
+    {
+        // Data for SubCategory non-valid create
+        $data = ArrayHash::from([
+            'label' => 'TEST_THEME',
+            'created' => $this->dateTimeStr,
+            'userId' => 50,
+        ]);
+
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('User not found.');
+        $this->functionality->create($data);
+    }
+
     public function testUpdate(): void
     {
         // Data for Theme update
@@ -71,5 +89,21 @@ final class ThemeFunctionalityUnitTest extends FunctionalityUnitTestCase
         // Update Theme and test it against expected
         $updated = $this->functionality->update(1, $data);
         $this->assertEquals($expected, $updated);
+
+        // Test non-valid update
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('Entity for update not found.');
+        $this->functionality->update(50, $data);
+    }
+
+    /**
+     * @throws \Doctrine\ORM\EntityNotFoundException
+     */
+    public function testDelete(): void
+    {
+        $this->assertTrue($this->functionality->delete(1));
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('Entity for deletion was not found.');
+        $this->functionality->delete(50);
     }
 }
