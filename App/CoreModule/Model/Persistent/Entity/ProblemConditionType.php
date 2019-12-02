@@ -10,6 +10,7 @@ namespace App\CoreModule\Model\Persistent\Entity;
 
 use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -30,9 +31,10 @@ class ProblemConditionType extends BaseEntity
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     *
      * @Assert\Type(
      *     type="string",
-     *     message="Label must be {{ type }}."
+     *     message="Prompt must be {{ type }}."
      * )
      *
      * @var string|null
@@ -41,6 +43,8 @@ class ProblemConditionType extends BaseEntity
 
     /**
      * @ORM\OneToMany(targetEntity="ProblemCondition", mappedBy="problemConditionType", cascade={"persist", "merge"})
+     *
+     * @var Collection
      */
     protected $problemConditions;
 
@@ -51,6 +55,7 @@ class ProblemConditionType extends BaseEntity
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     *
      * @Assert\Type(
      *     type="bool",
      *     message="IsValidation must be {{ type }}."

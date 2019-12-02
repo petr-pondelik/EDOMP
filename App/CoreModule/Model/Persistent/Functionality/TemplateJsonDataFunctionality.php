@@ -9,11 +9,14 @@
 namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
+use App\CoreModule\Model\Persistent\Entity\ProblemConditionType;
 use App\CoreModule\Model\Persistent\Entity\TemplateJsonData;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
 use App\CoreModule\Model\Persistent\Repository\TemplateJsonDataRepository;
+use Doctrine\ORM\EntityNotFoundException;
+use Nette\Utils\DateTime;
 
 /**
  * Class TemplateJsonDataFunctionality
@@ -42,7 +45,8 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
     (
         ConstraintEntityManager $entityManager,
         TemplateJsonDataRepository $repository,
-        ProblemTemplateRepository $problemTemplateRepository, ProblemConditionTypeRepository $problemConditionTypeRepository
+        ProblemTemplateRepository $problemTemplateRepository,
+        ProblemConditionTypeRepository $problemConditionTypeRepository
     )
     {
         parent::__construct($entityManager);
@@ -58,31 +62,44 @@ class TemplateJsonDataFunctionality extends BaseFunctionality
      * @param int|null $conditionTypeId
      * @return BaseEntity|null
      * @throws \App\CoreModule\Exceptions\EntityException
+     * @throws EntityNotFoundException
      */
     public function create(iterable $data, bool $flush = true, int $templateId = null, int $conditionTypeId = null): ?BaseEntity
     {
-        if(!$templateId){
+        if (!$templateId) {
             $templateId = $this->problemTemplateRepository->getSequenceVal();
         }
-        if( $jsonData = $this->repository->findOneBy([ 'templateId' => $templateId, 'problemConditionType' => $conditionTypeId ]) ){
-            $jsonData->setJsonData($data->jsonData);
+
+        if ($jsonData = $this->repository->findOneBy(['templateId' => $templateId, 'problemConditionType' => $conditionTypeId])) {
+            $jsonData->setJsonData($data['jsonData']);
             $this->em->persist($jsonData);
             $this->em->flush();
             return $jsonData;
         }
+
         $jsonData = new TemplateJsonData();
-        $jsonData->setJsonData($data->jsonData);
+        $jsonData->setJsonData($data['jsonData']);
         $jsonData->setTemplateId($templateId);
-        if($conditionTypeId){
-            $jsonData->setProblemConditionType($this->problemConditionTypeRepository->find($conditionTypeId));
+
+        if ($conditionTypeId) {
+            /** @var ProblemConditionType|null $conditionType */
+            $conditionType = $this->problemConditionTypeRepository->find($conditionTypeId);
+            if (!$conditionType) {
+                throw new EntityNotFoundException('ProblemConditionType not found.');
+            }
+            $jsonData->setProblemConditionType($conditionType);
         }
-        if(isset($data->created)){
-            $jsonData->setCreated($data->created);
+
+        if (isset($data['created'])) {
+            $jsonData->setCreated(DateTime::from($data['created']));
         }
+
         $this->em->persist($jsonData);
+
         if ($flush) {
             $this->em->flush();
         }
+
         return $jsonData;
     }
 

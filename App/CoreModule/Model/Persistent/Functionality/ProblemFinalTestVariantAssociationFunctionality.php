@@ -11,6 +11,7 @@ namespace App\CoreModule\Model\Persistent\Functionality;
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\Strings;
 
 /**
@@ -24,7 +25,11 @@ class ProblemFinalTestVariantAssociationFunctionality extends BaseFunctionality
      * @param ConstraintEntityManager $entityManager
      * @param ProblemFinalTestVariantAssociationRepository $repository
      */
-    public function __construct(ConstraintEntityManager $entityManager, ProblemFinalTestVariantAssociationRepository $repository)
+    public function __construct
+    (
+        ConstraintEntityManager $entityManager,
+        ProblemFinalTestVariantAssociationRepository $repository
+    )
     {
         parent::__construct($entityManager);
         $this->repository = $repository;
@@ -45,24 +50,32 @@ class ProblemFinalTestVariantAssociationFunctionality extends BaseFunctionality
      * @param iterable $data
      * @param bool $flush
      * @return BaseEntity|null
+     * @throws EntityNotFoundException
      * @throws \App\CoreModule\Exceptions\EntityException
      */
     public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
         $association = $this->repository->findOneBy([
             'problemFinal.id' => $id,
-            'testVariant.id' => $data->testVariant
+            'testVariant.id' => $data['testVariant']
         ]);
-        if(empty($data->successRate)){
+
+        if (!$association) {
+            throw new EntityNotFoundException('Association for update not found.');
+        }
+
+        if (empty($data['successRate'])) {
             $association->setSuccessRate(null);
+        } else {
+            $association->setSuccessRate(Strings::replace($data['successRate'], '~,~', '.'));
         }
-        else{
-            $association->setSuccessRate(Strings::replace($data->successRate, '~,~', '.'));
-        }
+
         $this->em->persist($association);
-        if($flush) {
+
+        if ($flush) {
             $this->em->flush();
         }
+
         return $association;
     }
 }

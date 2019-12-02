@@ -398,15 +398,12 @@ class TestGenerator
             if (self::isProblemToGenerate($seq, $data, $original)) {
                 $testVariant = $this->generateProblemVariant($test, $testVariant, $variant, $data, $seq, $original);
             } else {
-                bdump($variant);
                 $testVariant = $this->testVariantFunctionality->attachAssociationFromOriginal($testVariant, $original->getProblemFinalAssociation($variant->getId(), $seq));
                 if ($variant->getId() === 0) {
                     $this->recreatePersistentFilter($test, $original, $seq);
                 }
             }
         }
-
-        bdump($testVariant);
 
         $test->addTestVariant($testVariant);
 
@@ -426,10 +423,7 @@ class TestGenerator
     public function generateTest(ArrayHash $data): ?Test
     {
         bdump('GENERATE TEST');
-        bdump($data);
-
         $variants = $this->testGeneratorHelper::getVariants($data);
-
         $test = $this->testFunctionality->create($this->testGeneratorHelper::preprocessTestBasicData($data), false);
 
         if ($test) {

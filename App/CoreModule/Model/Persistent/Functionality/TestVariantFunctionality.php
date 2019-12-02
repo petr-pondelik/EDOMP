@@ -14,6 +14,7 @@ use App\CoreModule\Model\Persistent\Entity\ProblemFinalTestVariantAssociation;
 use App\CoreModule\Model\Persistent\Entity\TestVariant;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\TestVariantRepository;
+use Nette\Utils\DateTime;
 
 /**
  * Class TestVariantFunctionality
@@ -44,9 +45,16 @@ class TestVariantFunctionality extends BaseFunctionality
     public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $entity = new TestVariant();
-        $entity->setLabel($data->variantLabel);
-        $entity->setTest($data->test);
+
+        $entity->setLabel($data['variantLabel']);
+        $entity->setTest($data['test']);
+
+        if (isset($data['created'])) {
+            $entity->setCreated(DateTime::from($data['created']));
+        }
+
         $this->em->persist($entity);
+
         return $entity;
     }
 
@@ -95,6 +103,7 @@ class TestVariantFunctionality extends BaseFunctionality
         $association = new ProblemFinalTestVariantAssociation();
         $association->setTestVariant($testVariant);
         $association->setProblemFinal($original->getProblemFinal());
+        $association->setProblemTemplate($original->getProblemTemplate());
         $association->setNextPage($original->isNextPage());
         $this->em->persist($association);
         $testVariant->addProblemFinalAssociation($association);

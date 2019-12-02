@@ -270,6 +270,7 @@ final class QuadraticEquationPlugin extends EquationPlugin
      * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Nette\Utils\JsonException
+     * @throws \Doctrine\ORM\EntityNotFoundException
      */
     public function validateDiscriminantCond(QuadraticEquationTemplateNP $data): bool
     {
