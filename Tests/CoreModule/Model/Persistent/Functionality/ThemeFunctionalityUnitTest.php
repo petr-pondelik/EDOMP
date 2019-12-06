@@ -73,6 +73,9 @@ final class ThemeFunctionalityUnitTest extends FunctionalityUnitTestCase
         $this->functionality->create($data);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testUpdate(): void
     {
         // Data for Theme update

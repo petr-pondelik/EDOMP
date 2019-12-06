@@ -50,6 +50,7 @@ trait ProblemTypeRepositoryMockTrait
         $firstProblemType->setLabel('TEST_FIRST_PROBLEM_TYPE');
         $firstProblemType->setKeyLabel('testFirstProblemType');
         $firstProblemType->setCreated(DateTime::from('2019-11-29 16:10:40'));
+        $this->firstProblemType = $firstProblemType;
 
         // Create second ProblemType
         $secondProblemType = new ProblemType();
@@ -57,6 +58,7 @@ trait ProblemTypeRepositoryMockTrait
         $secondProblemType->setLabel('TEST_SECOND_PROBLEM_TYPE');
         $secondProblemType->setKeyLabel('testSecondProblemType');
         $secondProblemType->setCreated(DateTime::from('2019-11-29 16:10:40'));
+        $this->secondProblemType = $secondProblemType;
 
         // Set ProblemTypeRepository expected return values for find
         $this->problemTypeRepositoryMock->expects($this->any())

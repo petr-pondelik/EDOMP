@@ -20,6 +20,12 @@ use Nette\Utils\ArrayHash;
 interface IProblemPlugin
 {
     /**
+     * @param ProblemTemplateNP $problemTemplate
+     * @return ProblemTemplateNP
+     */
+    public function preprocess(ProblemTemplateNP $problemTemplate): ProblemTemplateNP;
+
+    /**
      * @param $problemTemplate
      * @return int
      */
@@ -32,27 +38,15 @@ interface IProblemPlugin
     public function validateType(ProblemTemplateNP $problemTemplate): bool;
 
     /**
-     * @param ProblemTemplateNP $problemTemplate
-     * @return ProblemTemplateNP
+     * @param ProblemTemplate $problemTemplate
+     * @param array|null $usedMatchesInx
+     * @return ProblemFinal
      */
-    public function preprocess(ProblemTemplateNP $problemTemplate): ProblemTemplateNP;
-
-    /**
-     * @param string $expression
-     * @return string
-     */
-    public function standardizeFinal(string $expression): string;
+    public function createFinal(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ProblemFinal;
 
     /**
      * @param ProblemFinal $problem
      * @return ArrayHash
      */
     public function evaluate(ProblemFinal $problem): ArrayHash;
-
-    /**
-     * @param ProblemTemplate $problemTemplate
-     * @param array|null $usedMatchesInx
-     * @return ProblemFinal
-     */
-    public function createFinal(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ProblemFinal;
 }

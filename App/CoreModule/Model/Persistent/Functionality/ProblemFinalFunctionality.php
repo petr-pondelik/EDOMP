@@ -15,7 +15,7 @@ use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemFinalRepository;
-use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
+use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\ProblemTemplateRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\UserRepository;
@@ -34,7 +34,7 @@ class ProblemFinalFunctionality extends BaseFunctionality
      * ProblemFinalFunctionality constructor.
      * @param ConstraintEntityManager $entityManager
      * @param ProblemFinalRepository $repository
-     * @param ProblemRepository $problemRepository
+     * @param ProblemTemplateRepository $problemTemplateRepository
      * @param UserRepository $userRepository
      * @param ProblemTypeRepository $problemTypeRepository
      * @param ProblemConditionRepository $problemConditionRepository
@@ -46,7 +46,7 @@ class ProblemFinalFunctionality extends BaseFunctionality
     (
         ConstraintEntityManager $entityManager,
         ProblemFinalRepository $repository,
-        ProblemRepository $problemRepository,
+        ProblemTemplateRepository $problemTemplateRepository,
         UserRepository $userRepository,
         ProblemTypeRepository $problemTypeRepository,
         ProblemConditionRepository $problemConditionRepository,
@@ -57,7 +57,10 @@ class ProblemFinalFunctionality extends BaseFunctionality
     {
         parent::__construct($entityManager);
         $this->repository = $repository;
-        $this->injectRepositories($problemTypeRepository, $problemConditionRepository, $difficultyRepository, $subThemeRepository, $problemRepository, $userRepository, $formatterHelper);
+        $this->injectRepositories(
+            $problemTypeRepository, $problemConditionRepository, $difficultyRepository, $subThemeRepository,
+            $problemTemplateRepository, $userRepository, $formatterHelper
+        );
     }
 
     /**
@@ -65,15 +68,20 @@ class ProblemFinalFunctionality extends BaseFunctionality
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\CoreModule\Exceptions\EntityException
+     * @throws EntityNotFoundException
      */
     public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $problemFinal = new ProblemFinal();
         $problemFinal = $this->setBasics($problemFinal, $data);
+        $problemFinal = $this->attachConditions($problemFinal, $data);
+
         $this->em->persist($problemFinal);
+
         if ($flush) {
             $this->em->flush();
         }
+
         return $problemFinal;
     }
 
@@ -87,15 +95,20 @@ class ProblemFinalFunctionality extends BaseFunctionality
      */
     public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
+        /** @var ProblemFinal $problemFinal */
         $problemFinal = $this->repository->find($id);
         if (!$problemFinal) {
             throw new EntityNotFoundException('Entity for update not found.');
         }
+
         $this->setBasics($problemFinal, $data);
+
         $this->em->persist($problemFinal);
+
         if ($flush) {
             $this->em->flush();
         }
+
         return $problemFinal;
     }
 }

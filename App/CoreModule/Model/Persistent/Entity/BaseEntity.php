@@ -71,7 +71,6 @@ abstract class BaseEntity
 
     /**
      * @return DateTime
-     * @throws \Exception
      */
     public function getCreated(): DateTime
     {
@@ -80,7 +79,6 @@ abstract class BaseEntity
 
     /**
      * @param DateTime $created
-     * @throws \Exception
      */
     public function setCreated(DateTime $created): void
     {

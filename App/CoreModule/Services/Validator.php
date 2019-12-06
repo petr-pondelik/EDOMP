@@ -409,7 +409,7 @@ class Validator
                 0 => 'Období testu musí být vyplněno.'
             ],
 
-            'success_rate' => [
+            'successRate' => [
                 0 => 'Úspěšnost úlohy musí být číselná hodnota.',
                 1 => 'Úspěšnost úlohy musí být v intervalu <0; 1>.'
             ],

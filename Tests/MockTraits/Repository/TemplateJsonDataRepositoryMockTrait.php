@@ -61,8 +61,7 @@ trait TemplateJsonDataRepositoryMockTrait
         $this->secondTemplateJsonData = $secondTemplateJsonData;
 
         // Set TemplateJsonDataRepository expected return values for find
-        $this->templateJsonDataRepositoryMock->expects($this->any())
-            ->method('find')
+        $this->templateJsonDataRepositoryMock->method('find')
             ->willReturnCallback(static function ($arg) use ($firstTemplateJsonData, $secondTemplateJsonData) {
                 switch ($arg) {
                     case 1: return $firstTemplateJsonData;

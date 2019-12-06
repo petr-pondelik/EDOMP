@@ -9,6 +9,7 @@
 namespace App\TeacherModule\Plugins;
 
 use App\CoreModule\Helpers\StringsHelper;
+use App\CoreModule\Model\Persistent\Entity\ProblemCondition;
 use App\CoreModule\Model\Persistent\Functionality\ProblemFinalFunctionality;
 use App\TeacherModule\Exceptions\InvalidParameterException;
 use App\CoreModule\Helpers\ConstHelper;
@@ -165,15 +166,16 @@ abstract class ProblemPlugin implements IProblemPlugin
     /**
      * @param ProblemTemplate $problemTemplate
      * @param array|null $usedMatchesInx
-     * @return ArrayHash
+     * @return array
      * @throws \App\TeacherModule\Exceptions\GeneratorException
      * @throws \Nette\Utils\JsonException
      */
-    protected function constructFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ArrayHash
+    protected function constructFinalData(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): array
     {
         bdump('CONSTRUCT PROBLEM FINAL DATA');
         [$finalBody, $matchesIndex] = $this->problemGenerator->generate($problemTemplate, $usedMatchesInx);
-        $finalData = ArrayHash::from([
+
+        $finalData = [
             'textBefore' => $problemTemplate->getTextBefore(),
             'body' => $finalBody,
             'textAfter' => $problemTemplate->getTextAfter(),
@@ -185,7 +187,17 @@ abstract class ProblemPlugin implements IProblemPlugin
             'isGenerated' => true,
             'studentVisible' => $problemTemplate->isStudentVisible(),
             'userId' => $problemTemplate->getCreatedBy()->getId()
-        ]);
+        ];
+
+        $conditions = $problemTemplate->getConditions()->getValues();
+
+        foreach ($conditions as $condition) {
+            /** @var ProblemCondition $condition */
+            $conditionTypeId = $condition->getProblemConditionType()->getId();
+            $conditionAccessor = $condition->getAccessor();
+            $finalData['condition_' . $conditionTypeId] = $conditionAccessor;
+        }
+
         return $finalData;
     }
 
@@ -206,12 +218,13 @@ abstract class ProblemPlugin implements IProblemPlugin
      * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \App\TeacherModule\Exceptions\GeneratorException
      * @throws \Nette\Utils\JsonException
+     * @throws \Doctrine\ORM\EntityNotFoundException
      */
     public function createFinal(ProblemTemplate $problemTemplate, ?array $usedMatchesInx): ProblemFinal
     {
-        $finalData = $this->constructFinalData($problemTemplate, $usedMatchesInx);
-//        $conditions = $problemTemplate->getConditions()->getValues();
-        $problemFinal = $this->problemFinalFunctionality->create($finalData, false);
+        $data = $this->constructFinalData($problemTemplate, $usedMatchesInx);
+        /** @var ProblemFinal $problemFinal */
+        $problemFinal = $this->problemFinalFunctionality->create($data, false);
         return $this->postprocessFinal($problemFinal);
     }
 }

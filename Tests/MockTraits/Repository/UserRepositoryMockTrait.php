@@ -36,7 +36,7 @@ trait UserRepositoryMockTrait
     protected function setUpUserRepositoryMock(): void
     {
         $this->userRepositoryMock = $this->getMockBuilder(UserRepository::class)
-            ->setMethods(['find'])
+            ->setMethods(['find', 'findOneBy'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -63,12 +63,22 @@ trait UserRepositoryMockTrait
         $this->secondUser = $secondUser;
 
         // Set UserRepository expected return values for find
-        $this->userRepositoryMock->expects($this->any())
-            ->method('find')
+        $this->userRepositoryMock->method('find')
             ->willReturnCallback(static function ($arg) use ($firstUser, $secondUser) {
                 switch ($arg) {
                     case 1: return $firstUser;
                     case 2: return $secondUser;
+                    default: return null;
+                }
+            });
+
+        // Set UserRepository expected return values for findOneBy
+        $this->userRepositoryMock->method('findOneBy')
+            ->willReturnCallback(static function ($arg) use ($firstUser) {
+                switch ($arg) {
+                    case [
+                        'email' => 'TEST_EMAIL_FIRST'
+                    ]: return $firstUser;
                     default: return null;
                 }
             });

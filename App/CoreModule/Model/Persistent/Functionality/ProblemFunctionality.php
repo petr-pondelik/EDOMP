@@ -9,11 +9,12 @@
 namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
+use App\CoreModule\Model\Persistent\Entity\Problem;
+use App\CoreModule\Model\Persistent\Entity\ProblemFinalTestVariantAssociation;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemFinalTestVariantAssociationRepository;
 use Doctrine\ORM\EntityNotFoundException;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class ProblemFunctionality
@@ -63,15 +64,20 @@ class ProblemFunctionality extends BaseFunctionality
      */
     public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
+        /** @var Problem|null $problem */
         $problem = $this->repository->find($id);
-        if(!$problem){
+        if (!$problem) {
             throw new EntityNotFoundException('Entity for update not found.');
         }
-        $problem->setSuccessRate($data->success_rate);
+
+        $problem->setSuccessRate($data['successRate']);
+
         $this->em->persist($problem);
+
         if ($flush) {
             $this->em->flush();
         }
+
         return $problem;
     }
 
@@ -89,16 +95,20 @@ class ProblemFunctionality extends BaseFunctionality
             $associations = $this->problemFinalTestVariantAssociationRepository->findBy(['problemTemplate.id' => $id]);
         $cnt = 0;
         $ratingSum = 0;
-        foreach ($associations as $association){
-            if(!empty($association->getSuccessRate())){
+
+        foreach ($associations as $association) {
+            /** @var ProblemFinalTestVariantAssociation $association */
+            if ($association->getSuccessRate() !== null) {
                 $cnt++;
                 $ratingSum += $association->getSuccessRate();
             }
         }
-        if($cnt > 0){
-            $this->update($id, ArrayHash::from([ 'success_rate' => $ratingSum / $cnt ]), $flush);
+
+        if ($cnt > 0) {
+            $this->update($id, ['successRate' => $ratingSum / $cnt], $flush);
             return;
         }
-        $this->update($id, ArrayHash::from([ 'success_rate' => null ]), $flush);
+
+        $this->update($id, ['successRate' => null], $flush);
     }
 }

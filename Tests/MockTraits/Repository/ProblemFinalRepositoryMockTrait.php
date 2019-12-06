@@ -59,8 +59,7 @@ trait ProblemFinalRepositoryMockTrait
         $this->secondProblemFinal = $secondProblemFinal;
 
         // Set ProblemFinalRepository expected return values for find
-        $this->problemFinalRepositoryMock->expects($this->any())
-            ->method('find')
+        $this->problemFinalRepositoryMock->method('find')
             ->willReturnCallback(static function ($arg) use ($firstProblemFinal, $secondProblemFinal) {
                 switch ($arg) {
                     case 1: return $firstProblemFinal;

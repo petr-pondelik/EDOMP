@@ -43,6 +43,8 @@ class ProblemType extends BaseEntity
     /**
      * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemConditionType", inversedBy="problemTypes", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="problem_tp_problem_condition_tp_rel")
+     *
+     * @var Collection
      */
     protected $conditionTypes;
 
@@ -53,22 +55,6 @@ class ProblemType extends BaseEntity
     {
         parent::__construct();
         $this->conditionTypes = new ArrayCollection();
-    }
-
-    /**
-     * @return Collection/ProblemConditionType[]
-     */
-    public function getConditionTypes(): ?Collection
-    {
-        return $this->conditionTypes;
-    }
-
-    /**
-     * @param mixed $conditionTypes
-     */
-    public function setConditionTypes($conditionTypes): void
-    {
-        $this->conditionTypes = $conditionTypes;
     }
 
     /**
@@ -85,5 +71,21 @@ class ProblemType extends BaseEntity
     public function setKeyLabel(string $keyLabel): void
     {
         $this->keyLabel = $keyLabel;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getConditionTypes(): Collection
+    {
+        return $this->conditionTypes;
+    }
+
+    /**
+     * @param Collection $conditionTypes
+     */
+    public function setConditionTypes(Collection $conditionTypes): void
+    {
+        $this->conditionTypes = $conditionTypes;
     }
 }

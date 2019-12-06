@@ -59,8 +59,7 @@ trait GroupRepositoryMockTrait
         $this->secondGroup = $secondGroup;
 
         // Set GroupRepository expected return values for find
-        $this->groupRepositoryMock->expects($this->any())
-            ->method('find')
+        $this->groupRepositoryMock->method('find')
             ->willReturnCallback(static function ($arg) use ($firstGroup, $secondGroup) {
                 switch ($arg) {
                     case 1: return $firstGroup;

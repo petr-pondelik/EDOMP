@@ -117,6 +117,7 @@ final class LinearEquationPlugin extends EquationPlugin
      * @throws ProblemTemplateException
      * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
+     * @throws \Doctrine\ORM\EntityNotFoundException
      */
     public function validateResultCond(LinearEquationTemplateNP $data): bool
     {

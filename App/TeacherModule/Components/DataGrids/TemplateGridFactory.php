@@ -110,7 +110,7 @@ class TemplateGridFactory extends BaseGrid
         $grid->addColumnText('textAfter', 'Dodatek k zadání')
             ->setFilterText();
 
-        $grid->addColumnText('success_rate', 'Prům. úspěšnost');
+        $grid->addColumnText('successRate', 'Prům. úspěšnost');
 
         $grid->addColumnStatus('studentVisible', 'Zobrazit ve cvičebnici', 'studentVisible')
             ->addAttributes(['class' => 'text-center'])

@@ -111,7 +111,7 @@ class ProblemGridFactory extends BaseGrid
 
         $grid->addColumnText('result', 'Výsledek');
 
-        $grid->addColumnText('success_rate', 'Prům. úspěšnost');
+        $grid->addColumnText('successRate', 'Prům. úspěšnost');
 
         $grid->addColumnStatus('studentVisible', 'Zobrazit ve cvičebnici', 'studentVisible')
             ->addAttributes(['class' => 'text-center'])

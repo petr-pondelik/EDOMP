@@ -40,7 +40,7 @@ trait ProblemConditionRepositoryMockTrait
     protected function setUpProblemConditionRepositoryMock(): void
     {
         $this->problemConditionRepositoryMock = $this->getMockBuilder(ProblemConditionRepository::class)
-            ->setMethods(['find', 'findAssocByTypeAndAccessor'])
+            ->setMethods(['find', 'findAssocByTypeAndAccessor', 'findOneBy'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -50,6 +50,7 @@ trait ProblemConditionRepositoryMockTrait
         $firstProblemCondition->setLabel('TEST_FIRST_PROBLEM_CONDITION');
         $firstProblemCondition->setAccessor(0);
         $firstProblemCondition->setCreated(DateTime::from('2019-11-29 16:10:40'));
+        $this->firstProblemCondition = $firstProblemCondition;
 
         // Create second ProblemCondition
         $secondProblemCondition = new ProblemCondition();
@@ -57,6 +58,7 @@ trait ProblemConditionRepositoryMockTrait
         $secondProblemCondition->setLabel('TEST_SECOND_PROBLEM_CONDITION');
         $secondProblemCondition->setAccessor(1);
         $secondProblemCondition->setCreated(DateTime::from('2019-11-29 16:10:40'));
+        $this->secondProblemCondition = $secondProblemCondition;
 
         // Set ProblemConditionRepository expected return values for find
         $this->problemConditionRepositoryMock->expects($this->any())

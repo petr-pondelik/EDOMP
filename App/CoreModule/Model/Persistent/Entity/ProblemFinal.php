@@ -47,7 +47,7 @@ class ProblemFinal extends Problem
     /**
      * @ORM\ManyToOne(targetEntity="App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate", cascade={"persist", "merge"})
      *
-     * @var ProblemTemplate
+     * @var ProblemTemplate|null
      */
     protected $problemTemplate;
 
@@ -93,9 +93,9 @@ class ProblemFinal extends Problem
     }
 
     /**
-     * @param ProblemTemplate $problemTemplate
+     * @param ProblemTemplate|null $problemTemplate
      */
-    public function setProblemTemplate(ProblemTemplate $problemTemplate): void
+    public function setProblemTemplate(?ProblemTemplate $problemTemplate): void
     {
         $this->problemTemplate = $problemTemplate;
     }

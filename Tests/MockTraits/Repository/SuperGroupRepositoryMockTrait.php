@@ -59,8 +59,7 @@ trait SuperGroupRepositoryMockTrait
         $this->secondSuperGroup = $secondSuperGroup;
 
         // Set SuperGroupRepository expected return values for find
-        $this->superGroupRepositoryMock->expects($this->any())
-            ->method('find')
+        $this->superGroupRepositoryMock->method('find')
             ->willReturnCallback(static function ($arg) use ($firstSuperGroup, $secondSuperGroup) {
                 switch ($arg) {
                     case 1: return $firstSuperGroup;

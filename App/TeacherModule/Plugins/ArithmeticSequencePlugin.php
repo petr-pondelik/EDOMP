@@ -27,6 +27,7 @@ final class ArithmeticSequencePlugin extends SequencePlugin
      * @throws ProblemTemplateException
      * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
+     * @throws \Doctrine\ORM\EntityNotFoundException
      */
     public function validateType(ProblemTemplateNP $data): bool
     {
