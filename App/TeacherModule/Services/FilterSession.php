@@ -16,7 +16,7 @@ use Nette\Http\SessionSection;
  * Class FilterSession
  * @package App\TeacherModule\Services
  */
-class FilterSession implements IEDOMPSession
+final class FilterSession implements IEDOMPSession
 {
     /**
      * @var SessionSection
@@ -29,8 +29,6 @@ class FilterSession implements IEDOMPSession
      */
     public function __construct(Session $session)
     {
-        bdump('CONSTRUCT');
-        bdump($session->getSection('filterSession')->data);
         $this->filterSession = $session->getSection('filterSession');
     }
 
@@ -44,8 +42,6 @@ class FilterSession implements IEDOMPSession
      */
     public function setFilters(array $filters): void
     {
-        bdump('SET FILTERS');
-        bdump($filters);
         $this->filterSession->filters = $filters;
     }
 
@@ -76,10 +72,7 @@ class FilterSession implements IEDOMPSession
      */
     public function problemFilterDiffer(int $problemKey, array $filter): bool
     {
-        bdump('PROBLEM FILTER DIFFER');
-        bdump($this->getFilters());
-        if(!$storedFilter = $this->getProblemFilters($problemKey)){
-            bdump('TRUE ON NULL');
+        if (!$storedFilter = $this->getProblemFilters($problemKey)) {
             return true;
         }
         return $storedFilter !== $filter;

@@ -67,7 +67,7 @@ final class ArithmeticSequencePlugin extends SequencePlugin
         }
 
         $matchesJson = Json::encode($matches);
-        $this->templateJsonDataFunctionality->create(ArrayHash::from([ 'jsonData' => $matchesJson ]), true, $data->getIdHidden());
+        $this->templateJsonDataFunctionality->create(ArrayHash::from([ 'jsonData' => $matchesJson ]), true, $data->getId());
 
         return true;
     }

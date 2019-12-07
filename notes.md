@@ -2,18 +2,12 @@
 
 ## TODO
 
--   V rámci TEST-PROBLEM-FINAL-ASSOCIATION zpět doplnit ProblemTemplate -> za účelem dopočtu statistik pro šablony !!!
+-   Vylepšení v systému generování:
+    -   Již na vstupu provést trimm a odstranění duplicitních mezer!!!
+    -   Odstraňovat duplicitní mezery a závorky ve výrazech!!!
 
--   Zobrazovat akce pro stažení ZIP archivu a kompilaci PDF na Overleaf pouze pro již uzavřené testy
-
--   Akce přegenerování testu
-    -   "UPDATE vyvolávající CREATE"
-    -   Vlastní formulář
-    -   Základní atributy
-    -   Seznam úloh ve formě jejich vlastností (tabulka dle filtrů)
-    -   Filtry bude nutné zaznamenávat jako samostatnou entitu, která bude v asociaci s testem
-    -   Volba úloh, které se mají přegenerovat
-    -   Přegenerovat půjde pouze uzavřený test
+-   Testy
+    -   Je potřeba zbavit se využívání konstant definovaných před define() !!!
 
 ## Pomůcky
 

@@ -17,7 +17,7 @@ use Nette\Utils\Strings;
  * Class LatexParser
  * @package App\CoreModule\Helpers
  */
-class LatexParser implements IParser
+final class LatexParser implements IParser
 {
     protected const GLOBAL = 'global';
 

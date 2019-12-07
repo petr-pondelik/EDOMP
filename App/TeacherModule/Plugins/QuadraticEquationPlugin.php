@@ -202,7 +202,7 @@ final class QuadraticEquationPlugin extends EquationPlugin
         }
 
         $matchesJson = Json::encode($matches);
-        $this->templateJsonDataFunctionality->create(ArrayHash::from(['jsonData' => $matchesJson]), true, $data->getIdHidden());
+        $this->templateJsonDataFunctionality->create(ArrayHash::from(['jsonData' => $matchesJson]), true, $data->getId());
 
         return true;
     }
@@ -291,7 +291,7 @@ final class QuadraticEquationPlugin extends EquationPlugin
         }
 
         $jsonData = Json::encode($matches);
-        $this->templateJsonDataFunctionality->create(ArrayHash::from([ 'jsonData' => $jsonData ]), true, $data->getIdHidden(), $data->getConditionType());
+        $this->templateJsonDataFunctionality->create(ArrayHash::from([ 'jsonData' => $jsonData ]), true, $data->getId(), $data->getConditionType());
 
         return true;
     }

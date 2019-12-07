@@ -9,9 +9,8 @@
 namespace App\TeacherModule\Plugins;
 
 use App\TeacherModule\Exceptions\NewtonApiSyntaxException;
-use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
+use App\TeacherModule\Model\NonPersistent\Entity\EquationTemplateNP;
 use App\TeacherModule\Model\NonPersistent\Entity\ProblemTemplateNP;
-use Nette\Utils\ArrayHash;
 
 /**
  * Class EquationPlugin
@@ -30,15 +29,21 @@ abstract class EquationPlugin extends ProblemPlugin
      */
     public function preprocess(ProblemTemplateNP $problemTemplate): ProblemTemplateNP
     {
+        /** @var EquationTemplateNP $problemTemplate */
         bdump('PREPROCESS EQUATION');
+
+        // Parse latex and XML parameters
         $expression = $this->latexParser::parse($problemTemplate->getBody());
         $parameterized = $this->parameterParser::parse($expression);
         $problemTemplate->setExpression($parameterized->expression);
+
+        // Finish standardization: move equation on left side with 0 remaining on the right side
         $sides = $this->stringsHelper::getEquationSides($parameterized->expression);
         $expression = $this->stringsHelper::mergeEqSides($sides);
         $expression = $this->newtonApiClient->simplify($expression);
-
         $problemTemplate->setStandardized($expression);
+
+        // Process variable fractions, if exist
         $problemTemplate = $this->mathService->processVariableFractions($problemTemplate);
 
         return $problemTemplate;

@@ -8,8 +8,6 @@
 
 namespace App\TeacherModule\Model\NonPersistent\Traits;
 
-use Nette\Utils\ArrayHash;
-
 /**
  * Trait SetValuesTrait
  * @package App\TeacherModule\Model\NonPersistent\Traits
@@ -17,28 +15,27 @@ use Nette\Utils\ArrayHash;
 trait SetValuesTrait
 {
     /**
-     * @param ArrayHash $values
+     * @param iterable $values
      */
-    public function setValues(ArrayHash $values): void
+    public function setValues(iterable $values): void
     {
         bdump('SET VALUES');
         bdump($values);
-        foreach ($values as $key => $value){
-            if(property_exists(static::class, $key)){
+        foreach ($values as $key => $value) {
+            if (property_exists(static::class, $key)) {
                 $this->{$key} = $value;
             }
         }
     }
 
     /**
-     * @param ArrayHash $values
+     * @param iterable $values
      */
-    public function completeValues(ArrayHash $values): void
+    public function completeValues(iterable $values): void
     {
         bdump('COMPLETE VALUES');
-        bdump($values);
-        foreach ($values as $key => $value){
-            if(property_exists(static::class, $key) && $this->{$key} === null){
+        foreach ($values as $key => $value) {
+            if (property_exists(static::class, $key) && $this->{$key} === null) {
                 $this->{$key} = $value;
             }
         }

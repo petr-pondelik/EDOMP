@@ -117,15 +117,14 @@ class MathService
     {
         $final = $this->parameterParser->passValues($standardized->getStandardized(), $parValuesArr);
 
-        if($withLinearCoefficient){
+        if ($withLinearCoefficient) {
             $matches = Strings::matchAll($final, '~' . sprintf($this->regularExpressions::RE_VARIABLE_COEFFICIENT, $standardized->getVariable()) . '~');
-        }
-        else{
+        } else {
             $matches = Strings::matchAll($final, '~' . sprintf($this->regularExpressions::RE_VARIABLE_COEFFICIENT_NON_LINEAR, $standardized->getVariable()) . '~');
         }
 
         $res = [];
-        foreach ($matches as $match){
+        foreach ($matches as $match) {
             // Substitute coefficients extreme values
             $match[1] = $this->normalizeCoefficient($match[1]);
             $res[] = $match;
@@ -142,15 +141,15 @@ class MathService
     {
         $expression = Strings::trim($expression);
 
-        if($expression === ''){
+        if ($expression === '') {
             return '1';
         }
 
-        if($expression === '+'){
+        if ($expression === '+') {
             return '1';
         }
 
-        if($expression === '-'){
+        if ($expression === '-') {
             return -1;
         }
 

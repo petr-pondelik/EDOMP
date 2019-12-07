@@ -16,7 +16,7 @@ use Nette\NotSupportedException;
  * Class ConditionService
  * @package App\TeacherModule\Services
  */
-class ConditionService
+final class ConditionService
 {
     /**
      * @var ValidationFunctionsBox
@@ -66,13 +66,13 @@ class ConditionService
     }
 
     /**
-     * @param $fields
+     * @param iterable $data
      * @return array|null
      */
-    public function findConditionsMatches($fields): ?array
+    public function findConditionsMatches(iterable $data): ?array
     {
         $result = [];
-        foreach ((array)$fields as $keyType => $value) {
+        foreach ((array)$data as $keyType => $value) {
             if (!array_key_exists($keyType, $this->conditionsMatches)) {
                 throw new NotSupportedException('Nepodporovaný typ podmínky.');
             }
@@ -94,6 +94,9 @@ class ConditionService
      */
     private function findMatches(ProblemTemplateNP $data, int $typeAccessor, int $accessor): ?array
     {
+        bdump($data);
+//        var_dump($data);
+//        var_dump($typeAccessor, $accessor);
         $matches = [];
         $matchesCnt = 0;
         $res = false;
@@ -112,7 +115,7 @@ class ConditionService
             for ($i = $minMax[0]['min']; $i <= $minMax[0]['max']; $i++) {
                 for ($j = $minMax[1]['min']; $j <= $minMax[1]['max']; $j++) {
                     $parValuesArr = ['p0' => $i, 'p1' => $j];
-                    if ($this->validationMapping[$typeAccessor][$accessor]($data, $parValuesArr)) {
+                        if ($this->validationMapping[$typeAccessor][$accessor]($data, $parValuesArr)) {
                         $matches[$matchesCnt++] = $parValuesArr;
                         $res = true;
                     }

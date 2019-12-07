@@ -253,27 +253,27 @@ class DoctrinePresenter extends TeacherPresenter
 //        bdump(new DateTime());
 //        bdump($this->parser::solve('e'));
 
-        bdump('TESTING USER ENTITY');
-        $data = ArrayHash::from([
-            'username' => 'TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME',
-            'password' => 'TEST PASSWORD',
-            'role' => 3,
-            'groups' => [28],
-            'firstName' => '',
-            'lastName' => ''
-        ]);
-        $data->groups = [28];
-
-        $user = $this->userFunctionality->create($data);
-
-        $this->em->persist($user);
-
-
-        bdump('TESTING FILTER ENTITY');
-        $filter = $this->filterRepository->find(1);
-        bdump($filter);
-
-        bdump('Testing ProblemPlugin constructProblemFinalData');
+//        bdump('TESTING USER ENTITY');
+//        $data = ArrayHash::from([
+//            'username' => 'TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME TEST USERNAME',
+//            'password' => 'TEST PASSWORD',
+//            'role' => 3,
+//            'groups' => [28],
+//            'firstName' => '',
+//            'lastName' => ''
+//        ]);
+//        $data->groups = [28];
+//
+//        $user = $this->userFunctionality->create($data);
+//
+//        $this->em->persist($user);
+//
+//
+//        bdump('TESTING FILTER ENTITY');
+//        $filter = $this->filterRepository->find(1);
+//        bdump($filter);
+//
+//        bdump('Testing ProblemPlugin constructProblemFinalData');
 
 //        $problemTemplate = $this->problemRepository->find(38);
 //        bdump($problemTemplate);
@@ -311,33 +311,34 @@ class DoctrinePresenter extends TeacherPresenter
         // EOS Parser testing
         bdump($this->parser::solve('(4*1 (3*1 + 3)) - (2 - 1) + 4 ((- 1))'));
         bdump($this->parser::solve('- 5'));
+        bdump($this->parser::solve('20 + 5 - 4 / 2'));
 
-        // Get Discriminant A Tests
-        $this->quadraticEquationPlugin->getDiscriminantA('p0 x^3 / p1 - (2 p0 + 5 + p1) x^2 - x / p3 - 5/2 + p2 / p3', 'x');
-        $this->quadraticEquationPlugin->getDiscriminantA('p0 x^3 / p1 + x^2 - x/p3 - 5/2', 'x');
-        $this->quadraticEquationPlugin->getDiscriminantA('x^2 - x/p3 - 5/2', 'x');
-        $this->quadraticEquationPlugin->getDiscriminantA('- x^2 - x/p3 - 5/2', 'x');
-        $this->quadraticEquationPlugin->getDiscriminantA('p0 x^3 / p1 - 2 p0 x^2 / p1 - x / p3 - 5/2 + p2 / p3', 'x');
-        $this->quadraticEquationPlugin->getDiscriminantA('p0 x^3 / p1 - x^2 / p1 - x / p3 - 5/2 + p2 / p3', 'x');
-
-        // Get Discriminant C Tests
-        $this->quadraticEquationPlugin->getDiscriminantC('p0 x^3 / p1 - 2 p0 x^2 / p1 + x - 5/2 + p2 / p3', 'x');
-        $this->quadraticEquationPlugin->getDiscriminantC('p0 x^3 / p1 - 2 p0 x^2 / p1 + p4 x / p5 - 5/2 + p2 / p3', 'x');
-        $this->quadraticEquationPlugin->getDiscriminantC('p0 x^3 / p1 - 2 p0 x^2 / p1 - 5/2 + p2 / p3', 'x');
-        $this->quadraticEquationPlugin->getDiscriminantC('p0 x^3 / p1 - 2 p0 x^2 / p1', 'x');
-        $this->quadraticEquationPlugin->getDiscriminantC('p0 x^3 / p1 - 2 p0 x^2 / p1 + 5 x', 'x');
-
-        // Get Discriminant B Tests
-        $this->quadraticEquationPlugin->getDiscriminantB('p0 x^3 / p1 - 2 p0 x^2 / p1 - x / p3 - 5/2 + p2 / p3', 'x');
-        $this->quadraticEquationPlugin->getDiscriminantB('p0 x^3 / p1 - 2 p0 x^2 / p1 + x / p3 - 5/2 + p2 / p3', 'x');
-        $this->quadraticEquationPlugin->getDiscriminantB('p0 x^3 / p1 - 2 p0 x^2 / p1 - x / p3', 'x');
-        $this->quadraticEquationPlugin->getDiscriminantB('p0 x^3 / p1 - 2 p0 x^2 / p1 - 2 p1 x / p3', 'x');
-        $this->quadraticEquationPlugin->getDiscriminantB('p0 x^3 / p1 - 2 p0 x^2 / p1 - (2 p1 + 4 p2) x / p3', 'x');
+//        // Get Discriminant A Tests
+//        $this->quadraticEquationPlugin->getDiscriminantA('p0 x^3 / p1 - (2 p0 + 5 + p1) x^2 - x / p3 - 5/2 + p2 / p3', 'x');
+//        $this->quadraticEquationPlugin->getDiscriminantA('p0 x^3 / p1 + x^2 - x/p3 - 5/2', 'x');
+//        $this->quadraticEquationPlugin->getDiscriminantA('x^2 - x/p3 - 5/2', 'x');
+//        $this->quadraticEquationPlugin->getDiscriminantA('- x^2 - x/p3 - 5/2', 'x');
+//        $this->quadraticEquationPlugin->getDiscriminantA('p0 x^3 / p1 - 2 p0 x^2 / p1 - x / p3 - 5/2 + p2 / p3', 'x');
+//        $this->quadraticEquationPlugin->getDiscriminantA('p0 x^3 / p1 - x^2 / p1 - x / p3 - 5/2 + p2 / p3', 'x');
+//
+//        // Get Discriminant C Tests
+//        $this->quadraticEquationPlugin->getDiscriminantC('p0 x^3 / p1 - 2 p0 x^2 / p1 + x - 5/2 + p2 / p3', 'x');
+//        $this->quadraticEquationPlugin->getDiscriminantC('p0 x^3 / p1 - 2 p0 x^2 / p1 + p4 x / p5 - 5/2 + p2 / p3', 'x');
+//        $this->quadraticEquationPlugin->getDiscriminantC('p0 x^3 / p1 - 2 p0 x^2 / p1 - 5/2 + p2 / p3', 'x');
+//        $this->quadraticEquationPlugin->getDiscriminantC('p0 x^3 / p1 - 2 p0 x^2 / p1', 'x');
+//        $this->quadraticEquationPlugin->getDiscriminantC('p0 x^3 / p1 - 2 p0 x^2 / p1 + 5 x', 'x');
+//
+//        // Get Discriminant B Tests
+//        $this->quadraticEquationPlugin->getDiscriminantB('p0 x^3 / p1 - 2 p0 x^2 / p1 - x / p3 - 5/2 + p2 / p3', 'x');
+//        $this->quadraticEquationPlugin->getDiscriminantB('p0 x^3 / p1 - 2 p0 x^2 / p1 + x / p3 - 5/2 + p2 / p3', 'x');
+//        $this->quadraticEquationPlugin->getDiscriminantB('p0 x^3 / p1 - 2 p0 x^2 / p1 - x / p3', 'x');
+//        $this->quadraticEquationPlugin->getDiscriminantB('p0 x^3 / p1 - 2 p0 x^2 / p1 - 2 p1 x / p3', 'x');
+//        $this->quadraticEquationPlugin->getDiscriminantB('p0 x^3 / p1 - 2 p0 x^2 / p1 - (2 p1 + 4 p2) x / p3', 'x');
 
         //bdump($this->stringsHelper::fillMultipliers('(1/15 p1 p2 - 1 3/ p2)/((5 / 2 p0 - 2 / p0 p2))'));
         //bdump($this->stringsHelper::firstOperator('(3/8 + 3/8 p0 - p2)'));
 
-        $matches = Strings::matchAll('5 p0 x / ((x - 1) (x + 1)) - 10 p0 / ((x - 1) (x + 1)) - 3 / (x + 4) - 6 / ((x - 3) (x + 6))', '~([x\d\sp]*)\/\s*(\([\-\+\s\(\)\dx]*\))~');
+//        $matches = Strings::matchAll('5 p0 x / ((x - 1) (x + 1)) - 10 p0 / ((x - 1) (x + 1)) - 3 / (x + 4) - 6 / ((x - 3) (x + 6))', '~([x\d\sp]*)\/\s*(\([\-\+\s\(\)\dx]*\))~');
 
         //bdump($matches);
 
@@ -349,17 +350,17 @@ class DoctrinePresenter extends TeacherPresenter
 
         //bdump($this->parser::solve('(- 1 + 5)/((5 + 2) (3*5 - 12*2))'));
 
-        $allVarDividers = [];
-
-        foreach ($matches as $match){
-            $exploded = explode(') (',$this->stringsHelper::trim($match[2]));
-            foreach ($exploded as $item){
-                $itemTrimmed = $this->stringsHelper::trim($item);
-                if(!isset($allVarDividers[$itemTrimmed])){
-                    $allVarDividers[$itemTrimmed] = $itemTrimmed;
-                }
-            }
-        }
+//        $allVarDividers = [];
+//
+//        foreach ($matches as $match){
+//            $exploded = explode(') (',$this->stringsHelper::trim($match[2]));
+//            foreach ($exploded as $item){
+//                $itemTrimmed = $this->stringsHelper::trim($item);
+//                if(!isset($allVarDividers[$itemTrimmed])){
+//                    $allVarDividers[$itemTrimmed] = $itemTrimmed;
+//                }
+//            }
+//        }
 
         //bdump($allVarDividers);
 

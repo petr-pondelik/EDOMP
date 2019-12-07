@@ -14,5 +14,4 @@ namespace App\TeacherModule\Model\NonPersistent\Entity;
  */
 abstract class BaseEntityNP
 {
-
 }

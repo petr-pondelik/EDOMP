@@ -48,7 +48,7 @@ session:
 # Set tracy max lenght and depth for dumps
 tracy:
     maxLength: 20000
-    maxDepth: 5
+    maxDepth: 10
 
 services:
 	router: App\Router\RouterFactory::createRouter

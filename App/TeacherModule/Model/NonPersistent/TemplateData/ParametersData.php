@@ -25,22 +25,21 @@ class ParametersData
     protected $count;
 
     /**
-     * @var
+     * @var int
      */
     protected $complexity;
 
     /**
-     * @var
+     * @var iterable
      */
     protected $minMax;
 
     /**
      * ParametersData constructor.
-     * @param ArrayHash $data
+     * @param iterable $data
      */
-    public function __construct(ArrayHash $data)
+    public function __construct(iterable $data)
     {
-        //bdump('CONSTRUCT PARAMETERS DATA');
         $this->setValues($data);
     }
 
@@ -61,33 +60,33 @@ class ParametersData
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getComplexity()
+    public function getComplexity(): int
     {
         return $this->complexity;
     }
 
     /**
-     * @param mixed $complexity
+     * @param int $complexity
      */
-    public function setComplexity($complexity): void
+    public function setComplexity(int $complexity): void
     {
         $this->complexity = $complexity;
     }
 
     /**
-     * @return mixed
+     * @return iterable
      */
-    public function getMinMax()
+    public function getMinMax(): iterable
     {
         return $this->minMax;
     }
 
     /**
-     * @param mixed $minMax
+     * @param iterable $minMax
      */
-    public function setMinMax($minMax): void
+    public function setMinMax(iterable $minMax): void
     {
         $this->minMax = $minMax;
     }

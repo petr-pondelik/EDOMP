@@ -27,7 +27,7 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     /**
      * @var int|null
      */
-    protected $idHidden;
+    protected $id;
 
     /**
      * @var int
@@ -102,40 +102,33 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     public function __construct(ArrayHash $values, ProblemTemplate $original = null)
     {
         bdump('PROBLEM TEMPLATE NP CONSTRUCTOR');
-        bdump($values);
-        $this->setValues($values);
         $this->conditionValidateItem = 'standardized';
+        $this->setValues($values);
         $this->state = new ProblemTemplateState();
 
-        bdump('ORIGINAL');
-        bdump($original);
-
         // Initialize ProblemTemplate state based on action (create or update)
-        if($original){
+        if ($original) {
+            $this->id = $original->getId();
             $this->state->update(new ProblemTemplateStateItem('type', true, true));
             $originalConditions = $original->getConditions()->getValues();
-            foreach ($originalConditions as $originalCondition){
+            foreach ($originalConditions as $originalCondition) {
                 $problemConditionTypeId = $originalCondition->getProblemConditionType()->getId();
                 $rule = 'condition_' . $problemConditionTypeId;
                 $originalValue = $originalCondition->getAccessor();
-                $newValue = $values->{$rule} ?? $values->conditionAccessor;
-                bdump([$originalValue, $newValue]);
-                if((int) $originalValue !== (int) $newValue){
+                $newValue = $values[$rule] ?? $values->conditionAccessor;
+                if ((int)$originalValue !== (int)$newValue) {
                     $this->state->update(new ProblemTemplateStateItem($rule, $newValue, false));
-                }
-                else{
+                } else {
                     $this->state->update(new ProblemTemplateStateItem($rule, $newValue, true));
                 }
             }
-        }
-        else{
+        } else {
             $this->state->update(new ProblemTemplateStateItem('type', false, false));
-            foreach ($values as $key => $value){
-                if(Strings::match($key, '~condition_\d~')){
-                    if($value === 0){
+            foreach ($values as $key => $value) {
+                if (Strings::match($key, '~condition_\d~')) {
+                    if ($value === 0) {
                         $this->state->update(new ProblemTemplateStateItem($key, $value, true));
-                    }
-                    else{
+                    } else {
                         $this->state->update(new ProblemTemplateStateItem($key, $value, false));
                     }
                 }
@@ -171,17 +164,17 @@ abstract class ProblemTemplateNP extends BaseEntityNP
     /**
      * @return int|null
      */
-    public function getIdHidden(): ?int
+    public function getId(): ?int
     {
-        return $this->idHidden;
+        return $this->id;
     }
 
     /**
-     * @param int|null $idHidden
+     * @param int|null $id
      */
-    public function setIdHidden(?int $idHidden): void
+    public function setId(?int $id): void
     {
-        $this->idHidden = $idHidden;
+        $this->id = $id;
     }
 
     /**

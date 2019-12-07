@@ -29,6 +29,7 @@ final class LinearEquationPlugin extends EquationPlugin
      * @throws ProblemTemplateException
      * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
+     * @throws \Doctrine\ORM\EntityNotFoundException
      */
     public function validateType(ProblemTemplateNP $data): bool
     {
@@ -58,8 +59,8 @@ final class LinearEquationPlugin extends EquationPlugin
 
         try{
             $matches = $this->conditionService->findConditionsMatches([
-                $this->constHelper::EXPRESSION_VALIDATION => [
-                    $this->constHelper::EXPRESSION_VALID => [
+                $this->constHelper::LINEAR_EQUATION_VALIDATION => [
+                    $this->constHelper::LINEAR_EQUATION_VALID => [
                         'data' => $data
                     ]
                 ]
@@ -77,7 +78,7 @@ final class LinearEquationPlugin extends EquationPlugin
         $matchesJson = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $matchesJson
-        ]), true, $data->getIdHidden());
+        ]), true, $data->getId());
 
         return true;
     }
@@ -145,7 +146,7 @@ final class LinearEquationPlugin extends EquationPlugin
         $jsonData = Json::encode($matches);
         $this->templateJsonDataFunctionality->create(ArrayHash::from([
             'jsonData' => $jsonData
-        ]), true, $data->getIdHidden(), $data->getConditionType());
+        ]), true, $data->getId(), $data->getConditionType());
 
         return true;
     }

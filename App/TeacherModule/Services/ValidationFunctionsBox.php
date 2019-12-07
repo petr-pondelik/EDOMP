@@ -63,12 +63,20 @@ class ValidationFunctionsBox implements IDataBox
         $this->data = [
 
             'linearEquationType' => static function (LinearEquationTemplateNP $data, array $parValuesArr) use ($stringsHelper, $mathService, $parameterParser) {
+
                 $varCoefficients = $mathService->extractVariableCoefficients($data, $parValuesArr);
 
+                try {
+                    $final = $parameterParser->passValues($data->getLinearVariableExpression(), $parValuesArr);
+                    $mathService->evaluateExpression($final);
+                } catch (\Exception $e) {
+                    return false;
+                }
+
                 foreach ($varCoefficients as $varCoefficient) {
-                    try{
+                    try {
                         $coefficientRes = $mathService->evaluateExpression($varCoefficient[1]);
-                    } catch (\Exception $e){
+                    } catch (\Exception $e) {
                         return false;
                     }
                     if ($coefficientRes === 0.0 && $varCoefficient[2] === '') {
@@ -83,7 +91,7 @@ class ValidationFunctionsBox implements IDataBox
                     $conditions = $parametrizedFraction->getNonDegradeConditions();
                     foreach ($conditions as $condition) {
                         $final = $stringsHelper::normalizeOperators($parameterParser->passValues($condition->getExpression(), $parValuesArr));
-                        try{
+                        try {
                             $res = $mathService->evaluateExpression($final);
                         } catch (\Exception $e) {
                             return false;
@@ -94,14 +102,14 @@ class ValidationFunctionsBox implements IDataBox
                     }
                 }
 
-                foreach ($data->getNonDegradeConditions() as $condition){
+                foreach ($data->getNonDegradeConditions() as $condition) {
                     $final = $stringsHelper::normalizeOperators($parameterParser->passValues($condition->getExpression(), $parValuesArr));
-                    try{
+                    try {
                         $res = $mathService->evaluateExpression($final);
-                    } catch (\Exception $e){
+                    } catch (\Exception $e) {
                         return false;
                     }
-                    if ($res === 0.0){
+                    if ($res === 0.0) {
                         return false;
                     }
                 }
@@ -110,10 +118,11 @@ class ValidationFunctionsBox implements IDataBox
             },
 
             'quadraticEquationType' => static function (QuadraticEquationTemplateNP $data, array $parValuesArr) use ($stringsHelper, $mathService, $parameterParser) {
+
                 $varCoefficients = $mathService->extractVariableCoefficients($data, $parValuesArr, false);
 
                 foreach ($varCoefficients as $varCoefficient) {
-                    try{
+                    try {
                         $coefficientRes = $mathService->evaluateExpression($varCoefficient[1]);
                     } catch (\Exception $e) {
                         return false;
@@ -130,7 +139,7 @@ class ValidationFunctionsBox implements IDataBox
                     $conditions = $parametrizedFraction->getNonDegradeConditions();
                     foreach ($conditions as $condition) {
                         $final = $stringsHelper::normalizeOperators($parameterParser->passValues($condition->getExpression(), $parValuesArr));
-                        try{
+                        try {
                             $res = $mathService->evaluateExpression($final);
                         } catch (\Exception $e) {
                             return false;
@@ -141,14 +150,14 @@ class ValidationFunctionsBox implements IDataBox
                     }
                 }
 
-                foreach ($data->getNonDegradeConditions() as $condition){
+                foreach ($data->getNonDegradeConditions() as $condition) {
                     $final = $stringsHelper::normalizeOperators($parameterParser->passValues($condition->getExpression(), $parValuesArr));
-                    try{
+                    try {
                         $res = $mathService->evaluateExpression($final);
-                    } catch (\Exception $e){
+                    } catch (\Exception $e) {
                         return false;
                     }
-                    if ($res === 0.0){
+                    if ($res === 0.0) {
                         return false;
                     }
                 }
@@ -157,6 +166,7 @@ class ValidationFunctionsBox implements IDataBox
             },
 
             'arithmeticSequenceType' => function (ArithmeticSequenceTemplateNP $data, array $parValuesArr) {
+
                 try {
                     $values = $data->getFirstValues();
 
@@ -173,6 +183,7 @@ class ValidationFunctionsBox implements IDataBox
             },
 
             'geometricSequenceType' => function (GeometricSequenceTemplateNP $data, array $parValuesArr) {
+
                 try {
                     $values = $data->getFirstValues();
 
@@ -218,7 +229,9 @@ class ValidationFunctionsBox implements IDataBox
             },
 
             'negative' => static function (ProblemTemplateNP $data, array $parValuesArr) use ($mathService, $parameterParser) {
+                bdump('NEGATIVE');
                 $final = $parameterParser->passValues($data->getConditionValidateData(), $parValuesArr);
+                bdump($final);
                 try {
                     $res = $mathService->evaluateExpression($final);
                     return $res < 0.0;
@@ -235,7 +248,7 @@ class ValidationFunctionsBox implements IDataBox
                         return false;
                     }
                     $squareRoot = sqrt($value);
-                    $squareRootInt = (int) $squareRoot;
+                    $squareRootInt = (int)$squareRoot;
                     return $squareRootInt == $squareRoot;
                 } catch (\Exception $e) {
                     return false;

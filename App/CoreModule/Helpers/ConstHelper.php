@@ -50,8 +50,8 @@ class ConstHelper
     public const QUOTIENT_EXISTS = 0;
 
     // Expression conditions
-    public const EXPRESSION_VALIDATION = 5;
-    public const EXPRESSION_VALID = 0;
+    public const LINEAR_EQUATION_VALIDATION = 5;
+    public const LINEAR_EQUATION_VALID = 0;
 
     // Quadratic Equation conditions
     public const QUADRATIC_EQUATION_VALIDATION = 6;
