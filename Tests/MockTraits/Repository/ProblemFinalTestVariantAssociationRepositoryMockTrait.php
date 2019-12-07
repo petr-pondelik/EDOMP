@@ -56,7 +56,6 @@ trait ProblemFinalTestVariantAssociationRepositoryMockTrait
     protected function setUpProblemFinalTestVariantAssociationRepositoryMock(): void
     {
         $this->problemFinalTestVariantAssociationRepositoryMock = $this->getMockBuilder(ProblemFinalTestVariantAssociationRepository::class)
-            ->setMethods(['find', 'findBy'])
             ->disableOriginalConstructor()
             ->getMock();
 

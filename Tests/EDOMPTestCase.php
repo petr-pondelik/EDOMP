@@ -35,7 +35,7 @@ abstract class EDOMPTestCase extends TestCase
      * For show diff, comment this
      * @var bool
      */
-//    protected $runTestInSeparateProcess = true;
+    protected $runTestInSeparateProcess = true;
 
     /**
      * @var Container
@@ -44,6 +44,6 @@ abstract class EDOMPTestCase extends TestCase
 
     protected function setUp(): void
     {
-//        $this->container = Bootstrap::boot()->createContainer();
+        $this->container = Bootstrap::boot()->createContainer();
     }
 }

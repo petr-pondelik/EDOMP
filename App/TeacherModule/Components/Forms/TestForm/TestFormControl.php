@@ -364,7 +364,7 @@ class TestFormControl extends EntityFormControl
             ->setHtmlAttribute('class', 'form-control selectpicker')
             ->setHtmlAttribute('title', 'Zvolte skupiny');
 
-        $form->addText('testTerm', 'Období *')
+        $form->addText('term', 'Období *')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte období ve školním roce.');
 
@@ -541,7 +541,7 @@ class TestFormControl extends EntityFormControl
         $validateFields['groups'] = new ValidatorArgument($values->groups, 'arrayNotEmpty');
         $validateFields['schoolYear'] = new ValidatorArgument($values->schoolYear, 'schoolYear');
         $validateFields['testNumber'] = new ValidatorArgument($values->testNumber, 'intNotNegative');
-        $validateFields['testTerm'] = new ValidatorArgument($values->testTerm, 'notEmpty');
+        $validateFields['term'] = new ValidatorArgument($values->term, 'notEmpty');
         $this->validator->validate($form, $validateFields);
         $this->redrawErrors();
     }
@@ -703,7 +703,7 @@ class TestFormControl extends EntityFormControl
             'variantsCnt' => $this->entity->getVariantsCnt(),
             'problemsPerVariant' => $this->entity->getProblemsPerVariant(),
             'groups' => $this->entity->getPropertyKeyArray('groups'),
-            'testTerm' => $this->entity->getTerm(),
+            'term' => $this->entity->getTerm(),
             'testNumber' => $this->entity->getTestNumber(),
             'schoolYear' => $this->entity->getSchoolYear(),
             'logo' => $this->entity->getLogo()->getId(),

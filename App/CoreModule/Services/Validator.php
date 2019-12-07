@@ -405,7 +405,7 @@ class Validator
                 2 => 'Číslo testu nesmí být záporné.'
             ],
 
-            'testTerm' => [
+            'term' => [
                 0 => 'Období testu musí být vyplněno.'
             ],
 

@@ -26,6 +26,11 @@ class ProblemFinalTestVariantAssociationFunctionalityUnitTest extends Functional
     use ProblemFinalRepositoryMockTrait;
 
     /**
+     * @var ProblemFinalTestVariantAssociationFunctionality
+     */
+    protected $functionality;
+
+    /**
      * @throws \Exception
      */
     protected function setUp(): void
@@ -44,8 +49,7 @@ class ProblemFinalTestVariantAssociationFunctionalityUnitTest extends Functional
         $problemFinalTestVariantAssociation->setProblemFinal($this->firstProblemFinal);
         $this->firstProblemFinalTestVariantAssociation = $problemFinalTestVariantAssociation;
 
-        $this->problemFinalTestVariantAssociationRepositoryMock->expects($this->any())
-            ->method('findOneBy')
+        $this->problemFinalTestVariantAssociationRepositoryMock->method('findOneBy')
             ->willReturnCallback(static function ($arg) use ($problemFinalTestVariantAssociation) {
                 switch ($arg) {
                     case [

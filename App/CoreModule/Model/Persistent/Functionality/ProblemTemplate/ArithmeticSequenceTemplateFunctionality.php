@@ -86,6 +86,7 @@ class ArithmeticSequenceTemplateFunctionality extends BaseFunctionality
     public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $entity = new ArithmeticSequenceTemplate();
+
         $entity = $this->setBasics($entity, $data);
 
         $entity->setIndexVariable($data['indexVariable']);

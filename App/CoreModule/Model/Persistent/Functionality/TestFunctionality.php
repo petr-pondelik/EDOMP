@@ -9,7 +9,10 @@
 namespace App\CoreModule\Model\Persistent\Functionality;
 
 use App\CoreModule\Model\Persistent\Entity\BaseEntity;
+use App\CoreModule\Model\Persistent\Entity\Group;
+use App\CoreModule\Model\Persistent\Entity\Logo;
 use App\CoreModule\Model\Persistent\Entity\Test;
+use App\CoreModule\Model\Persistent\Entity\User;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\GroupRepository;
 use App\CoreModule\Model\Persistent\Repository\LogoRepository;
@@ -18,6 +21,7 @@ use App\CoreModule\Model\Persistent\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\DateTime;
 
 /**
  * Class TestFunctionality
@@ -85,22 +89,38 @@ class TestFunctionality extends BaseFunctionality
      * @param bool $flush
      * @return BaseEntity|null
      * @throws \App\CoreModule\Exceptions\EntityException
+     * @throws EntityNotFoundException
      */
     public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $test = new Test();
 
-        $test->setLogo($this->logoRepository->find($data->logo));
-        $test->setTerm($data->term);
-        $test = $this->attachGroups($test, $data->groups);
-        $test->setSchoolYear($data->schoolYear);
-        $test->setTestNumber($data->testNumber);
-        $test->setIntroductionText($data->introductionText);
-        $test->setVariantsCnt($data->variantsCnt);
-        $test->setProblemsPerVariant($data->problemsPerVariant);
+        /** @var Logo|null $logo */
+        $logo = $this->logoRepository->find($data['logo']);
+        if (!$logo) {
+            throw new EntityNotFoundException('Logo not found.');
+        }
 
-        if (isset($data->userId)) {
-            $test->setCreatedBy($this->userRepository->find($data->userId));
+        $test->setLogo($logo);
+        $test->setTerm($data['term']);
+        $test = $this->attachGroups($test, $data['groups']);
+        $test->setSchoolYear($data['schoolYear']);
+        $test->setTestNumber($data['testNumber']);
+        $test->setIntroductionText($data['introductionText']);
+        $test->setVariantsCnt($data['variantsCnt']);
+        $test->setProblemsPerVariant($data['problemsPerVariant']);
+
+        if (isset($data['userId'])) {
+            /** @var User|null $user */
+            $user = $this->userRepository->find($data['userId']);
+            if (!$user) {
+                throw new EntityNotFoundException('User not found.');
+            }
+            $test->setCreatedBy($user);
+        }
+
+        if (isset($data['created'])) {
+            $test->setCreated(DateTime::from($data['created']));
         }
 
         $this->em->persist($test);
@@ -122,24 +142,25 @@ class TestFunctionality extends BaseFunctionality
      */
     public function update(int $id, iterable $data, bool $flush = true): ?BaseEntity
     {
-        bdump('TEST FUNCTIONALITY UPDATE');
-        bdump($data);
-
+        /** @var Test $entity */
         $entity = $this->repository->find($id);
         if (!$entity) {
             throw new EntityNotFoundException('Entity for update not found.');
         }
 
-        if ($data->updateBasics) {
-            $entity->setLogo($this->logoRepository->find($data->logo));
-            $entity->setTerm($data->testTerm);
-            $entity->setSchoolYear($data->schoolYear);
-            $entity->setTestNumber($data->testNumber);
-            $entity->setIntroductionText($data->introductionText);
-            $entity = $this->updateGroups($entity, ArrayHash::from($data->groups));
-        }
-
-        if ($data->updateStatistics) {
+        if ($data['updateBasics']) {
+            /** @var Logo $logo */
+            $logo = $this->logoRepository->find($data['logo']);
+            if (!$logo) {
+                throw new EntityNotFoundException('Logo not found.');
+            }
+            $entity->setLogo($logo);
+            $entity->setTerm($data['term']);
+            $entity->setSchoolYear($data['schoolYear']);
+            $entity->setTestNumber($data['testNumber']);
+            $entity->setIntroductionText($data['introductionText']);
+            $entity = $this->updateGroups($entity, ArrayHash::from($data['groups']));
+        } else if ($data['updateStatistics']) {
             $this->updateStatistics($entity, $data, false);
         }
 
@@ -169,10 +190,10 @@ class TestFunctionality extends BaseFunctionality
         for ($i = 0; $i < $entity->getVariantsCnt(); $i++) {
             for ($j = 0; $j < $entity->getProblemsPerVariant(); $j++) {
                 $this->problemFinalTestVariantAssociationFunctionality->update(
-                    $data->{'problemFinalId' . $i . $j},
+                    $data['problemFinalId' . $i . $j],
                     ArrayHash::from([
                         'testVariant' => $testVariants[$i]->getId(),
-                        'successRate' => $data->{'successRate' . $i . $j}
+                        'successRate' => $data['successRate' . $i . $j]
                     ]),
                     false
                 );
@@ -182,9 +203,9 @@ class TestFunctionality extends BaseFunctionality
         // Recalculate success rates for associated ProblemFinals and ProblemTemplates entities
         for ($i = 0; $i < $entity->getVariantsCnt(); $i++) {
             for ($j = 0; $j < $entity->getProblemsPerVariant(); $j++) {
-                $this->problemFunctionality->calculateSuccessRate($data->{'problemFinalId' . $i . $j}, false, false);
-                if (!empty($data->{'problemTemplateId' . $i . $j})) {
-                    $this->problemFunctionality->calculateSuccessRate($data->{'problemTemplateId' . $i . $j}, true, false);
+                $this->problemFunctionality->calculateSuccessRate($data['problemFinalId' . $i . $j], false, false);
+                if (!empty($data['problemTemplateId' . $i . $j])) {
+                    $this->problemFunctionality->calculateSuccessRate($data['problemTemplateId' . $i . $j], true, false);
                 }
             }
         }
@@ -200,6 +221,7 @@ class TestFunctionality extends BaseFunctionality
      * @param Test $entity
      * @param iterable $groups
      * @return Test
+     * @throws EntityNotFoundException
      */
     public function updateGroups(Test $entity, iterable $groups): Test
     {
@@ -211,11 +233,17 @@ class TestFunctionality extends BaseFunctionality
      * @param Test $entity
      * @param iterable $groups
      * @return Test
+     * @throws EntityNotFoundException
      */
     public function attachGroups(Test $entity, iterable $groups): Test
     {
         foreach ($groups as $groupId) {
-            $entity->addGroup($this->groupRepository->find($groupId));
+            /** @var Group|null $group */
+            $group = $this->groupRepository->find($groupId);
+            if (!$group) {
+                throw new EntityNotFoundException('Group not found.');
+            }
+            $entity->addGroup($group);
         }
         return $entity;
     }
@@ -228,13 +256,18 @@ class TestFunctionality extends BaseFunctionality
      */
     public function close(int $id): Test
     {
+        /** @var Test|null $entity */
         $entity = $this->repository->find($id);
         if (!$entity) {
             throw new EntityNotFoundException('Test for closing was not found.');
         }
+
         $entity->setIsClosed(true);
+
         $this->em->persist($entity);
+
         $this->em->flush();
+
         return $entity;
     }
 }

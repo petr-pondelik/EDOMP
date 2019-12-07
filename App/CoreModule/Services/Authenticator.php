@@ -60,7 +60,6 @@ class Authenticator implements IAuthenticator
      * @param array $credentials
      * @return Identity|IIdentity
      * @throws AuthenticationException
-     * @throws \Doctrine\ORM\Query\QueryException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function authenticate(array $credentials)

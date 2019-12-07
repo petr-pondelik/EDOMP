@@ -86,7 +86,9 @@ class GeometricSequenceTemplateFunctionality extends BaseFunctionality
     public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $entity = new GeometricSequenceTemplate();
+
         $entity = $this->setBasics($entity, $data);
+
         $entity->setIndexVariable($data['indexVariable']);
         $entity->setFirstN($data['firstN']);
 

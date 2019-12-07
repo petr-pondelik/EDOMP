@@ -74,12 +74,12 @@
                         </div>
 
                         <div class="form-group col-md-6">
-                            {label testTerm}
-                            {input testTerm}
-                            {snippet testTermErrorSnippet}
+                            {label term}
+                            {input term}
+                            {snippet termErrorSnippet}
                                 {var $form = $control['form']}
                                 <div n:if="$form->hasErrors()" class="mt-2">
-                                    <p n:foreach="$form['testTerm']->errors as $error"
+                                    <p n:foreach="$form['term']->errors as $error"
                                             class="alert alert-danger border-0 alert-dismissible fade show"
                                             role="alert">
                                         {$error}

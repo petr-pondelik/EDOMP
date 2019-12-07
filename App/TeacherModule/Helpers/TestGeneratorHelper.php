@@ -146,7 +146,7 @@ class TestGeneratorHelper
     {
         $res = ArrayHash::from([
             'logo' => $data->logo,
-            'term' => $data->testTerm,
+            'term' => $data->term,
             'schoolYear' => $data->schoolYear,
             'testNumber' => (int)$data->testNumber,
             'groups' => $data->groups,

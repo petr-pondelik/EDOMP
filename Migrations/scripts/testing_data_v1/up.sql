@@ -111,6 +111,9 @@ INSERT INTO edomp.user_group_rel (user_id, group_id) VALUES (28, 6);
 INSERT INTO edomp.user_group_rel (user_id, group_id) VALUES (29, 6);
 INSERT INTO edomp.user_group_rel (user_id, group_id) VALUES (30, 6);
 
+# INSERT Groups with Theme associations
+INSERT INTO edomp.group_theme_rel (group_id, theme_id) VALUES (3, 1);
+INSERT INTO edomp.group_theme_rel (group_id, theme_id) VALUES (3, 2);
 
 # INSERT ProblemTypes
 INSERT INTO edomp.problem_type (id, created, label, key_label, teacher_level_secured) VALUES (1, '2019-04-05 19:19:49', 'Lineární rovnice', 'LinearEquation', 0);
