@@ -9,6 +9,7 @@
 namespace App\Tests\MockTraits\Repository;
 
 use App\CoreModule\Model\Persistent\Entity\ProblemConditionType;
+use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionTypeRepository;
 use Nette\Utils\DateTime;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -40,7 +41,7 @@ trait ProblemConditionTypeRepositoryMockTrait
     protected function setUpProblemConditionTypeRepositoryMock(): void
     {
         $this->problemConditionTypeRepositoryMock = $this->getMockBuilder(ProblemConditionTypeRepository::class)
-            ->setMethods(['find'])
+            ->setMethods(['find', 'findNonValidation'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -59,14 +60,19 @@ trait ProblemConditionTypeRepositoryMockTrait
         $this->secondProblemConditionType = $secondProblemConditionType;
 
         // Set ProblemConditionTypeRepository expected return values for find
-        $this->problemConditionTypeRepositoryMock->expects($this->any())
-            ->method('find')
+        $this->problemConditionTypeRepositoryMock->method('find')
             ->willReturnCallback(static function ($arg) use ($firstProblemConditionType, $secondProblemConditionType) {
                 switch ($arg) {
                     case 1: return $firstProblemConditionType;
                     case 2: return $secondProblemConditionType;
                     default: return null;
                 }
+            });
+
+        // Set ProblemConditionTypeRepository expected return values for findNonValidation
+        $this->problemConditionTypeRepositoryMock->method('findNonValidation')
+            ->willReturnCallback(static function () use ($firstProblemConditionType, $secondProblemConditionType) {
+                    return [$firstProblemConditionType, $secondProblemConditionType];
             });
     }
 }

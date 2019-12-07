@@ -40,7 +40,7 @@ trait TemplateJsonDataRepositoryMockTrait
     protected function setUpTemplateJsonDataRepository(): void
     {
         $this->templateJsonDataRepositoryMock = $this->getMockBuilder(TemplateJsonDataRepository::class)
-            ->setMethods(['find', 'findOneBy'])
+            ->setMethods(['find', 'findOneBy', 'findBy'])
             ->disableOriginalConstructor()
             ->getMock();
 

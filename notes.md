@@ -14,3 +14,10 @@
     -   Filtry bude nutné zaznamenávat jako samostatnou entitu, která bude v asociaci s testem
     -   Volba úloh, které se mají přegenerovat
     -   Přegenerovat půjde pouze uzavřený test
+
+## Pomůcky
+
+### Regex pro nahrazení obj. přístupu za array přístup
+
+        ->(\w+)\)
+        ['$1'])

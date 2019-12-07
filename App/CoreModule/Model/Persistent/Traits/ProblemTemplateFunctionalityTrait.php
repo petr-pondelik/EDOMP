@@ -8,7 +8,12 @@
 
 namespace App\CoreModule\Model\Persistent\Traits;
 
+use App\CoreModule\Model\Persistent\Entity\Difficulty;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\ProblemTemplate;
+use App\CoreModule\Model\Persistent\Entity\ProblemType;
+use App\CoreModule\Model\Persistent\Entity\SubTheme;
+use App\CoreModule\Model\Persistent\Entity\TemplateJsonData;
+use App\CoreModule\Model\Persistent\Entity\User;
 use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
 use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
@@ -17,7 +22,9 @@ use App\CoreModule\Model\Persistent\Repository\ProblemTypeRepository;
 use App\CoreModule\Model\Persistent\Repository\SubThemeRepository;
 use App\CoreModule\Model\Persistent\Repository\TemplateJsonDataRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityNotFoundException;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\DateTime;
 use Nette\Utils\Json;
 
 /**
@@ -74,98 +81,126 @@ trait ProblemTemplateFunctionalityTrait
     }
 
     /**
-     * @param $template
-     * @param ArrayHash $data
-     * @param int|null $templateId
+     * @param ProblemTemplate $entity
+     * @param iterable $data
+     * @param int|null $entityId
      * @param bool $fromDataGrid
      * @return ProblemTemplate
      * @throws \Nette\Utils\JsonException
+     * @throws EntityNotFoundException
      */
-    public function setBasics($template, ArrayHash $data, int $templateId = null, bool $fromDataGrid = false): ProblemTemplate
+    public function setBasics(ProblemTemplate $entity, iterable $data, int $entityId = null, bool $fromDataGrid = false): ProblemTemplate
     {
-        bdump('SET BASE VALUES');
-        bdump($data);
-
-        if (isset($data->textBefore)) {
-            $template->setTextBefore($data->textBefore);
-        }
-        if (isset($data->body)) {
-            $template->setBody($data->body);
-        }
-        if (isset($data->textAfter)) {
-            $template->setTextAfter($data->textAfter);
-        }
-        if (isset($data->type)) {
-            $template->setProblemType($this->problemTypeRepository->find($data->type));
-        }
-        if (isset($data->difficulty)) {
-            $template->setDifficulty($this->difficultyRepository->find($data->difficulty));
-        }
-        if (isset($data->subTheme)) {
-            $template->setSubTheme($this->subThemeRepository->find($data->subTheme));
-        }
-        if (isset($data->matches)) {
-            $template->setMatches($data->matches);
+        if (isset($data['textBefore'])) {
+            $entity->setTextBefore($data['textBefore']);
         }
 
-        if (isset($data->studentVisible)) {
-            $template->setStudentVisible($data->studentVisible);
+        if (isset($data['body'])) {
+            $entity->setBody($data['body']);
         }
 
-        if (isset($data->userId)) {
-            $template->setCreatedBy($this->userRepository->find($data->userId));
+        if (isset($data['textAfter'])) {
+            $entity->setTextAfter($data['textAfter']);
+        }
+
+        if (isset($data['type'])) {
+            /** @var ProblemType|null $problemType */
+            $problemType = $this->problemTypeRepository->find($data['type']);
+            if (!$problemType) {
+                throw new EntityNotFoundException('ProblemType not found.');
+            }
+            $entity->setProblemType($problemType);
+        }
+
+        if (isset($data['difficulty'])) {
+            /** @var Difficulty|null $difficulty */
+            $difficulty = $this->difficultyRepository->find($data['difficulty']);
+            if (!$difficulty) {
+                throw new EntityNotFoundException('Difficulty not found.');
+            }
+            $entity->setDifficulty($difficulty);
+        }
+
+        if (isset($data['subTheme'])) {
+            /** @var SubTheme|null $subTheme */
+            $subTheme = $this->subThemeRepository->find($data['subTheme']);
+            if (!$subTheme) {
+                throw new EntityNotFoundException('SubTheme not found.');
+            }
+            $entity->setSubTheme($subTheme);
+        }
+
+        if (isset($data['matches'])) {
+            $entity->setMatches($data['matches']);
+        }
+
+        if (isset($data['studentVisible'])) {
+            $entity->setStudentVisible($data['studentVisible']);
+        }
+
+        if (isset($data['userId'])) {
+            /** @var User|null $user */
+            $user = $this->userRepository->find($data['userId']);
+            if (!$user) {
+                throw new EntityNotFoundException('User not found.');
+            }
+            $entity->setCreatedBy($user);
+        }
+
+        if (isset($data['created'])) {
+            $entity->setCreated(DateTime::from($data['created']));
         }
 
         if (!$fromDataGrid) {
-            $attached = $this->attachConditions($template, $data);
-            $template = $attached->template;
+            $attached = $this->attachConditions($entity, $data);
+            $entity = $attached->template;
 
-            if (!$templateId) {
-                $templateId = $this->repository->getSequenceVal();
+            if (!$entityId) {
+                $entityId = $this->repository->getSequenceVal();
             }
 
-            $templateJsonData = [];
+            $entityJsonData = [];
 
-            if ($templateJsons = $this->templateJsonDataRepository->findBy(['templateId' => $templateId])) {
-
-                $templateJsonData = Json::decode($templateJsons[0]->getJsonData());
+            /** @var TemplateJsonData[] $entityJsons */
+            if ($entityJsons = $this->templateJsonDataRepository->findBy(['templateId' => $entityId])) {
+                $entityJsonData = Json::decode($entityJsons[0]->getJsonData());
 
                 // Unset picked template JSON
-                unset($templateJsons[0]);
+                unset($entityJsons[0]);
 
                 // Make merge of all template recorded JSONs
-                foreach ($templateJsons as $json) {
+                foreach ($entityJsons as $json) {
                     $problemConditionTypeId = $json->getProblemConditionType()->getId();
-                    if (isset($data->{'condition_' . $problemConditionTypeId}) && $data->{'condition_' . $problemConditionTypeId} !== 0) {
+                    if (isset($data['condition_' . $problemConditionTypeId]) && $data['condition_' . $problemConditionTypeId] !== 0) {
                         $arr = Json::decode($json->getJsonData());
-                        $templateJsonData = $this->intersectJsonDataArrays($templateJsonData, $arr);
+                        $entityJsonData = $this->intersectJsonDataArrays($entityJsonData, $arr);
                     }
                 }
-
             }
 
-            if ($templateJsonData) {
+            if ($entityJsonData) {
                 // Reindex array key to start from 0 (array_values) and encode data to JSON string
-                $templateJsonData = Json::encode(array_values($templateJsonData));
-                $template->setMatches($templateJsonData);
+                $entityJsonData = Json::encode(array_values($entityJsonData));
+                $entity->setMatches($entityJsonData);
             }
 
             // Comment this for testing purposes
-            $this->templateJsonDataFunctionality->deleteByTemplate($templateId);
+            $this->templateJsonDataFunctionality->deleteByTemplate($entityId);
 
         }
 
-        return $template;
+        return $entity;
     }
 
     /**
      * @param int $id
-     * @param ArrayHash $data
+     * @param iterable $data
      * @param bool $fromDataGrid
-     * @return Object|null
+     * @return ProblemTemplate
+     * @throws EntityNotFoundException
      * @throws \Nette\Utils\JsonException
      */
-    public function baseUpdate(int $id, ArrayHash $data, bool $fromDataGrid = false): ?Object
+    public function baseUpdate(int $id, iterable $data, bool $fromDataGrid = false): ProblemTemplate
     {
         $template = $this->repository->find($id);
         if (!$fromDataGrid) {
@@ -175,23 +210,23 @@ trait ProblemTemplateFunctionalityTrait
     }
 
     /**
-     * @param $template
-     * @param ArrayHash $data
+     * @param ProblemTemplate $template
+     * @param iterable $data
      * @return ArrayHash
      */
-    protected function attachConditions($template, ArrayHash $data): ArrayHash
+    protected function attachConditions(ProblemTemplate $template, iterable $data): ArrayHash
     {
         $hasCondition = false;
-        $problemCondTypes = $this->problemConditionTypeRepository->findNonValidation($data->type);
+        $problemCondTypes = $this->problemConditionTypeRepository->findNonValidation($data['type']);
 
         foreach ($problemCondTypes as $problemCondType) {
-            //Get ConditionType ID
+            // Get ConditionType ID
             $condTypeId = $problemCondType->getId();
 
-            //Get ConditionType value from created problem
-            $condTypeVal = $data->{'condition_' . $condTypeId};
+            // Get ConditionType value from created problem
+            $condTypeVal = $data['condition_' . $condTypeId];
 
-            //Template has condition
+            // Template has condition
             if ($condTypeVal) {
                 $hasCondition = true;
             }

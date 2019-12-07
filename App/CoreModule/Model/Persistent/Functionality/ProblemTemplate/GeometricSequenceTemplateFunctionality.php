@@ -12,7 +12,6 @@ use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Entity\ProblemTemplate\GeometricSequenceTemplate;
 use App\CoreModule\Model\Persistent\Functionality\BaseFunctionality;
 use App\CoreModule\Model\Persistent\Functionality\TemplateJsonDataFunctionality;
-use App\CoreModule\Model\Persistent\Functionality\UserFunctionality;
 use App\CoreModule\Model\Persistent\Manager\ConstraintEntityManager;
 use App\CoreModule\Model\Persistent\Repository\DifficultyRepository;
 use App\CoreModule\Model\Persistent\Repository\ProblemTemplate\GeometricSequenceTemplateRepository;
@@ -33,7 +32,7 @@ class GeometricSequenceTemplateFunctionality extends BaseFunctionality
     use ProblemTemplateFunctionalityTrait;
 
     /**
-     * @var UserFunctionality
+     * @var UserRepository
      */
     protected $userRepository;
 
@@ -82,17 +81,21 @@ class GeometricSequenceTemplateFunctionality extends BaseFunctionality
      * @return BaseEntity|null
      * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
+     * @throws \Doctrine\ORM\EntityNotFoundException
      */
     public function create(iterable $data, bool $flush = true): ?BaseEntity
     {
         $entity = new GeometricSequenceTemplate();
         $entity = $this->setBasics($entity, $data);
-        $entity->setIndexVariable($data->indexVariable);
-        $entity->setFirstN($data->firstN);
+        $entity->setIndexVariable($data['indexVariable']);
+        $entity->setFirstN($data['firstN']);
+
         $this->em->persist($entity);
         if ($flush) {
+
             $this->em->flush();
         }
+
         return $entity;
     }
 
@@ -104,20 +107,26 @@ class GeometricSequenceTemplateFunctionality extends BaseFunctionality
      * @return BaseEntity|null
      * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
+     * @throws \Doctrine\ORM\EntityNotFoundException
      */
     public function update(int $id, iterable $data, bool $flush = true, bool $fromDataGrid = false): ?BaseEntity
     {
         $entity = $this->baseUpdate($id, $data, $fromDataGrid);
-        if(isset($data->indexVariable)){
-            $entity->setIndexVariable($data->indexVariable);
+
+        if (isset($data['indexVariable'])) {
+            $entity->setIndexVariable($data['indexVariable']);
         }
-        if(isset($data->firstN)){
-            $entity->setFirstN($data->firstN);
+
+        if (isset($data['firstN'])) {
+            $entity->setFirstN($data['firstN']);
         }
+
         $this->em->persist($entity);
+
         if ($flush) {
             $this->em->flush();
         }
+
         return $entity;
     }
 }

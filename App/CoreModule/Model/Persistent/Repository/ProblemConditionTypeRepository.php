@@ -49,8 +49,6 @@ class ProblemConditionTypeRepository extends BaseRepository
             $res[$qbResItem['ptId']][] = $qbResItem['pctId'];
         }
 
-        bdump($res);
-
         return $res;
     }
 }

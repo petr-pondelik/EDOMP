@@ -49,5 +49,4 @@ class ProblemTemplate extends Problem
     {
         $this->matches = $matches;
     }
-
 }
