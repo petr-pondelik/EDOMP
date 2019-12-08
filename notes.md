@@ -12,6 +12,8 @@
 -   ArithmeticSequenceTemplate
     -   expression obsahuje neparsované parametry!!!
 
+::getEquationSides
+
 ## Pomůcky
 
 ### Regex pro nahrazení obj. přístupu za array přístup

@@ -17,7 +17,7 @@ use Nette\Utils\Strings;
  * Class ParameterParser
  * @package App\TeacherModule\Services
  */
-class ParameterParser implements IParser
+final class ParameterParser implements IParser
 {
     protected const PARAMETER_ATTR_KEY_REG = '\w*';
     protected const PARAMETER_ATTR_VALUE_REG = '\-?[0-9a-zA-Z\*\-\+\/\^\"\'\>\<]*';
@@ -120,7 +120,7 @@ class ParameterParser implements IParser
         foreach ($values as $parameter => $value) {
             $expression = Strings::replace($expression, '~' . $parameter . '~', $value);
         }
-        return $this->stringsHelper::standardizeOperators($expression);
+        return $this->stringsHelper::normalizeOperators($expression);
     }
 
     /**

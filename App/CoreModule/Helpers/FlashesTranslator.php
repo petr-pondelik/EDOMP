@@ -19,7 +19,7 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
  * Class FlashesTranslator
  * @package App\CoreModule\Helpers
  */
-class FlashesTranslator
+final class FlashesTranslator
 {
     /**
      * @var array

@@ -38,7 +38,7 @@ abstract class SequencePlugin extends ProblemPlugin
         $expression = $this->latexParser::parse($problemTemplate->getBody());
         $problemTemplate->setExpression($expression);
         $parametrized = $this->parameterParser::parse($expression);
-        $sides = $this->stringsHelper::getEquationSides($parametrized->expression);
+        $sides = $this->mathService::getEquationSides($parametrized->expression);
         $expression = $this->newtonApiClient->simplify($sides->right);
         $problemTemplate->setStandardized($expression);
         return $problemTemplate;
@@ -58,7 +58,7 @@ abstract class SequencePlugin extends ProblemPlugin
         bdump('STANDARDIZE SEQUENCE');
         $expression = $this->latexParser::parse($expression);
         $parametrized = $this->parameterParser::parse($expression);
-        $sides = $this->stringsHelper::getEquationSides($parametrized->expression);
+        $sides = $this->mathService::getEquationSides($parametrized->expression);
         $expression = $this->newtonApiClient->simplify($sides->right);
         return $expression;
     }
@@ -93,8 +93,8 @@ abstract class SequencePlugin extends ProblemPlugin
         $parsed = $this->latexParser::parse($problem->getBody());
         $variable = $template->getIndexVariable();
 
-        $sides = $this->stringsHelper::getEquationSides($parsed, false);
-        $seqName = $this->stringsHelper::extractSequenceName($sides->left);
+        $sides = $this->mathService::getEquationSides($parsed, false);
+        $seqName = self::extractSequenceName($sides->left);
 
         //$problem = $this->problemFinalRepository->find($problem->getId());
         $firstN = $template->getFirstN();
@@ -138,7 +138,7 @@ abstract class SequencePlugin extends ProblemPlugin
         $this->validateParameters($problemTemplate->getBody());
         $split = $this->parameterParser::splitByParameters($parsed);
 
-        if (empty($problemTemplate->getIndexVariable()) || !$this->stringsHelper::containsVariable($split, $problemTemplate->getIndexVariable())) {
+        if (empty($problemTemplate->getIndexVariable()) || !$this->mathService::containsVariable($split, $problemTemplate->getIndexVariable())) {
             return 2;
         }
 
@@ -151,5 +151,14 @@ abstract class SequencePlugin extends ProblemPlugin
         }
 
         return -1;
+    }
+
+    /**
+     * @param string $expression
+     * @return string
+     */
+    public static function extractSequenceName(string $expression): string
+    {
+        return (Strings::match($expression, '~^\s*(\w*)\w$~'))[1];
     }
 }

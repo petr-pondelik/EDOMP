@@ -47,7 +47,7 @@ final class LinearEquationPlugin extends EquationPlugin
             throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat lineární rovnici.');
         }
 
-        $data->setLinearVariableExpression($this->stringsHelper::getLinearVariableExpresion($data->getStandardized(), $data->getVariable()));
+        $data->setLinearVariableExpression($this->getLinearVariableExpresion($data->getStandardized(), $data->getVariable()));
 
         // Match string against the linear expression regexp
         $matches = Strings::match($standardized, '~' . $this->regularExpressions::getLinearEquationRE($data->getVariable()) . '~');
@@ -104,7 +104,7 @@ final class LinearEquationPlugin extends EquationPlugin
 
         $standardized = $this->standardizeFinal($problem->getBody());
         $variable = $template->getVariable();
-        $variableExp = $this->stringsHelper::getLinearVariableExpresion($standardized, $variable);
+        $variableExp = $this->getLinearVariableExpresion($standardized, $variable);
 
         $res = ArrayHash::from([ $variable => $this->mathService->evaluateExpression($variableExp) ]);
         $this->problemFinalFunctionality->storeResult($problem->getId(), $res);
@@ -123,7 +123,7 @@ final class LinearEquationPlugin extends EquationPlugin
     public function validateResultCond(LinearEquationTemplateNP $data): bool
     {
         bdump('VALIDATE RESULT COND');
-        $variableExp = $this->stringsHelper::getLinearVariableExpresion($data->getStandardized(), $data->getVariable());
+        $variableExp = $this->getLinearVariableExpresion($data->getStandardized(), $data->getVariable());
         $data->setLinearVariableExpression($variableExp);
         $data->setConditionValidateItem('linearVariableExpression');
 
@@ -149,5 +149,45 @@ final class LinearEquationPlugin extends EquationPlugin
         ]), true, $data->getId(), $data->getConditionType());
 
         return true;
+    }
+
+    /**
+     * @param string $expression
+     * @param string $variable
+     * @return string
+     */
+    public function getLinearVariableExpresion(string $expression, string $variable): string
+    {
+        $split = Strings::split($expression, '~(' . $variable . ')~');
+
+        if (!$split[2]) {
+            return '0';
+        }
+
+        foreach ($split as $key => $item) {
+            $split[$key] = Strings::trim($item);
+        }
+
+        // Check for expr. x / expr. format
+        if (Strings::startsWith($split[2], '/')) {
+            $multiplier = $split[0] === '' ? '1' : $split[0];
+            $multiplier = Strings::trim($multiplier) === '-' ? '-1' : $multiplier;
+
+            $divNeg = Strings::trim(Strings::after($split[2], '/'));
+            $divNeg = $this->mathService->negateOperators($divNeg);
+
+            $rightSide = sprintf('(%s)/(%s)', $divNeg, $multiplier);
+        } else {
+            $split[2] = $this->mathService->negateOperators($split[2]);
+
+            // Check if variable multiplier exists
+            if ($split[0]) {
+                $rightSide = sprintf('(%s)/(%s)', $split[2], $split[0]);
+            } else {
+                $rightSide = sprintf('(%s)', $split[2]);
+            }
+        }
+
+        return $this->stringsHelper::fillMultipliers($rightSide);
     }
 }

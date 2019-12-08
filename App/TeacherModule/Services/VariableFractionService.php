@@ -22,7 +22,7 @@ use Nette\Utils\Strings;
  * Class VariableFractionService
  * @package App\TeacherModule\Services
  */
-class VariableFractionService
+final class VariableFractionService
 {
     /**
      * @const int

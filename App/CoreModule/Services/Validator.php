@@ -340,7 +340,6 @@ class Validator
             'testTemplateContent' => function (string $data) {
 
                 $data = $this->stringsHelper::removeWhiteSpaces($data);
-                bdump($data);
 
                 if (Validators::isNone($data)) {
                     return 0;

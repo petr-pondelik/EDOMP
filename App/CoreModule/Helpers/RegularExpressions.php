@@ -12,7 +12,7 @@ namespace App\CoreModule\Helpers;
  * Class RegularExpressions
  * @package App\CoreModule\Helpers
  */
-class RegularExpressions
+final class RegularExpressions
 {
     // Match operator or whitespace
     public const RE_OPERATOR_WS = '(\+|\-|)';

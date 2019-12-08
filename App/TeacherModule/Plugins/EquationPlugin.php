@@ -38,8 +38,8 @@ abstract class EquationPlugin extends ProblemPlugin
         $problemTemplate->setExpression($parameterized->expression);
 
         // Finish standardization: move equation on left side with 0 remaining on the right side
-        $sides = $this->stringsHelper::getEquationSides($parameterized->expression);
-        $expression = $this->stringsHelper::mergeEqSides($sides);
+        $sides = $this->mathService::getEquationSides($parameterized->expression);
+        $expression = $this->mathService::mergeEqSides($sides);
         $expression = $this->newtonApiClient->simplify($expression);
         $problemTemplate->setStandardized($expression);
 
@@ -63,10 +63,10 @@ abstract class EquationPlugin extends ProblemPlugin
         bdump('STANDARDIZE EQUATION');
         $expression = $this->latexParser::parse($expression);
         $parameterized = $this->parameterParser::parse($expression);
-        $sides = $this->stringsHelper::getEquationSides($parameterized->expression);
+        $sides = $this->mathService::getEquationSides($parameterized->expression);
         $sides->left = $this->newtonApiClient->simplify($sides->left);
         $sides->right = $this->newtonApiClient->simplify($sides->right);
-        $expression = $this->stringsHelper::mergeEqSides($sides);
+        $expression = $this->mathService::mergeEqSides($sides);
         $expression = $this->newtonApiClient->simplify($expression);
         return $expression;
     }
@@ -84,6 +84,8 @@ abstract class EquationPlugin extends ProblemPlugin
     public function validateBody(ProblemTemplateNP $problemTemplate): int
     {
         bdump('VALIDATE BODY');
+        /** @var EquationTemplateNP $problemTemplate */
+
         if(!$this->latexParser::latexWrapped($problemTemplate->getBody())){
             return 1;
         }
@@ -93,14 +95,14 @@ abstract class EquationPlugin extends ProblemPlugin
         $this->validateParameters($problemTemplate->getBody());
         $split = $this->parameterParser::splitByParameters($parsed);
 
-        if (empty($problemTemplate->getVariable()) || !$this->stringsHelper::containsVariable($split, $problemTemplate->getVariable())) {
+        if (empty($problemTemplate->getVariable()) || !$this->mathService::containsVariable($split, $problemTemplate->getVariable())) {
             return 2;
         }
 
         $parametrized = $this->parameterParser::parse($parsed);
 
         try {
-            $expression = $this->stringsHelper::mergeEqSides($this->stringsHelper::getEquationSides($parametrized->expression));
+            $expression = $this->mathService::mergeEqSides($this->mathService::getEquationSides($parametrized->expression));
             $this->newtonApiClient->simplify($expression);
         } catch (NewtonApiSyntaxException $e) {
             bdump($e);

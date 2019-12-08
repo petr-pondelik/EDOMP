@@ -35,7 +35,7 @@ abstract class EDOMPTestCase extends TestCase
      * For show diff, comment this
      * @var bool
      */
-//    protected $runTestInSeparateProcess = true;
+    protected $runTestInSeparateProcess = true;
 
     /**
      * @var Container

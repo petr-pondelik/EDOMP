@@ -12,7 +12,7 @@ namespace App\CoreModule\Helpers;
  * Class ConstHelper
  * @package App\CoreModule\Helpers
  */
-class ConstHelper
+final class ConstHelper
 {
     // Roles
     public const ADMIN_ROLE = 1;

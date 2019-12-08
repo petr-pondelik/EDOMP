@@ -10,16 +10,21 @@ namespace App\TeacherModule\Services;
 
 use App\CoreModule\Helpers\RegularExpressions;
 use App\CoreModule\Helpers\StringsHelper;
+use App\TeacherModule\Exceptions\EquationException;
 use App\TeacherModule\Model\NonPersistent\Entity\EquationTemplateNP;
 use jlawrence\eos\Parser;
+use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 
 /**
  * Class MathService
  * @package App\TeacherModule\Services
  */
-class MathService
+final class MathService
 {
+    public const IS_ADDITION = 1;
+    public CONST IS_SUBTRACTION = 2;
+
     /**
      * @var Parser
      */
@@ -43,7 +48,7 @@ class MathService
     /**
      * @var VariableFractionService
      */
-    public $variableFractionService;
+    protected $variableFractionService;
 
     /**
      * @var RegularExpressions
@@ -99,7 +104,6 @@ class MathService
     public function processVariableFractions(EquationTemplateNP $data): EquationTemplateNP
     {
         if (!$fractionsProcessed = $this->variableFractionService->processVariableFractions($data)) {
-            bdump('WITHOUT VARIABLE FRACTIONS');
             return $data;
         }
         $data = $this->variableFractionService->getMultipliedByLCM($fractionsProcessed);
@@ -156,5 +160,129 @@ class MathService
         $expression = $this->stringsHelper::normalizeOperators($expression);
 
         return $expression;
+    }
+
+    /**
+     * @param string $expression
+     * @param bool $returnAddition
+     * @return string
+     */
+    public static function firstOperator(string $expression, bool $returnAddition = true): string
+    {
+        if (!Strings::startsWith($expression, '+') && !Strings::startsWith($expression, '-')) {
+            return $returnAddition ? '+' : '';
+        }
+        $addInx = Strings::indexOf($expression, '+');
+        $subInx = Strings::indexOf($expression, '-');
+        if ($addInx === false) {
+            return '-';
+        }
+        if ($subInx === false) {
+            return $returnAddition ? '+' : '-';
+        }
+        if ($addInx < $subInx) {
+            return $returnAddition ? '+' : '';
+        }
+        return '-';
+    }
+
+    /**
+     * @param string $expression
+     * @return int
+     */
+    public static function startOperator(string $expression): int
+    {
+        $expression = Strings::trim($expression);
+        if (!Strings::startsWith($expression, '+') && !Strings::startsWith($expression, '-')) {
+            return self::IS_ADDITION;
+        }
+        return self::firstOperator($expression);
+    }
+
+    /**
+     * @param string $expression
+     * @return string
+     */
+    public function negateOperators(string $expression): string
+    {
+        $startOp = '';
+        if (self::firstOperator($expression) === '+') {
+            $startOp = '-';
+        }
+        $expression = $this->stringsHelper::trimOperators($expression);
+        $expressionLen = strlen($expression);
+        for ($i = 0; $i < $expressionLen; $i++) {
+            if ($expression[$i] === '+') {
+                $expression[$i] = '-';
+                continue;
+            }
+            if ($expression[$i] === '-') {
+                $expression[$i] = '+';
+            }
+        }
+        return $startOp . $expression;
+    }
+
+    /**
+     * @param string $expression
+     * @return bool
+     */
+    public static function isEquation(string $expression): bool
+    {
+        $split = Strings::split($expression, '~=~');
+        if (count($split) !== 2 || Strings::match($split[0], '~^\s*$~') || Strings::match($split[1], '~^\s*$~')) {
+            return false;
+        }
+        if (Strings::match($expression, '~^\s+=\s+~')) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param string $expression
+     * @param bool $validate
+     * @return ArrayHash
+     * @throws EquationException
+     */
+    public static function getEquationSides(string $expression, bool $validate = true): ArrayHash
+    {
+        if ($validate && !self::isEquation($expression)) {
+            throw new EquationException('Zadaný výraz není validní rovnicí.');
+        }
+        $sides = Strings::split($expression, '~=~');
+        return ArrayHash::from([
+            'left' => Strings::trim($sides[0]),
+            'right' => Strings::trim($sides[1])
+        ]);
+    }
+
+    /**
+     * @param array $split
+     * @param string $variable
+     * @return bool
+     */
+    public static function containsVariable(array $split, string $variable): bool
+    {
+        foreach ($split as $part) {
+            if ($part !== '' && !Strings::startsWith($part, '<par')) {
+                if (Strings::contains($part, $variable)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param ArrayHash $sides
+     * @return string
+     */
+    public static function mergeEqSides(ArrayHash $sides): string
+    {
+        if ($sides->left === '0') {
+            return $sides->left;
+        }
+        return $sides->left . ' - (' . $sides->right . ')';
     }
 }
