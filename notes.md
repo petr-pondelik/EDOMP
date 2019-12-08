@@ -9,6 +9,9 @@
 -   Testy
     -   Je potřeba zbavit se využívání konstant definovaných před define() !!!
 
+-   ArithmeticSequenceTemplate
+    -   expression obsahuje neparsované parametry!!!
+
 ## Pomůcky
 
 ### Regex pro nahrazení obj. přístupu za array přístup

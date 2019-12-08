@@ -96,10 +96,10 @@ abstract class ProblemTemplateNP extends BaseEntityNP
 
     /**
      * ProblemTemplateNP constructor.
-     * @param ArrayHash $values
-     * @param ProblemTemplate $original
+     * @param iterable $values
+     * @param ProblemTemplate|null $original
      */
-    public function __construct(ArrayHash $values, ProblemTemplate $original = null)
+    public function __construct(iterable $values, ProblemTemplate $original = null)
     {
         bdump('PROBLEM TEMPLATE NP CONSTRUCTOR');
         $this->conditionValidateItem = 'standardized';
@@ -115,7 +115,7 @@ abstract class ProblemTemplateNP extends BaseEntityNP
                 $problemConditionTypeId = $originalCondition->getProblemConditionType()->getId();
                 $rule = 'condition_' . $problemConditionTypeId;
                 $originalValue = $originalCondition->getAccessor();
-                $newValue = $values[$rule] ?? $values->conditionAccessor;
+                $newValue = $values[$rule] ?? $values['conditionAccessor'];
                 if ((int)$originalValue !== (int)$newValue) {
                     $this->state->update(new ProblemTemplateStateItem($rule, $newValue, false));
                 } else {

@@ -186,18 +186,21 @@ class ValidationFunctionsBox implements IDataBox
 
                 try {
                     $values = $data->getFirstValues();
+                    bdump($values);
 
                     $final0 = $this->parameterParser->passValues($values[0], $parValuesArr);
                     $final1 = $this->parameterParser->passValues($values[1], $parValuesArr);
                     $final2 = $this->parameterParser->passValues($values[2], $parValuesArr);
+                    bdump([$final0, $final1, $final2]);
 
                     $final0 = $this->mathService->evaluateExpression($final0);
                     $final1 = $this->mathService->evaluateExpression($final1);
                     $final2 = $this->mathService->evaluateExpression($final2);
+                    bdump([$final0, $final1, $final2]);
 
                     // If the sequence contains 0 --> check all values for zero value --> if all values aren't zero, return false
-                    if ($values[0] === 0 || $values[1] === 0 || $values[2] === 0) {
-                        return !($values[0] !== 0 || $values[1] !== 0 || $values[2] !== 0);
+                    if (abs($final0) == 0) {
+                        return abs($final0) == 0 && abs($final1) == 0 && abs($final2) == 0;
                     }
 
                     $quot1 = $this->mathService->evaluateExpression(sprintf('(%s) / (%s)', $final1, $final0));
@@ -258,6 +261,7 @@ class ValidationFunctionsBox implements IDataBox
             'integer' => static function (ProblemTemplateNP $data, array $parValuesArr) use ($mathService, $parameterParser) {
                 $final = $parameterParser->passValues($data->getConditionValidateData(), $parValuesArr);
                 try {
+//                    return is_int($mathService->evaluateExpression($final));
                     $res = $mathService->evaluateExpression($final);
                     $resInt = (int)$res;
                     return $res == $resInt;

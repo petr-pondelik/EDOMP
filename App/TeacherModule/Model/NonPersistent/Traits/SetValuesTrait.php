@@ -20,7 +20,6 @@ trait SetValuesTrait
     public function setValues(iterable $values): void
     {
         bdump('SET VALUES');
-        bdump($values);
         foreach ($values as $key => $value) {
             if (property_exists(static::class, $key)) {
                 $this->{$key} = $value;

@@ -8,8 +8,6 @@
 
 namespace App\TeacherModule\Model\NonPersistent\Entity;
 
-use Nette\Utils\ArrayHash;
-
 /**
  * Class SequenceTemplateNP
  * @package App\TeacherModule\Model\NonPersistent\Entity
@@ -33,12 +31,12 @@ class SequenceTemplateNP extends ProblemTemplateNP
 
     /**
      * SequenceTemplateNP constructor.
-     * @param ArrayHash $values
+     * @param iterable $values
      */
-    public function __construct(ArrayHash $values)
+    public function __construct(iterable $values)
     {
-        parent::__construct($values);
         $this->firstValues = [];
+        parent::__construct($values);
     }
 
     /**
