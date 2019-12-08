@@ -51,19 +51,19 @@ final class ParameterParser implements IParser
     }
 
     /**
-     * @param String $xmpPar
-     * @param String $attr
+     * @param string $par
+     * @param string $attr
      * @return int
      */
-    public static function extractParAttr(String $xmpPar, String $attr): int
+    public static function extractParAttr(string $par, string $attr): int
     {
-        $start = Strings::indexOf($xmpPar, $attr);
+        $start = Strings::indexOf($par, $attr);
         if (!$start) {
             return null;
         }
-        $xmpPar = Strings::substring($xmpPar, $start);
-        $end = Strings::indexOf($xmpPar, '"', 2);
-        return (int)Strings::substring($xmpPar, Strings::indexOf($xmpPar, '"') + 1, $end - Strings::indexOf($xmpPar, '"') - 1);
+        $par = Strings::substring($par, $start);
+        $end = Strings::indexOf($par, '"', 2);
+        return (int)Strings::substring($par, Strings::indexOf($par, '"') + 1, $end - Strings::indexOf($par, '"') - 1);
     }
 
     /**
@@ -129,17 +129,16 @@ final class ParameterParser implements IParser
      */
     public static function parse(string $input): ArrayHash
     {
-        bdump('GET PARAMETRIZED');
+        bdump('PARAMETRIZE');
         $expressionSplit = self::splitByParameters($input);
         $parametrized = [];
         $parametersCnt = 0;
 
-        foreach ($expressionSplit as $splitKey => $splitItem){
-            if($splitItem !== ''){
-                if(!Strings::match($splitItem, '~(<par.*\/>)~')){
+        foreach ($expressionSplit as $splitKey => $splitItem) {
+            if ($splitItem !== '') {
+                if (!Strings::match($splitItem, '~(<par.*\/>)~')) {
                     $parametrized[$splitKey] = $splitItem;
-                }
-                else{
+                } else {
                     $parametrized[$splitKey] = 'p' . $parametersCnt++;
                 }
             }

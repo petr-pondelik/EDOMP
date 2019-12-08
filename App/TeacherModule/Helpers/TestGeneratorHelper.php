@@ -19,7 +19,7 @@ use Nette\Utils\Strings;
  * Class TestGeneratorHelper
  * @package App\TeacherModule\Helpers
  */
-class TestGeneratorHelper
+final class TestGeneratorHelper
 {
     protected const VARIANTS_LABELS = [
         0 => 'A',
@@ -80,7 +80,6 @@ class TestGeneratorHelper
             if (!$data['problem' . $seq]) {
                 $data['problem' . $seq] = '[]';
             }
-            bdump($data);
             return Json::decode($data['problem' . $seq], Json::FORCE_ARRAY);
         }
         return $original->getFilters()->getValues()[$seq]->getSelectedProblems();
@@ -109,7 +108,6 @@ class TestGeneratorHelper
     protected function getFiltersFromData(int $seq, ArrayHash $data): array
     {
         bdump('GET FILTERS FROM DATA');
-        bdump($data);
         $filters['isGenerated'] = false;
         $filters['createdBy'] = $data['userId'];
         $filters['isTemplate'] = $data['isTemplate' . $seq];
@@ -158,11 +156,11 @@ class TestGeneratorHelper
         ]);
 
         if ($test) {
-            $res->regenerateProblem = new ArrayHash();
+            $res['regenerateProblem'] = new ArrayHash();
             foreach ($data as $key => $val) {
                 $problemSeq = Strings::match($key, '~regenerateProblem(\d)~')[1];
                 if ($problemSeq !== null) {
-                    $res->regenerateProblem->{$problemSeq} = (bool)$val;
+                    $res['regenerateProblem'][$problemSeq] = (bool)$val;
                 }
             }
         }

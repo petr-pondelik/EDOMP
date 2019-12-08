@@ -57,7 +57,7 @@ final class LatexParser implements IParser
 
                 0 => [
                     'plain' => '$$',
-                    'original' => '\\\$\\\$',
+                    'original' => '\$\$',
                     'replacement' => ''
                 ],
 
@@ -215,7 +215,7 @@ final class LatexParser implements IParser
 
                 0 => [
                     'plain' => '$$',
-                    'original' => '\\$\\$',
+                    'original' => '\$\$',
                     'replacement' => ''
                 ],
 
@@ -370,7 +370,7 @@ final class LatexParser implements IParser
      */
     public static function parseFractions(string $latex): string
     {
-        while(Strings::match($latex, '~\\\\frac\{([\da-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*)\}\s*\{([\da-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*)\}~')){
+        while (Strings::match($latex, '~\\\\frac\{([\da-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*)\}\s*\{([\da-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*)\}~')) {
             $latex = Strings::replace($latex, '~\\\\frac\{([\da-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*)\}\s*\{([\da-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*)\}~', '(($1)/($2))');
         }
         return $latex;
@@ -383,13 +383,13 @@ final class LatexParser implements IParser
     public static function parseParentheses(string $latex): string
     {
         $res = $latex;
-        foreach (self::PREFIXES[self::PARENTHESES] as $prefixSet){
-            foreach ($prefixSet as $prefix){
+        foreach (self::PREFIXES[self::PARENTHESES] as $prefixSet) {
+            foreach ($prefixSet as $prefix) {
                 $res = Strings::replace($res, '~' . $prefix['original'] . '~', $prefix['replacement']);
             }
         }
-        foreach (self::SUFFIXES[self::PARENTHESES] as $suffixSet){
-            foreach ($suffixSet as $suffix){
+        foreach (self::SUFFIXES[self::PARENTHESES] as $suffixSet) {
+            foreach ($suffixSet as $suffix) {
                 $res = Strings::replace($res, '~' . $suffix['original'] . '~', $suffix['replacement']);
             }
         }
@@ -430,12 +430,13 @@ final class LatexParser implements IParser
      */
     public static function trim(string $latex): string
     {
-        $res = $latex;
-        foreach (self::PREFIXES[self::GLOBAL] as $key1 => $prefixSet){
-            foreach ($prefixSet as $key2 => $prefix){
-                $res = Strings::replace($res, '~' . $prefix['original'] . '~', $prefix['replacement']);}
+        $res = Strings::trim($latex);
+        foreach (self::PREFIXES[self::GLOBAL] as $key1 => $prefixSet) {
+            foreach ($prefixSet as $key2 => $prefix) {
+                $res = Strings::replace($res, '~' . $prefix['original'] . '~', $prefix['replacement']);
+            }
         }
-        foreach (self::SUFFIXES[self::GLOBAL] as $key1 => $suffixSet){
+        foreach (self::SUFFIXES[self::GLOBAL] as $key1 => $suffixSet) {
             foreach ($suffixSet as $key2 => $suffix) {
                 $res = Strings::replace($res, '~' . $suffix['original'] . '~', $suffix['replacement']);
             }
@@ -449,9 +450,10 @@ final class LatexParser implements IParser
      */
     public static function latexWrapped(string $latex): bool
     {
-        foreach(self::PREFIXES[self::GLOBAL] as $key1 => $prefixSet){
-            foreach ($prefixSet as $key2 => $prefix){
-                if(Strings::startsWith($latex, $prefix['plain']) && Strings::endsWith($latex, self::SUFFIXES[self::GLOBAL][$key1][$key2]['plain'])) {
+        $latex = Strings::trim($latex);
+        foreach (self::PREFIXES[self::GLOBAL] as $key1 => $prefixSet) {
+            foreach ($prefixSet as $key2 => $prefix) {
+                if (Strings::startsWith($latex, $prefix['plain']) && Strings::endsWith($latex, self::SUFFIXES[self::GLOBAL][$key1][$key2]['plain'])) {
                     return true;
                 }
             }
@@ -465,9 +467,10 @@ final class LatexParser implements IParser
      */
     public function removeZeroMultipliedBrackets(string $expression): string
     {
-        foreach (self::PREFIXES[self::PARENTHESES] as $prefixSetKey => $prefixSet){
-            foreach ($prefixSet as $prefixKey => $prefix){
-                $expression = Strings::replace($expression, '~' . sprintf($this->regularExpressions::RE_BRACKETS_ZERO_MULTIPLIED, $prefix['original'], self::SUFFIXES[self::PARENTHESES][$prefixSetKey][$prefixKey]['original']) . '~', '');
+        foreach (self::PREFIXES[self::PARENTHESES] as $prefixSetKey => $prefixSet) {
+            foreach ($prefixSet as $prefixKey => $prefix) {
+                $regex = '~' . sprintf($this->regularExpressions::RE_BRACKETS_ZERO_MULTIPLIED, $prefix['original'], self::SUFFIXES[self::PARENTHESES][$prefixSetKey][$prefixKey]['original']) . '~';
+                $expression = Strings::replace($expression, $regex, ' $1 0 ');
             }
         }
         return $expression;
@@ -479,7 +482,7 @@ final class LatexParser implements IParser
      */
     public function removeZeroMultipliedFractions(string $expression): string
     {
-        return Strings::replace($expression, '~' . $this->regularExpressions::RE_FRACTIONS_ZERO_MULTIPLIED . '~', '');
+        return Strings::replace($expression, '~' . $this->regularExpressions::RE_FRACTIONS_ZERO_MULTIPLIED . '~', ' $1 0 ');
     }
 
     /**
@@ -488,7 +491,7 @@ final class LatexParser implements IParser
      */
     public function removeZeroMultipliedValues(string $expression): string
     {
-        return Strings::replace($expression, '~' . $this->regularExpressions::RE_VALUES_ZERO_MULTIPLIED . '~', '');
+        return Strings::replace($expression, '~' . $this->regularExpressions::RE_VALUES_ZERO_MULTIPLIED . '~', ' $1 0 ');
     }
 
     /**
@@ -497,7 +500,14 @@ final class LatexParser implements IParser
      */
     public function removeZeroValues(string $expression): string
     {
-        return Strings::replace($expression, '~' . $this->regularExpressions::RE_ZERO_VALUES . '~', '');
+        $expression = Strings::replace($expression, '~' . $this->regularExpressions::RE_ZERO_VALUES . '~', '');
+        foreach (self::PREFIXES[self::GLOBAL] as $prefixSetKey => $prefixSet) {
+            foreach ($prefixSet as $prefixKey => $prefix) {
+                $regex = '~' . sprintf($this->regularExpressions::RE_STARTING_ZERO_VALUE, $prefix['original']) . '~';
+                $expression = Strings::replace($expression, $regex, '$1 $3');
+            }
+        }
+        return $expression;
     }
 
     /**
@@ -512,6 +522,7 @@ final class LatexParser implements IParser
         $body = $this->removeZeroValues($body);
         $body = $this->stringsHelper::normalizeOperators($body);
         $body = $this->stringsHelper::deduplicateWhiteSpaces($body);
+        $body = Strings::trim($body);
         return $body;
     }
 

@@ -69,16 +69,19 @@ final class RegularExpressions
     public const RE_SCHOOL_YEAR = '[0-9]{4}(\/|\-)([0-9]{4}|[0-9]{2})';
 
     // Match brackets with passed prefix and suffix multiplied by zero
-    public const RE_BRACKETS_ZERO_MULTIPLIED = '[\+\-]?\s*0\s*%s[\d\\a-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*%s';
+    public const RE_BRACKETS_ZERO_MULTIPLIED = '([\+\-]?)\s*0\s*%s[\d\\\a-zA-Z\"\s\<\>\/\+\-\*\(\)\^\{\}]*%s';
 
     // Match fractions multiplied by zero
-    public const RE_FRACTIONS_ZERO_MULTIPLIED = '[\+\-]?\s*0\s*\\\frac\{[\d\\a-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*\}\s*\{[\da-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^\{\}]*\}';
+    public const RE_FRACTIONS_ZERO_MULTIPLIED = '([\+\-]?)\s*0\s*\\\frac\{[\d\\a-zA-Z\"\s\<\>\/\+\-\*\(\)\^]*\}\s*\{[\da-zA-Z\"\s\<\>\/\=\+\-\*\(\)\^]*\}';
 
     // Match values multiplied by zero
-    public const RE_VALUES_ZERO_MULTIPLIED = '[\+\-]\s*0(\s+|\s*\*\s*)\d';
+    public const RE_VALUES_ZERO_MULTIPLIED = '([\+\-]?)\s*0(\s+|\s*\*\s*)\d';
 
     // Match zero values
     public const RE_ZERO_VALUES = '[\+\-]\s*0\s*';
+
+    // Match starting zero value
+    public const RE_STARTING_ZERO_VALUE = '^(%s)?\s*([\+\-]?\s*0\s*)(.*)$';
 
     // Match test template content
     public const RE_TEST_TEMPLATE = '.*\{if\$test->getLogo\(\)!==null\}.*\{\$test->getSchoolYear\(\)\}.*\{\$test->getTerm\(\)\}.*\{\$test->getTestNumber\(\)\}.*\{\$testVariant\}.*\{foreach\$test->getGroups\(\)->getValues\(\)as\$group\}.*\{\$group->getLabel\(\)\}\{if\$group->getId\(\)!==\$test->getGroups\(\)->last\(\)->getId\(\)\}.*\{\/if\}\{\/foreach\}.*\{\$test->getIntroductionText\(\)\}.*\{foreach\$testVariant->getProblemFinalAssociations\(\)->getValues\(\)as\$key=>\$problemFinalAssociation\}.*\{\$problemFinalAssociation->getProblemFinal\(\)->getTextBefore\(\)\}\{\$problemFinalAssociation->getProblemFinal\(\)->getBody\(\)\}\{\$problemFinalAssociation->getProblemFinal\(\)->getTextAfter\(\)\}\{if\$problemFinalAssociation->isNextPage\(\)\}.*\{\/if}\{\/foreach\}.*';

@@ -14,7 +14,7 @@ use Nette\Utils\Strings;
  * Class NewtonParser
  * @package App\TeacherModule\Helpers
  */
-class NewtonParser
+final class NewtonParser
 {
     /**
      * @param string $expression

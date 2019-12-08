@@ -13,7 +13,7 @@ namespace App\TeacherModule\Helpers;
  * Class FilterTranslator
  * @package App\TeacherModule\Helpers
  */
-class FilterViewHelper
+final class FilterViewHelper
 {
     /**
      * @var array
@@ -29,7 +29,6 @@ class FilterViewHelper
     public function preprocessFilters(iterable $filters): iterable
     {
         $res = [];
-        bdump(self::$translationMap);
         foreach ($filters as $key => $filter) {
             if($filter !== null && isset(self::$translationMap[$key])){
                 if($filter){
