@@ -391,6 +391,8 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
             return;
         }
 
+        bdump($this->problemTemplateSession->getProblemTemplate());
+
         // If validation was already triggered (after redirect)
         if ($entity = $this->problemTemplateSession->getProblemTemplate()) {
 
@@ -438,6 +440,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         else {
 
             bdump('FIRST VALIDATION AFTER REDIRECT');
+            bdump($this->problemTemplateSession->getProblemTemplate());
 
             // STANDARDIZE THE INPUT
             $entityNew = $this->preprocess($entityNew);
@@ -452,15 +455,14 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
                 return;
             }
 
-            // Pass new ProblemTemplate into session
-            $this->problemTemplateSession->setProblemTemplate($entityNew);
-
             if ($this->conditionsToValidateCreate($values)) {
                 $form['submit']->addError('Ověřte prosím zadanou podmínku.');
                 $this->redrawErrors();
                 return;
             }
 
+            // Pass new ProblemTemplate into session
+            $this->problemTemplateSession->setProblemTemplate($entityNew);
         }
 
         // REDRAW ERRORS
@@ -594,13 +596,17 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     public function conditionsToValidateCreate(ArrayHash $values): bool
     {
         bdump('CONDITIONS TO VALIDATE CREATE');
+        bdump($values);
+        bdump($this->problemTemplateSession->getProblemTemplate());
         // If the validation was already triggered
         if ($this->problemTemplateSession->getProblemTemplate()) {
             return !$this->problemTemplateSession->getProblemTemplate()->getState()->conditionsValidated($values);
         }
         // If the validation wasn't triggered yet
         foreach ($values as $key => $value) {
+            bdump([$key, $value]);
             if ($value !== 0 && Strings::match($key, '~condition_\d~')) {
+                bdump('TRUE');
                 return true;
             }
         }

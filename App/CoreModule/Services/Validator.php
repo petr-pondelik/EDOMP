@@ -246,7 +246,7 @@ class Validator
                 if (empty($filledVal)) {
                     return 0;
                 }
-                if (!Strings::match($filledVal, '~' . $regularExpressions::RE_SCHOOL_YEAR . '~')) {
+                if (Strings::match($filledVal, '~' . $regularExpressions::RE_SCHOOL_YEAR . '~')[0] !== $filledVal) {
                     return 1;
                 }
                 return -1;

@@ -113,6 +113,7 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
             }
             $formControl->setDefaults();
         }
+        bdump($this->problemTemplateSession->getProblemTemplate());
     }
 
     /**

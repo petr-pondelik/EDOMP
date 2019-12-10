@@ -374,7 +374,9 @@ class TestFormControl extends EntityFormControl
 
         $form->addInteger('testNumber', 'Číslo testu *')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Zadejte číslo testu.');
+            ->setHtmlAttribute('placeholder', 'Zadejte číslo testu.')
+            ->setHtmlAttribute('min', 0)
+            ->setHtmlAttribute('max', 10000);
 
         // Úvodní text se zobrazí pod hlavičkou testu
         $form->addTextArea('introductionText', 'Úvodní text')
@@ -581,7 +583,7 @@ class TestFormControl extends EntityFormControl
             $this->onError($e);
             return;
         }
-//        $this->onSuccess();
+        $this->onSuccess();
     }
 
     /**

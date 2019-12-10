@@ -12,7 +12,7 @@
 -   ArithmeticSequenceTemplate
     -   expression obsahuje neparsované parametry!!!
 
-::getEquationSides
+    ::getEquationSides
 
 ## Pomůcky
 

@@ -18,7 +18,7 @@ use App\CoreModule\Services\Authorizator;
  * Class StudentPresenter
  * @package App\StudentModule\Presenters
  */
-class StudentPresenter extends SecuredPresenter
+abstract class StudentPresenter extends SecuredPresenter
 {
     /**
      * @var Authorizator

@@ -137,6 +137,8 @@ class GeometricSeqTemplateFormControl extends ProblemTemplateFormControl
         $form->addInteger('firstN', 'Počet prvních členů *')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlAttribute('placeholder', 'Zadejte počet zkoumaných prvních členů.')
+            ->setHtmlAttribute('min', 0)
+            ->setHtmlAttribute('max', 10000)
             ->setHtmlId('first-n');
 
         return $form;

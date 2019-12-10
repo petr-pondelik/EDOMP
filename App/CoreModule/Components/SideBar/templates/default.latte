@@ -1,11 +1,7 @@
 <nav id="sidebar" class="scrollbar scrollbar-primary">
     <div id="jquery-accordion-menu" class="jquery-accordion-menu">
         <header class="jquery-accordion-menu-header d-flex justify-content-between">
-            {if $presenter->isModule('Teacher')}
-                <a href={plink :Teacher:Homepage:default}>EDOMP: Administrace</a>
-                {else}
-                <a href={plink :Student:Homepage:default}>EDOMP</a>
-            {/if}
+            <a href={plink :Teacher:Homepage:default}>EDOMP: {$this->getParameter('presenter')->user->identity->roleLabel}</a>
             <div class="pr-4" id="sidebar-close">
                 <i class="fas fa-times"></i>
             </div>
@@ -13,18 +9,18 @@
         <ul class="clearfix mb-5 pb-4">
             <li class="nav-small-cap">
                 <a href="javascript:void(0)" class="disabled">
-                    <i class="fas fa-ellipsis-h mr-2"></i> PŘEHLED
+                    PŘEHLED
                 </a>
             </li>
 
             <li n:class="$presenter->isLinkCurrent('Homepage:*') ? active">
                 {if $presenter->isModule('Teacher')}
                     <a href={plink :Teacher:Homepage:default}>
-                        <i class="fas fa-home mr-2"></i> Domů
+                        <i class="fas fa-home mr-3"></i> Úvodní strana
                     </a>
                     {else}
                     <a href={plink :Student:Homepage:default}>
-                        <i class="fas fa-home mr-2"></i> Domů
+                        <i class="fas fa-home mr-3"></i> Úvodní strana
                     </a>
                 {/if}
             </li>
@@ -33,7 +29,19 @@
 
                 <li class="nav-small-cap">
                     <a href="javascript:void(0)" class="disabled">
-                        <i class="fas fa-ellipsis-h mr-2"></i> ÚLOHY
+                        ÚLOHY
+                    </a>
+                </li>
+
+                <li n:class="$presenter->isLinkCurrent('Theme:*') ? active">
+                    <a href={plink :Teacher:Theme:default}>
+                        <i class="fas fa-archive mr-3"></i> Témata
+                    </a>
+                </li>
+
+                <li n:class="$presenter->isLinkCurrent('SubTheme:*') ? active">
+                    <a href={plink :Teacher:SubTheme:default}>
+                        <i class="fas fa-folder-open mr-3"></i> Podtémata
                     </a>
                 </li>
 
@@ -44,7 +52,7 @@
                                      $presenter->isLinkCurrent('ArithmeticSeqTemplate:*') ||
                                      $presenter->isLinkCurrent('GeometricSeqTemplate:*')
                                      ? submenu-indicator-minus">
-                        <i class="fas fa-file mr-3"></i>Šablony
+                        <i class="fas fa-file mr-3"></i>Šablony úloh
                     </a>
                     <ul class="submenu" {if !$presenter->isProblemTemplatePresenter()} style="display: none;" {/if}>
                         <li n:class="$presenter->isLinkCurrent('LinearEqTemplate:*') ? active">
@@ -64,68 +72,60 @@
 
                 <li n:class="$presenter->isLinkCurrent('ProblemFinal:*') ? active">
                     <a href={plink :Teacher:ProblemFinal:default}>
-                        <i class="fas fa-calculator mr-2"></i> Příklady
-                    </a>
-                </li>
-                <li n:class="$presenter->isLinkCurrent('SubTheme:*') ? active">
-                    <a href={plink :Teacher:SubTheme:default}>
-                        <i class="fas fa-folder-open mr-2"></i> Podtémata
-                    </a>
-                </li>
-                <li n:class="$presenter->isLinkCurrent('Theme:*') ? active">
-                    <a href={plink :Teacher:Theme:default}>
-                        <i class="fas fa-archive mr-2"></i> Témata
+                        <i class="fas fa-calculator mr-3"></i> Finální úlohy
                     </a>
                 </li>
                 <li class="nav-small-cap">
                     <a href="javascript:void(0)" class="disabled">
-                        <i class="fas fa-ellipsis-h mr-2"></i> TESTY
+                        TESTY
                     </a>
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('Test:*') ? active">
                     <a href={plink :Teacher:Test:default}>
-                        <i class="fas fa-file-alt mr-2"></i> Testy
+                        <i class="fas fa-file-alt mr-3"></i> Testy
                     </a>
                 </li>
 
                 <li class="nav-small-cap">
                     <a href="javascript:void(0)" class="disabled">
-                        <i class="fas fa-ellipsis-h mr-2"></i> UŽIVATELÉ
+                        UŽIVATELÉ
+                    </a>
+                </li>
+
+                <li n:class="$presenter->isLinkCurrent('SuperGroup:*') ? active">
+                    <a href={plink :Teacher:SuperGroup:default}>
+                        <i class="fas fa-users mr-3"></i> Superskupiny
+                    </a>
+                </li>
+
+                <li n:class="$presenter->isLinkCurrent('Group:*') ? active">
+                    <a href={plink :Teacher:Group:default}>
+                        <i class="fas fa-user-friends mr-3"></i> Skupiny
                     </a>
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('User:*') ? active">
                     <a href={plink :Teacher:User:default}>
-                        <i class="fas fa-user mr-2"></i> Uživatelé
-                    </a>
-                </li>
-                <li n:class="$presenter->isLinkCurrent('Group:*') ? active">
-                    <a href={plink :Teacher:Group:default}>
-                        <i class="fas fa-user-friends mr-2"></i> Skupiny
-                    </a>
-                </li>
-                <li n:class="$presenter->isLinkCurrent('SuperGroup:*') ? active">
-                    <a href={plink :Teacher:SuperGroup:default}>
-                        <i class="fas fa-users mr-2"></i> Superskupiny
+                        <i class="fas fa-user mr-3"></i> Uživatelé
                     </a>
                 </li>
 
                 <li class="nav-small-cap">
                     <a href="javascript:void(0)" class="disabled">
-                        <i class="fas fa-ellipsis-h mr-2"></i> SPRÁVA
+                        SPRÁVA
                     </a>
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('Logo:*') ? active">
                     <a href={plink :Teacher:Logo:default}>
-                        <i class="fas fa-images mr-2"></i> Loga
+                        <i class="fas fa-images mr-3"></i> Loga
                     </a>
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('Settings:*') ? active">
                     <a href={plink :Teacher:Settings:default}>
-                        <i class="fas fa-cog mr-2"></i>Nastavení
+                        <i class="fas fa-cog mr-3"></i>Nastavení
                     </a>
                 </li>
 
@@ -133,7 +133,7 @@
 
                 <li class="nav-small-cap">
                     <a href="javascript:void(0)" class="disabled">
-                        <i class="fas fa-ellipsis-h mr-2"></i> CVIČEBNICE
+                        CVIČEBNICE
                     </a>
                 </li>
 
@@ -152,13 +152,13 @@
 
                 <li class="nav-small-cap">
                     <a href="javascript:void(0)" class="disabled">
-                        <i class="fas fa-ellipsis-h mr-2"></i> SPRÁVA
+                        SPRÁVA
                     </a>
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('Settings:*') ? active">
                     <a href={plink :Student:Settings:default}>
-                        <i class="fas fa-cog mr-2"></i>Nastavení
+                        <i class="fas fa-cog mr-3"></i>Nastavení
                     </a>
                 </li>
 

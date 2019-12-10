@@ -58,7 +58,12 @@ class LogoFunctionality extends BaseFunctionality
         $logo = new Logo();
 
         $logo->setExtensionTmp($data['extensionTmp']);
-        $logo->setLabel($data['label']);
+
+        if (isset($data['label'])) {
+            $logo->setLabel($data['label']);
+        } else {
+            $logo->setLabel('tmpLabel');
+        }
 
         if (isset($data['createdBy'])) {
             /** @var User|null $user */

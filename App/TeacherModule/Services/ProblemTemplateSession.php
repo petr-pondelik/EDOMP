@@ -37,6 +37,7 @@ class ProblemTemplateSession implements IEDOMPSession
 
     public function erase(): void
     {
+        bdump('ERASE PROBLEM TEMPLATE SESSION');
         $this->problemTemplateSession->problemTemplate = null;
         $this->problemTemplateSession->defaultState = null;
     }

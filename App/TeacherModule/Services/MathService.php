@@ -22,9 +22,6 @@ use Nette\Utils\Strings;
  */
 final class MathService
 {
-    public const IS_ADDITION = 1;
-    public CONST IS_SUBTRACTION = 2;
-
     /**
      * @var Parser
      */
@@ -101,7 +98,7 @@ final class MathService
      * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function processVariableFractions(EquationTemplateNP $data): EquationTemplateNP
+        public function processVariableFractions(EquationTemplateNP $data): EquationTemplateNP
     {
         if (!$fractionsProcessed = $this->variableFractionService->processVariableFractions($data)) {
             return $data;
@@ -184,19 +181,6 @@ final class MathService
             return $returnAddition ? '+' : '';
         }
         return '-';
-    }
-
-    /**
-     * @param string $expression
-     * @return int
-     */
-    public static function startOperator(string $expression): int
-    {
-        $expression = Strings::trim($expression);
-        if (!Strings::startsWith($expression, '+') && !Strings::startsWith($expression, '-')) {
-            return self::IS_ADDITION;
-        }
-        return self::firstOperator($expression);
     }
 
     /**
