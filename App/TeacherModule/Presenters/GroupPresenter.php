@@ -30,7 +30,7 @@ use Ublaboo\DataGrid\DataGrid;
  * Class GroupPresenter
  * @package App\TeacherModule\Presenters
  */
-class GroupPresenter extends EntityPresenter
+final class GroupPresenter extends EntityPresenter
 {
     /**
      * @var SuperGroupRepository
@@ -79,15 +79,17 @@ class GroupPresenter extends EntityPresenter
 
         $grid->addAction('delete', '', 'delete!')
             ->setIcon('trash')
+            ->setTitle('Odstranit')
             ->setClass('btn btn-danger btn-sm ajax');
 
         $grid->addAction('edit', '', 'update!')
             ->setIcon('edit')
+            ->setTitle('Editovat')
             ->setClass('btn btn-primary btn-sm');
 
         $grid->addInlineEdit()
             ->setIcon('pencil-alt')
-            ->setTitle('Upravit inline')
+            ->setTitle('Editovat inline')
             ->setClass('btn btn-primary btn-sm ajax')
             ->onControlAdd[] = static function ($container) {
             $container->addText('label', '');

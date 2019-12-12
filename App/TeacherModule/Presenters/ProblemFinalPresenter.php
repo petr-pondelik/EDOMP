@@ -89,7 +89,7 @@ class ProblemFinalPresenter extends EntityPresenter
 
         $grid->addInlineEdit()
             ->setIcon('pencil-alt')
-            ->setTitle('Upravit inline')
+            ->setTitle('Editovat inline')
             ->setClass('btn btn-primary btn-sm ajax')
             ->onControlAdd[] = static function ($container) {
             $container->addText('textBefore', '');

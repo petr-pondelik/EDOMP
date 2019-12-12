@@ -38,7 +38,7 @@ use Ublaboo\DataGrid\DataGrid;
  * Class TestPresenter
  * @package App\TeacherModule\Presenters
  */
-class TestPresenter extends EntityPresenter
+final class TestPresenter extends EntityPresenter
 {
     /**
      * @var ProblemTemplateRepository
@@ -168,7 +168,6 @@ class TestPresenter extends EntityPresenter
      */
     public function handleFilterChange(int $key, array $filters): void
     {
-        bdump($this->getParameters());
         $this['entityForm']->handleFilterChange($key, $filters);
     }
 
@@ -179,7 +178,6 @@ class TestPresenter extends EntityPresenter
     {
         bdump('HANDLE SET FILTERS');
         $this->filterSession->setFilters($filters);
-        bdump($this->filterSession->getFilters());
     }
 
     /**
@@ -196,10 +194,7 @@ class TestPresenter extends EntityPresenter
         $grid->addAction('delete', '', 'delete!')
             ->setIcon('trash')
             ->setClass('btn btn-danger btn-sm ajax')
-            ->setTitle('Odstranit test')
-            ->addAttributes([
-                'data-toggle' => 'tooltip'
-            ]);
+            ->setTitle('Odstranit test');
 
         $grid->addAction('downloadSource', '', 'downloadSource!')
             ->setTemplate(__DIR__ . '/templates/Test/dataGridActions/downloadSource.latte');
@@ -213,7 +208,7 @@ class TestPresenter extends EntityPresenter
         $grid->addAction('update', '', 'update!')
             ->setIcon('edit')
             ->setClass('btn btn-primary btn-sm')
-            ->setTitle('Upravit test');
+            ->setTitle('Editovat test');
 
         return $grid;
     }

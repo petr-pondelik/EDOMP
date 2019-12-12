@@ -14,6 +14,7 @@ import '@fortawesome/fontawesome-free';
 // Import Bootstrap modules
 import 'bootstrap';
 import 'bootstrap-select';
+import './js/bootstrap-tooltip-init';
 
 // Import Nette Forms module
 import 'nette-forms';
@@ -23,9 +24,6 @@ import 'nette.ajax.js';
 // import './../vendor/vojtech-dobes/nette-ajax-history/client-side/history.ajax';
 import './js/nette.ajax.init';
 import './js/spinner.ajax';
-
-// Import Ublaboo Datagrid modules
-// import 'ublaboo-datagrid';
 
 // Import custom modules
 import './js/sidemenu';

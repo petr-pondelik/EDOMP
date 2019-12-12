@@ -5,7 +5,7 @@ parameters:
 webpack:
 	build:
 		directory: %wwwDir%/assets/dist
-		publicPath: /assets/dist/
+		publicPath: /assets/dist
 	manifest:
 	    name: manifest.json
 	devServer:

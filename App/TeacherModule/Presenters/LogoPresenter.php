@@ -31,7 +31,7 @@ use Nette\Utils\ArrayHash;
  * Class LogoPresenter
  * @package App\Presenters
  */
-class LogoPresenter extends EntityPresenter
+final class LogoPresenter extends EntityPresenter
 {
     /**
      * @var FileService
@@ -88,15 +88,17 @@ class LogoPresenter extends EntityPresenter
             ->setTemplate(__DIR__ . '/templates/Logo/delete_action.latte');
 
         $grid->setItemsDetail(__DIR__ . '/templates/Logo/detail.latte')
+            ->setTitle('Náhled')
             ->setClass('btn btn-sm btn-primary ajax');
 
         $grid->addAction('edit', '', 'update!')
             ->setIcon('edit')
+            ->setTitle('Editovat')
             ->setClass('btn btn-primary btn-sm');
 
         $grid->addInlineEdit()
             ->setIcon('pencil-alt')
-            ->setTitle('Upravit inline')
+            ->setTitle('Editovat inline')
             ->setClass('btn btn-primary btn-sm ajax')
             ->onControlAdd[] = static function ($container) {
             $container->addText('label', '');

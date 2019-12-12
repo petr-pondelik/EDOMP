@@ -1,12 +1,14 @@
 <nav id="sidebar" class="scrollbar scrollbar-primary">
-    <div id="jquery-accordion-menu" class="jquery-accordion-menu">
+    <div id="jquery-accordion-menu" class="jquery-accordion-menu pb-5">
         <header class="jquery-accordion-menu-header d-flex justify-content-between">
-            <a href={plink :Teacher:Homepage:default}>EDOMP: {$this->getParameter('presenter')->user->identity->roleLabel}</a>
+            <a title="Přejít na úvodní stranu" href={plink :Teacher:Homepage:default}>
+                EDOMP: {$this->getParameter('presenter')->user->identity->roleLabel}
+            </a>
             <div class="pr-4" id="sidebar-close">
                 <i class="fas fa-times"></i>
             </div>
         </header>
-        <ul class="clearfix mb-5 pb-4">
+        <ul class="clearfix pb-2">
             <li class="nav-small-cap">
                 <a href="javascript:void(0)" class="disabled">
                     PŘEHLED
@@ -15,11 +17,11 @@
 
             <li n:class="$presenter->isLinkCurrent('Homepage:*') ? active">
                 {if $presenter->isModule('Teacher')}
-                    <a href={plink :Teacher:Homepage:default}>
+                    <a title="Přejít na úvodní stranu" href={plink :Teacher:Homepage:default}>
                         <i class="fas fa-home mr-3"></i> Úvodní strana
                     </a>
                     {else}
-                    <a href={plink :Student:Homepage:default}>
+                    <a title="Přejít na úvodní stranu" href={plink :Student:Homepage:default}>
                         <i class="fas fa-home mr-3"></i> Úvodní strana
                     </a>
                 {/if}
@@ -34,19 +36,19 @@
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('Theme:*') ? active">
-                    <a href={plink :Teacher:Theme:default}>
+                    <a title="Přejít do sekce Témata" href={plink :Teacher:Theme:default}>
                         <i class="fas fa-archive mr-3"></i> Témata
                     </a>
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('SubTheme:*') ? active">
-                    <a href={plink :Teacher:SubTheme:default}>
+                    <a title="Přejít do sekce Podtémata" href={plink :Teacher:SubTheme:default}>
                         <i class="fas fa-folder-open mr-3"></i> Podtémata
                     </a>
                 </li>
 
                 <li n:class="$presenter->isProblemTemplatePresenter() ? active">
-                    <a href="javascript:void(0)"
+                    <a title="Typy šablon úloh" href="javascript:void(0)"
                             n:class="$presenter->isLinkCurrent('LinearEqTemplate:*') ||
                                      $presenter->isLinkCurrent('QuadraticEqTemplate:*') ||
                                      $presenter->isLinkCurrent('ArithmeticSeqTemplate:*') ||
@@ -56,22 +58,30 @@
                     </a>
                     <ul class="submenu" {if !$presenter->isProblemTemplatePresenter()} style="display: none;" {/if}>
                         <li n:class="$presenter->isLinkCurrent('LinearEqTemplate:*') ? active">
-                            <a href={plink :Teacher:LinearEqTemplate:default}>Lineární rovnice</a>
+                            <a title="Šablony lineárních rovnic" href={plink :Teacher:LinearEqTemplate:default}>
+                                Lineární rovnice
+                            </a>
                         </li>
                         <li n:class="$presenter->isLinkCurrent('QuadraticEqTemplate:*') ? active">
-                            <a href={plink :Teacher:QuadraticEqTemplate:default}>Kvadratické rovnice</a>
+                            <a title="Šablony kvadratických rovnic" href={plink :Teacher:QuadraticEqTemplate:default}>
+                                Kvadratické rovnice
+                            </a>
                         </li>
                         <li n:class="$presenter->isLinkCurrent('ArithmeticSeqTemplate:*') ? active">
-                            <a href={plink :Teacher:ArithmeticSeqTemplate:default}>Aritmetické posloupnosti</a>
+                            <a title="Šablony aritmetických posloupností" href={plink :Teacher:ArithmeticSeqTemplate:default}>
+                                Aritmetické posloupnosti
+                            </a>
                         </li>
                         <li n:class="$presenter->isLinkCurrent('GeometricSeqTemplate:*') ? active">
-                            <a href={plink :Teacher:GeometricSeqTemplate:default}>Geometrické posloupnosti</a>
+                            <a title="Šablony geometrických posloupností" href={plink :Teacher:GeometricSeqTemplate:default}>
+                                Geometrické posloupnosti
+                            </a>
                         </li>
                     </ul>
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('ProblemFinal:*') ? active">
-                    <a href={plink :Teacher:ProblemFinal:default}>
+                    <a title="Přejít do sekce Finální úlohy" href={plink :Teacher:ProblemFinal:default}>
                         <i class="fas fa-calculator mr-3"></i> Finální úlohy
                     </a>
                 </li>
@@ -82,7 +92,7 @@
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('Test:*') ? active">
-                    <a href={plink :Teacher:Test:default}>
+                    <a title="Přejít do sekce Testy" href={plink :Teacher:Test:default}>
                         <i class="fas fa-file-alt mr-3"></i> Testy
                     </a>
                 </li>
@@ -94,19 +104,19 @@
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('SuperGroup:*') ? active">
-                    <a href={plink :Teacher:SuperGroup:default}>
+                    <a title="Přejít do sekce Superskupiny" href={plink :Teacher:SuperGroup:default}>
                         <i class="fas fa-users mr-3"></i> Superskupiny
                     </a>
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('Group:*') ? active">
-                    <a href={plink :Teacher:Group:default}>
+                    <a title="Přejít do sekce Skupiny" href={plink :Teacher:Group:default}>
                         <i class="fas fa-user-friends mr-3"></i> Skupiny
                     </a>
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('User:*') ? active">
-                    <a href={plink :Teacher:User:default}>
+                    <a title="Přejít do sekce Uživatelé" href={plink :Teacher:User:default}>
                         <i class="fas fa-user mr-3"></i> Uživatelé
                     </a>
                 </li>
@@ -118,13 +128,13 @@
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('Logo:*') ? active">
-                    <a href={plink :Teacher:Logo:default}>
+                    <a title="Přejít do sekce Loga" href={plink :Teacher:Logo:default}>
                         <i class="fas fa-images mr-3"></i> Loga
                     </a>
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('Settings:*') ? active">
-                    <a href={plink :Teacher:Settings:default}>
+                    <a title="Přejít do nastavení" href={plink :Teacher:Settings:default}>
                         <i class="fas fa-cog mr-3"></i>Nastavení
                     </a>
                 </li>
@@ -138,13 +148,13 @@
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('Theme:*') ? active">
-                    <a href="javascript:void(0)" class="submenu-indicator-minus">
+                    <a title="Zpřístupněné sbírky úloh" href="javascript:void(0)" class="submenu-indicator-minus">
                         <i class="fas fa-archive mr-3"></i>Sbírky
                     </a>
                     <ul class="submenu">
                         {foreach $themes as $key => $theme}
                             <li n:class="$presenter->isLinkCurrent('Theme:default', $key) ? active">
-                                <a href={plink Theme:default 'id' => $key, 'clear_filters' => true}>{$theme}</a>
+                                <a title="Přejít do sbírky {$theme}" href={plink Theme:default 'id' => $key, 'clear_filters' => true}>{$theme}</a>
                             </li>
                         {/foreach}
                     </ul>
@@ -157,7 +167,7 @@
                 </li>
 
                 <li n:class="$presenter->isLinkCurrent('Settings:*') ? active">
-                    <a href={plink :Student:Settings:default}>
+                    <a title="Přejít do nastavení" href={plink :Student:Settings:default}>
                         <i class="fas fa-cog mr-3"></i>Nastavení
                     </a>
                 </li>
@@ -165,6 +175,6 @@
             {/if}
 
         </ul>
-        <footer class="jquery-accordion-menu-footer">FIT ČVUT @ 2019</footer>
+        <footer class="jquery-accordion-menu-footer">FIT ČVUT 2019</footer>
     </div>
 </nav>

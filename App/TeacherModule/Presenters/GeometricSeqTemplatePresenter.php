@@ -26,7 +26,7 @@ use App\CoreModule\Services\Validator;
  * Class GeometricSeqTemplatePresenter
  * @package App\TeacherModule\Presenters
  */
-class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
+final class GeometricSeqTemplatePresenter extends ProblemTemplatePresenter
 {
     /**
      * GeometricSeqTemplatePresenter constructor.

@@ -1,27 +1,27 @@
 <header id="header-bar">
     <div class="header-bar-content">
-        <a href="#" id="sidebar-collapse" class="font-weight-lighter">
+        <a href="#" title="Hlavní nabídka" id="sidebar-collapse" class="font-weight-lighter">
             <i class="fas fa-bars"></i>
         </a>
         <div id="header-bar-right">
             <div class="btn-group">
                 {if $user->isInRole('teacher') || $user->isInRole('admin')}
                     {if $presenter->isModule('Teacher')}
-                        <a href="{plink :Student:Homepage:default}" class="admin mr-3" title="Cvičebnice">
+                        <a href="{plink :Student:Homepage:default}" title="Přejít do cvičebnice" class="text-light mr-3 admin">
                             Cvičebnice
                         </a>
-                        <a href="#" class="admin mr-3" data-toggle="modal" data-target="#sectionHelpModal">
+                        <a href="#" title="Zobrazit nápovědu" class="admin mr-3" data-toggle="modal" data-target="#sectionHelpModal">
                             <i class="far fa-question-circle"></i>
                         </a>
                         {else}
-                        <a href="{plink :Teacher:Homepage:default}" class="admin mr-3" title="Administrace">
+                        <a href="{plink :Teacher:Homepage:default}" title="Přejít do administrace" class="text-light mr-3 admin">
                             Administrace
                         </a>
                     {/if}
                 {/if}
             </div>
             <div class="btn-group">
-                <a href="#" class="user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a href="#" title="Nabídka uživatele" class="user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-user"></i>
                 </a>
                 <div class="dropdown-menu">
@@ -37,9 +37,9 @@
                     {/if}
                     <div class="dropdown-divider"></div>
                     {if $presenter->isModule('Teacher')}
-                        <a href="{plink :Teacher:Settings:default}" class="dropdown-item">Nastavení</a>
+                        <a title="Přejít do nastavení" href="{plink :Teacher:Settings:default}" class="dropdown-item">Nastavení</a>
                     {else}
-                        <a href="{plink :Student:Settings:default}" class="dropdown-item">Nastavení</a>
+                        <a title="Přejít do nastavení" href="{plink :Student:Settings:default}" class="dropdown-item">Nastavení</a>
                     {/if}
                     <div class="dropdown-divider"></div>
                     {if $presenter->isModule('Teacher')}

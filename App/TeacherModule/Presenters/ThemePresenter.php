@@ -28,7 +28,7 @@ use Ublaboo\DataGrid\DataGrid;
  * Class ThemePresenter
  * @package App\TeacherModule\Presenters
  */
-class ThemePresenter extends EntityPresenter
+final class ThemePresenter extends EntityPresenter
 {
     /**
      * ThemePresenter constructor.
@@ -70,16 +70,16 @@ class ThemePresenter extends EntityPresenter
         $grid->addAction('delete', '', 'delete!')
             ->setIcon('trash')
             ->setClass('btn btn-danger btn-sm ajax')
-            ->setTitle('Odstranit téma.');
+            ->setTitle('Odstranit');
 
         $grid->addAction('update', '', 'update!')
             ->setIcon('edit')
             ->setClass('btn btn-primary btn-sm')
-            ->setTitle('Editovat téma.');
+            ->setTitle('Editovat');
 
         $grid->addInlineEdit()
             ->setIcon('pencil-alt')
-            ->setTitle('Upravit inline')
+            ->setTitle('Editovat inline')
             ->setClass('btn btn-primary btn-sm ajax')
             ->onControlAdd[] = static function ($container) {
                 $container->addText('label', '');

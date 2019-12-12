@@ -54,15 +54,9 @@ class SubThemeGridFactory extends BaseGrid
     public function create($container, $name): DataGrid
     {
         $grid = parent::create($container, $name);
-
-        $themeOptions = $this->themeRepository->findAssoc([], 'id');
-        bdump($themeOptions);
-
         $themeOptions = $this->themeRepository->findAllowed($container->user);
-        bdump($themeOptions);
 
         $grid->setPrimaryKey('id');
-
         $grid->setDataSource($this->subThemeRepository->getSecuredQueryBuilder($container->user));
 
         $grid->addColumnNumber('id', 'ID')

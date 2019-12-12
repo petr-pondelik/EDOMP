@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="cs">
 <head>
     <meta charset="utf-8">
+    <meta name="author" content="Petr Pondělík">
+    <meta name="description" content="Electronical database of mathematical problems administration">
+    <meta name="keywords" content="Math, database, problems, administration, web, online, teacher">
     <meta name="viewport" content="width=device-width">
     <title>
         {ifset headingFirst}
@@ -42,7 +45,9 @@
             <nav class="ml-4 mr-4 mt-3 {if $presenter->getAction() === 'update'}breadcrumb-detail{/if}"
                  id="breadcrumb-navigation" aria-label="breadcrumb">
                 <ol class="mb-0 pt-2 pb-2 breadcrumb bg-white">
-                    <li class="breadcrumb-item"><a n:href="Homepage:default"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item">
+                        <a title="Úvodní stránka" n:href="Homepage:default"><i class="fas fa-home"></i></a>
+                    </li>
                     {ifset headingFirstLink}
                         {include headingFirstLink}
                     {/ifset}

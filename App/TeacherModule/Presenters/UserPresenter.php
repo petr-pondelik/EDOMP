@@ -31,7 +31,7 @@ use Ublaboo\DataGrid\DataGrid;
  * Class UserPresenter
  * @package App\TeacherModule\Presenters
  */
-class UserPresenter extends EntityPresenter
+final class UserPresenter extends EntityPresenter
 {
     /**
      * @var MailService
@@ -87,22 +87,22 @@ class UserPresenter extends EntityPresenter
 
         $grid->addAction('resendPassword', '', 'resendPassword!')
             ->setIcon('key')
-            ->setTitle('Přeposlat heslo')
+            ->setTitle('Přegenerovat a poslat heslo')
             ->setClass('btn btn-primary btn-sm ajax');
 
         $grid->addAction('delete', '', 'delete!')
             ->setIcon('trash')
-            ->setTitle('Odstranit uživatele')
+            ->setTitle('Odstranit')
             ->setClass('btn btn-danger btn-sm ajax');
 
         $grid->addAction('edit', '', 'update!')
             ->setIcon('edit')
-            ->setTitle('Editovat uživatele')
+            ->setTitle('Editovat')
             ->setClass('btn btn-primary btn-sm');
 
         $grid->addInlineEdit()
             ->setIcon('pencil-alt')
-            ->setTitle('Upravit inline')
+            ->setTitle('Editovat inline')
             ->setClass('btn btn-primary btn-sm ajax')
             ->onControlAdd[] = static function ($container) {
             $container->addText('email', '');

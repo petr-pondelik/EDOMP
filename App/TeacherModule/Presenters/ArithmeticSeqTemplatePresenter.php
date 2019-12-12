@@ -26,7 +26,7 @@ use App\CoreModule\Services\Validator;
  * Class ArithmeticSeqTemplatePresenter
  * @package App\TeacherModule\Presenters
  */
-class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
+final class ArithmeticSeqTemplatePresenter extends ProblemTemplatePresenter
 {
     /**
      * ArithmeticSeqTemplatePresenter constructor.

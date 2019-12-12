@@ -26,7 +26,7 @@ use App\CoreModule\Services\Validator;
  * Class LinearEqTemplatePresenter
  * @package App\TeacherModule\Presenters
  */
-class LinearEqTemplatePresenter extends ProblemTemplatePresenter
+final class LinearEqTemplatePresenter extends ProblemTemplatePresenter
 {
     /**
      * LinearEqTemplatePresenter constructor.

@@ -1,6 +1,6 @@
 parameters:
     newtonApiHost: https://edomp-newton-api.herokuapp.com/
-    loginURL: http://www.edomp.4fan.cz/sign/in
+    loginURL: https://www.edomp.cz/sign/in
 
 # Endora
 doctrine:

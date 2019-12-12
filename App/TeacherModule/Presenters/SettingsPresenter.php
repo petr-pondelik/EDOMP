@@ -33,7 +33,7 @@ use Ublaboo\DataGrid\DataGrid;
  * Class SettingsPresenter
  * @package App\TeacherModule\Presenters
  */
-class SettingsPresenter extends TeacherPresenter
+final class SettingsPresenter extends TeacherPresenter
 {
     /**
      * @var FileService

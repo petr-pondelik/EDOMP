@@ -16,7 +16,6 @@ use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\FlashesTranslator;
-use App\CoreModule\Model\Persistent\Entity\BaseEntity;
 use App\CoreModule\Model\Persistent\Functionality\SuperGroupFunctionality;
 use App\CoreModule\Model\Persistent\Repository\SuperGroupRepository;
 use App\CoreModule\Services\Authorizator;
@@ -47,8 +46,10 @@ class SuperGroupPresenter extends EntityPresenter
      */
     public function __construct
     (
-        Authorizator $authorizator, NewtonApiClient $newtonApiClient,
-        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
+        Authorizator $authorizator,
+        NewtonApiClient $newtonApiClient,
+        IHeaderBarFactory $headerBarFactory,
+        ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
         SuperGroupRepository $superGroupRepository, SuperGroupFunctionality $superGroupFunctionality,
         SuperGroupGridFactory $superGroupGridFactory, ISuperGroupIFormFactory $superGroupFormFactory,
         Validator $validator,
@@ -71,15 +72,17 @@ class SuperGroupPresenter extends EntityPresenter
 
         $grid->addAction('delete', '', 'delete!')
             ->setIcon('trash')
+            ->setTitle('Odstranit')
             ->setClass('btn btn-danger btn-sm ajax');
 
         $grid->addAction('edit', '', 'update!')
             ->setIcon('edit')
+            ->setTitle('Editovat')
             ->setClass('btn btn-primary btn-sm');
 
         $grid->addInlineEdit()
             ->setIcon('pencil-alt')
-            ->setTitle('Upravit inline')
+            ->setTitle('Editovat inline')
             ->setClass('btn btn-primary btn-sm ajax')
             ->onControlAdd[] = static function ($container) {
             $container->addText('label', '');

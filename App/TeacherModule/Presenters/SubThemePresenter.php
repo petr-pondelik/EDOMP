@@ -29,7 +29,7 @@ use Ublaboo\DataGrid\DataGrid;
  * Class SubThemePresenter
  * @package App\TeacherModule\Presenters
  */
-class SubThemePresenter extends EntityPresenter
+final class SubThemePresenter extends EntityPresenter
 {
     /**
      * @var ThemeRepository
@@ -78,15 +78,17 @@ class SubThemePresenter extends EntityPresenter
 
         $grid->addAction('delete', '', 'delete!')
             ->setIcon('trash')
+            ->setTitle('Odstranit')
             ->setClass('btn btn-danger btn-sm ajax');
 
         $grid->addAction('edit', '', 'update!')
             ->setIcon('edit')
+            ->setTitle('Editovat')
             ->setClass('btn btn-primary btn-sm');
 
         $grid->addInlineEdit()
             ->setIcon('pencil-alt')
-            ->setTitle('Upravit inline')
+            ->setTitle('Editovat inline')
             ->setClass('btn btn-primary btn-sm ajax')
             ->onControlAdd[] = function ($container) {
             $container->addText('label', '');
