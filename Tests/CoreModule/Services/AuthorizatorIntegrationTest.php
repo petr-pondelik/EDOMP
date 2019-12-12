@@ -64,7 +64,7 @@ final class AuthorizatorIntegrationTest extends EDOMPTestCase
     {
         $this->user->login('srosser5@tuttocitta.it', '12345678');
 
-        $this->assertTrue($this->authorizator->isThemeAllowed($this->user, 1));
+        $this->assertFalse($this->authorizator->isThemeAllowed($this->user, 1));
         $this->assertTrue($this->authorizator->isThemeAllowed($this->user, 2));
         $this->assertFalse($this->authorizator->isThemeAllowed($this->user, 3));
 

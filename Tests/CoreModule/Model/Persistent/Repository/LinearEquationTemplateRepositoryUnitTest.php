@@ -26,7 +26,7 @@ final class LinearEquationTemplateRepositoryUnitTest extends SecuredRepositoryTe
     public function testFind(): void
     {
         $found = $this->repository->findAll();
-        $this->assertCount(10, $found);
+        $this->assertCount(30, $found);
         foreach ($found as $item) {
             $this->assertInstanceOf(LinearEquationTemplate::class, $item);
         }
@@ -41,7 +41,7 @@ final class LinearEquationTemplateRepositoryUnitTest extends SecuredRepositoryTe
         $this->user->login('admin', '12345678');
         /** @var LinearEquationTemplate[] $found */
         $found = $this->repository->findAllowed($this->user);
-        $this->assertCount(10, $found);
+        $this->assertCount(30, $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(LinearEquationTemplate::class, $item);
         }
@@ -59,7 +59,7 @@ final class LinearEquationTemplateRepositoryUnitTest extends SecuredRepositoryTe
         $this->user->login('mhazzard1@wiley.com', '12345678');
         /** User[] $found */
         $found = $this->repository->findAllowed($this->user);
-        $this->assertCount(0, $found);
+        $this->assertCount(10, $found);
         $this->user->logout(true);
     }
 }

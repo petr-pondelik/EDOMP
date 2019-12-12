@@ -26,7 +26,7 @@ final class GeometricSequenceTemplateRepositoryUnitTest extends SecuredRepositor
     public function testFind(): void
     {
         $found = $this->repository->findAll();
-        $this->assertCount(5, $found);
+        $this->assertCount(15, $found);
         foreach ($found as $item) {
             $this->assertInstanceOf(GeometricSequenceTemplate::class, $item);
         }
@@ -41,7 +41,7 @@ final class GeometricSequenceTemplateRepositoryUnitTest extends SecuredRepositor
         $this->user->login('admin', '12345678');
         /** @var GeometricSequenceTemplate[] $found */
         $found = $this->repository->findAllowed($this->user);
-        $this->assertCount(5, $found);
+        $this->assertCount(15, $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(GeometricSequenceTemplate::class, $item);
         }
@@ -59,7 +59,7 @@ final class GeometricSequenceTemplateRepositoryUnitTest extends SecuredRepositor
         $this->user->login('mhazzard1@wiley.com', '12345678');
         /** User[] $found */
         $found = $this->repository->findAllowed($this->user);
-        $this->assertCount(0, $found);
+        $this->assertCount(5, $found);
         $this->user->logout(true);
     }
 }

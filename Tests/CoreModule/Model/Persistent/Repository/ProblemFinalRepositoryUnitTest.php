@@ -31,9 +31,9 @@ final class ProblemFinalRepositoryUnitTest extends SecuredRepositoryTestCase
     public function testFind(): void
     {
         /** @var ProblemFinal $found */
-        $found = $this->repository->find(31);
+        $found = $this->repository->find(91);
         $this->assertInstanceOf(ProblemFinal::class, $found);
-        $this->assertEquals(31, $found->getId());
+        $this->assertEquals(91, $found->getId());
         $this->assertEquals('$$ 5 x = 15 - 4 + 2 $$', $found->getBody());
     }
 
@@ -46,7 +46,7 @@ final class ProblemFinalRepositoryUnitTest extends SecuredRepositoryTestCase
         $this->user->login('admin', '12345678');
         /** @var ProblemFinal[] $found */
         $found = $this->repository->findAllowed($this->user);
-        $this->assertCount(11, $found);
+        $this->assertCount(33, $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(ProblemFinal::class, $item);
         }
@@ -55,7 +55,7 @@ final class ProblemFinalRepositoryUnitTest extends SecuredRepositoryTestCase
         $this->user->login('jkohneke0@nba.com', '12345678');
         /** Test[] $found */
         $found = $this->repository->findAllowed($this->user);
-        $this->assertCount(10, $found);
+        $this->assertCount(11, $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(ProblemFinal::class, $item);
         }
@@ -64,7 +64,7 @@ final class ProblemFinalRepositoryUnitTest extends SecuredRepositoryTestCase
         $this->user->login('mhazzard1@wiley.com', '12345678');
         /** Test[] $found */
         $found = $this->repository->findAllowed($this->user);
-        $this->assertCount(1, $found);
+        $this->assertCount(11, $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(ProblemFinal::class, $item);
         }
@@ -78,9 +78,10 @@ final class ProblemFinalRepositoryUnitTest extends SecuredRepositoryTestCase
             '$$ x - 1 = 4 $$',
             '$$ \frac{ -2 x}{ -1 } + \frac{ 0 x}{ 2 } = 1 $$',
             '$$ \frac{ -2 x}{ -2 } + \frac{ 0 x}{ -2 } = 2 $$',
+            '$$ 2 * \big( 5 - 4 + 5 \big) + 8 x + 4 x = 5$$',
             '$$ 1 = \frac{x - 1 + 4}{x^2 + x} + \frac{ 3 }{x} $$',
             '$$ -5 x^2 + x + 5 = 4 $$',
-            '$$ 1 = \frac{x - 2 + 4}{x^2 + x} + \frac{ -1 }{x} $$'
+            '$$ 1 = \frac{x - 2 + 4}{x^2 + x} + \frac{ -1 }{x} $$',
         ];
         /** @var ProblemFinal[] $found */
         $found = $this->repository->getStudentFiltered(1, 10, 0, []);
@@ -93,6 +94,7 @@ final class ProblemFinalRepositoryUnitTest extends SecuredRepositoryTestCase
         $expected = [
             '$$ 5 x = 15 - 4 + 2 $$',
             '$$ x - 1 = 4 $$',
+            '$$ 2 * \big( 5 - 4 + 5 \big) + 8 x + 4 x = 5$$',
             '$$ -5 x^2 + x + 5 = 4 $$',
         ];
         /** @var ProblemFinal[] $found */
@@ -124,7 +126,8 @@ final class ProblemFinalRepositoryUnitTest extends SecuredRepositoryTestCase
             '$$ \frac{ -2 x}{ -2 } + \frac{ 0 x}{ -2 } = 2 $$',
             '$$ 1 = \frac{x - 1 + 4}{x^2 + x} + \frac{ 3 }{x} $$',
             '$$ -5 x^2 + x + 5 = 4 $$',
-            '$$ 1 = \frac{x - 2 + 4}{x^2 + x} + \frac{ -1 }{x} $$'
+            '$$ 1 = \frac{x - 2 + 4}{x^2 + x} + \frac{ -1 }{x} $$',
+            '$$ 2 * \big( 5 - 4 + 5 \big) + 8 x + 4 x = 5$$'
         ];
         /** @var ProblemFinal[] $found */
         $found = $this->repository->getStudentFiltered(1, 10, 0, ['sort_by_difficulty' => 0]);
@@ -137,11 +140,12 @@ final class ProblemFinalRepositoryUnitTest extends SecuredRepositoryTestCase
         $expected = [
             '$$ 5 x = 15 - 4 + 2 $$',
             '$$ x - 1 = 4 $$',
+            '$$ 2 * \big( 5 - 4 + 5 \big) + 8 x + 4 x = 5$$',
             '$$ -5 x^2 + x + 5 = 4 $$',
             '$$ \frac{ -2 x}{ -1 } + \frac{ 0 x}{ 2 } = 1 $$',
             '$$ \frac{ -2 x}{ -2 } + \frac{ 0 x}{ -2 } = 2 $$',
             '$$ 1 = \frac{x - 1 + 4}{x^2 + x} + \frac{ 3 }{x} $$',
-            '$$ 1 = \frac{x - 2 + 4}{x^2 + x} + \frac{ -1 }{x} $$'
+            '$$ 1 = \frac{x - 2 + 4}{x^2 + x} + \frac{ -1 }{x} $$',
         ];
         /** @var ProblemFinal[] $found */
         $found = $this->repository->getStudentFiltered(1, 10, 0, ['sort_by_difficulty' => 1]);
@@ -158,6 +162,7 @@ final class ProblemFinalRepositoryUnitTest extends SecuredRepositoryTestCase
             '$$ 1 = \frac{x - 2 + 4}{x^2 + x} + \frac{ -1 }{x} $$',
             '$$ 5 x = 15 - 4 + 2 $$',
             '$$ x - 1 = 4 $$',
+            '$$ 2 * \big( 5 - 4 + 5 \big) + 8 x + 4 x = 5$$',
             '$$ -5 x^2 + x + 5 = 4 $$',
         ];
         /** @var ProblemFinal[] $found */
@@ -173,6 +178,7 @@ final class ProblemFinalRepositoryUnitTest extends SecuredRepositoryTestCase
             '$$ x - 1 = 4 $$',
             '$$ \frac{ -2 x}{ -1 } + \frac{ 0 x}{ 2 } = 1 $$',
             '$$ \frac{ -2 x}{ -2 } + \frac{ 0 x}{ -2 } = 2 $$',
+            '$$ 2 * \big( 5 - 4 + 5 \big) + 8 x + 4 x = 5$$',
             '$$ 1 = \frac{x - 1 + 4}{x^2 + x} + \frac{ 3 }{x} $$',
             '$$ -5 x^2 + x + 5 = 4 $$',
             '$$ 1 = \frac{x - 2 + 4}{x^2 + x} + \frac{ -1 }{x} $$'
@@ -200,6 +206,7 @@ final class ProblemFinalRepositoryUnitTest extends SecuredRepositoryTestCase
         $expected = [
             '$$ \frac{ -2 x}{ -1 } + \frac{ 0 x}{ 2 } = 1 $$',
             '$$ \frac{ -2 x}{ -2 } + \frac{ 0 x}{ -2 } = 2 $$',
+            '$$ 2 * \big( 5 - 4 + 5 \big) + 8 x + 4 x = 5$$',
             '$$ 1 = \frac{x - 1 + 4}{x^2 + x} + \frac{ 3 }{x} $$',
             '$$ -5 x^2 + x + 5 = 4 $$',
             '$$ 1 = \frac{x - 2 + 4}{x^2 + x} + \frac{ -1 }{x} $$',

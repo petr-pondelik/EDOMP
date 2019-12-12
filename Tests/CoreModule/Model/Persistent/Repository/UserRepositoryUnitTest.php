@@ -58,7 +58,7 @@ final class UserRepositoryUnitTest extends SecuredRepositoryTestCase
         $this->user->login('admin', '12345678');
         /** @var User[] $found */
         $found = $this->repository->findAllowed($this->user);
-        $this->assertCount(29, $found);
+        $this->assertCount(51, $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(User::class, $item);
         }
@@ -67,7 +67,7 @@ final class UserRepositoryUnitTest extends SecuredRepositoryTestCase
         $this->user->login('jkohneke0@nba.com', '12345678');
         /** User[] $found */
         $found = $this->repository->findAllowed($this->user);
-        $this->assertCount(17, $found);
+        $this->assertCount(16, $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(User::class, $item);
         }

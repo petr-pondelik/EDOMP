@@ -14,7 +14,7 @@ use Nette\Utils\ArrayHash;
  * Class FormatterHelper
  * @package App\CoreModule\Helpers
  */
-final class FormatterHelper
+class FormatterHelper
 {
     /**
      * @var StringsHelper

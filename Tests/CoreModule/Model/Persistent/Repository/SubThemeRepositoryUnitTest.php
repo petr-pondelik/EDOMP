@@ -25,9 +25,13 @@ final class SubThemeRepositoryUnitTest extends SecuredRepositoryTestCase
 
     public function testFind(): void
     {
-        $labels = [ '1.1. Lineární rovnice', '1.2. Kvadratické rovnice', '2.1. Aritmetické posloupnosti', '2.2. Geometrické posloupnosti', '1.1. První lekce' ];
+        $labels = [
+            '1.1. Lineární rovnice', '1.2. Kvadratické rovnice', '2.1. Aritmetické posloupnosti', '2.2. Geometrické posloupnosti',
+            '1.1: Lineární rovnice', '1.2: Kvadratické rovnice', '2.1: Aritmetické posloupnosti', '2.2: Geometrické posloupnosti',
+            '1.1. První lekce', '1.2. Druhá lekce', '2.1. První lekce', '2.2. Druhá lekce'
+        ];
         $found = $this->repository->findAll();
-        $this->assertCount(5, $found);
+        $this->assertCount(12, $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(SubTheme::class, $item);
             $this->assertEquals($labels[$key], (string) $item);
@@ -41,13 +45,17 @@ final class SubThemeRepositoryUnitTest extends SecuredRepositoryTestCase
     public function testFindAllowed(): void
     {
         $this->user->login('admin', '12345678');
-        $labels = [ 1 => '1.1. Lineární rovnice', 2 => '1.2. Kvadratické rovnice', 3 => '2.1. Aritmetické posloupnosti', 4 => '2.2. Geometrické posloupnosti', 5 => '1.1. První lekce' ];
+        $labels = [
+            1 => '1.1. Lineární rovnice', 2 => '1.2. Kvadratické rovnice', 3 => '2.1. Aritmetické posloupnosti', 4 => '2.2. Geometrické posloupnosti',
+            5 => '1.1: Lineární rovnice', 6 => '1.2: Kvadratické rovnice', 7 => '2.1: Aritmetické posloupnosti', 8 => '2.2: Geometrické posloupnosti',
+            9 => '1.1. První lekce', 10 => '1.2. Druhá lekce', 11 => '2.1. První lekce', 12 => '2.2. Druhá lekce'
+        ];
 
         /**
          * @var SubTheme[] $found
          */
         $found = $this->repository->findAllowed($this->user);
-        $this->assertCount(5, $found);
+        $this->assertCount(12, $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(SubTheme::class, $item);
             $this->assertEquals($labels[$key], (string) $item);

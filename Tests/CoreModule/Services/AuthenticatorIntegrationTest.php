@@ -87,7 +87,6 @@ final class AuthenticatorIntegrationTest extends EDOMPUnitTestCase
         $identityExpected = new Identity(6, 'student', [
             'username' => 'srosser5@tuttocitta.it',
             'themes' => [
-                1 => '1. Rovnice',
                 2 => '2. Posloupnosti'
             ],
             'roleLabel' => 'Student',

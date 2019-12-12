@@ -21,7 +21,7 @@ final class LogoRepositoryUnitTest extends SecuredRepositoryTestCase
     /**
      * @var array
      */
-    protected $labels = [ 'Testing logo 1', 'Testing logo 2' ];
+    protected static $labels = [ 'Testing logo 1', 'Testing logo 2', 'Testing logo 3' ];
 
     protected function setUp(): void
     {
@@ -35,10 +35,10 @@ final class LogoRepositoryUnitTest extends SecuredRepositoryTestCase
          * @var Logo[] $found
          */
         $found = $this->repository->findAll();
-        $this->assertCount(2, $found);
+        $this->assertCount(3, $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(Logo::class, $item);
-            $this->assertEquals($this->labels[$key], $item->getLabel());
+            $this->assertEquals(self::$labels[$key], $item->getLabel());
         }
     }
 
@@ -50,13 +50,13 @@ final class LogoRepositoryUnitTest extends SecuredRepositoryTestCase
     {
         $this->user->login('admin', '12345678');
 
-        $labels = [ 1 => $this->labels[0], 2 => $this->labels[1] ];
+        $labels = [ 1 => self::$labels[0], 2 => self::$labels[1], 3 => self::$labels[2] ];
 
         /**
          * @var Logo[] $found
          */
         $found = $this->repository->findAllowed($this->user);
-        $this->assertCount(2, $found);
+        $this->assertCount(3, $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(Logo::class, $item);
             $this->assertEquals($labels[$key], $item->getLabel());
@@ -66,7 +66,7 @@ final class LogoRepositoryUnitTest extends SecuredRepositoryTestCase
 
         $this->user->login('jkohneke0@nba.com', '12345678');
 
-        $labels = [ 1 => $this->labels[0] ];
+        $labels = [ 1 => self::$labels[0] ];
 
         /**
          * @var Logo[] $found

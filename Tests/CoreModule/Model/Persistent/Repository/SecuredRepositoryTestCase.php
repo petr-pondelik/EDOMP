@@ -36,7 +36,6 @@ abstract class SecuredRepositoryTestCase extends RepositoryUnitTestCase
     protected function tearDown(): void
     {
         parent::tearDown();
-        $this->user->logout(true);
         $this->user = null;
     }
 }

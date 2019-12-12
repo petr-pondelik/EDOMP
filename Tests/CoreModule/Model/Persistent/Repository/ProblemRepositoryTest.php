@@ -46,19 +46,11 @@ final class ProblemRepositoryTest extends SecuredRepositoryTestCase
             'isGenerated' => false,
             'createdBy' => '2'
         ]);
-        $this->assertCount(0, $found);
+        $this->assertCount(1, $found);
 
         $found = $this->repository->findFiltered([
             'isTemplate' => '0',
             'createdBy' => '2'
-        ]);
-        $this->assertCount(10, $found);
-        foreach ($found as $item) {
-            $this->assertInstanceOf(ProblemFinal::class, $item);
-        }
-
-        $found = $this->repository->findFiltered([
-            'isTemplate' => '0'
         ]);
         $this->assertCount(11, $found);
         foreach ($found as $item) {
@@ -66,9 +58,17 @@ final class ProblemRepositoryTest extends SecuredRepositoryTestCase
         }
 
         $found = $this->repository->findFiltered([
+            'isTemplate' => '0'
+        ]);
+        $this->assertCount(33, $found);
+        foreach ($found as $item) {
+            $this->assertInstanceOf(ProblemFinal::class, $item);
+        }
+
+        $found = $this->repository->findFiltered([
             'isTemplate' => '1'
         ]);
-        $this->assertCount(30, $found);
+        $this->assertCount(90, $found);
         foreach ($found as $item) {
             $this->assertInstanceOf(ProblemTemplate::class, $item);
         }
@@ -77,7 +77,7 @@ final class ProblemRepositoryTest extends SecuredRepositoryTestCase
             'isTemplate' => '0',
             'isGenerated' => false
         ]);
-        $this->assertCount(1, $found);
+        $this->assertCount(3, $found);
         foreach ($found as $item) {
             $this->assertInstanceOf(ProblemFinal::class, $item);
         }

@@ -25,9 +25,9 @@ class SuperGroupRepositoryUnitTest extends SecuredRepositoryTestCase
 
     public function testFind(): void
     {
-        $labels = [ 'Administrators', 'Učitelé', 'Střední škola', 'Externisté' ];
+        $labels = [ 'Administrators', 'Učitelé', 'Střední škola', 'Střední', 'Externisté' ];
         $found = $this->repository->findAll();
-        $this->assertCount(4, $found);
+        $this->assertCount(count($labels), $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(SuperGroup::class, $item);
             $this->assertEquals($labels[$key], (string) $item);
@@ -41,13 +41,13 @@ class SuperGroupRepositoryUnitTest extends SecuredRepositoryTestCase
     public function testFindAllowed(): void
     {
         $this->user->login('admin', '12345678');
-        $labels = [ 3 => 'Střední škola', 4 => 'Externisté' ];
+        $labels = [ 3 => 'Střední škola', 4 => 'Střední', 5 => 'Externisté' ];
 
         /**
          * @var SuperGroup[] $found
          */
         $found = $this->repository->findAllowed($this->user);
-        $this->assertCount(2, $found);
+        $this->assertCount(count($labels), $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(SuperGroup::class, $item);
             $this->assertEquals($labels[$key], (string) $item);

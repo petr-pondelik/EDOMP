@@ -26,7 +26,7 @@ final class ProblemFinalTestVariantAssociationRepositoryUnitTest extends Reposit
     public function testFind(): void
     {
         $expected = [ '$$ 5 x = 15 - 4 + 2 $$' ];
-        $filters = [ 'problemFinal.id' => 31 ];
+        $filters = [ 'problemFinal.id' => 91 ];
         $found = $this->repository->findBy($filters);
         $this->assertCount(1, $found);
         foreach ($found as $key => $item) {

@@ -25,9 +25,13 @@ final class ThemeRepositoryUnitTest extends SecuredRepositoryTestCase
 
     public function testFind(): void
     {
-        $labels = [ '1. Rovnice', '2. Posloupnosti', '1. Začátečníci' ];
+        $labels = [
+            '1. Rovnice', '2. Posloupnosti',
+            '1: Rovnice', '2: Posloupnosti',
+            '1. Začátečníci', '2. Pokročilí'
+        ];
         $found = $this->repository->findAll();
-        $this->assertCount(3, $found);
+        $this->assertCount(count($labels), $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(Theme::class, $item);
             $this->assertEquals($labels[$key], (string) $item);
@@ -41,13 +45,17 @@ final class ThemeRepositoryUnitTest extends SecuredRepositoryTestCase
     public function testFindAllowed(): void
     {
         $this->user->login('admin', '12345678');
-        $labels = [ 1 => '1. Rovnice', 2 => '2. Posloupnosti', 3 => '1. Začátečníci'];
+        $labels = [
+            1 => '1. Rovnice', 2 => '2. Posloupnosti',
+            3 => '1: Rovnice', 4 => '2: Posloupnosti',
+            5 => '1. Začátečníci', 6 => '2. Pokročilí'
+        ];
 
         /**
          * @var Theme[] $found
          */
         $found = $this->repository->findAllowed($this->user);
-        $this->assertCount(3, $found);
+        $this->assertCount(count($labels), $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(Theme::class, $item);
             $this->assertEquals($labels[$key], (string) $item);

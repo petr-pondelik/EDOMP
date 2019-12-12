@@ -20,7 +20,6 @@ class Bootstrap
     protected static function initGlobals(): void
     {
         // DIRECTORY_SEPARATOR is PHP constant holding system dir. separator (\ for Win and / for Linux)
-        // TODO:  REMOVE CONSTANTS USAGE FROM ALL THE APP!!!
         define('APP_DIR', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
 
         define('DOCTRINE_DIR', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
@@ -75,7 +74,7 @@ class Bootstrap
         // Load configurations based on environment
         $configurator->addConfig(__DIR__ . '/../Config/config.neon');
         $configurator->addConfig(__DIR__ . '/../Config/config.local.neon');
-        $configurator->addConfig(__DIR__ . '/../Config/config.' . ENVIRONMENT . '.neon');
+//        $configurator->addConfig(__DIR__ . '/../Config/config.' . ENVIRONMENT . '.neon');
 
         if (ENVIRONMENT === 'prod') {
             if ('https' === getenv('HTTP_X_FORWARDED_PROTO')) {

@@ -26,7 +26,7 @@ final class ArithmeticSequenceTemplateRepositoryUnitTest extends SecuredReposito
     public function testFind(): void
     {
         $found = $this->repository->findAll();
-        $this->assertCount(5, $found);
+        $this->assertCount(15, $found);
         foreach ($found as $item) {
             $this->assertInstanceOf(ArithmeticSequenceTemplate::class, $item);
         }
@@ -41,7 +41,7 @@ final class ArithmeticSequenceTemplateRepositoryUnitTest extends SecuredReposito
         $this->user->login('admin', '12345678');
         /** @var ArithmeticSequenceTemplate[] $found */
         $found = $this->repository->findAllowed($this->user);
-        $this->assertCount(5, $found);
+        $this->assertCount(15, $found);
         foreach ($found as $key => $item) {
             $this->assertInstanceOf(ArithmeticSequenceTemplate::class, $item);
         }
@@ -59,7 +59,7 @@ final class ArithmeticSequenceTemplateRepositoryUnitTest extends SecuredReposito
         $this->user->login('mhazzard1@wiley.com', '12345678');
         /** User[] $found */
         $found = $this->repository->findAllowed($this->user);
-        $this->assertCount(0, $found);
+        $this->assertCount(5, $found);
         $this->user->logout(true);
     }
 }

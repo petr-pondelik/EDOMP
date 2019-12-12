@@ -25,6 +25,6 @@ final class ProblemTemplateRepositoryUnitTest extends RepositoryUnitTestCase
 
     public function testFind(): void
     {
-        $this->assertEquals(42, $this->repository->getSequenceVal());
+        $this->assertEquals(124, $this->repository->getSequenceVal());
     }
 }
