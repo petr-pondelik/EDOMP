@@ -15,9 +15,16 @@ use Nette\Configurator;
  * Class Bootstrap
  * @package App\Bootstrap
  */
-class Bootstrap
+final class Bootstrap
 {
-    protected static function initGlobals(): void
+    public const ENV_PRODUCTION = 'prod';
+    public const ENV_DEVELOPMENT = 'devel';
+
+    /**
+     * @param Configurator $configurator
+     * @return Configurator
+     */
+    protected static function setConfiguratorParameters(Configurator $configurator): Configurator
     {
         // DIRECTORY_SEPARATOR is PHP constant holding system dir. separator (\ for Win and / for Linux)
         define('APP_DIR', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
@@ -46,43 +53,8 @@ class Bootstrap
         define('LOGOS_TMP_DIR', TMP_DIR . DIRECTORY_SEPARATOR . 'logos');
         define('NPM_DIR', APP_DIR . '..' . DIRECTORY_SEPARATOR . 'node_modules');
         define('VENDOR_DIR', APP_DIR . '..' . DIRECTORY_SEPARATOR . 'vendor');
-    }
 
-    protected static function setEnv(): void
-    {
-        define('ENV_DEVELOPMENT', isset($_SERVER['SERVER_ADDR']) && in_array($_SERVER['SERVER_ADDR'], ['127.0.0.1', '::1'], true));
-        ENV_DEVELOPMENT ? define('ENVIRONMENT', 'devel') : define('ENVIRONMENT', 'prod');
-    }
-
-    /**
-     * @return Configurator
-     */
-    public static function boot(): Configurator
-    {
-        self::initGlobals();
-
-        $configurator = new Configurator();
-
-        $configurator->setDebugMode(filter_input(INPUT_SERVER, 'HTTP_EDOMPALLOWDEBUG') === 'SJPPFguvBhl9zN84nviZ');
-        $configurator->enableTracy(__DIR__ . '/../../log');
-
-        $configurator->setTimeZone('Europe/Prague');
-        $configurator->setTempDirectory(__DIR__ . '/../../temp');
-
-        self::setEnv();
-
-        // Load configurations based on environment
-        $configurator->addConfig(__DIR__ . '/../Config/config.neon');
-        $configurator->addConfig(__DIR__ . '/../Config/config.local.neon');
-//        $configurator->addConfig(__DIR__ . '/../Config/config.' . ENVIRONMENT . '.neon');
-
-        if (ENVIRONMENT === 'prod') {
-            if ('https' === getenv('HTTP_X_FORWARDED_PROTO')) {
-                \Nette\Http\Url::$defaultPorts['https'] = (int) getenv('SERVER_PORT');
-            }
-        }
-
-        $configurator->addParameters([
+        return $configurator->addParameters([
             'appDir' => APP_DIR,
             'coreTemplatesDir' => CORE_MODULE_TEMPLATES_DIR,
             'studentTemplatesDir' => STUDENT_MODULE_TEMPLATES_DIR,
@@ -94,6 +66,44 @@ class Bootstrap
             'wwwDir' => WWW_DIR,
             'vendorDir' => VENDOR_DIR
         ]);
+    }
+
+    /**
+     * @return string
+     */
+    public static function getEnv(): string
+    {
+        if (isset($_SERVER['SERVER_ADDR']) && in_array($_SERVER['SERVER_ADDR'], ['127.0.0.1', '::1'], true)) {
+            return self::ENV_DEVELOPMENT;
+        }
+        return self::ENV_PRODUCTION;
+    }
+
+    /**
+     * @return Configurator
+     */
+    public static function boot(): Configurator
+    {
+        $configurator = new Configurator();
+
+        $configurator->setDebugMode(filter_input(INPUT_SERVER, 'HTTP_EDOMPALLOWDEBUG') === 'SJPPFguvBhl9zN84nviZ');
+        $configurator->enableTracy(__DIR__ . '/../../log');
+
+        $configurator->setTimeZone('Europe/Prague');
+        $configurator->setTempDirectory(__DIR__ . '/../../temp');
+
+        $env = self::getEnv();
+
+        // Load configurations based on environment
+        $configurator->addConfig(__DIR__ . '/../Config/config.neon');
+        $configurator->addConfig(__DIR__ . '/../Config/config.local.neon');
+//        $configurator->addConfig(__DIR__ . '/../Config/config.' . ENVIRONMENT . '.neon');
+
+        if ($env === self::ENV_PRODUCTION && 'https' === getenv('HTTP_X_FORWARDED_PROTO')) {
+            \Nette\Http\Url::$defaultPorts['https'] = (int) getenv('SERVER_PORT');
+        }
+
+        $configurator = self::setConfiguratorParameters($configurator);
 
         return $configurator;
     }

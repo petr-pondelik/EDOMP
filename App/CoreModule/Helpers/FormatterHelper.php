@@ -41,7 +41,7 @@ class FormatterHelper
     {
         $result = '';
         foreach ($resultArray as $key => $resItem) {
-            if($key !== 'type'){
+            if ($key !== 'type') {
                 $result .= '$$' . $key . ' = ' . $resItem . '$$';
             }
         }
