@@ -55,8 +55,14 @@ abstract class BaseGrid extends EDOMPControl
 
         $grid->setTranslator($translator);
 
-        $grid->setTemplateFile(CORE_MODULE_TEMPLATES_DIR . '/UblabooDatagrid/datagridCustom.latte');
-        $grid->setCustomPaginatortemplate(CORE_MODULE_TEMPLATES_DIR . '/UblabooDatagrid/datagridPaginator.latte');
+        $grid->setTemplateFile(
+            __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'UblabooDatagrid' . DIRECTORY_SEPARATOR . 'datagridCustom.latte');
+
+        $grid->setCustomPaginatortemplate(
+            __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'UblabooDatagrid' . DIRECTORY_SEPARATOR . 'datagridPaginator.latte'
+        );
 
         $grid->setDefaultSort(['id' => 'DESC']);
 

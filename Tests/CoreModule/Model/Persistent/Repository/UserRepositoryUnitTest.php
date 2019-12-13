@@ -55,7 +55,7 @@ final class UserRepositoryUnitTest extends SecuredRepositoryTestCase
      */
     public function testFindAllowed(): void
     {
-        $this->user->login('admin', '12345678');
+        $this->user->login('admin', '12345678', true);
         /** @var User[] $found */
         $found = $this->repository->findAllowed($this->user);
         $this->assertCount(51, $found);
@@ -64,7 +64,7 @@ final class UserRepositoryUnitTest extends SecuredRepositoryTestCase
         }
         $this->user->logout(true);
 
-        $this->user->login('jkohneke0@nba.com', '12345678');
+        $this->user->login('jkohneke0@nba.com', '12345678', true);
         /** User[] $found */
         $found = $this->repository->findAllowed($this->user);
         $this->assertCount(16, $found);

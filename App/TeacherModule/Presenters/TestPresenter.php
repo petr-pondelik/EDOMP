@@ -27,11 +27,8 @@ use App\CoreModule\Services\FileService;
 use App\TeacherModule\Services\FilterSession;
 use App\CoreModule\Services\Validator;
 use App\TeacherModule\Services\NewtonApiClient;
+use App\TeacherModule\Services\TestDownloader;
 use App\TeacherModule\Services\TestGenerator;
-use Nette\Application\Responses\CallbackResponse;
-use Nette\Http\IRequest;
-use Nette\Http\IResponse;
-use Nette\Http\Response;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
@@ -81,6 +78,11 @@ final class TestPresenter extends EntityPresenter
     protected $filterSession;
 
     /**
+     * @var TestDownloader
+     */
+    protected $testDownloader;
+
+    /**
      * TestPresenter constructor.
      * @param Authorizator $authorizator
      * @param Validator $validator
@@ -100,19 +102,29 @@ final class TestPresenter extends EntityPresenter
      * @param TestGenerator $testGenerator
      * @param IHelpModalFactory $sectionHelpModalFactory
      * @param FilterSession $filterSession
+     * @param TestDownloader $testDownloader
      */
     public function __construct
     (
-        Authorizator $authorizator, Validator $validator, NewtonApiClient $newtonApiClient,
-        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator,
-        TestRepository $testRepository, TestFunctionality $testFunctionality,
-        ProblemTemplateRepository $problemTemplateRepository, ProblemRepository $problemRepository, LogoRepository $logoRepository,
+        Authorizator $authorizator,
+        Validator $validator,
+        NewtonApiClient $newtonApiClient,
+        IHeaderBarFactory $headerBarFactory,
+        ISideBarFactory $sideBarFactory,
+        FlashesTranslator $flashesTranslator,
+        TestRepository $testRepository,
+        TestFunctionality $testFunctionality,
+        ProblemTemplateRepository $problemTemplateRepository,
+        ProblemRepository $problemRepository,
+        LogoRepository $logoRepository,
         ProblemFinalTestVariantAssociationRepository $problemTestAssociationRepository,
-        ITestFormFactory $testCreateFormFactory, TestGridFactory $testGridFactory,
+        ITestFormFactory $testCreateFormFactory,
+        TestGridFactory $testGridFactory,
         FileService $fileService,
         TestGenerator $testGenerator,
         IHelpModalFactory $sectionHelpModalFactory,
-        FilterSession $filterSession
+        FilterSession $filterSession,
+        TestDownloader $testDownloader
     )
     {
         parent::__construct
@@ -128,6 +140,7 @@ final class TestPresenter extends EntityPresenter
         $this->validator = $validator;
         $this->testGenerator = $testGenerator;
         $this->filterSession = $filterSession;
+        $this->testDownloader = $testDownloader;
     }
 
     /**
@@ -237,10 +250,8 @@ final class TestPresenter extends EntityPresenter
     public function handlePdfOverleaf(int $id): void
     {
         bdump('HANDLE PDF OVERLEAF');
-        bdump($id);
 
         if (!$entity = $this->safeFind($id)) {
-            bdump('FAIL');
             $this->redirect('default');
         }
 
@@ -265,39 +276,23 @@ final class TestPresenter extends EntityPresenter
     /**
      * @param int $id
      * @throws \Nette\Application\AbortException
+     * @throws \Nette\Application\BadRequestException
      */
     public function handleDownloadSource(int $id): void
     {
         bdump('HANDLE DOWNLOAD SOURCE');
-        bdump($id);
 
         if (!$entity = $this->safeFind($id)) {
             return;
         }
 
-        if(!$entity->isClosed()){
+        if (!$entity->isClosed()) {
             $this->flashMessage('Pro stažení archivu je potřeba test nejprve uzavřít.', 'danger');
             $this->redrawControl('mainFlashesSnippet');
             return;
         }
 
-        $this->sendResponse(new CallbackResponse(static function (IRequest $request, IResponse $response) use ($id) {
-            $response = new Response();
-            $response->setHeader('Content-type', 'application/zip');
-            $response->setHeader(
-                'Content-Disposition',
-                'attachment; filename=test_' . $id . '.zip'
-            );
-            $response->setHeader(
-                'Content-length',
-                filesize(DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'test_' . $id . '.zip')
-            );
-            $response->setHeader('Pragma', 'no-cache');
-            $response->setHeader('Expires', '0');
-
-            readfile(DATA_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'test_' . $id . '.zip');
-
-        }));
+        $this->sendResponse($this->testDownloader->download($id));
     }
 
     /**
@@ -307,8 +302,6 @@ final class TestPresenter extends EntityPresenter
     {
         $control = $this->formFactory->create();
         $control->onSuccess[] = function () use ($control) {
-            bdump('SUCCESS');
-            bdump($this->getTemplate());
             if ($control->isUpdate()) {
                 $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null, false, 'entityForm'));
                 $this->reloadEntity();
@@ -328,8 +321,7 @@ final class TestPresenter extends EntityPresenter
     public function renderCreate(): void
     {
         bdump('RENDER CREATE');
-        bdump($this->filterSession->getFilters());
-        if(!$this->isAjax()){
+        if (!$this->isAjax()) {
             $this->getEntityForm()->fillComponents($this->filterSession->getFilters());
         }
     }

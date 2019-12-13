@@ -48,7 +48,7 @@ final class LogoRepositoryUnitTest extends SecuredRepositoryTestCase
      */
     public function testFindAllowed(): void
     {
-        $this->user->login('admin', '12345678');
+        $this->user->login('admin', '12345678', true);
 
         $labels = [ 1 => self::$labels[0], 2 => self::$labels[1], 3 => self::$labels[2] ];
 
@@ -64,7 +64,7 @@ final class LogoRepositoryUnitTest extends SecuredRepositoryTestCase
 
         $this->user->logout(true);
 
-        $this->user->login('jkohneke0@nba.com', '12345678');
+        $this->user->login('jkohneke0@nba.com', '12345678', true);
 
         $labels = [ 1 => self::$labels[0] ];
 

@@ -45,7 +45,7 @@ final class GroupRepositoryUnitTest extends SecuredRepositoryTestCase
      */
     public function testFindAllowed(): void
     {
-        $this->user->login('admin', '12345678');
+        $this->user->login('admin', '12345678', true);
         $labels = [
             2 => 'Učitelé',
             3 =>  '1.A', 4 => '1.B', 5 => '1.C',
@@ -65,7 +65,7 @@ final class GroupRepositoryUnitTest extends SecuredRepositoryTestCase
 
         $this->user->logout(true);
 
-        $this->user->login('jkohneke0@nba.com', '12345678');
+        $this->user->login('jkohneke0@nba.com', '12345678', true);
         $labels = [ 3 =>  '1.A', 4 => '1.B', 5 => '1.C'];
 
         /**

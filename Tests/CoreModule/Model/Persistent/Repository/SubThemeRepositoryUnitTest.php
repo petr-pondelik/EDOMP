@@ -44,7 +44,7 @@ final class SubThemeRepositoryUnitTest extends SecuredRepositoryTestCase
      */
     public function testFindAllowed(): void
     {
-        $this->user->login('admin', '12345678');
+        $this->user->login('admin', '12345678', true);
         $labels = [
             1 => '1.1. Lineární rovnice', 2 => '1.2. Kvadratické rovnice', 3 => '2.1. Aritmetické posloupnosti', 4 => '2.2. Geometrické posloupnosti',
             5 => '1.1: Lineární rovnice', 6 => '1.2: Kvadratické rovnice', 7 => '2.1: Aritmetické posloupnosti', 8 => '2.2: Geometrické posloupnosti',
@@ -63,7 +63,7 @@ final class SubThemeRepositoryUnitTest extends SecuredRepositoryTestCase
 
         $this->user->logout(true);
 
-        $this->user->login('jkohneke0@nba.com', '12345678');
+        $this->user->login('jkohneke0@nba.com', '12345678', true);
         $labels = [ 1 => '1.1. Lineární rovnice', 2 => '1.2. Kvadratické rovnice', 3 => '2.1. Aritmetické posloupnosti', 4 => '2.2. Geometrické posloupnosti'];
 
         /**

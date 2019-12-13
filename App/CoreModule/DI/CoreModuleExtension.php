@@ -15,6 +15,7 @@ use App\CoreModule\Components\Forms\PasswordForm\IPasswordFormFactory;
 use App\CoreModule\Components\Forms\SignForm\ISignFormFactory;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\HelpModal\IHelpModalFactory;
+use App\CoreModule\Components\Paginator\PaginatorFactory;
 use App\CoreModule\Components\SideBar\ISideBarFactory;
 use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Helpers\FlashesTranslator;
@@ -93,6 +94,7 @@ use App\CoreModule\Services\MailService;
 use App\CoreModule\Services\PasswordGenerator;
 use App\CoreModule\Services\Validator;
 use App\TeacherModule\Services\ParameterParser;
+use App\TeacherModule\Services\TestDownloader;
 use Nette\DI\ContainerBuilder;
 
 /**
@@ -105,24 +107,31 @@ class CoreModuleExtension extends ModuleExtension
      * @var array
      */
     protected $defaults = [
-        'coreTemplatesDir' => CORE_MODULE_TEMPLATES_DIR,
-        'studentTemplatesDir' => STUDENT_MODULE_TEMPLATES_DIR,
-        'teacherTemplatesDir' => TEACHER_MODULE_TEMPLATES_DIR,
-        'testTemplatesDataDir' => TEST_TEMPLATES_DATA_DIR,
-        'logosDir' => LOGOS_DIR,
-        'logosTmpDir' => LOGOS_TMP_DIR,
-        'loginURL' => null
+        'loginURL' => null,
+        'dataPublicDir' => null,
+        'logosDir' => null,
+        'logosTmpDir' => null,
+        'testDataDir' => null,
+        'coreTemplatesDir' => null,
+        'studentTemplatesDir' => null,
+        'teacherTemplatesDir' => null,
+        'testTemplatesDataDir' => null,
     ];
-
-    /**
-     * @var string
-     */
-    protected $configFile = CORE_MODULE_DIR . 'DI' . DIRECTORY_SEPARATOR . 'config.neon';
 
     /**
      * @var array
      */
-    protected $configRequiredItems = [ 'loginURL' ];
+    protected $configRequiredItems = [
+        'loginURL',
+        'dataPublicDir',
+        'logosDir',
+        'logosTmpDir',
+        'testDataDir',
+        'coreTemplatesDir',
+        'studentTemplatesDir',
+        'teacherTemplatesDir',
+        'testTemplatesDataDir'
+    ];
 
     /**
      * @param ContainerBuilder $builder
@@ -140,11 +149,13 @@ class CoreModuleExtension extends ModuleExtension
         $builder->addDefinition($this->prefix('fileService'))
             ->setType(FileService::class)
             ->setArguments([
+                'dataPublicDir' => $this->config['dataPublicDir'],
                 'logosDir' => $this->config['logosDir'],
                 'logosTmpDir' => $this->config['logosTmpDir'],
                 'coreTemplatesDir' => $this->config['coreTemplatesDir'],
                 'studentTemplatesDir' => $this->config['studentTemplatesDir'],
                 'teacherTemplatesDir' => $this->config['teacherTemplatesDir'],
+                'testDataDir' => $this->config['testDataDir'],
                 'testTemplatesDataDir' => $this->config['testTemplatesDataDir']
             ]);
 
@@ -163,6 +174,12 @@ class CoreModuleExtension extends ModuleExtension
 
         $builder->addDefinition($this->prefix('parameterParser'))
             ->setType(ParameterParser::class);
+
+        $builder->addDefinition('testDownloader')
+            ->setType(TestDownloader::class)
+            ->setArguments([
+                'testDataDir' => $this->config['testDataDir']
+            ]);
 
 
         // Helpers definitions
@@ -205,6 +222,13 @@ class CoreModuleExtension extends ModuleExtension
 
         $builder->addDefinition($this->prefix('forgetPasswordFormFactory'))
             ->setImplement(IForgetPasswordFormFactory::class);
+
+        $builder->addDefinition($this->prefix('paginatorFactory'))
+            ->setType(PaginatorFactory::class)
+            ->setArguments([
+                'studentPath' => $this->config['studentTemplatesDir'],
+                'teacherPath' => $this->config['teacherTemplatesDir']
+            ]);
 
 
         // Repositories definitions

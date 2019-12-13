@@ -38,7 +38,7 @@ final class ArithmeticSequenceTemplateRepositoryUnitTest extends SecuredReposito
      */
     public function testFindAllowed(): void
     {
-        $this->user->login('admin', '12345678');
+        $this->user->login('admin', '12345678', true);
         /** @var ArithmeticSequenceTemplate[] $found */
         $found = $this->repository->findAllowed($this->user);
         $this->assertCount(15, $found);
@@ -47,7 +47,7 @@ final class ArithmeticSequenceTemplateRepositoryUnitTest extends SecuredReposito
         }
         $this->user->logout(true);
 
-        $this->user->login('jkohneke0@nba.com', '12345678');
+        $this->user->login('jkohneke0@nba.com', '12345678', true);
         /** User[] $found */
         $found = $this->repository->findAllowed($this->user);
         $this->assertCount(5, $found);
@@ -56,7 +56,7 @@ final class ArithmeticSequenceTemplateRepositoryUnitTest extends SecuredReposito
         }
         $this->user->logout(true);
 
-        $this->user->login('mhazzard1@wiley.com', '12345678');
+        $this->user->login('mhazzard1@wiley.com', '12345678', true);
         /** User[] $found */
         $found = $this->repository->findAllowed($this->user);
         $this->assertCount(5, $found);

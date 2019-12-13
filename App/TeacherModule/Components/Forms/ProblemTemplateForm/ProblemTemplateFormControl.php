@@ -596,17 +596,13 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     public function conditionsToValidateCreate(ArrayHash $values): bool
     {
         bdump('CONDITIONS TO VALIDATE CREATE');
-        bdump($values);
-        bdump($this->problemTemplateSession->getProblemTemplate());
         // If the validation was already triggered
         if ($this->problemTemplateSession->getProblemTemplate()) {
             return !$this->problemTemplateSession->getProblemTemplate()->getState()->conditionsValidated($values);
         }
         // If the validation wasn't triggered yet
         foreach ($values as $key => $value) {
-            bdump([$key, $value]);
             if ($value !== 0 && Strings::match($key, '~condition_\d~')) {
-                bdump('TRUE');
                 return true;
             }
         }

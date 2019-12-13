@@ -98,7 +98,7 @@ final class RoleRepositoryUnitTest extends RepositoryUnitTestCase
     {
         $expected[3] = $this->studentRole;
 
-        $this->user->login('jkohneke0@nba.com', '12345678');
+        $this->user->login('jkohneke0@nba.com', '12345678', true);
         $found = $this->repository->findAllowed($this->user);
 
         $this->assertCount(1, $found);
@@ -118,7 +118,7 @@ final class RoleRepositoryUnitTest extends RepositoryUnitTestCase
             3 => $this->studentRole
         ];
 
-        $this->user->login('admin', '12345678');
+        $this->user->login('admin', '12345678', true);
         $found = $this->repository->findAllowed($this->user);
 
         $this->assertCount(2, $found);

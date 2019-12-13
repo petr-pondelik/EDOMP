@@ -40,7 +40,7 @@ class SuperGroupRepositoryUnitTest extends SecuredRepositoryTestCase
      */
     public function testFindAllowed(): void
     {
-        $this->user->login('admin', '12345678');
+        $this->user->login('admin', '12345678', true);
         $labels = [ 3 => 'Střední škola', 4 => 'Střední', 5 => 'Externisté' ];
 
         /**
@@ -55,7 +55,7 @@ class SuperGroupRepositoryUnitTest extends SecuredRepositoryTestCase
 
         $this->user->logout(true);
 
-        $this->user->login('jkohneke0@nba.com', '12345678');
+        $this->user->login('jkohneke0@nba.com', '12345678', true);
         $labels = [ 3 => 'Střední škola' ];
 
         /**

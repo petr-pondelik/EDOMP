@@ -38,7 +38,7 @@ final class QuadraticEquationTemplateRepositoryUnitTest extends SecuredRepositor
      */
     public function testFindAllowed(): void
     {
-        $this->user->login('admin', '12345678');
+        $this->user->login('admin', '12345678', true);
         /** @var QuadraticEquationTemplate[] $found */
         $found = $this->repository->findAllowed($this->user);
         $this->assertCount(30, $found);
@@ -47,7 +47,7 @@ final class QuadraticEquationTemplateRepositoryUnitTest extends SecuredRepositor
         }
         $this->user->logout(true);
 
-        $this->user->login('jkohneke0@nba.com', '12345678');
+        $this->user->login('jkohneke0@nba.com', '12345678', true);
         /** User[] $found */
         $found = $this->repository->findAllowed($this->user);
         $this->assertCount(10, $found);
@@ -56,7 +56,7 @@ final class QuadraticEquationTemplateRepositoryUnitTest extends SecuredRepositor
         }
         $this->user->logout(true);
 
-        $this->user->login('mhazzard1@wiley.com', '12345678');
+        $this->user->login('mhazzard1@wiley.com', '12345678', true);
         /** User[] $found */
         $found = $this->repository->findAllowed($this->user);
         $this->assertCount(10, $found);

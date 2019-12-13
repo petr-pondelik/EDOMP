@@ -44,7 +44,7 @@ final class ThemeRepositoryUnitTest extends SecuredRepositoryTestCase
      */
     public function testFindAllowed(): void
     {
-        $this->user->login('admin', '12345678');
+        $this->user->login('admin', '12345678', true);
         $labels = [
             1 => '1. Rovnice', 2 => '2. Posloupnosti',
             3 => '1: Rovnice', 4 => '2: Posloupnosti',
@@ -63,7 +63,7 @@ final class ThemeRepositoryUnitTest extends SecuredRepositoryTestCase
 
         $this->user->logout(true);
 
-        $this->user->login('jkohneke0@nba.com', '12345678');
+        $this->user->login('jkohneke0@nba.com', '12345678', true);
         $labels = [ 1 => '1. Rovnice', 2 => '2. Posloupnosti'];
 
         /**

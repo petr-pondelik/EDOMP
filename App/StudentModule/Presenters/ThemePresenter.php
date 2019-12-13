@@ -8,6 +8,7 @@
 
 namespace App\StudentModule\Presenters;
 
+use App\CoreModule\Components\Paginator\PaginatorFactory;
 use App\CoreModule\Model\Persistent\Entity\Theme;
 use App\StudentModule\Components\Forms\ProblemFilterForm\ProblemFilterFormControl;
 use App\StudentModule\Components\Forms\ProblemFilterForm\IProblemFilterFormFactory;
@@ -24,7 +25,7 @@ use Nette\Utils\ArrayHash;
  * Class ThemePresenter
  * @package App\StudentModule\Presenters
  */
-class ThemePresenter extends StudentPresenter
+final class ThemePresenter extends StudentPresenter
 {
     /**
      * @var ThemeRepository
@@ -40,6 +41,11 @@ class ThemePresenter extends StudentPresenter
      * @var IProblemFilterFormFactory
      */
     protected $problemFilterFormFactory;
+
+    /**
+     * @var PaginatorFactory
+     */
+    private $paginatorFactory;
 
     /**
      * @var Theme
@@ -70,6 +76,7 @@ class ThemePresenter extends StudentPresenter
      * @param ThemeRepository $themeRepository
      * @param ProblemFinalRepository $problemFinalRepository
      * @param IProblemFilterFormFactory $problemFilterFormFactory
+     * @param PaginatorFactory $paginatorFactory
      */
     public function __construct
     (
@@ -79,13 +86,15 @@ class ThemePresenter extends StudentPresenter
         FlashesTranslator $flashesTranslator,
         ThemeRepository $themeRepository,
         ProblemFinalRepository $problemFinalRepository,
-        IProblemFilterFormFactory $problemFilterFormFactory
+        IProblemFilterFormFactory $problemFilterFormFactory,
+        PaginatorFactory $paginatorFactory
     )
     {
         parent::__construct($authorizator, $headerBarFactory, $sideBarFactory, $flashesTranslator);
         $this->themeRepository = $themeRepository;
         $this->problemFinalRepository = $problemFinalRepository;
         $this->problemFilterFormFactory = $problemFilterFormFactory;
+        $this->paginatorFactory = $paginatorFactory;
     }
 
     /**
@@ -196,9 +205,7 @@ class ThemePresenter extends StudentPresenter
      */
     public function createComponentVisualPaginator(): VisualPaginator\Control
     {
-        $paginator = new VisualPaginator\Control;
-        $paginator->enableAjax();
-        $paginator->setTemplateFile(STUDENT_MODULE_TEMPLATES_DIR . '/VisualPaginator/frontProblemCollection.latte');
+        $paginator = $this->paginatorFactory->create($this->paginatorFactory::STUDENT, 'frontProblemCollection.latte');
         $paginator->onShowPage[] = function () {
             $this->redrawControl('paginatorSnippet');
             $this->redrawControl('problemsSnippet');

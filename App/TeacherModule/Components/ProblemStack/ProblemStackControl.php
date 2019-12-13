@@ -17,7 +17,7 @@ use App\CoreModule\Model\Persistent\Repository\ProblemRepository;
  * Class ProblemStackControl
  * @package App\TeacherModule\Components\ProblemStack
  */
-class ProblemStackControl extends EDOMPControl
+final class ProblemStackControl extends EDOMPControl
 {
     /**
      * @var ProblemRepository
@@ -82,10 +82,7 @@ class ProblemStackControl extends EDOMPControl
 
     public function render(): void
     {
-        bdump('RENDER PROBLEM STACK');
         bdump($this->problems);
-        bdump($this->selectedProblems);
-
         $this->template->id = $this->id;
         $this->template->problems = $this->problems;
         $this->template->selectedProblems = $this->selectedProblems;

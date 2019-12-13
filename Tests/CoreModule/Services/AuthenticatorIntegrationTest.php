@@ -58,7 +58,8 @@ final class AuthenticatorIntegrationTest extends EDOMPUnitTestCase
         // Authenticate admin User and get it's identity
         $identity = $this->authenticator->authenticate([
             'admin',
-            '12345678'
+            '12345678',
+            true
         ]);
 
         // Test created Identity against expected Identity
@@ -76,12 +77,12 @@ final class AuthenticatorIntegrationTest extends EDOMPUnitTestCase
         // Authenticate admin User and get it's identity
         $identity = $this->authenticator->authenticate([
             'jkohneke0@nba.com',
-            '12345678'
+            '12345678',
+            true
         ]);
 
         // Test created Identity against expected Identity
         $this->assertEquals($identityExpected, $identity);
-
 
         // Prepare expected Identity object for Student User
         $identityExpected = new Identity(6, 'student', [
@@ -97,7 +98,8 @@ final class AuthenticatorIntegrationTest extends EDOMPUnitTestCase
         // Authenticate student User and get it's Identity
         $identity = $this->authenticator->authenticate([
             'srosser5@tuttocitta.it',
-            '12345678'
+            '12345678',
+            false
         ]);
 
         // Test created Identity against expected Identity
@@ -115,7 +117,8 @@ final class AuthenticatorIntegrationTest extends EDOMPUnitTestCase
         // Authenticate with invalid credentials
         $this->authenticator->authenticate([
             'TEST_USERNAME_FIRST',
-            'TEST_PASSWORD_FIRST'
+            'TEST_PASSWORD_FIRST',
+            false
         ]);
     }
 
@@ -130,7 +133,8 @@ final class AuthenticatorIntegrationTest extends EDOMPUnitTestCase
         // Authenticate with invalid credentials
         $this->authenticator->authenticate([
             'TEST_USERNAME_FIRST',
-            '12345678'
+            '12345678',
+            false
         ]);
     }
 
@@ -145,7 +149,8 @@ final class AuthenticatorIntegrationTest extends EDOMPUnitTestCase
         // Authenticate with invalid credentials
         $this->authenticator->authenticate([
             'admin',
-            'TEST_PASSWORD_FIRST'
+            'TEST_PASSWORD_FIRST',
+            false
         ]);
     }
 }

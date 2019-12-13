@@ -62,7 +62,7 @@ final class AuthorizatorIntegrationTest extends EDOMPTestCase
      */
     public function testIsThemeAllowed(): void
     {
-        $this->user->login('srosser5@tuttocitta.it', '12345678');
+        $this->user->login('srosser5@tuttocitta.it', '12345678', false);
 
         $this->assertFalse($this->authorizator->isThemeAllowed($this->user, 1));
         $this->assertTrue($this->authorizator->isThemeAllowed($this->user, 2));
@@ -77,7 +77,7 @@ final class AuthorizatorIntegrationTest extends EDOMPTestCase
      */
     public function testIsEntityAllowed(): void
     {
-        $this->user->login('admin', '12345678');
+        $this->user->login('admin', '12345678', true);
 
         $superGroups = $this->superGroupRepository->findAssoc([], 'id');
         $groups = $this->groupRepository->findAssoc([], 'id');
@@ -98,7 +98,7 @@ final class AuthorizatorIntegrationTest extends EDOMPTestCase
 
         $this->user->logout(true);
 
-        $this->user->login('jkohneke0@nba.com', '12345678');
+        $this->user->login('jkohneke0@nba.com', '12345678', true);
 
         // Assert SuperGroup access for Teacher
         $this->assertFalse($this->authorizator->isEntityAllowed($this->user, $superGroups[1]));
@@ -117,7 +117,7 @@ final class AuthorizatorIntegrationTest extends EDOMPTestCase
 
         $this->user->logout(true);
 
-        $this->user->login('srosser5@tuttocitta.it', '12345678');
+        $this->user->login('srosser5@tuttocitta.it', '12345678', false);
 
         // Assert SuperGroup access for Student
         $this->assertFalse($this->authorizator->isEntityAllowed($this->user, $superGroups[1]));

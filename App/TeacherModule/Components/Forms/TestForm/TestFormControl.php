@@ -9,6 +9,7 @@
 namespace App\TeacherModule\Components\Forms\TestForm;
 
 use App\CoreModule\Arguments\ValidatorArgument;
+use App\CoreModule\Components\Paginator\PaginatorFactory;
 use App\CoreModule\Model\Persistent\Entity\Logo;
 use App\CoreModule\Model\Persistent\Repository\ProblemConditionRepository;
 use App\TeacherModule\Components\FilterView\IFilterViewFactory;
@@ -118,6 +119,11 @@ class TestFormControl extends EntityFormControl
     protected $problemStackFactory;
 
     /**
+     * @var PaginatorFactory
+     */
+    private $paginatorFactory;
+
+    /**
      * @var ILogoViewFactory
      */
     protected $logoViewFactory;
@@ -189,6 +195,7 @@ class TestFormControl extends EntityFormControl
         ProblemConditionRepository $problemConditionRepository,
         ILogoDragAndDropFactory $logoDragAndDropFactory,
         IProblemStackFactory $problemStackFactory,
+        PaginatorFactory $paginatorFactory,
         ILogoViewFactory $logoViewFactory,
         IFilterViewFactory $filterViewFactory,
         TestFunctionality $testFunctionality,
@@ -211,6 +218,7 @@ class TestFormControl extends EntityFormControl
         $this->problemConditionRepository = $problemConditionRepository;
         $this->logoDragAndDropFactory = $logoDragAndDropFactory;
         $this->problemStackFactory = $problemStackFactory;
+        $this->paginatorFactory = $paginatorFactory;
         $this->logoViewFactory = $logoViewFactory;
         $this->filterViewFactory = $filterViewFactory;
         $this->filterSession = $filterSession;
@@ -310,14 +318,10 @@ class TestFormControl extends EntityFormControl
      */
     public function addPaginator(int $id): void
     {
-        $paginatorControl = new VisualPaginator\Control();
-        $paginatorControl->enableAjax();
-        $paginatorControl->setTemplateFile(TEACHER_MODULE_TEMPLATES_DIR . '/VisualPaginator/problemStack.latte');
-
+        $paginatorControl = $this->paginatorFactory->create($this->paginatorFactory::TEACHER, 'problemStack.latte');
         $paginatorControl->onShowPage[] = function ($filters) use ($id) {
             $this->handleFilterChange($id, $this->filterSession->getFilters());
         };
-
         $this->addComponent($paginatorControl, 'paginator' . $id);
     }
 
@@ -658,6 +662,7 @@ class TestFormControl extends EntityFormControl
             $problemFilters['selected'] = Json::decode($problemFilters['selected'], Json::FORCE_ARRAY);
         }
 
+        bdump($problemFilters);
         $filterRes = $this->problemRepository->findFiltered($problemFilters['filters']);
 
         $resFilters[$key] = $problemFilters;
