@@ -377,7 +377,6 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
         $entityNew = $this->createNonPersistentEntity($values);
         $entityNew->setParametersData(new ParametersData($this->parameterParser::extractParametersInfo($entityNew->getBody())));
-        bdump($entityNew);
 
         // VALIDATE BASE ITEMS
         if (!$this->validateBaseItems($entityNew)) {
@@ -390,8 +389,6 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
             $this->redrawErrors();
             return;
         }
-
-        bdump($this->problemTemplateSession->getProblemTemplate());
 
         // If validation was already triggered (after redirect)
         if ($entity = $this->problemTemplateSession->getProblemTemplate()) {

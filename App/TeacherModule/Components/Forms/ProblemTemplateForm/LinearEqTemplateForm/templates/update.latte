@@ -28,6 +28,9 @@
                 <p n:foreach="$form['submit']->errors as $error"
                         class="alert alert-danger border-0 alert-dismissible fade show" role="alert">
                     {$error}
+                    {if $error === 'Ověřte prosím zadanou podmínku.'}
+                        <a href="#type-wrapper">Ověření je dostupné zde</a>
+                    {/if}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

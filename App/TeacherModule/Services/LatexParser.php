@@ -453,7 +453,16 @@ final class LatexParser implements IParser
         $latex = Strings::trim($latex);
         foreach (self::PREFIXES[self::GLOBAL] as $key1 => $prefixSet) {
             foreach ($prefixSet as $key2 => $prefix) {
-                if (Strings::startsWith($latex, $prefix['plain']) && Strings::endsWith($latex, self::SUFFIXES[self::GLOBAL][$key1][$key2]['plain'])) {
+                /*
+                 * Check if the string is wrapped by valid LaTeX mathematical mode wrapper
+                 * Check the double occurrence of wrapper
+                 */
+                if (
+                    Strings::startsWith($latex, $prefix['plain']) &&
+                    !Strings::startsWith($latex, $prefix['plain'] . $prefix['plain']) &&
+                    Strings::endsWith($latex, self::SUFFIXES[self::GLOBAL][$key1][$key2]['plain']) &&
+                    !Strings::endsWith($latex, self::SUFFIXES[self::GLOBAL][$key1][$key2]['plain'] . self::SUFFIXES[self::GLOBAL][$key1][$key2]['plain'])
+                ) {
                     return true;
                 }
             }

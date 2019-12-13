@@ -276,7 +276,7 @@ class Validator
                 if (empty($problemTemplate->getBody())) {
                     return 0;
                 }
-                return $this->linearEquationPlugin->validateBody($problemTemplate);
+                return $this->quadraticEquationPlugin->validateBody($problemTemplate);
             },
 
             'body_' . $this->constHelper::ARITHMETIC_SEQ => function (ArithmeticSequenceTemplateNP $problemTemplate) {
