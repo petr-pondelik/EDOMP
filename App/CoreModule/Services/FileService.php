@@ -161,7 +161,7 @@ final class FileService
         try {
             FileSystem::read($userCustomTemplatePath);
         } catch (IOException $e) {
-            return $this->teacherTemplatesDir . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR . 'testPdf' . 'default.latte';
+            return $this->teacherTemplatesDir . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR . 'testPdf' . DIRECTORY_SEPARATOR . 'default.latte';
         }
         return $userCustomTemplatePath;
     }

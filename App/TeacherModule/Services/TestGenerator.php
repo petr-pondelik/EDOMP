@@ -32,7 +32,7 @@ use Nette\Utils\Strings;
  * Class TestGenerator
  * @package App\TeacherModule\Services
  */
-class TestGenerator
+final class TestGenerator
 {
     /**
      * @var ConstraintEntityManager
