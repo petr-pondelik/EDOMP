@@ -29,11 +29,6 @@
             </div>
 
             <div class="form-group">
-                {label textBefore}
-                {input textBefore}
-            </div>
-
-            <div class="form-group">
                 {label body}
                 {input body, 'date-edit' => false}
                 {snippet bodyErrorSnippet}
@@ -49,6 +44,12 @@
                     </div>
                 {/snippet}
             </div>
+
+            <div class="form-group">
+                {label textBefore}
+                {input textBefore}
+            </div>
+
             <div class="form-group">
                 {label variable}
                 {input variable}

@@ -619,6 +619,7 @@ class TestFormControl extends EntityFormControl
     public function handleRegenerateFormSuccess(Form $form, ArrayHash $values): void
     {
         bdump('HANDLE REGENERATE FORM SUCCESS');
+        $values->userId = $this->presenter->user->id;
         try {
             $this->testGenerator->regenerateTest($this->entity->getId(), $values);
         } catch (\Exception $e) {

@@ -357,7 +357,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
         }
 
-        $this->flashMessage('Podmínka je splnitelná.', 'success');
+        $this->flashMessage('Podmínka je splnitelná.', 'conditionSuccess');
         $this->redrawControl('flashesSnippet');
 
         // REDRAW ERRORS
@@ -666,8 +666,9 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     {
         parent::redrawErrors($submitted);
         $this->redrawControl('conditionsErrorSnippet');
-        $this->redrawControl('flashesSnippet');
         $this->redrawControl('submitErrorSnippet');
+        $this->redrawControl('flashesSnippet');
+        $this->redrawControl('conditionsFlashesSnippet');
     }
 
     /**

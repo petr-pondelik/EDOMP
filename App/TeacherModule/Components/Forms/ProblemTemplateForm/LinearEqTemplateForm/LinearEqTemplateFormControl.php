@@ -31,7 +31,7 @@ use Nette\Utils\ArrayHash;
  * Class LinearEqTemplateFormControl
  * @package App\TeacherModule\Components\Forms\ProblemTemplateForm\LinearEqTemplateForm
  */
-class LinearEqTemplateFormControl extends ProblemTemplateFormControl
+final class LinearEqTemplateFormControl extends ProblemTemplateFormControl
 {
     /**
      * @var array

@@ -30,7 +30,7 @@ use Nette\Utils\ArrayHash;
  * Class QuadraticEqTemplateFormControl
  * @package App\TeacherModule\Components\Forms\ProblemTemplateForm\QuadraticEqTemplateForm
  */
-class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
+final class QuadraticEqTemplateFormControl extends ProblemTemplateFormControl
 {
     /**
      * @var array

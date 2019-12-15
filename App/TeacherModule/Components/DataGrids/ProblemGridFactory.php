@@ -89,8 +89,6 @@ class ProblemGridFactory extends BaseGrid
 
         $grid->setDataSource($this->problemRepository->getSecuredQueryBuilder($container->user));
 
-        bdump($this->problemRepository->findAll());
-
         $grid->addColumnNumber('id', 'ID')
             ->setFitContent()
             ->setSortable()
@@ -111,7 +109,8 @@ class ProblemGridFactory extends BaseGrid
 
         $grid->addColumnText('result', 'Výsledek');
 
-        $grid->addColumnText('successRate', 'Prům. úspěšnost');
+        $grid->addColumnText('successRate', 'Prům. úspěšnost')
+            ->setSortable();
 
         $grid->addColumnStatus('studentVisible', 'Zobrazit ve cvičebnici', 'studentVisible')
             ->addAttributes(['class' => 'text-center'])
