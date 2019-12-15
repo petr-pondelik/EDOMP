@@ -104,7 +104,7 @@ class MailService
     public function sendInvitationEmail(User $user, string $password): void
     {
         $template = $this->createTemplate();
-        $template->setFile($this->coreTemplatesDir . 'mail' . DIRECTORY_SEPARATOR . 'invitation.latte');
+        $template->setFile($this->coreTemplatesDir . DIRECTORY_SEPARATOR . 'mail' . DIRECTORY_SEPARATOR . 'invitation.latte');
         $template->user = $user;
         $template->password = $password;
         $template->loginURL = $this->loginURL;
@@ -122,7 +122,7 @@ class MailService
     public function sendPasswordResetEmail(User $user, string $password): void
     {
         $template = $this->createTemplate();
-        $template->setFile($this->coreTemplatesDir . 'mail' . DIRECTORY_SEPARATOR . 'passwordReset.latte');
+        $template->setFile($this->coreTemplatesDir . DIRECTORY_SEPARATOR . 'mail' . DIRECTORY_SEPARATOR . 'passwordReset.latte');
         $template->user = $user;
         $template->password = $password;
         $template->loginURL = $this->loginURL;
