@@ -81,8 +81,7 @@ final class Bootstrap
     {
         $configurator = new Configurator();
 
-//        $configurator->setDebugMode(filter_input(INPUT_SERVER, 'HTTP_EDOMPALLOWDEBUG') === 'SJPPFguvBhl9zN84nviZ');
-        $configurator->setDebugMode(true);
+        $configurator->setDebugMode(filter_input(INPUT_SERVER, 'HTTP_EDOMPALLOWDEBUG') === 'SJPPFguvBhl9zN84nviZ');
         $configurator->enableTracy(__DIR__ . '/../../log');
 
         $configurator->setTimeZone('Europe/Prague');
@@ -93,7 +92,7 @@ final class Bootstrap
         // Load configurations based on environment
         $configurator->addConfig(__DIR__ . '/../Config/config.neon');
         $configurator->addConfig(__DIR__ . '/../Config/config.local.neon');
-//        $configurator->addConfig(__DIR__ . '/../Config/config.' . ENVIRONMENT . '.neon');
+        $configurator->addConfig(__DIR__ . '/../Config/config.' . $env . '.neon');
 
         if ($env === self::ENV_PRODUCTION && 'https' === getenv('HTTP_X_FORWARDED_PROTO')) {
             \Nette\Http\Url::$defaultPorts['https'] = (int) getenv('SERVER_PORT');
