@@ -121,11 +121,13 @@ class FilterFunctionality extends BaseFunctionality
     public function attachEntities(Filter $entity, iterable $data): Filter
     {
         bdump('FILTER: ATTACH ENTITIES');
+        bdump($data);
 
         $difficulties = $this->difficultyRepository->findAssoc([], 'id');
         $subThemes = $this->subThemeRepository->findAssoc([], 'id');
         $problemTypes = $this->problemTypeRepository->findAssoc([], 'id');
         $problemConditions = $this->problemConditionRepository->findAssocByTypeAndAccessor();
+        bdump($problemConditions);
 
         $selectedFilters = $data['selectedFilters'];
 
@@ -139,7 +141,7 @@ class FilterFunctionality extends BaseFunctionality
         foreach ($selectedFilters['conditionType'] as $typeId => $accessors) {
             if ($accessors) {
                 foreach ($accessors as $accessor) {
-                    if (!isset($problemConditions[$problemConditions[$typeId][$accessor]])) {
+                    if (!isset($problemConditions[$typeId][$accessor])) {
                         throw new EntityNotFoundException('ProblemConditionType not found.');
                     }
                     $entity->addProblemCondition($problemConditions[$typeId][$accessor]);
