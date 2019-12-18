@@ -1,7 +1,7 @@
 <nav id="sidebar" class="scrollbar scrollbar-primary">
     <div id="jquery-accordion-menu" class="jquery-accordion-menu pb-5">
         <header class="jquery-accordion-menu-header d-flex justify-content-between">
-            <a title="Přejít na úvodní stranu" href={plink :Teacher:Homepage:default}>
+            <a title="Přejít na úvodní stranu" {if $this->getParameter('presenter')->isModule('Teacher')} href={plink :Teacher:Homepage:default} {else} href={plink :Student:Homepage:default} {/if}>
                 EDOMP: {$this->getParameter('presenter')->user->identity->roleLabel}
             </a>
             <div class="pr-4" id="sidebar-close">

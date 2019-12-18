@@ -96,7 +96,6 @@ class ForgetPasswordFormControl extends FormControl
         $values = $form->getValues();
         $validationFields['email'] = new ValidatorArgument($values->email, 'email');
         $this->validator->validate($form, $validationFields);
-        bdump($form->getErrors());
         $this->redrawErrors();
     }
 
@@ -112,9 +111,12 @@ class ForgetPasswordFormControl extends FormControl
         try{
             $user = $this->userFunctionality->updatePasswordByEmail($email, $password);
         } catch (EntityNotFoundException $e) {
+            $this->flashMessage('Obnovení hesla se nezdařilo.', 'danger');
+            $this->redrawFlashes();
             return;
         }
         $this->mailService->sendPasswordResetEmail($user, $password);
         $this->flashMessage('Informace byly zaslány na Váš email.', 'success');
+        $this->redrawFlashes();
     }
 }

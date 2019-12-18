@@ -31,7 +31,8 @@ migrations:
     directory: %appDir%/../Migrations
 
 coreModule:
-    loginURL: %loginURL%
+    studentLoginUrl: %studentLoginUrl%
+    teacherLoginUrl: %teacherLoginUrl%
     dataPublicDir: %dataPublicDir%
     logosDir: %logosDir%
     logosTmpDir: %logosTmpDir%

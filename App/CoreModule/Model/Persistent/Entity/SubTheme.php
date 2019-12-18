@@ -25,7 +25,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class SubTheme extends BaseEntity
 {
     use LabelTrait;
-
     use CreatedByTrait;
 
     /**

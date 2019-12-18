@@ -17,6 +17,7 @@ final class ConstHelper
     // Roles
     public const ADMIN_ROLE = 1;
     public const TEACHER_ROLE = 2;
+    public const ADMIN_TEACHER_ROLES = [self::ADMIN_ROLE, self::TEACHER_ROLE];
 
     // Groups
     public const ADMIN_SUPER_GROUP = 1;

@@ -101,13 +101,14 @@ use Nette\DI\ContainerBuilder;
  * Class CoreModuleExtension
  * @package App\CoreModule\DI
  */
-class CoreModuleExtension extends ModuleExtension
+final class CoreModuleExtension extends ModuleExtension
 {
     /**
      * @var array
      */
     protected $defaults = [
-        'loginURL' => null,
+        'studentLoginUrl' => null,
+        'teacherLoginUrl' => null,
         'dataPublicDir' => null,
         'logosDir' => null,
         'logosTmpDir' => null,
@@ -122,7 +123,8 @@ class CoreModuleExtension extends ModuleExtension
      * @var array
      */
     protected $configRequiredItems = [
-        'loginURL',
+        'studentLoginUrl',
+        'teacherLoginUrl',
         'dataPublicDir',
         'logosDir',
         'logosTmpDir',
@@ -163,7 +165,8 @@ class CoreModuleExtension extends ModuleExtension
             ->setType(MailService::class)
             ->setArguments([
                 'coreTemplatesDir' => $this->config['coreTemplatesDir'],
-                'loginURL' => $this->config['loginURL']
+                'studentLoginUrl' => $this->config['studentLoginUrl'],
+                'teacherLoginUrl' => $this->config['teacherLoginUrl']
             ]);
 
         $builder->addDefinition($this->prefix('validator'))

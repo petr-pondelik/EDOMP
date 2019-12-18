@@ -359,7 +359,7 @@ class TestFormControl extends EntityFormControl
         $form->addHidden('problemsPerVariant')->setDefaultValue(1)
             ->setHtmlId('problemsPerVariant');
 
-        $form->addSelect('logo', 'Logo *', $this->logos)
+        $form->addSelect('logo', 'Zvolené logo *', $this->logos)
             ->setPrompt('Zvolte logo')
             ->setHtmlAttribute('class', 'form-control')
             ->setHtmlId('test-logo');
@@ -412,40 +412,39 @@ class TestFormControl extends EntityFormControl
 
         for ($i = 0; $i < $this->maxProblems; $i++) {
 
-            $form->addSelect('isTemplate' . $i, 'Šablona', [
-                1 => 'Ano',
-                0 => 'Ne'
+            $form->addSelect('isTemplate' . $i, 'Volit úlohy z', [
+                1 => 'Šablon úloh',
+                0 => 'Finálních úloh'
             ])
-                ->setPrompt('Zvolte')
+                ->setPrompt('Šablon i finálních úloh')
                 ->setHtmlAttribute('class', 'form-control filter selectpicker')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlAttribute('data-filter-type', 'isTemplate')
                 ->setHtmlId('is_template_' . $i);
 
-            $form->addMultiSelect('subTheme' . $i, 'Téma', $subThemes)
+            $form->addMultiSelect('subTheme' . $i, 'Témata úloh', $subThemes)
                 ->setHtmlAttribute('class', 'form-control filter selectpicker')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlAttribute('data-filter-type', 'subTheme')
-                ->setHtmlAttribute('title', 'Zvolte témata')
+                ->setHtmlAttribute('title', 'Volit ze všech')
                 ->setHtmlId('sub_theme_' . $i);
 
-            $form->addMultiSelect('problemType' . $i, 'Typ', $problemTypes)
+            $form->addMultiSelect('problemType' . $i, 'Typy úloh', $problemTypes)
                 ->setHtmlAttribute('class', 'form-control filter problem-type-filter selectpicker')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlAttribute('data-filter-type', 'problemType')
                 ->setHtmlAttribute('data-condition-types', Json::encode($conditionTypesByProblemTypes))
-                ->setHtmlAttribute('title', 'Zvolte typy')
+                ->setHtmlAttribute('title', 'Volit ze všech')
                 ->setHtmlId('problem_type_' . $i);
 
-            $form->addMultiSelect('difficulty' . $i, 'Obtížnost', $difficulties)
+            $form->addMultiSelect('difficulty' . $i, 'Obtížnosti', $difficulties)
                 ->setHtmlAttribute('class', 'form-control filter selectpicker')
                 ->setHtmlAttribute('data-problem-id', $i)
                 ->setHtmlAttribute('data-filter-type', 'difficulty')
-                ->setHtmlAttribute('title', 'Zvolte obtížnosti')
+                ->setHtmlAttribute('title', 'Volit ze všech')
                 ->setHtmlId('difficulty_' . $i);
 
             foreach ($this->problemConditionTypes as $conditionType) {
-
                 $form->addMultiSelect('conditionType' . $conditionType->getId() . $i, $conditionType->getLabel(),
                     $conditionType->getProblemConditions()->getValues()
                 )
@@ -453,8 +452,7 @@ class TestFormControl extends EntityFormControl
                     ->setHtmlAttribute('data-problem-id', $i)
                     ->setHtmlAttribute('data-filter-type', 'conditionType')
                     ->setHtmlAttribute('data-filter-type-secondary', $conditionType->getId())
-                    ->setHtmlAttribute('title', $conditionType->getPrompt());
-
+                    ->setHtmlAttribute('title', 'Volit ze všech');
             }
 
             $form->addTextArea('problem' . $i, 'Zvolené úlohy')

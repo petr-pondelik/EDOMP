@@ -120,17 +120,17 @@ class ProblemFinalFormControl extends EntityFormControl
 
         $form->addTextArea('textBefore', 'Úvod zadání')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Úvodní text zadání.')
+            ->setHtmlAttribute('placeholder', 'Úvodní text zadání')
             ->setHtmlId('before');
 
         $form->addTextArea('body', 'Úloha *')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Sem patří samotné zadání úlohy.')
+            ->setHtmlAttribute('placeholder', 'Sem patří samotné zadání úlohy')
             ->setHtmlId('structure');
 
         $form->addTextArea('textAfter', 'Dodatek k zadání')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Dodatečný text k zadání.')
+            ->setHtmlAttribute('placeholder', 'Dodatečný text k zadání')
             ->setHtmlId('after');
 
         $form->addSelect('difficulty', 'Obtížnost *', $difficulties)
@@ -139,7 +139,7 @@ class ProblemFinalFormControl extends EntityFormControl
             ->setHtmlId('difficulty');
 
         $form->addTextArea('result', 'Výsledek')
-            ->setHtmlAttribute('placeholder', 'Výsledek úlohy.')
+            ->setHtmlAttribute('placeholder', 'Výsledek úlohy')
             ->setHtmlAttribute('class', 'form-control');
 
         return $form;

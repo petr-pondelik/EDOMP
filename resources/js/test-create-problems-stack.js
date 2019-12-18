@@ -2,7 +2,7 @@
 
     $(document).ready(() => {
 
-        let $problemSelectedAreaPlaceholder = '<p class="mb-0 text-center text-muted">Kliknutím umístěte úlohy nacházející se v boxu níže.</p>';
+        let $problemSelectedAreaPlaceholder = '<p class="mb-0 text-center text-muted">Kliknutím na karty úloh nacházející se níže lze provést manuální výběr úloh.<br>Při provedení manuálního výběru budou generátorem úlohy voleny POUZE Z PROVEDENÉHO VÝBĚRU.</p>';
 
         // Move problem from problem stack into problem selected area
         $(document).on('click', '.problem-stack li', function () {

@@ -11,6 +11,7 @@ namespace App\CoreModule\Model\Persistent\Entity;
 use App\CoreModule\Model\Persistent\Traits\CreatedByTrait;
 use App\CoreModule\Model\Persistent\Traits\LabelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -24,7 +25,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Group extends BaseEntity
 {
     use LabelTrait;
-
     use CreatedByTrait;
 
     /**
@@ -44,12 +44,16 @@ class Group extends BaseEntity
 
     /**
      * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\User", mappedBy="groups", cascade={"all"})
+     *
+     * @var Collection
      */
     protected $users;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\CoreModule\Model\Persistent\Entity\Theme", inversedBy="groups", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="group_theme_rel")
+     *
+     * @var Collection
      */
     protected $themes;
 
@@ -62,38 +66,6 @@ class Group extends BaseEntity
         $this->teacherLevelSecured = true;
         $this->users = new ArrayCollection();
         $this->themes = new ArrayCollection();
-    }
-
-    /**
-     * @return SuperGroup
-     */
-    public function getSuperGroup(): SuperGroup
-    {
-        return $this->superGroup;
-    }
-
-    /**
-     * @param SuperGroup $superGroup
-     */
-    public function setSuperGroup(SuperGroup $superGroup): void
-    {
-        $this->superGroup = $superGroup;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getThemes()
-    {
-        return $this->themes;
-    }
-
-    /**
-     * @param mixed $themes
-     */
-    public function setThemes($themes): void
-    {
-        $this->themes = $themes;
     }
 
     /**
@@ -113,25 +85,65 @@ class Group extends BaseEntity
     public function getThemesId(): array
     {
         $res = [];
-        foreach ($this->getThemes()->getValues() as $key => $theme) {
+        /** @var Theme[] $themes */
+        $themes = $this->getThemes()->getValues();
+        foreach ($themes as $key => $theme) {
             $res[] = $theme->getId();
         }
         return $res;
     }
 
     /**
-     * @return mixed
+     * @return SuperGroup
      */
-    public function getUsers()
+    public function getSuperGroup(): SuperGroup
+    {
+        return $this->superGroup;
+    }
+
+    /**
+     * @param SuperGroup $superGroup
+     * @return Group
+     */
+    public function setSuperGroup(SuperGroup $superGroup): Group
+    {
+        $this->superGroup = $superGroup;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getUsers(): Collection
     {
         return $this->users;
     }
 
     /**
-     * @param mixed $users
+     * @param Collection $users
+     * @return Group
      */
-    public function setUsers($users): void
+    public function setUsers(Collection $users): Group
     {
         $this->users = $users;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getThemes(): Collection
+    {
+        return $this->themes;
+    }
+
+    /**
+     * @param Collection $themes
+     * @return Group
+     */
+    public function setThemes(Collection $themes): Group
+    {
+        $this->themes = $themes;
+        return $this;
     }
 }

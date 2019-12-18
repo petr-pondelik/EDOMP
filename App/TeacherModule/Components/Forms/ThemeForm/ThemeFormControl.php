@@ -48,7 +48,7 @@ class ThemeFormControl extends EntityFormControl
         $form = parent::createComponentForm();
         $form->addText('label', 'Název *')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Zadejte název tématu.');
+            ->setHtmlAttribute('placeholder', 'Zadejte název tématu');
         return $form;
     }
 

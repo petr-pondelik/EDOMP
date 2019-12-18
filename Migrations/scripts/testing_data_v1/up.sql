@@ -214,11 +214,11 @@ INSERT INTO edomp.problem_condition_type (id, prompt, created, label, is_validat
 
 
 # INSERT ProblemConditions
-INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (1, 1, 0, '2019-04-27 11:49:59', 'Bez omezení', 0);
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (1, 1, 0, '2019-04-27 11:49:59', 'Bez podmínky', 0);
 INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (2, 1, 1, '2019-04-27 11:49:59', 'Kladný', 0);
 INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (3, 1, 2, '2019-04-27 11:49:59', 'Nulový', 0);
 INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (4, 1, 3, '2019-04-27 11:49:59', 'Záporný', 0);
-INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (5, 2, 0, '2019-04-27 11:49:59', 'Bez omezení', 0);
+INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (5, 2, 0, '2019-04-27 11:49:59', 'Bez podmínky', 0);
 INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (6, 2, 1, '2019-04-27 11:49:59', 'Kladný', 0);
 INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (7, 2, 2, '2019-04-27 11:49:59', 'Nulový', 0);
 INSERT INTO edomp.problem_condition (id, problem_condition_type_id, accessor, created, label, teacher_level_secured) VALUES (8, 2, 3, '2019-04-27 11:49:59', 'Záporný', 0);

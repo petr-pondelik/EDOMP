@@ -8,6 +8,7 @@
 
 namespace App\CoreModule\Services;
 
+use App\CoreModule\Helpers\ConstHelper;
 use App\CoreModule\Model\Persistent\Entity\User;
 use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\ITemplateFactory;
@@ -21,7 +22,7 @@ use Tracy\ILogger;
  * Class MailService
  * @package App\CoreModule\Services
  */
-class MailService
+final class MailService
 {
     /**
      * @var IMailer
@@ -34,6 +35,11 @@ class MailService
     protected $templateFactory;
 
     /**
+     * @var ConstHelper
+     */
+    protected $constHelper;
+
+    /**
      * @var string
      */
     protected $coreTemplatesDir;
@@ -41,7 +47,12 @@ class MailService
     /**
      * @var string
      */
-    protected $loginURL;
+    private $studentLoginUrl;
+
+    /**
+     * @var string
+     */
+    private $teacherLoginUrl;
 
     /**
      * @var string
@@ -57,22 +68,27 @@ class MailService
      * MailService constructor.
      * @param IMailer $mailer
      * @param ITemplateFactory $templateFactory
+     * @param ConstHelper $constHelper
      * @param string $coreTemplatesDir
-     * @param string $loginURL
+     * @param string $studentLoginUrl
+     * @param string $teacherLoginUrl
      */
     public function __construct
     (
         IMailer $mailer,
         ITemplateFactory $templateFactory,
+        ConstHelper $constHelper,
         string $coreTemplatesDir,
-        string $loginURL
+        string $studentLoginUrl,
+        string $teacherLoginUrl
     )
     {
         $this->mailer = $mailer;
         $this->templateFactory = $templateFactory;
+        $this->constHelper = $constHelper;
         $this->coreTemplatesDir = $coreTemplatesDir;
-        $this->loginURL = $loginURL;
-        bdump($this->mailer);
+        $this->studentLoginUrl = $studentLoginUrl;
+        $this->teacherLoginUrl = $teacherLoginUrl;
     }
 
     /**
@@ -107,7 +123,7 @@ class MailService
         $template->setFile($this->coreTemplatesDir . DIRECTORY_SEPARATOR . 'mail' . DIRECTORY_SEPARATOR . 'invitation.latte');
         $template->user = $user;
         $template->password = $password;
-        $template->loginURL = $this->loginURL;
+        $template->loginURL = in_array($user->getRole()->getId(), $this->constHelper::ADMIN_TEACHER_ROLES, true) ? $this->teacherLoginUrl : $this->studentLoginUrl;
         $message = new Message();
         $message->setFrom($this->from)
             ->setSubject($this->subjectPrefix . 'Pozvání do aplikace')
@@ -125,7 +141,7 @@ class MailService
         $template->setFile($this->coreTemplatesDir . DIRECTORY_SEPARATOR . 'mail' . DIRECTORY_SEPARATOR . 'passwordReset.latte');
         $template->user = $user;
         $template->password = $password;
-        $template->loginURL = $this->loginURL;
+        $template->loginURL = in_array($user->getRole()->getId(), $this->constHelper::ADMIN_TEACHER_ROLES, true) ? $this->teacherLoginUrl : $this->studentLoginUrl;
         $message = new Message();
         $message->setFrom($this->from)
             ->setSubject($this->subjectPrefix . 'Reset hesla')

@@ -176,12 +176,14 @@
 
                     <div class="card-body show" id="problem-card-body-{$i}">
 
-
                         <div>
-                            <div class="d-flex justify-content-center">
-                                <a href="#" title="Zobrazit nápovědu" class="text-secondary" data-toggle="modal" data-target="#sectionHelpModal">
-                                    <i class="far fa-2x fa-question-circle"></i>
-                                </a>
+                            <div class="text-center mb-2">
+                                <h5>Filtrování množiny úloh pro umístění do zadání</h5>
+                                <div>
+                                    <a href="#" title="Zobrazit nápovědu" class="text-secondary" data-toggle="modal" data-target="#sectionHelpModal">
+                                        <i class="far fa-2x fa-question-circle"></i>
+                                    </a>
+                                </div>
                             </div>
 
                             <div class="form-group mb-3">
@@ -190,24 +192,24 @@
                             </div>
 
                             <div class="form-group mt-3 mb-3">
-                                {label 'problemType' . $i}
+                                {label 'problemType' . $i} <i class="far fa-question-circle ml-1" title="Z jakých typů úloh se má provést výběr." data-toggle="tooltip"></i>
                                 {input 'problemType' . $i}
                             </div>
 
                             <div class="form-group mt-3 mb-3">
-                                {label 'difficulty' . $i}
+                                {label 'difficulty' . $i} <i class="far fa-question-circle ml-1" title="Z jak obtížných úloh se má provést výběr." data-toggle="tooltip"></i>
                                 {input 'difficulty' . $i}
                             </div>
 
                             <div class="form-group mt-3 mb-3">
-                                {label "subTheme" . $i}
+                                {label "subTheme" . $i} <i class="far fa-question-circle ml-1" title="Z úloh jakých témat se má provést výběr." data-toggle="tooltip"></i>
                                 {input "subTheme" . $i}
                             </div>
 
                             {foreach $problemConditionTypes as $problemConditionType}
                                 <div class="form-group mt-3 mb-3 hidden condition-type-id"
                                      id="condition-type-id-{$problemConditionType->getId()}-{$i}">
-                                    {label 'conditionType' . $problemConditionType->getId() . $i}
+                                    {label 'conditionType' . $problemConditionType->getId() . $i} <i class="far fa-question-circle ml-1" title="Z jakých podmínek volit. Volba BEZ PODMÍNKY NEZNAMENÁ NEFILTROVAT, nýbž úlohy s nepřiřazenou podmínkou. Filtruje pouze úlohy daného typu." data-toggle="tooltip"></i>
                                     {input 'conditionType' . $problemConditionType->getId() . $i}
                                 </div>
                             {/foreach}

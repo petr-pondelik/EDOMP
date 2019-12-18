@@ -12,7 +12,9 @@
         let $logosList = $('#logos-list');
 
         // Placeholder paragraph for logo drop area
-        let $logoDropAreaPlaceholder = '<p class="text-center text-muted">Tažením umístěte jedno z dostupných log.</p>';
+        let dropAreaPlaceholderSelector = '#drop-area-placeholder';
+        let logoDropAreaPlaceholder = 'Tažením do této oblasti či kliknutím na jedno z dostupných log proveďte výběr loga.';
+        let logoDropAreaPlaceholderActive = 'Kliknutím na zvolené logo či jeho tažením do seznamu dostupných log zrušíte výběr.<br>Tažením do této oblasti či kliknutím na jedno z dostupných log provedete výměnu zvoleného loga.';
 
         // Make the logos list draggable
         $('li', $logosList).draggable({
@@ -26,7 +28,7 @@
         $logoDropArea.droppable({
             accept: '#logos-list > li',
             classes: {
-                'ui-droppable-active': 'bg-gray'
+                'ui-droppable-active': 'bg-grey-middle'
             },
             drop: (e, ui) => {
                 selectLogo(e, ui.draggable);
@@ -46,15 +48,15 @@
                 console.log(selectedCnt);
 
                 // If there already exists selected logo, switch old selected logo with newly selected logo
-                if(selectedCnt){
+                if (selectedCnt) {
                     let $switchedItem = $logoDropArea.find('li');
                     $logosList.append($switchedItem);
                     let $list = $logoDropArea.find('ul');
                     $item.appendTo($list).fadeIn();
-                }
-                else{
+                    $logoDropArea.find(dropAreaPlaceholderSelector).html(logoDropAreaPlaceholderActive);
+                } else {
                     // Append logo into droppable area
-                    $logoDropArea.find('p').remove();
+                    $logoDropArea.find(dropAreaPlaceholderSelector).html(logoDropAreaPlaceholderActive);
                     let $list = $('<ul class="list-unstyled">').appendTo($logoDropArea);
                     $item.appendTo($list).fadeIn();
                 }
@@ -69,7 +71,7 @@
         $logosList.droppable({
             accept: '#logo-drop-area li',
             classes: {
-                'ui-droppable-active': 'bg-gray'
+                'ui-droppable-active': 'bg-grey-middle'
             },
             drop: (e, ui) => {
                 unselectLogo(ui.draggable);
@@ -77,7 +79,7 @@
         });
 
         // Function that drops logo back into logos list
-        function unselectLogo($item){
+        function unselectLogo($item) {
 
             console.log('DROP LOGO INTO LOGOS LIST');
 
@@ -85,7 +87,7 @@
                 $logoDropArea.append();
                 $item.appendTo($logosList).fadeIn();
                 $logoDropArea.find('ul').remove();
-                $logoDropArea.append($logoDropAreaPlaceholder);
+                $logoDropArea.find(dropAreaPlaceholderSelector).html(logoDropAreaPlaceholder);
                 resetLogo();
             });
 
@@ -96,7 +98,6 @@
             console.log("SETTING TEST'S LOGO");
             let logoId = $logoDropArea.find('.test-logo').data('logoId');
             $testLogo.val(logoId);
-            console.log($testLogo.val());
         }
 
         // Function that resets test's logo input
@@ -115,15 +116,15 @@
                 let selectedCnt = $('ul', $logoDropArea).length;
 
                 // If there already exists selected logo, switch old selected logo with newly selected logo
-                if(selectedCnt){
+                if (selectedCnt) {
                     let $switchedItem = $logoDropArea.find('li');
                     $logosList.append($switchedItem);
                     let $list = $logoDropArea.find('ul');
                     $item.appendTo($list).fadeIn();
-                }
-                else{
+                    $logoDropArea.find(dropAreaPlaceholderSelector).html(logoDropAreaPlaceholderActive);
+                } else {
                     // Append logo into droppable area
-                    $logoDropArea.find('p').remove();
+                    $logoDropArea.find(dropAreaPlaceholderSelector).html(logoDropAreaPlaceholderActive);
                     let $list = $('<ul class="list-unstyled">').appendTo($logoDropArea);
                     $item.appendTo($list).fadeIn();
                 }
@@ -141,7 +142,7 @@
                 $logoDropArea.append();
                 $item.appendTo($logosList).fadeIn();
                 $logoDropArea.find('ul').remove();
-                $logoDropArea.append($logoDropAreaPlaceholder);
+                $logoDropArea.find(dropAreaPlaceholderSelector).html(logoDropAreaPlaceholder);
                 resetLogo();
             });
 

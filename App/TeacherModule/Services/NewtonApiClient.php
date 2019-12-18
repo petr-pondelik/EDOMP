@@ -17,27 +17,17 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
+use Nette\Utils\Json;
 use Nette\Utils\Strings;
 
 /**
  * Class GuzzleHttpClient
  * @package App\TeacherModule\Services
  */
-class NewtonApiClient
+final class NewtonApiClient
 {
-    /**
-     * @const string
-     */
     protected const SIMPLIFY = 'simplify/';
-
-    /**
-     * @const string
-     */
     protected const FACTOR = 'factor/';
-
-    /**
-     * @const string
-     */
     protected const ZEROES = 'zeroes/';
 
     /**
@@ -65,7 +55,6 @@ class NewtonApiClient
         $this->client = new Client();
         $this->newtonApiHost = $newtonApiHost;
         $this->newtonParser = $newtonParser;
-        bdump($this->newtonApiHost);
     }
 
     /**
@@ -75,28 +64,28 @@ class NewtonApiClient
      * @throws NewtonApiRequestException
      * @throws NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Nette\Utils\JsonException
      */
     public function simplify(string $expression)
     {
         bdump('SIMPLIFY');
         $expression = $this->newtonParser::newtonFormat($expression);
-        bdump($expression);
 
         try {
             $res = $this->client->request('GET', $this->newtonApiHost . self::SIMPLIFY . $expression);
-        } catch (RequestException $e){
-            if($e instanceof ConnectException){
+        } catch (RequestException $e) {
+            if ($e instanceof ConnectException) {
                 throw new NewtonApiUnreachableException(sprintf('NewtonAPI na adrese %s je nedostupné.', $this->newtonApiHost));
             }
-            if($e instanceof ClientException){
+            if ($e instanceof ClientException) {
                 throw new NewtonApiRequestException('Nevalidní požadavek na NewtonAPI.');
             }
             throw new NewtonApiException($e->getMessage());
         }
 
-        $res = json_decode($res->getBody(), false)->result;
+        $res = Json::decode($res->getBody())->result;
 
-        if(Strings::contains($res, 'Stop')){
+        if (Strings::contains($res, 'Stop')) {
             throw new NewtonApiSyntaxException('Šablona není validní matematický výraz.');
         }
 
@@ -111,26 +100,27 @@ class NewtonApiClient
      * @throws NewtonApiSyntaxException
      * @throws NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Nette\Utils\JsonException
      */
     public function factor(string $expression)
     {
         $expression = $this->newtonParser::newtonFormat($expression);
 
-        try{
+        try {
             $res = $this->client->request('GET', $this->newtonApiHost . self::FACTOR . $expression);
-        } catch (RequestException $e){
-            if($e instanceof ConnectException){
+        } catch (RequestException $e) {
+            if ($e instanceof ConnectException) {
                 throw new NewtonApiUnreachableException(sprintf('NewtonAPI na adrese %s je nedostupné.', $this->newtonApiHost));
             }
-            if($e instanceof ClientException){
+            if ($e instanceof ClientException) {
                 throw new NewtonApiRequestException('Nevalidní požadavek na NewtonAPI.');
             }
             throw new NewtonApiException($e->getMessage());
         }
 
-        $res = json_decode($res->getBody(), false)->result;
+        $res = Json::decode($res->getBody())->result;
 
-        if(Strings::contains($res, 'Stop')){
+        if (Strings::contains($res, 'Stop')) {
             throw new NewtonApiSyntaxException('Šablona není validní matematický výraz.');
         }
 
@@ -141,11 +131,12 @@ class NewtonApiClient
      * @param string $expression
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Nette\Utils\JsonException
      */
     public function zeroes(string $expression)
     {
         $res = $this->client->request('GET', $this->newtonApiHost . self::ZEROES . $expression);
-        return json_decode($res->getBody(), false)->result;
+        return Json::decode($res->getBody(), Json::FORCE_ARRAY)->result;
     }
 
     /**
@@ -154,12 +145,11 @@ class NewtonApiClient
      */
     public function ping(): bool
     {
-        try{
+        try {
             $this->client->request('GET', $this->newtonApiHost);
-        } catch (RequestException $e){
+        } catch (RequestException $e) {
             return false;
         }
         return true;
     }
-
 }

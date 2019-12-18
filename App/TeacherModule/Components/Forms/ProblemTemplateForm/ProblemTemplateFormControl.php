@@ -208,17 +208,17 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
         $form->addTextArea('textBefore', 'Úvod zadání')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Úvodní text zadání.')
+            ->setHtmlAttribute('placeholder', 'Úvodní text zadání')
             ->setHtmlId('before');
 
         $form->addTextArea('body', 'Šablona *')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Sem patří samotné zadání úlohy.')
+            ->setHtmlAttribute('placeholder', 'Sem patří samotné zadání úlohy')
             ->setHtmlId('body');
 
         $form->addTextArea('textAfter', 'Dodatek zadání')
             ->setHtmlAttribute('class', 'form-control')
-            ->setHtmlAttribute('placeholder', 'Dodatečný text k zadání.')
+            ->setHtmlAttribute('placeholder', 'Dodatečný text k zadání')
             ->setHtmlId('after');
 
         $form->addSelect('difficulty', 'Obtížnost *', $difficulties)
@@ -452,7 +452,16 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
                 return;
             }
 
-            if ($this->conditionsToValidateCreate($values)) {
+            // It there are conditions to be validated, force user to validate them
+            if ($this->isUpdate()) {
+                if ($this->conditionsToValidateUpdate($values)) {
+                    bdump('CONDITION NEEDS TO BE VALIDATED: UPDATE');
+                    $form['submit']->addError('Ověřte prosím zadanou podmínku.');
+                    $this->redrawErrors();
+                    return;
+                }
+            } else if ($this->conditionsToValidateCreate($values)) {
+                bdump('CONDITION NEEDS TO BE VALIDATED: CREATE');
                 $form['submit']->addError('Ověřte prosím zadanou podmínku.');
                 $this->redrawErrors();
                 return;
@@ -593,6 +602,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
     public function conditionsToValidateCreate(ArrayHash $values): bool
     {
         bdump('CONDITIONS TO VALIDATE CREATE');
+        bdump($values);
         // If the validation was already triggered
         if ($this->problemTemplateSession->getProblemTemplate()) {
             return !$this->problemTemplateSession->getProblemTemplate()->getState()->conditionsValidated($values);
