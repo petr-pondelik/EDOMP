@@ -24,7 +24,7 @@ use Nette\Utils\ArrayHash;
  * Class ForgetPasswordFormControl
  * @package App\CoreModule\Components\Forms\ForgetPasswordForm
  */
-class ForgetPasswordFormControl extends FormControl
+final class ForgetPasswordFormControl extends FormControl
 {
     /**
      * @var MailService

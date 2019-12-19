@@ -136,9 +136,9 @@ final class UserPresenter extends EntityPresenter
             $user = $this->functionality->updatePassword($id, $password);
             $this->mailService->sendPasswordResetEmail($user, $password);
         } catch (\Exception $e) {
-            $this->informUser(new UserInformArgs('resendPassword', true, 'error', $e, true));
+            $this->informUser(new UserInformArgs('resendPassword', true, 'error', $e, 'flashesModal'));
         }
-        $this->informUser(new UserInformArgs('resendPassword', true, 'success', null, true));
+        $this->informUser(new UserInformArgs('resendPassword', true, 'success', null, 'flashesModal'));
     }
 
     /**

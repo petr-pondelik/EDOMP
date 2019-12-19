@@ -24,6 +24,7 @@ import 'nette.ajax.js';
 // import './../vendor/vojtech-dobes/nette-ajax-history/client-side/history.ajax';
 import './js/nette.ajax.init';
 import './js/spinner.ajax';
+import './js/nette-flashes-modal';
 
 // Import custom modules
 import './js/sidemenu';

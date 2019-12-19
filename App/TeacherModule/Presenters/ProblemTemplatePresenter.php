@@ -113,7 +113,6 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
             }
             $formControl->setDefaults();
         }
-        bdump($this->problemTemplateSession->getProblemTemplate());
     }
 
     /**
@@ -162,18 +161,18 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
      */
     public function handleInlineUpdate(int $id, ArrayHash $row): void
     {
-        try{
+        try {
             $errors = $this->validateInlineUpdate($row);
             if ($errors) {
-                $this->informUser(new UserInformArgs('update', true, 'error', null, true, null, $errors[0]));
+                $this->informUser(new UserInformArgs('update', true, 'error', null, 'flashesModal', $errors[0]));
                 return;
             }
             $this->functionality->update($id, $row, true, true);
-        } catch (\Exception $e){
-            $this->informUser(new UserInformArgs('update', true,'error', $e, true));
+        } catch (\Exception $e) {
+            $this->informUser(new UserInformArgs('update', true, 'error', $e, 'flashesModal'));
             return;
         }
-        $this->informUser(new UserInformArgs('update', true, 'success', null, true));
+        $this->informUser(new UserInformArgs('update', true, 'success', null, 'flashesModal'));
     }
 
     /**
@@ -186,10 +185,10 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
         try {
             $this->functionality->update($templateId, ArrayHash::from(['subTheme' => $subThemeId]), true, true);
         } catch (\Exception $e) {
-            $this->informUser(new UserInformArgs('subTheme', true, 'error', $e, true));
+            $this->informUser(new UserInformArgs('subTheme', true, 'error', $e, 'flashesModal'));
         }
         $this['entityGrid']->reload();
-        $this->informUser(new UserInformArgs('subTheme', true, 'success', null, true));
+        $this->informUser(new UserInformArgs('subTheme', true, 'success', null, 'flashesModal'));
     }
 
     /**
@@ -202,11 +201,11 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
         try {
             $this->functionality->update($templateId, ArrayHash::from(['difficulty' => $difficultyId]), true, true);
         } catch (\Exception $e) {
-            $this->informUser(new UserInformArgs('difficulty', true, 'error', $e, true));
+            $this->informUser(new UserInformArgs('difficulty', true, 'error', $e, 'flashesModal'));
             return;
         }
         $this['entityGrid']->reload();
-        $this->informUser(new UserInformArgs('difficulty', true, 'success', null, true));
+        $this->informUser(new UserInformArgs('difficulty', true, 'success', null, 'flashesModal'));
     }
 
     /**
@@ -219,11 +218,11 @@ abstract class ProblemTemplatePresenter extends EntityPresenter
         try {
             $this->functionality->update($problemId, ArrayHash::from(['studentVisible' => $visible]), true, true);
         } catch (\Exception $e) {
-            $this->informUser(new UserInformArgs('studentVisible', true, 'error', $e));
+            $this->informUser(new UserInformArgs('studentVisible', true, 'error', $e, 'flashesModal'));
             return;
         }
         $this['entityGrid']->reload();
-        $this->informUser(new UserInformArgs('studentVisible', true));
+        $this->informUser(new UserInformArgs('studentVisible', true, 'success', null, 'flashesModal'));
     }
 
     /**

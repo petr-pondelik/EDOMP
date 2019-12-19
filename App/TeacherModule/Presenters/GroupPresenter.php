@@ -117,9 +117,9 @@ final class GroupPresenter extends EntityPresenter
             ]));
         }
         catch (\Exception $e){
-            $this->informUser(new UserInformArgs('superGroup', true, 'error', $e, true));
+            $this->informUser(new UserInformArgs('superGroup', true, 'error', $e, 'flashesModal'));
         }
-        $this->informUser(new UserInformArgs('superGroup', true, 'success', null, true));
+        $this->informUser(new UserInformArgs('superGroup', true, 'success', null, 'flashesModal'));
         $this['entityGrid']->reload();
     }
 

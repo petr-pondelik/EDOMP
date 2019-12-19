@@ -83,19 +83,23 @@ abstract class FormControl extends EDOMPControl
     {
         $form = $this['form'];
         $values = $form->getValues();
-        if($submitted){
-            if($form->isSubmitted()){
-                foreach ($values as $key => $value) { $this->redrawControl($key . 'ErrorSnippet'); }
+        if ($submitted) {
+            if ($form->isSubmitted()) {
+                foreach ($values as $key => $value) {
+                    $this->redrawControl($key . 'ErrorSnippet');
+                }
             }
-        }
-        else{
-            foreach ($values as $key => $value) { $this->redrawControl($key . 'ErrorSnippet'); }
+        } else {
+            foreach ($values as $key => $value) {
+                $this->redrawControl($key . 'ErrorSnippet');
+            }
         }
     }
 
     public function redrawFlashes(): void
     {
         $this->redrawControl('flashesSnippet');
+        $this->presenter->redrawControl('flashModal');
     }
 
     /**
@@ -103,7 +107,7 @@ abstract class FormControl extends EDOMPControl
      */
     public function isSubmitted(): bool
     {
-        return (bool) $this['form']->isSubmitted();
+        return (bool)$this['form']->isSubmitted();
     }
 
     /**

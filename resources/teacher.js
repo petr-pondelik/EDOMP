@@ -22,6 +22,7 @@ import 'nette-forms';
 // Import Nette Ajax modules
 import 'nette.ajax.js';
 import './js/nette.ajax.init';
+import './js/nette-flashes-modal';
 import './js/spinner.ajax';
 
 // Import Ublaboo Datagrid modules

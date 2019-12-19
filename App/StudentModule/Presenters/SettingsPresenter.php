@@ -20,7 +20,7 @@ use App\CoreModule\Services\Authorizator;
  * Class SettingsPresenter
  * @package App\StudentModule\Presenters
  */
-class SettingsPresenter extends StudentPresenter
+final class SettingsPresenter extends StudentPresenter
 {
     /**
      * @var IPasswordFormFactory
@@ -55,10 +55,10 @@ class SettingsPresenter extends StudentPresenter
     {
         $control = $this->passwordFormFactory->create();
         $control->onSuccess[] = function () {
-            $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null,false,'passwordForm'));
+            $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null,'flashesModal'));
         };
         $control->onError[] = function (\Exception $e) {
-            $this->informUser(new UserInformArgs($this->getAction(), true, 'danger', $e, false, 'passwordForm'));
+            $this->informUser(new UserInformArgs($this->getAction(), true, 'danger', $e, 'flashesModal'));
         };
         return $control;
     }

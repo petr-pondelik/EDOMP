@@ -111,16 +111,15 @@ final class SubThemePresenter extends EntityPresenter
     public function handleThemeUpdate(int $subThemeId, $themeId): void
     {
         bdump('HANDLE THEME UPDATE');
-        bdump($themeId);
         try {
             $this->functionality->update($subThemeId,
                 ArrayHash::from(['theme' => $themeId])
             );
         } catch (\Exception $e) {
-            $this->informUser(new UserInformArgs('theme', true, 'error', $e));
+            $this->informUser(new UserInformArgs('theme', true, 'error', $e, 'flashesModal'));
         }
         $this['entityGrid']->reload();
-        $this->informUser(new UserInformArgs('theme', true));
+        $this->informUser(new UserInformArgs('theme', true, 'success', null, 'flashesModal'));
     }
 
     /**

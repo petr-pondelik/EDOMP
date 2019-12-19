@@ -20,7 +20,7 @@ use Nette\Utils\ArrayHash;
  * Class PasswordFormControl
  * @package App\CoreModule\Components\Forms\PasswordForm
  */
-class PasswordFormControl extends FormControl
+final class PasswordFormControl extends FormControl
 {
     /**
      * @var UserFunctionality
@@ -45,9 +45,11 @@ class PasswordFormControl extends FormControl
     {
         $form = parent::createComponentForm();
         $form->addPassword('password', 'Nové heslo *')
-            ->setHtmlAttribute('class', 'form-control');
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Hesla se musí shodovat a mít minimálně 8 znaků.');
         $form->addPassword('passwordConfirm', 'Potvrzení hesla *')
-            ->setHtmlAttribute('class', 'form-control');
+            ->setHtmlAttribute('class', 'form-control')
+            ->setHtmlAttribute('placeholder', 'Hesla se musí shodovat a mít minimálně 8 znaků.');
         $form->onSuccess[] = [$this, 'handleFormSuccess'];
         return $form;
     }

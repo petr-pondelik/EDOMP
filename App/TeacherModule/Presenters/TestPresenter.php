@@ -236,10 +236,10 @@ final class TestPresenter extends EntityPresenter
             $test = $this->functionality->close($id);
             $this->testGenerator->createTestData($test);
         } catch (\Exception $e) {
-            $this->informUser(new UserInformArgs('close', true, 'error', $e, true));
+            $this->informUser(new UserInformArgs('close', true, 'error', $e, 'flashesModal'));
             return;
         }
-        $this->informUser(new UserInformArgs('close', true, 'success', null, true));
+        $this->informUser(new UserInformArgs('close', true, 'success', null, 'flashesModal'));
         $this['entityGrid']->reload();
     }
 
@@ -303,17 +303,17 @@ final class TestPresenter extends EntityPresenter
         $control = $this->formFactory->create();
         $control->onSuccess[] = function () use ($control) {
             if ($control->isUpdate()) {
-                $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null, false, 'entityForm'));
+                $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null,'flashesModal'));
                 $this->reloadEntity();
                 $control->redrawControl();
             } else {
-                $this->informUser(new UserInformArgs($this->getAction(), false, 'success', null, false));
+                $this->informUser(new UserInformArgs($this->getAction(), false, 'success', null, 'flashesModal'));
                 $this->redirect('default');
             }
         };
         $control->onError[] = function ($e) {
             bdump($e);
-            $this->informUser(new UserInformArgs($this->getAction(), true, 'error', $e, false, 'entityForm'));
+            $this->informUser(new UserInformArgs($this->getAction(), true, 'error', $e, 'entityForm'));
         };
         return $control;
     }

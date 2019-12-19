@@ -12,7 +12,7 @@ namespace App\CoreModule\Arguments;
  * Class UserInformArgs
  * @package App\CoreModule\Arguments
  */
-class UserInformArgs
+final class UserInformArgs
 {
     /**
      * @var string
@@ -35,11 +35,6 @@ class UserInformArgs
     public $exception;
 
     /**
-     * @var bool
-     */
-    public $main;
-
-    /**
      * @var string
      */
     public $component;
@@ -55,21 +50,19 @@ class UserInformArgs
      * @param bool $ajax
      * @param string $type
      * @param \Exception|null $exception
-     * @param bool $main
      * @param string|null $component
      * @param string|null $message
      */
     public function __construct
     (
         string $operation = null, bool $ajax = false, string $type = 'success', \Exception $exception = null,
-        bool $main = false, string $component = null, string $message = null
+        string $component = null, string $message = null
     )
     {
         $this->operation = $operation;
         $this->ajax = $ajax;
         $this->type = $type;
         $this->exception = $exception;
-        $this->main = $main;
         $this->component = $component;
         $this->message = $message;
     }

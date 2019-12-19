@@ -51,4 +51,15 @@
 
     </div>
 
+    <div class="card-footer text-right">
+        <div class="d-inline">
+            <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
+            {if $presenter->isModule('Teacher')}
+                <a href="{plink :Teacher:Settings:default}" class="btn btn-secondary btn-sm">Zpět</a>
+            {else}
+                <a href="{plink :Student:Settings:default}" class="btn btn-secondary btn-sm">Zpět</a>
+            {/if}
+        </div>
+    </div>
+
 {/form}

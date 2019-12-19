@@ -149,11 +149,11 @@ abstract class EntityPresenter extends TeacherPresenter
         try {
             $this->functionality->delete($id);
         } catch (\Exception $e) {
-            $this->informUser(new UserInformArgs('delete', true, 'error', $e, true));
+            $this->informUser(new UserInformArgs('delete', true, 'error', $e, 'flashesModal'));
             return;
         }
         $this['entityGrid']->reload();
-        $this->informUser(new UserInformArgs('delete', true, 'success', null, true));
+        $this->informUser(new UserInformArgs('delete', true, 'success', null, 'flashesModal'));
     }
 
     /**
@@ -175,16 +175,15 @@ abstract class EntityPresenter extends TeacherPresenter
         try {
             $errors = $this->validateInlineUpdate($row);
             if ($errors) {
-                bdump($errors);
-                $this->informUser(new UserInformArgs('update', true, 'error', null, true, null, $errors[0]));
+                $this->informUser(new UserInformArgs('update', true, 'error', null, 'flashesModal', $errors[0]));
                 return;
             }
             $this->functionality->update($id, $row);
         } catch (\Exception $e) {
-            $this->informUser(new UserInformArgs('update', true, 'error', $e, true));
+            $this->informUser(new UserInformArgs('update', true, 'error', $e, 'flashesModal'));
             return;
         }
-        $this->informUser(new UserInformArgs('update', true, 'success', null, true));
+        $this->informUser(new UserInformArgs('update', true, 'success', null, 'flashesModal'));
     }
 
     /**
@@ -201,22 +200,21 @@ abstract class EntityPresenter extends TeacherPresenter
      */
     public function createComponentEntityForm(): EntityFormControl
     {
-        bdump($this->getParameters());
+        $component = $this->getAction() === 'default' ? 'entityForm' : 'flashesModal';
         $control = $this->formFactory->create();
-        $control->onSuccess[] = function () {
+        $control->onSuccess[] = function () use ($component) {
             $this['entityGrid']->reload();
-            $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null, false, 'entityForm'));
+            $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null, $component));
             $this->reloadEntity();
         };
-        $control->onError[] = function ($e) {
-            $this->informUser(new UserInformArgs($this->getAction(), true, 'error', $e, false, 'entityForm'));
+        $control->onError[] = function ($e) use ($component) {
+            $this->informUser(new UserInformArgs($this->getAction(), true, 'error', $e, $component));
         };
         return $control;
     }
 
     public function renderCreate(): void
     {
-
     }
 
     public function renderUpdate(): void
@@ -232,7 +230,6 @@ abstract class EntityPresenter extends TeacherPresenter
     public function safeFind(int $id, string $msg = 'Entita nenalezena.'): ?BaseEntity
     {
         $entity = $this->repository->find($id);
-        bdump($entity);
 
         if (!$entity) {
             $this->flashMessage($msg, 'danger');

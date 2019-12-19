@@ -9,6 +9,8 @@
 namespace App\CoreModule\Presenters;
 
 use App\CoreModule\Arguments\UserInformArgs;
+use App\CoreModule\Components\FlashesModal\FlashesModalControl;
+use App\CoreModule\Components\FlashesModal\IFlashesModalFactory;
 use App\CoreModule\Components\HeaderBar\HeaderBarControl;
 use App\CoreModule\Components\HeaderBar\IHeaderBarFactory;
 use App\CoreModule\Components\SideBar\SideBarControl;
@@ -36,6 +38,11 @@ abstract class BasePresenter extends Presenter
     protected $sideBarFactory;
 
     /**
+     * @var IFlashesModalFactory
+     */
+    protected $flashesModalFactory;
+
+    /**
      * @var FlashesTranslator
      */
     protected $flashesTranslator;
@@ -48,7 +55,9 @@ abstract class BasePresenter extends Presenter
      */
     public function __construct
     (
-        IHeaderBarFactory $headerBarFactory, ISideBarFactory $sideBarFactory, FlashesTranslator $flashesTranslator
+        IHeaderBarFactory $headerBarFactory,
+        ISideBarFactory $sideBarFactory,
+        FlashesTranslator $flashesTranslator
     )
     {
         parent::__construct();
@@ -89,6 +98,14 @@ abstract class BasePresenter extends Presenter
     }
 
     /**
+     * @param IFlashesModalFactory $flashesModalFactory
+     */
+    public function injectFlashesModalFactory(IFlashesModalFactory $flashesModalFactory): void
+    {
+        $this->flashesModalFactory = $flashesModalFactory;
+    }
+
+    /**
      * @return \App\CoreModule\Components\HeaderBar\HeaderBarControl
      */
     public function createComponentHeaderBar(): HeaderBarControl
@@ -102,6 +119,14 @@ abstract class BasePresenter extends Presenter
     public function createComponentSideBar(): SideBarControl
     {
         return $this->sideBarFactory->create();
+    }
+
+    /**
+     * @return FlashesModalControl
+     */
+    public function createComponentFlashesModal(): FlashesModalControl
+    {
+        return $this->flashesModalFactory->create();
     }
 
     /**

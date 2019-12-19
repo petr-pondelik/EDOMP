@@ -28,7 +28,7 @@ use Ublaboo\DataGrid\DataGrid;
  * Class ProblemFinalPresenter
  * @package App\TeacherModule\Presenters
  */
-class ProblemFinalPresenter extends EntityPresenter
+final class ProblemFinalPresenter extends EntityPresenter
 {
     /**
      * @var PluginContainer
@@ -121,11 +121,11 @@ class ProblemFinalPresenter extends EntityPresenter
         try {
             $this->functionality->update($problemId, ArrayHash::from(['subTheme' => $subThemeId]));
         } catch (\Exception $e) {
-            $this->informUser(new UserInformArgs('subTheme', true, 'error', $e));
+            $this->informUser(new UserInformArgs('subTheme', true, 'error', $e, 'flashesModal'));
             return;
         }
         $this['entityGrid']->reload();
-        $this->informUser(new UserInformArgs('subTheme', true));
+        $this->informUser(new UserInformArgs('subTheme', true, 'success', null, 'flashesModal'));
     }
 
     /**
@@ -138,11 +138,11 @@ class ProblemFinalPresenter extends EntityPresenter
         try {
             $this->functionality->update($problemId, ArrayHash::from(['difficulty' => $difficultyId]));
         } catch (\Exception $e) {
-            $this->informUser(new UserInformArgs('difficulty', true, 'error', $e));
+            $this->informUser(new UserInformArgs('difficulty', true, 'error', $e, 'flashesModal'));
             return;
         }
         $this['entityGrid']->reload();
-        $this->informUser(new UserInformArgs('difficulty', true));
+        $this->informUser(new UserInformArgs('difficulty', true, 'success', null, 'flashesModal'));
     }
 
     /**
@@ -155,11 +155,11 @@ class ProblemFinalPresenter extends EntityPresenter
         try {
             $this->functionality->update($problemId, ArrayHash::from(['studentVisible' => $visible]));
         } catch (\Exception $e) {
-            $this->informUser(new UserInformArgs('studentVisible', true, 'error', $e));
+            $this->informUser(new UserInformArgs('studentVisible', true, 'error', $e, 'flashesModal'));
             return;
         }
         $this['entityGrid']->reload();
-        $this->informUser(new UserInformArgs('studentVisible', true));
+        $this->informUser(new UserInformArgs('studentVisible', true, 'success', null, 'flashesModal'));
     }
 
     /**
@@ -173,10 +173,10 @@ class ProblemFinalPresenter extends EntityPresenter
         try {
             $this->pluginContainer->getPlugin($problem->getProblemType()->getKeyLabel())->evaluate($problem);
         } catch (\Exception $e) {
-            $this->informUser(new UserInformArgs('getRes', true, 'error', $e));
+            $this->informUser(new UserInformArgs('getRes', true, 'error', $e, 'flashesModal'));
             return;
         }
         $this['entityGrid']->reload();
-        $this->informUser(new UserInformArgs('getRes', true));
+        $this->informUser(new UserInformArgs('getRes', true, 'success', null, 'flashesModal'));
     }
 }

@@ -28,7 +28,7 @@ use Ublaboo\DataGrid\DataGrid;
  * Class SuperGroupPresenter
  * @package App\TeacherModule\Presenters
  */
-class SuperGroupPresenter extends EntityPresenter
+final class SuperGroupPresenter extends EntityPresenter
 {
     /**
      * SuperGroupPresenter constructor.

@@ -179,12 +179,15 @@ final class SettingsPresenter extends TeacherPresenter
         }
     }
 
+    /**
+     * @throws \App\CoreModule\Exceptions\FlashesTranslatorException
+     */
     public function handleResetTestTemplate(): void
     {
         bdump('RESET TEST TEMPLATE');
         $this->fileService->resetTestTemplate();
         $control = $this['testTemplateForm'];
-        $control->flashMessage('Výchozí šablona testu byla obnovena.', 'success');
+        $this->informUser(new UserInformArgs('groupPermissions',true, 'success', null, 'flashesModal', 'Výchozí šablona testu byla obnovena.'));
         $control->setDefaults();
         $control->redrawControl();
         $this->redrawControl('adminScriptsSnippet');
@@ -229,10 +232,10 @@ final class SettingsPresenter extends TeacherPresenter
     {
         $control = $this->permissionFormFactory->create();
         $control->onSuccess[] = function (){
-            $this->informUser(new UserInformArgs('groupPermissions',true, 'success', null, false, 'groupPermissionForm'));
+            $this->informUser(new UserInformArgs('groupPermissions',true, 'success', null, 'flashesModal'));
         };
         $control->onError[] = function ($e){
-            $this->informUser(new UserInformArgs('groupPermissions', true, 'error', $e, false, 'groupPermissionForm'));
+            $this->informUser(new UserInformArgs('groupPermissions', true, 'error', $e, 'flashesModal'));
         };
         return $control;
     }
@@ -244,10 +247,10 @@ final class SettingsPresenter extends TeacherPresenter
     {
         $control = $this->permissionFormFactory->create(true);
         $control->onSuccess[] = function (){
-            $this->informUser(new UserInformArgs('superGroupPermissions', true, 'success', null, false, 'superGroupPermissionForm'));
+            $this->informUser(new UserInformArgs('superGroupPermissions', true, 'success', null, 'flashesModal'));
         };
         $control->onError[] = function ($e){
-            $this->informUser(new UserInformArgs('superGroupPermissions', true, 'error', $e, false, 'superGroupPermissionForm'));
+            $this->informUser(new UserInformArgs('superGroupPermissions', true, 'error', $e, 'flashesModal'));
         };
         return $control;
     }
@@ -259,10 +262,10 @@ final class SettingsPresenter extends TeacherPresenter
     {
         $control = $this->passwordFormFactory->create();
         $control->onSuccess[] = function () {
-            $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null,false,'passwordForm'));
+            $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null,'flashesModal'));
         };
         $control->onError[] = function (\Exception $e) {
-            $this->informUser(new UserInformArgs($this->getAction(), true, 'danger', $e, false, 'passwordForm'));
+            $this->informUser(new UserInformArgs($this->getAction(), true, 'danger', $e, 'flashesModal'));
         };
         return $control;
     }
@@ -274,10 +277,10 @@ final class SettingsPresenter extends TeacherPresenter
     {
         $control = $this->testTemplateFormFactory->create();
         $control->onSuccess[] = function () {
-            $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null, false, 'testTemplateForm'));
+            $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null, 'flashesModal'));
         };
         $control->onError[] = function ($e) {
-            $this->informUser(new UserInformArgs($this->getAction(), true, 'danger', $e, false, 'testTemplateForm'));
+            $this->informUser(new UserInformArgs($this->getAction(), true, 'danger', $e, 'flashesModal'));
         };
         return $control;
     }

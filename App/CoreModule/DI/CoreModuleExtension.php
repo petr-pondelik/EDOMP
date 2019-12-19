@@ -9,6 +9,7 @@
 namespace App\CoreModule\DI;
 
 
+use App\CoreModule\Components\FlashesModal\IFlashesModalFactory;
 use App\CoreModule\Components\ForgetPassword\IForgetPasswordFactory;
 use App\CoreModule\Components\Forms\ForgetPasswordForm\IForgetPasswordFormFactory;
 use App\CoreModule\Components\Forms\PasswordForm\IPasswordFormFactory;
@@ -213,6 +214,9 @@ final class CoreModuleExtension extends ModuleExtension
 
         $builder->addDefinition($this->prefix('sideBarFactory'))
             ->setImplement(ISideBarFactory::class);
+
+        $builder->addDefinition($this->prefix('flashesModalFactory'))
+            ->setImplement(IFlashesModalFactory::class);
 
         $builder->addDefinition($this->prefix('passwordFormFactory'))
             ->setImplement(IPasswordFormFactory::class);

@@ -1,0 +1,15 @@
+{layout './../../../templates/layouts/modal/@modalBodyFooter.latte'}
+
+
+{block modalBody}
+    {snippet flashesSnippet}
+        {dump $flashes}
+        <div n:foreach="$flashes as $flash" class="flash alert alert-{$flash->type} alert-dismissible fade show border-0 m-0" role="alert">
+            {$flash->message}
+        </div>
+    {/snippet}
+{/block}
+
+{block modalFooter}
+    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Zavřít</button>
+{/block}

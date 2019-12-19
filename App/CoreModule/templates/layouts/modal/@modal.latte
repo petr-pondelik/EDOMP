@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="{$labelItem}" aria-hidden="true" id="{$id}">
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="{$labelItem}" aria-hidden="true" id="{$id}" data-show="{ifset $show}{$show}{else}false{/ifset}">
     <div class="modal-dialog modal-{$size}">
         <div class="modal-content">
             {block content}{/block}

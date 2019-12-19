@@ -19,16 +19,6 @@
 
         <div class="card-body col-12">
 
-            {snippet flashesSnippet}
-                <div n:foreach="$flashes as $flash"
-                        class="mb-4 flash alert alert-{$flash->type} alert-dismissible fade show border-0" role="alert">
-                    {$flash->message}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {/snippet}
-
             {if !$entity->isClosed()}
 
                 <div class="card card-shadow border-0 mb-5">
@@ -251,12 +241,13 @@
 
             {/foreach}
 
-            {if count($entity->getTestVariants()->getValues()) > 1}
-                <button n:name="submit" id="submit-btn" class="btn btn-primary col-12 mb-3">Uložit</button>
-                <a href="{plink :Teacher:Test:default}" class="btn btn-secondary col-12 mb-4"
-                   title="Zpět na přehled">Zpět</a>
-            {/if}
+        </div>
 
+        <div class="card-footer text-right">
+            <div>
+                <button n:name="submit" id="submit-btn" class="btn btn-primary btn-sm">Uložit</button>
+                <a href="{plink :Teacher:Test:default}" class="btn btn-secondary btn-sm" title="Zpět na přehled">Zpět</a>
+            </div>
         </div>
 
     {/form}
