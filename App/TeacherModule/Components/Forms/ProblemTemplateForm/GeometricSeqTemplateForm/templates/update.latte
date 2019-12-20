@@ -86,7 +86,7 @@
         </div>
 
         <div class="form-group">
-            {label body}
+            {label body} <span data-toggle="modal" data-target="#sectionHelpModal"><i class="far fa-question-circle ml-1 hover-pointer fa-icon-tooltip" data-toggle="tooltip" title="Zobrazit nápovědu"></i></span>
             {input body, 'data-edit' => true}
             {snippet bodyErrorSnippet}
                 {var $form = $control['form']}

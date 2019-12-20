@@ -43,12 +43,13 @@ class SignFormControl extends FormControl
      */
     public function createComponentForm(): Form
     {
+        $signInButtonCaption = $this->presenter->isModule('Teacher') ? 'Přihlásit se jako učitel' : 'Přihlásit se jako student';
         $form = parent::createComponentForm();
         $form->addText('login', 'E-mail / Uživatelské jméno *')
             ->setHtmlAttribute('class', 'form-control');
         $form->addPassword('password', 'Heslo *')
             ->setHtmlAttribute('class', 'form-control');
-        $form->addSubmit('signIn', 'Přihlásit se')
+        $form->addSubmit('signIn', $signInButtonCaption)
             ->setHtmlAttribute('class', 'btn btn-primary col-12 btn-lg');
         $form->onSuccess[] = [$this, 'handleFormSuccess'];
         return $form;
@@ -82,7 +83,6 @@ class SignFormControl extends FormControl
             if ($e instanceof AbortException) {
                 throw $e;
             }
-            bdump($e);
             $form['signIn']->addError($e->getMessage());
             $this->redrawControl('signInErrorSnippet');
             $this->onError($e);

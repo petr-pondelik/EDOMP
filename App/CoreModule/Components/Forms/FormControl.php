@@ -12,6 +12,8 @@ use App\CoreModule\Components\EDOMPControl;
 use App\CoreModule\Model\Persistent\Functionality\BaseFunctionality;
 use App\CoreModule\Services\Validator;
 use Nette\Application\UI\Form;
+use Nette\Forms\Controls\BaseControl;
+use Nette\Forms\IControl;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -140,6 +142,34 @@ abstract class FormControl extends EDOMPControl
     public function isCreate(): bool
     {
         return $this->getAction() === 'create';
+    }
+
+    /**
+     * @param Form $form
+     * @return BaseControl|null
+     */
+    public function getFirstErrorComponent(Form $form): ?BaseControl
+    {
+        $components = $form->getComponents();
+        foreach ($components as $component) {
+            if ($component instanceof BaseControl) {
+                /** @var BaseControl $component */
+                if ($component->getErrors()) {
+                    return $component;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param string $errorName
+     */
+    public function setFormErrorPayload(string $errorName): void
+    {
+        $this->presenter->setPayload('formError', true, [
+            'name' => $errorName
+        ]);
     }
 
     /**

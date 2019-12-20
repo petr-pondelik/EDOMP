@@ -36,7 +36,7 @@ use Nette\Utils\Validators;
  * Class Validator
  * @package App\CoreModule\Services
  */
-class Validator
+final class Validator
 {
     /**
      * @var NewtonApiClient
@@ -246,8 +246,22 @@ class Validator
                 if (empty($filledVal)) {
                     return 0;
                 }
-                if (Strings::match($filledVal, '~' . $regularExpressions::RE_SCHOOL_YEAR . '~')[0] !== $filledVal) {
+                $match = Strings::match($filledVal, '~' . $regularExpressions::RE_SCHOOL_YEAR . '~');
+                if ($match[0] !== $filledVal) {
                     return 1;
+                }
+                [$first, $second] = [$match[1], $match[3]];
+                $first = (int) Strings::substring($first, 2, 2);
+                if (strlen($second) > 2) {
+                    $second = (int) Strings::substring($second, 2, 2);
+                } else {
+                    $second = (int) $second;
+                }
+                if ($first >= $second) {
+                    return 2;
+                }
+                if (($second - $first) > 1) {
+                    return 3;
                 }
                 return -1;
             },
@@ -395,7 +409,9 @@ class Validator
 
             'schoolYear' => [
                 0 => 'Školní rok musí bý vyplněn.',
-                1 => 'Školní roku musí být ve formátu rrrr/rr(rr) nebo rrrr-rr(rr).'
+                1 => 'Školní roku musí být ve formátu rrrr/rr(rr) nebo rrrr-rr(rr).',
+                2 => 'Rok následující po přelomu musí být větší než rok předcházející.',
+                3 => 'Rok po přelomu musí přímo následovat roku předchozímu.'
             ],
 
             'testNumber' => [

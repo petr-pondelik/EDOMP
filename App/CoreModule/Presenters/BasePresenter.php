@@ -180,12 +180,13 @@ abstract class BasePresenter extends Presenter
     }
 
     /**
+     * @param string $key
      * @param bool $status
      * @param array|null $data
      */
-    public function setPayload(bool $status, array $data = null): void
+    public function setPayload(string $key = 'response', bool $status = true, array $data = null): void
     {
-        $this->presenter->payload->response = [
+        $this->presenter->payload->{$key} = [
             'status' => $status,
             'data' => $data
         ];

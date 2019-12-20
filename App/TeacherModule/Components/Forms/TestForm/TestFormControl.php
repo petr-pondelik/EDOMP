@@ -39,7 +39,6 @@ use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
-use IPub\VisualPaginator\Components as VisualPaginator;
 
 
 /**
@@ -547,6 +546,12 @@ class TestFormControl extends EntityFormControl
         $validateFields['testNumber'] = new ValidatorArgument($values->testNumber, 'intNotNegative');
         $validateFields['term'] = new ValidatorArgument($values->term, 'notEmpty');
         $this->validator->validate($form, $validateFields);
+
+        $firstErrorComponent = $this->getFirstErrorComponent($form);
+        if ($firstErrorComponent) {
+            $this->setFormErrorPayload($firstErrorComponent->getName());
+        }
+
         $this->redrawErrors();
     }
 
@@ -564,9 +569,16 @@ class TestFormControl extends EntityFormControl
                 $this->validator->validate($form, $validateFields);
             }
         }
+
         if (!$this->entity->isClosed()) {
             $this->handleFormValidate($form);
         }
+
+        $firstErrorComponent = $this->getFirstErrorComponent($form);
+        if ($firstErrorComponent) {
+            $this->setFormErrorPayload($firstErrorComponent->getName());
+        }
+
         $this->redrawControl('formSnippetArea');
     }
 

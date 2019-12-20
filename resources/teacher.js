@@ -22,8 +22,6 @@ import 'nette-forms';
 // Import Nette Ajax modules
 import 'nette.ajax.js';
 import './js/nette.ajax.init';
-import './js/nette-flashes-modal';
-import './js/spinner.ajax';
 
 // Import Ublaboo Datagrid modules
 import 'ublaboo-datagrid';
@@ -46,7 +44,13 @@ import './js/test-create-filters';
 import './js/test-create-logos-droppable';
 import './js/test-create-problems-stack';
 import './js/card-header-toggle';
-import './js/animateScroll';
+import './js/animate-scroll';
+import './js/modal-overlay';
+
+// Import custom Nette AJAX modules
+import './js/spinner.ajax';
+import './js/flashes-modal-nette-ajax-ext';
+import './js/form-error-nette-ajax-ext';
 
 /**
  * STYLES MODULES

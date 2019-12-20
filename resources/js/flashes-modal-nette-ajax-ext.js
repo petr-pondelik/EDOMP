@@ -1,4 +1,6 @@
-$.nette.ext('bs-modal', {
+// Nette AJAX extension that implements showing flash messages in Bootstrap modals
+
+$.nette.ext('flashes-modal', {
 
     init: function () {
         let $modal = $('#flashes-modal');

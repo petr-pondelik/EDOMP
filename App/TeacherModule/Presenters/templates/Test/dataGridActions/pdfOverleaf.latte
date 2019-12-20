@@ -1,5 +1,5 @@
 {if $item->isClosed()}
-    <a href="{plink Test:default do => pdfOverleaf, id => $item->getId()}" class="btn btn-primary btn-sm" title="Přesměrovat ke kompilaci" target="_blank">
+    <a href="{plink Test:default do => pdfOverleaf, id => $item->getId()}" class="btn btn-primary btn-sm" title="Přesměrovat ke kompilaci na službě Overleaf. Pro možnost kompilace zadání do PDF je potřeba registrace na této službě." target="_blank">
         <i class="fa fa-file-pdf"></i>
     </a>
 {/if}

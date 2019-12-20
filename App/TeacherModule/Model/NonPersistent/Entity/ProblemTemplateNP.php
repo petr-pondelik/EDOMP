@@ -13,7 +13,6 @@ use App\TeacherModule\Model\NonPersistent\TemplateData\ParametersData;
 use App\TeacherModule\Model\NonPersistent\TemplateData\ProblemTemplateState;
 use App\TeacherModule\Model\NonPersistent\TemplateData\ProblemTemplateStateItem;
 use App\TeacherModule\Model\NonPersistent\Traits\SetValuesTrait;
-use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 
 /**

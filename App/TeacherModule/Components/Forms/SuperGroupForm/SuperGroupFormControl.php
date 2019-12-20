@@ -22,7 +22,7 @@ use Nette\Utils\ArrayHash;
  * Class SuperGroupFormControl
  * @package App\TeacherModule\Components\Forms\SuperGroupForm
  */
-class SuperGroupFormControl extends EntityFormControl
+final class SuperGroupFormControl extends EntityFormControl
 {
     /**
      * SuperGroupFormControl constructor.

@@ -363,7 +363,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         // REDRAW ERRORS
         $this->redrawErrors(false);
 
-        $this->presenter->setPayload(true);
+        $this->presenter->setPayload('response', true);
     }
 
     /**
@@ -420,10 +420,18 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
             // It there are conditions to be validated, force user to validate them
             if ($this->isUpdate()) {
-                if ($this->conditionsToValidateUpdate($values)) {
+                if ($toValidateItem = $this->conditionsToValidateUpdate($values)) {
                     bdump('CONDITION NEEDS TO BE VALIDATED: UPDATE');
-                    $form['submit']->addError('Ověřte prosím zadanou podmínku.');
+                    if (!$toValidateItem['validated']) {
+                        $form['condition_' . $toValidateItem['toValidate'][0]]->addError('Ověřte prosím zadanou podmínku.');
+                    }
                     $this->redrawErrors();
+
+                    $firstErrorComponent = $this->getFirstErrorComponent($form);
+                    if ($firstErrorComponent) {
+                        $this->setFormErrorPayload($firstErrorComponent->getName());
+                    }
+
                     return;
                 }
             } else if ($this->conditionsToValidateCreate($values)) {
@@ -454,10 +462,18 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
             // It there are conditions to be validated, force user to validate them
             if ($this->isUpdate()) {
-                if ($this->conditionsToValidateUpdate($values)) {
+                if ($toValidateItem = $this->conditionsToValidateUpdate($values)) {
                     bdump('CONDITION NEEDS TO BE VALIDATED: UPDATE');
-                    $form['submit']->addError('Ověřte prosím zadanou podmínku.');
+                    if (!$toValidateItem['validated']) {
+                        $form['condition_' . $toValidateItem['toValidate'][0]]->addError('Ověřte prosím zadanou podmínku.');
+                    }
                     $this->redrawErrors();
+
+                    $firstErrorComponent = $this->getFirstErrorComponent($form);
+                    if ($firstErrorComponent) {
+                        $this->setFormErrorPayload($firstErrorComponent->getName());
+                    }
+
                     return;
                 }
             } else if ($this->conditionsToValidateCreate($values)) {
@@ -473,6 +489,11 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
         // REDRAW ERRORS
         $this->redrawErrors();
+
+        $firstErrorComponent = $this->getFirstErrorComponent($form);
+        if ($firstErrorComponent) {
+            $this->setFormErrorPayload($firstErrorComponent->getName());
+        }
     }
 
     /**
@@ -511,13 +532,13 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
             if ($this->pluginContainer->getPlugin($this->problemType->getKeyLabel())->validateType($problemTemplateNP)) {
                 $problemTemplateNP->getState()->update(new ProblemTemplateStateItem('type', true, true));
             } else {
-                $problemTemplateNP->getState()->update(new ProblemTemplateStateItem('type', false, true));
+                $problemTemplateNP->getState()->update(new ProblemTemplateStateItem('type', false, false));
                 $this->redrawErrors(false);
                 return false;
             }
         } catch (\Exception $e) {
             bdump($e);
-            $problemTemplateNP->getState()->update(new ProblemTemplateStateItem('type', false, true));
+            $problemTemplateNP->getState()->update(new ProblemTemplateStateItem('type', false, false));
             $this['form']['body']->addError($e->getMessage());
             $this->redrawErrors(false);
             return false;
@@ -620,21 +641,28 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
      * @param ArrayHash $values
      * @return bool
      */
-    public function conditionsToValidateUpdate(ArrayHash $values): bool
+    public function conditionsToValidateUpdate(ArrayHash $values): array
     {
         bdump('CONDITIONS TO VALIDATE UPDATE');
         $conditions = $this->entity->getConditions()->getValues();
         if ($this->problemTemplateSession->getProblemTemplate()) {
-            return !$this->problemTemplateSession->getProblemTemplate()->getState()->conditionsValidated($values);
+            $validatedRes = $this->problemTemplateSession->getProblemTemplate()->getState()->conditionsValidated($values);
+            return $validatedRes;
         } else {
             foreach ($conditions as $condition) {
                 $conditionTypeId = $condition->getProblemConditionType()->getId();
                 if ($values->{'condition_' . $conditionTypeId} !== 0 && $values->{'condition_' . $conditionTypeId} !== $condition->getAccessor()) {
-                    return true;
+                    return [
+                        'validated' => false,
+                        'toValidate' => [$conditionTypeId]
+                    ];
                 }
             }
         }
-        return false;
+        return [
+            'validated' => true,
+            'toValidate' => []
+        ];
     }
 
     /**

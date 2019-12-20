@@ -66,7 +66,7 @@ final class RegularExpressions
     public const RE_NUM_FRAC = '^[\d\/]+$';
 
     // Match school year format
-    public const RE_SCHOOL_YEAR = '[0-9]{4}(\/|\-)([0-9]{4}|[0-9]{2})';
+    public const RE_SCHOOL_YEAR = '([0-9]{4})(\/|\-)([0-9]{4}|[0-9]{2})';
 
     // Match brackets with passed prefix and suffix multiplied by zero
     public const RE_BRACKETS_ZERO_MULTIPLIED = '([\+\-]?)\s*0\s*%s[\d\\\a-zA-Z\"\s\<\>\/\+\-\*\(\)\^\{\}]*%s';

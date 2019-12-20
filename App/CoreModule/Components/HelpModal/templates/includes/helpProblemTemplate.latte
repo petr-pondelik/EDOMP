@@ -1,65 +1,84 @@
-<h3>Šablony</h3>
-<p>Šablony představují jednotku, kterou je možné v rámci tvorby testu využít pro generování úloh.</p>
-
-<h3 class="mt-4">Formát šablon</h3>
-<p>Šablony jsou zadávány ve formě jazyka LaTeX, jenž je rozšířený o možnost zadání generovatelných parametrů ve formě nepárového XML elementu.</p>
-<p>Jazyk LaTeX slouží pro strukturování a vizualizaci úloh, parametry tvoří z úlohy šablonu. Šablony musí být obaleny LaTeX značkami pro matematický mód, a to z důvodu správného zobrazení úloh ve studentské části sbírky a ve vygenerovaných testech.</p>
-<p class="mt-5"><strong>Formát parametru:</strong></p>
-<p class="text-center">&lt;par min=&quot;<strong>D</strong>&quot; max=&quot;<strong>D</strong>&quot;/></p>
-<dl class="d-flex">
-    <dt class="mr-3">D:</dt>
-    <dd>nezáporné číslo</dd>
-</dl>
-<p class="mt-5"><strong>Příklad šablony:</strong></p>
-<p class="text-center">x^2 + 2x + &lt;par min=&quot;0&quot; max=&quot;10&quot;&#47;&gt; = 0</p>
+<h3>Šablony úloh</h3>
+<p>Šablony úloh představují entitu, kterou je možné v rámci tvorby testu využít pro generování úloh.</p>
 
 <h3 class="mt-4">Postup tvorby šablony</h3>
 <ol>
     <li>vyplnění povinných položek šablony (označené hvězdičkou)</li>
+    <li>uvedení zadání úlohy v jazyce LaTeX</li>
     <li>uvedení parametrů v rámci zadání úlohy</li>
     <li>případná volba podmínek šablony (pro vytvoření šablony je pak nutné ověřit jejich splnitelnost)</li>
 </ol>
 
-<h3 class="mt-4 mb-3">Podpora jazyka LaTeX</h3>
+<h3 class="mt-4">Formát šablon úloh</h3>
+<p>Šablony jsou zadávány ve formě jazyka LaTeX, jenž je rozšířený o možnost zadání generovatelných parametrů ve formě
+    nepárového XML elementu.</p>
+<p>Jazyk LaTeX slouží pro strukturování a vizualizaci úloh, parametry tvoří z úloh šablony. Šablony musí být obaleny
+    LaTeX značkami pro matematický mód, a to z důvodu správného zobrazení úloh ve studentské části sbírky a ve
+    vygenerovaných testech.</p>
+
+<h4 class="mt-5">Formát parametru:</h4>
+<p class="text-center">&lt;par min=&quot;<strong>Z</strong>&quot; max=&quot;<strong>Z</strong>&quot;/></p>
+<dl class="d-flex">
+    <dt class="mr-3">Z:</dt>
+    <dd>celé číslo</dd>
+</dl>
+
+<h4 class="mt-5">Formáty typů šablon úloh:</h4>
 <table class="table table-striped text-center tex2jax_ignore">
     <tr>
-        <th scope="col">Značka</th>
-        <th scope="col">Zápisy</th>
+        <th>Typ šablony úloh</th>
+        <th>Formát</th>
     </tr>
     <tr>
-        <td>inline matematický mód</td>
-        <td>&#92;&#40; &#92;&#41;, &#36; &#36;, \begin&#123;math&#125; \end&#123;math&#125;</td>
+        <td>Lineární rovnice</td>
+        <td>&lt;MM&gt; &lt;výraz&gt; = &lt;výraz&gt; &lt;MM&gt;</td>
     </tr>
     <tr>
-        <td>display metematický mód</td>
-        <td>\[ \], $$ $$, \begin&#123;equation&#125; \end&#123;equation&#125;</td>
+        <td>Kvadratická rovnice</td>
+        <td>&lt;MM&gt; &lt;výraz&gt; = &lt;výraz&gt; &lt;MM&gt;</td>
     </tr>
     <tr>
-        <td>zlomek</td>
-        <td>\frac&#123;výraz&#125;&#123;výraz&#125;</td>
+        <td>Aritmetická posloupnost</td>
+        <td>&lt;MM&gt; &lt;název&gt;_&lt;index&gt; = &lt;výraz&gt; &lt;MM&gt;</td>
     </tr>
     <tr>
-        <td>horní index</td>
-        <td>^&#123;výraz&#125;</td>
-    </tr>
-    <tr>
-        <td>dolní index</td>
-        <td>_&#123;výraz&#125;</td>
-    </tr>
-    <tr>
-        <td>kulaté závorky</td>
-        <td>\big(, \Big(, \bigg(, \Bigg(\big), \Big), \bigg(, \Bigg)</td>
-    </tr>
-    <tr>
-        <td>hranaté závorky</td>
-        <td>\big[, \Big[, \bigg[, \Bigg[\big], \Big], \bigg], \Bigg]</td>
-    </tr>
-    <tr>
-        <td>složené závorky</td>
-        <td>\big&#123;, \Big&#123;, \bigg&#123;, \Bigg&#123; \big&#125;, \Big&#125;, \bigg&#125;, \Bigg&#125;</td>
-    </tr>
-    <tr>
-        <td>ostré závorky</td>
-        <td>\big \langle, \Big \langle \bigg \langle, \Bigg \langle \big \rangle, \Big \rangle \bigg \rangle, \Bigg \rangle</td>
+        <td>Geometrická posloupnost</td>
+        <td>&lt;MM&gt; &lt;název&gt;_&lt;index&gt; = &lt;výraz&gt; &lt;MM&gt;</td>
     </tr>
 </table>
+
+<p><strong>Vysvětlivky:</strong></p>
+<dl>
+    <dt>&lt;MM&gt;</dt>
+    <dd class="ml-4">LaTeX značka pro matematický mód (na začátku otevírací, na konci uzavírací)</dd>
+    <dt>&lt;výraz&gt;</dt>
+    <dd class="ml-4">Podporovaný matematický výraz v jazyce LaTeX (viz <a href="#latex-support">tabulku podpory LaTeX</a>)</dd>
+    <dt>&lt;index&gt;</dt>
+    <dd class="ml-4">index posloupnosti</dd>
+</dl>
+
+<h4 class="mt-5">Příklady šablon:</h4>
+<table class="table table-striped text-center tex2jax_ignore">
+    <tr>
+        <th>Typ šablony</th>
+        <th>Příklad zadání</th>
+    </tr>
+    <tr>
+        <td>Lineární rovnice</td>
+        <td>$$ &lt;par min=&quot;-5&quot; max=&quot;5&quot;&#47;&gt; x + &lt;par min=&quot;0&quot; max=&quot;10&quot;&#47;&gt; = 10 $$</td>
+    </tr>
+    <tr>
+        <td>Kvadratická rovnice</td>
+        <td>$$ x^2 + 2x + &lt;par min=&quot;0&quot; max=&quot;10&quot;&#47;&gt; = \frac&#123;10&#125;&#123;2&#125; $$</td>
+    </tr>
+    <tr>
+        <td>Aritmetická posloupnost</td>
+        <td>$ a_n = &lt;par min=&quot;-5&quot; max=&quot;5&quot;/&gt; - &lt;par min=&quot;-5&quot; max=&quot;5&quot;/&gt; n $</td>
+    </tr>
+    <tr>
+        <td>Geometrická posloupnost</td>
+        <td>\[ q_n = &lt;par min=&quot;-5&quot; max=&quot;5&quot;/&gt; * 3^&#123;1-n&#125; \]</td>
+    </tr>
+</table>
+
+{include './latexSupport.latte'}

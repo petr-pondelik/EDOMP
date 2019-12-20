@@ -15,7 +15,7 @@ use Nette\Utils\Strings;
  * Class HelpModalControl
  * @package App\CoreModule\Components\HelpModal
  */
-class HelpModalControl extends EDOMPControl
+final class HelpModalControl extends EDOMPControl
 {
     /**
      * @param string $presenterName

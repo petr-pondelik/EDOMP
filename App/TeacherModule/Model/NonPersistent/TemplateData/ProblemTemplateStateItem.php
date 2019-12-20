@@ -12,7 +12,7 @@ namespace App\TeacherModule\Model\NonPersistent\TemplateData;
  * Class ProblemTemplateStateItem
  * @package App\TeacherModule\Model\NonPersistent\Entity
  */
-class ProblemTemplateStateItem
+final class ProblemTemplateStateItem
 {
     /**
      * @var string

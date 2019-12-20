@@ -252,7 +252,7 @@ final class FileService
 
         // Delete logo from DB based on it's ID
         try {
-            $this->logoFunctionality->delete($id);
+            $this->logoFunctionality->delete($id, true, true);
         } catch (EntityNotFoundException $e) {
             return '';
         }

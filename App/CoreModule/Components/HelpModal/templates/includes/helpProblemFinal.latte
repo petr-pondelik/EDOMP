@@ -1,12 +1,38 @@
-<h3>Příklady</h3>
-<p>Příklady představují úlohy v jejich finální podobě. Může se jednat o statické úlohy zadané administrátorem, či úlohy vygenerované ze šablon během generování testu.</p>
+<h3>Finální úlohy</h3>
+<p>Finální úlohy představují úlohy v jejich finální podobě. Může se jednat o statické úlohy zadané učitelem, či úlohy vygenerované ze šablon během generování testu.</p>
 
-<h3>Formát příkladů</h3>
+<h3 class="mt-4">Postup tvorby finální úlohy</h3>
+<ol>
+    <li>vyplnění povinných položek finální úlohy (označené hvězdičkou)</li>
+    <li>uvedení zadání úlohy v jazyce LaTeX</li>
+</ol>
+
+<h3>Formát finálních úloh</h3>
 <p>Jazyk LaTeX slouží pro strukturování a vizualizaci úloh. Příklady musí být obaleny LaTeX značkami pro matematický mód, a to z důvodu správného zobrazení úloh ve studentské části sbírky a ve vygenerovaných testech.</p>
 
 
-<h3 class="mt-4">Postup tvorby příkladu</h3>
-<ol>
-    <li>vyplnění povinných položek příkladu (označené hvězdičkou)</li>
-    <li>případná volba podmínek příkladu (zde má pouze informativní účel a lze využít například při filtrování během tvorby testu)</li>
-</ol>
+<h4 class="mt-5">Příklady finálních úloh:</h4>
+<table class="table table-striped text-center tex2jax_ignore">
+    <tr>
+        <th>Cílený typ úlohy</th>
+        <th>Příklad zadání</th>
+    </tr>
+    <tr>
+        <td>Lineární rovnice</td>
+        <td>$$ 4 x + 2x = 10 $$</td>
+    </tr>
+    <tr>
+        <td>Kvadratická rovnice</td>
+        <td>$$ x^2 + 2x + 1 = \frac&#123;10&#125;&#123;2&#125; $$</td>
+    </tr>
+    <tr>
+        <td>Aritmetická posloupnost</td>
+        <td>$ a_n = 5 - 2 n $</td>
+    </tr>
+    <tr>
+        <td>Geometrická posloupnost</td>
+        <td>\[ q_n = 4 * 3^&#123;1-n&#125; \]</td>
+    </tr>
+</table>
+
+{include './latexSupport.latte'}

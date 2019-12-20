@@ -13,9 +13,9 @@ use Nette\Utils\Strings;
 
 /**
  * Class ProblemTemplateState
- * @package App\Services
+ * @package App\TeacherModule\Model\NonPersistent\TemplateData
  */
-class ProblemTemplateState
+final class ProblemTemplateState
 {
     /**
      * @var ProblemTemplateStateItem[]
@@ -37,7 +37,7 @@ class ProblemTemplateState
 
     public function invalidate(): void
     {
-        foreach ($this->problemTemplateStateItems as $problemTemplateStateItem){
+        foreach ($this->problemTemplateStateItems as $problemTemplateStateItem) {
             $problemTemplateStateItem->setValidated(false);
         }
     }
@@ -56,7 +56,7 @@ class ProblemTemplateState
      */
     public function updateArr(array $problemTemplateStatusItemArr): void
     {
-        foreach ($problemTemplateStatusItemArr as $problemTemplateStateItem){
+        foreach ($problemTemplateStatusItemArr as $problemTemplateStateItem) {
             $this->problemTemplateStateItems[$problemTemplateStateItem->getRule()] = $problemTemplateStateItem;
         }
     }
@@ -66,7 +66,7 @@ class ProblemTemplateState
      */
     public function isTypeValidated(): bool
     {
-        if(!isset($this->problemTemplateStateItems['type'])){
+        if (!isset($this->problemTemplateStateItems['type'])) {
             return false;
         }
         return $this->problemTemplateStateItems['type']->isValidated();
@@ -74,23 +74,29 @@ class ProblemTemplateState
 
     /**
      * @param ArrayHash $values
-     * @return bool
+     * @return array
      */
-    public function conditionsValidated(ArrayHash $values): bool
+    public function conditionsValidated(ArrayHash $values): array
     {
         bdump('CONDITIONS VALIDATED');
         $stateItems = $this->getProblemTemplateStateItems();
-        foreach ($values as $key => $value){
-            if(
+        foreach ($values as $key => $value) {
+            if (
                 $value !== 0 &&
                 Strings::match($key, '~condition_\d~') &&
-                ($value !== (int) $stateItems[$key]->getValue() ||
-                !$stateItems[$key]->isValidated())
-            ){
-                return false;
+                ($value !== (int)$stateItems[$key]->getValue() ||
+                    !$stateItems[$key]->isValidated())
+            ) {
+                return [
+                    'validated' => false,
+                    'toValidate' => Strings::match($key, '~condition_(\d)~')[1]
+                ];
             }
         }
-        return true;
+        return [
+            'validated' => true,
+            'toValidate' => null
+        ];
     }
 
     /**

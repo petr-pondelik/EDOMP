@@ -172,10 +172,10 @@ final class LogoPresenter extends EntityPresenter
                 $control->flashMessage('Opakujte prosím volbu souboru loga.', 'danger');
                 return;
             }
-            $this->informUser(new UserInformArgs($this->getAction(), true, 'error', $e, 'flashesModal'));
+            $this->informUser(new UserInformArgs($this->getAction(), true, 'error', $e, 'entityForm'));
         };
         $control->onSuccess[] = function () use ($control) {
-            $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null, 'flashesModal'));
+            $this->informUser(new UserInformArgs($this->getAction(), true, 'success', null, 'entityForm'));
             $this->reloadEntity();
             if(!$control->isUpdate()){
                 $this['entityGrid']->reload();
