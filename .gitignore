@@ -1,13 +1,13 @@
-app/config/config.local.neon
-vendor/
 .idea/
+
+app/config/config.local.neon
+
+vendor/
+node_modules/
+
 temp/*
 log/*
 
-package-lock.json
-
-data/
+data/*
 www/assets/
-www/data_public/
-
-node_modules/
+www/data_public/*
