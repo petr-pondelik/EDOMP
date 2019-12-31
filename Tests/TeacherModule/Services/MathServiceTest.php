@@ -29,53 +29,53 @@ final class MathServiceTest extends EDOMPIntegrationTestCase
         $this->mathService = $this->container->getByType(MathService::class);
     }
 
-    public function testNormalizeCoefficient(): void
-    {
-
-    }
-
-    public function testFirstOperator(): void
-    {
-
-    }
-
-    public function testNegateOperators(): void
-    {
-
-    }
-
-    public function testIsEquation(): void
-    {
-
-    }
-
-    public function testGetEquationSides(): void
-    {
-
-    }
-
-    public function testContainsVariable(): void
-    {
-
-    }
-
-    public function testMergeEqSides(): void
-    {
-
-    }
-
-    public function testEvaluateExpression(): void
-    {
-
-    }
-
-    public function testProcessVariableFractions(): void
-    {
-
-    }
-
-    public function testExtractVariableCoefficients(): void
-    {
-
-    }
+//    public function testNormalizeCoefficient(): void
+//    {
+//
+//    }
+//
+//    public function testFirstOperator(): void
+//    {
+//
+//    }
+//
+//    public function testNegateOperators(): void
+//    {
+//
+//    }
+//
+//    public function testIsEquation(): void
+//    {
+//
+//    }
+//
+//    public function testGetEquationSides(): void
+//    {
+//
+//    }
+//
+//    public function testContainsVariable(): void
+//    {
+//
+//    }
+//
+//    public function testMergeEqSides(): void
+//    {
+//
+//    }
+//
+//    public function testEvaluateExpression(): void
+//    {
+//
+//    }
+//
+//    public function testProcessVariableFractions(): void
+//    {
+//
+//    }
+//
+//    public function testExtractVariableCoefficients(): void
+//    {
+//
+//    }
 }
