@@ -14,7 +14,7 @@ use App\CoreModule\Components\EDOMPControl;
  * Class FlashesModalControl
  * @package App\CoreModule\Components\FlashesModal
  */
-class FlashesModalControl extends EDOMPControl
+final class FlashesModalControl extends EDOMPControl
 {
     public function render(): void
     {

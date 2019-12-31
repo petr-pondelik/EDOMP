@@ -78,9 +78,9 @@ final class ProblemFinalPresenter extends EntityPresenter
         $grid->addAction('delete', '', 'delete!')
             ->setTemplate(__DIR__ . '/templates/ProblemFinal/removeBtn.latte');
 
-        $grid->addAction('getResult', 'Získat výsledek')
-            ->setTitle('Získat výsledek')
-            ->setTemplate(__DIR__ . '/templates/ProblemFinal/getResultBtn.latte');
+//        $grid->addAction('getResult', 'Získat výsledek')
+//            ->setTitle('Získat výsledek')
+//            ->setTemplate(__DIR__ . '/templates/ProblemFinal/getResultBtn.latte');
 
         $grid->addAction('edit', '', 'update!')
             ->setIcon('edit')

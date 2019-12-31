@@ -94,7 +94,6 @@
                 {foreach $conditionTypes as $conditionType}
                     {var $id = $conditionType->getId()}
                     <div class="form-group cond-wrapper" id="cond-wrapper-{$id}">
-                        {*{snippet condition{$id}Snippet}*}
                         {label condition_$id}
                         {input condition_$id, data-key => $id}
                         <div class="text-right mt-3 mb-3"
@@ -102,10 +101,9 @@
                             <button type="button" class="btn hidden btn-primary condition-validation-btn"
                                     id="condition-validation-btn-{$id}"
                                     data-key="{$id}" data-edit="false">
-                                Ověřit podmínku <i class="fas fa-paper-plane ml-2"></i>
+                                Ověřit splnitelnost <i class="fas fa-paper-plane ml-2"></i>
                             </button>
                         </div>
-                        {*{/snippet}*}
                     </div>
                 {/foreach}
 
