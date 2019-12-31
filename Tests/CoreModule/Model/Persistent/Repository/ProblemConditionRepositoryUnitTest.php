@@ -39,13 +39,13 @@ final class ProblemConditionRepositoryUnitTest extends RepositoryUnitTestCase
 
         $expected = [
             1 => [
-                0 => 'Bez omezení',
+                0 => 'Bez podmínky',
                 1 => 'Kladný',
                 2 => 'Nulový',
                 3 => 'Záporný'
             ],
             2 => [
-                0 => 'Bez omezení',
+                0 => 'Bez podmínky',
                 1 => 'Kladný',
                 2 => 'Nulový',
                 3 => 'Záporný',

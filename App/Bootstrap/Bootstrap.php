@@ -92,7 +92,7 @@ final class Bootstrap
         // Load configurations based on environment
         $configurator->addConfig(__DIR__ . '/../Config/config.neon');
         $configurator->addConfig(__DIR__ . '/../Config/config.local.neon');
-        $configurator->addConfig(__DIR__ . '/../Config/config.' . $env . '.neon');
+//        $configurator->addConfig(__DIR__ . '/../Config/config.' . $env . '.neon');
 
         if ($env === self::ENV_PRODUCTION && 'https' === getenv('HTTP_X_FORWARDED_PROTO')) {
             \Nette\Http\Url::$defaultPorts['https'] = (int) getenv('SERVER_PORT');

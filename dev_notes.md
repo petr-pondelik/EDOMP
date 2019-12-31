@@ -1,11 +1,93 @@
-# NOTES
+# DEVELOPMENT NOTES
 
-## Pomůcky
+## Command Line
 
-### Regex pro nahrazení objektového přístupu za array přístup
+### Doctrine
 
-        ->(\w+)\)
-        ['$1'])
+Vytvoření DB schématu:
+
+    sudo php ./www/index.php orm:schema-tool:create
+
+Drop schématu:
+
+    sudo php ./www/index.php orm:schema-tool:drop --force
+
+Update schématu:
+
+    sudo php ./www/index.php orm:schema-tool:update --force
+
+Nasazení migrace:
+
+    sudo php ./www/index.php migrations:execute --up <migration_name>
+        
+Stažení migrace:
+
+    sudo php ./www/index.php migrations:execute --down <migration_name>
+
+### Resources compilation
+
+For local development with webpack dev-server (dev-server is watching changes in resources files):
+
+    npm run start:dev
+
+For local development without webpack dev-server:
+
+    npm run dev
+    
+For production (minified, optimized assets output):
+
+    npm run prod
+
+### PHPUnit
+
+Spuštění sady testů:
+
+    sudo ./vendor/bin/phpunit --bootstrap vendor/autoload.php Tests/<path_to_tests_set>
+
+If errors or failures occur, comment these lines in **Tests/EDOMPTestCase.php**:    
+(this setting enables using Nette sessions during tests, but disables most of the PHPUnit messages)
+
+    protected $preserveGlobalState = false;
+    protected $runTestInSeparateProcess = true;
+
+## Known problems
+
+-   Timeout - parameters complexity threshhold
+-   Database longtext max length - threshhold
+
+For production (not for local setup), uncomment in Bootstrap/Bootstrap.php (line:95):    
+    
+    $configurator->addConfig(__DIR__ . '/../Config/config.' . $env . '.neon');
+
+## Newton API
+
+-   Variable can't be "e" --> it's parsed as exp() function !!!: OK
+-   Variable for equations can be only x, y or z (Newton API then formats output into equation standard form)
+    -   Solve by select box with variables x, y and z for equations, for others templates types, leave text input: OK
+    
+-   equations in fractions format can't be handled by Newton API --> in needs to be manually multiplied by variable dividers!!!   
+    -   NEEDS TO BE SOLVED!!!
+    -   PROPOSAL
+        -   Simplify expression (in classic way)
+        -   Search for fractions with variable in divider
+        -   If those were found, get all the dividers containing variable
+        -   Find all the fractions dividers: \/\s*(\([x\-\+\s\(\)\d]*\))
+        -   Find all the fractions (with grouped counters and dividers): ([x\d\sp]*)\/\s*(\([\-\+\s\(\)\dx]*\))
+        -   Multiply all the expression members with collected dividers (make fraction divider 1, multiply counter by remaining dividers)
+            -   Torn found variable fractions from expression, process it, then multiply rest of the expression with all the dividers and merge both parts
+        
+        
+        Detect zero multiplied bracket:    
+        0\s?(\(([\sx\+\d\(]+\)+))+
+
+## Database
+
+### problem_prototype_json_data
+
+    ALTER TABLE prototype_json_data ADD UNIQUE condition_problem_unique(condition_type_id, problem_id);
+    
+    ALTER TABLE prototype_json_data DROP INDEX condition_problem_unique;
+
 
 ## Regulární výrazy
 
@@ -111,58 +193,90 @@
 ### Testing postprocessProblemFinalExpression
 
     $$ \frac{ -2 }{x - 2} - \frac{1}{x + 2} + \frac{x^2 - 8}{x^2 - 4} = 0 $$
-
-## Database
-
-### problem_prototype_json_data
-
-    ALTER TABLE prototype_json_data ADD UNIQUE condition_problem_unique(condition_type_id, problem_id);
     
-    ALTER TABLE prototype_json_data DROP INDEX condition_problem_unique;
+## Pomůcky
 
+### Regex pro nahrazení objektového přístupu za array přístup
 
-## Command Line
-
-### Doctrine
-
--   Vytvoření DB schématu:
-
-        sudo php ./www/index.php orm:schema-tool:create
-
--   Drop schématu:
-
-        sudo php ./www/index.php orm:schema-tool:drop --force
-
--   Update schématu:
-
-        sudo php ./www/index.php orm:schema-tool:update --force
-
-### PHPUnit
-
-    ./vendor/bin/phpunit --bootstrap App/bootstrap.php App/AppTests/Model/Entity
-
-### Known problems
-
--   Timeout - parameters complexity threshhold
--   Database longtext max length - threshhold
-
-### Newton API restrictions
-
--   Variable can't be "e" --> it's parsed as exp() function !!!: OK
--   Variable for equations can be only x, y or z (Newton API then formats output into equation standard form)
-    -   Solve by select box with variables x, y and z for equations, for others templates types, leave text input: OK
-    
--   equations in fractions format can't be handled by Newton API --> in needs to be manually multiplied by variable dividers!!!   
-    -   NEEDS TO BE SOLVED!!!
-    -   PROPOSAL
-        -   Simplify expression (in classic way)
-        -   Search for fractions with variable in divider
-        -   If those were found, get all the dividers containing variable
-        -   Find all the fractions dividers: \/\s*(\([x\-\+\s\(\)\d]*\))
-        -   Find all the fractions (with grouped counters and dividers): ([x\d\sp]*)\/\s*(\([\-\+\s\(\)\dx]*\))
-        -   Multiply all the expression members with collected dividers (make fraction divider 1, multiply counter by remaining dividers)
-            -   Torn found variable fractions from expression, process it, then multiply rest of the expression with all the dividers and merge both parts
+        ->(\w+)\)
+        ['$1'])
         
-        
-        Detect zero multiplied bracket:    
-        0\s?(\(([\sx\+\d\(]+\)+))+
+## Development Environment
+
+Application was developed on **Ubuntu 18.04 LTS**.
+
+The **XAMPP for Linux 64bit 7.3.1-0** was used for development.
+
+This version of XAMPP contains the following software releases:
+   - **PHP 7.3.0**
+   - **MariaDB 10.1.37**
+   - **OpenSSL 1.0.2q**
+   - **phpMyAdmin 4.8.4**
+
+### XAMPP Server
+
+#### Installation
+
+-   Download XAMPP Server for Linux from: [XAMPP Website](https://www.apachefriends.org/index.html)
+-   Move to the Downloads folder
+-   The installation package you downloaded needs to be made executable before it can be used further. Run the following command for this purpose:
+        $ chmod 755 [package name]
+-   Now the install package is in an executable form.
+-   As a privileged root user, run the following command in order to launch the graphical setup wizard.
+        $ sudo ./[package name]
+-   Work through the graphical setup wizard
+-   Launch XAMPP through the Terminal
+        $ sudo /opt/lampp/lampp start
+-   If you get error output, it means that Net Tools are not installed on your system
+-   In order to install Net Tools, run the following command as root:
+        $ sudo apt install net-tools
+-   Verify Installation. In browser:
+        http://localhost/dashboard
+        http://localhost/phpmyadmin
+
+#### Basic commands
+
+Start XAMPP:
+
+    sudo /opt/lampp/lampp start
+
+Stop XAMPP:
+
+    sudo /opt/lampp/lampp stop
+
+Restart XAMPP:
+
+    sudo /opt/lampp/lampp restart
+
+Start only specific service (mysql in example):
+
+    sudo /opt/lampp/lampp startmysql
+
+
+#### Problems solving
+
+You may be running your own mysql or apache. It that case you have to stop these services.
+
+    sudo service mysql stop
+    sudo service apache2 stop
+
+#### Virtual Hosts
+
+Allow the usage of custom virtual hosts. In order to achieve that, in **<lampp_dir>/etc/httpd.conf**, uncomment:
+
+        Include etc/extra/httpd-vhosts.conf
+
+Create your virtual host (add to **extra/httpd-vhosts.conf**):
+
+        <VirtualHost *:80>
+            ServerName appName.localhost
+            DocumentRoot "path_to_your_www"
+            DirectoryIndex index.php
+            <Directory "path_to_your_www">
+                Options All
+                AllowOverride All
+                Require all granted
+            </Directory>
+        </VirtualHost>
+
+XAMPP **restart is needed** after httpd-vhosts.conf editation.

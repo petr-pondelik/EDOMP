@@ -1,77 +1,101 @@
 # Electronical Database Of Mathematical Problems
 
+## Requirements
+
+-   **PHP >=7.2**
+-   **Composer**    
+    -   You can use Composer's binary from IDE or install Composer  
+    -   For installing Composer, follow the instructions on [Introduction - Composer](https://getcomposer.org/doc/00-intro.md)
+-   **NPM**
+-   **MySQL >=5.6** or **MariaDB >=10.1**
+-   **Node.js**
+
 ## Installation
 
+Make sure you have directories **log/, temp/, data/, and www/public_data/ created and writable**.
+
+    For production (not for local setup), uncomment in Bootstrap/Bootstrap.php (line:95):    
+    
+    $configurator->addConfig(__DIR__ . '/../Config/config.' . $env . '.neon');
+
+### 1. Vendors installation
+
+In application **root directory** run:
+
     composer install
+    npm install
 
-Make sure you have created writable directory www/wwwtmp.
+### 2. Resources compilation
 
-## Development
+After that, **compile the app resources**:  
 
-### XAMPP Server
+For local development with webpack dev-server (dev-server is watching changes in resources files):
 
-#### Installation
+    npm run start:dev
 
--   Download XAMPP Server for Linux from: [XAMPP Website](https://www.apachefriends.org/index.html)
--   Move to the Downloads folder
--   The installation package you downloaded needs to be made executable before it can be used further. Run the following command for this purpose:
-        $ chmod 755 [package name]
--   Now the install package is in an executable form.
--   As a privileged root user, run the following command in order to launch the graphical setup wizard.
-        $ sudo ./[package name]
--   Work through the graphical setup wizard
--   Launch XAMPP through the Terminal
-        $ sudo /opt/lampp/lampp start
--   If you get error output, it means that Net Tools are not installed on your system
--   In order to install Net Tools, run the following command as root:
-        $ sudo apt install net-tools
--   Verify Installation. In browser:
-        http://localhost/dashboard
-        http://localhost/phpmyadmin
+For local development without webpack dev-server:
 
-#### Basic commands
+    npm run dev
+    
+For production (minified, optimized assets output):
 
-Start XAMPP:
+    npm run prod
 
-    sudo /opt/lampp/lampp start
+### 3. Database installation
 
-Stop XAMPP:
+**Create database scheme** from Doctrine entities.  
+Run from **app root directory**:
 
-    sudo /opt/lampp/lampp stop
+    php ./www/index.php orm:schema-tool:create
 
-Restart XAMPP:
+EITHER  
+Fill database with init data.   
+Run from **app root directory**:
 
-    sudo /opt/lampp/lampp restart
+    sudo php ./www/index.php migrations:execute --up InitData
 
-Start only specific service (mysql in example):
+OR
 
-    sudo /opt/lampp/lampp startmysql
+Fill database with testing data.    
+Run from **app root directory**:
 
+    sudo php ./www/index.php migrations:execute --up TestingDataV1
 
-#### Problems solving
+### 4. Newton server installation
 
-You may be running your own mysql or apache. It that case you have to stop these services.
+Get Newton API from [GitHub](https://github.com/aunyks/newton-api).
 
-    sudo service mysql stop
-    sudo service apache2 stop
+Download ZIP or clone the repository via SSH in case you have GitLab account with SSH key:
 
-#### Virtual Hosts
+    git clone git@github.com:aunyks/newton-api.git
 
--   Allow the usage of custom virtual hosts. Uncomment:
+Run Newton server:
 
-        Include etc/extra/httpd-vhosts.conf
+    node <newton_dir>/app.js
 
--   Create your virtual host (add to extra/httpd-vhosts.conf):
+It should display message like "We're up at 3000!".  
+Here, 3000 is the port the Newton server is listening on.   
+So the API here is listening on localhost:3000 or 127.0.0.1:3000.
 
-        <VirtualHost \*:80>
-            ServerName myfirstapp.localhost
-            DocumentRoot "/opt/lampp/htdocs/my-first-project"
-            DirectoryIndex index.php
-            <Directory "/opt/lampp/htdocs/my-first-project">
-                Options All
-                AllowOverride All
-                Require all granted
-            </Directory>
-        </VirtualHost>
+For any case, local version of Newton server's code was added onto CD.  
+Newton API is licensed under **GNU GPLv3 license**.
 
--   XAMPP Restart is needed after httpd-vhosts.conf editation.
+## Run PHPUnit tests
+
+To run **all** the PHPUnit tests, run:
+
+    sudo ./vendor/bin/phpunit --bootstrap vendor/autoload.php Tests
+    
+To run **specific** PHPUnit tests, run:
+
+    sudo ./vendor/bin/phpunit --bootstrap vendor/autoload.php Tests/<path_to_subdir_or_file>
+
+If errors or failures occur, comment these lines in **Tests/EDOMPTestCase.php**:    
+(this setting enables using Nette sessions during tests, but disables most of the PHPUnit messages)
+
+    protected $preserveGlobalState = false;
+    protected $runTestInSeparateProcess = true;
+    
+## More information
+
+For more information, try to read **dev_notes.md**.
