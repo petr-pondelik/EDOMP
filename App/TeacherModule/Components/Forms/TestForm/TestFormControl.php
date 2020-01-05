@@ -666,7 +666,9 @@ class TestFormControl extends EntityFormControl
 
         // Pick only non-generated problems
         $problemFilters['filters']['isGenerated'] = false;
-        $problemFilters['filters']['createdBy'] = $this->presenter->user->id;
+        if (!$this->presenter->getUser()->isInRole('admin')) {
+            $problemFilters['filters']['createdBy'] = $this->presenter->user->id;
+        }
 
         // If selected is in JSON string format, decode it
         if ($problemFilters['selected'] && !is_array($problemFilters['selected'])) {

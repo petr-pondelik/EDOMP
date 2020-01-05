@@ -9,6 +9,7 @@
 namespace App\CoreModule\Components\HelpModal;
 
 use App\CoreModule\Components\EDOMPControl;
+use Nette\Application\UI\Presenter;
 use Nette\Utils\Strings;
 
 /**
@@ -18,20 +19,23 @@ use Nette\Utils\Strings;
 final class HelpModalControl extends EDOMPControl
 {
     /**
-     * @param string $presenterName
      * @return string
      */
-    public function getHelpContentName(string $presenterName): string
+    public function getHelpContentName(): string
     {
-        if(Strings::contains($presenterName, 'Template')){
+        $presenterName = $this->presenter->getName();
+        if (Strings::contains($presenterName, 'Template')) {
             return 'ProblemTemplate';
+        }
+        if (Strings::startsWith($presenterName, 'Teacher:Settings')) {
+            return 'Settings' . Strings::firstUpper($this->presenter->getAction());
         }
         return Strings::after($presenterName, ':');
     }
 
     public function render(): void
     {
-        $this->template->type = $this->getHelpContentName($this->presenter->name);
+        $this->template->type = $this->getHelpContentName();
         parent::render();
     }
 }
