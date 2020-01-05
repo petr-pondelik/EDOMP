@@ -77,9 +77,6 @@ It should display message like "We're up at 3000!".
 Here, 3000 is the port the Newton server is listening on.   
 So the API here is listening on localhost:3000 or 127.0.0.1:3000.
 
-For any case, local version of Newton server's code was added onto CD.  
-Newton API is licensed under **GNU GPLv3 license**.
-
 ## Run PHPUnit tests
 
 To run **all** the PHPUnit tests, run:
