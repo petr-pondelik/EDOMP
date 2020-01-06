@@ -11,6 +11,7 @@ namespace App\TeacherModule\Components\Forms\ProblemTemplateForm;
 
 use App\CoreModule\Arguments\ValidatorArgument;
 use App\CoreModule\Components\Forms\EntityFormControl;
+use App\TeacherModule\Exceptions\InvalidParameterException;
 use App\TeacherModule\Exceptions\NewtonApiException;
 use App\TeacherModule\Exceptions\ProblemTemplateException;
 use App\CoreModule\Helpers\ConstHelper;
@@ -368,6 +369,7 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
 
     /**
      * @param Form $form
+     * @throws \App\TeacherModule\Exceptions\InvalidParameterException
      */
     public function handleFormValidate(Form $form): void
     {
@@ -376,7 +378,14 @@ abstract class ProblemTemplateFormControl extends EntityFormControl
         $values = $form->getValues();
 
         $entityNew = $this->createNonPersistentEntity($values);
-        $entityNew->setParametersData(new ParametersData($this->parameterParser::extractParametersInfo($entityNew->getBody())));
+
+        try {
+            $entityNew->setParametersData(new ParametersData($this->parameterParser::extractParametersInfo($entityNew->getBody())));
+        } catch (InvalidParameterException $e) {
+            $this['form']['body']->addError($e->getMessage());
+            $this->redrawErrors();
+            return;
+        }
 
         // VALIDATE BASE ITEMS
         if (!$this->validateBaseItems($entityNew)) {

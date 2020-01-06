@@ -189,9 +189,9 @@ class ProblemFinalFormControl extends EntityFormControl
     public function handleUpdateFormSuccess(Form $form, ArrayHash $values): void
     {
         try {
-            if ($this->entity && $this->entity->isGenerated()) {
-                unset($values['body']);
-            }
+//            if ($this->entity && $this->entity->isGenerated()) {
+//                unset($values['body']);
+//            }
             $this->functionality->update($this->entity->getId(), $values);
             $this->onSuccess();
         } catch (\Exception $e) {
@@ -217,9 +217,9 @@ class ProblemFinalFormControl extends EntityFormControl
         $this['form']['subTheme']->setDefaultValue($this->entity->getSubTheme()->getId());
         $this['form']['studentVisible']->setDefaultValue((int)$this->entity->isStudentVisible());
 
-        if ($this->entity->isGenerated()) {
-            $this['form']['body']->setDisabled();
-        }
+//        if ($this->entity->isGenerated()) {
+//        $this['form']['body']->setDisabled();
+//        }
 
         $this['form']['body']->setDefaultValue($this->entity->getBody());
     }

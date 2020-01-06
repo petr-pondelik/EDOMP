@@ -35,7 +35,7 @@ final class ArithmeticSequencePlugin extends SequencePlugin
          * @var ArithmeticSequenceTemplateNP $data
          */
 
-        if(!parent::validateType($data)){
+        if (!parent::validateType($data)) {
             throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat aritmetickou posloupnost.');
         }
 
@@ -50,7 +50,7 @@ final class ArithmeticSequencePlugin extends SequencePlugin
 
         // LET THE CONDITION SERVICE FIND MATCHING PARAMETERS --> IF THERE IS NONE, SEQUENCE ISN'T ARITHMETIC
         // REQUIRE STORE JSON DATA INTO TEMPLATE JSON DATA --> FLAG (IS_VALIDATION_DATA) --> DURING TEMPLATE CREATE, MERGE VALIDATION AND CONDITION JSON DATA
-        try{
+        try {
             $matches = $this->conditionService->findConditionsMatches([
                 $this->constHelper::DIFFERENCE_VALIDATION => [
                     $this->constHelper::DIFFERENCE_EXISTS => [
@@ -58,16 +58,16 @@ final class ArithmeticSequencePlugin extends SequencePlugin
                     ]
                 ]
             ]);
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             throw new ProblemTemplateException('Zadán nepodporovaný formát šablony.');
         }
 
-        if(!$matches){
+        if (!$matches) {
             throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat aritmetickou posloupnost.');
         }
 
         $matchesJson = Json::encode($matches);
-        $this->templateJsonDataFunctionality->create(ArrayHash::from([ 'jsonData' => $matchesJson ]), true, $data->getId());
+        $this->templateJsonDataFunctionality->create(ArrayHash::from(['jsonData' => $matchesJson]), true, $data->getId());
 
         return true;
     }
@@ -81,7 +81,7 @@ final class ArithmeticSequencePlugin extends SequencePlugin
     public function evaluate(ProblemFinal $problem): ArrayHash
     {
         $data = parent::evaluate($problem);
-        $difference = (string) round($data->res[$data->seqName . '_{' . '2}'] - $data->res[$data->seqName . '_{' . '1}'], 3);
+        $difference = (string)round($data->res[$data->seqName . '_{' . '2}'] - $data->res[$data->seqName . '_{' . '1}'], 3);
         $data->res['Diference'] = $difference;
         $this->problemFinalFunctionality->storeResult($problem->getId(), $data->res);
         return $data->res;

@@ -174,6 +174,7 @@ trait ProblemFinalFunctionalityTrait
      */
     public function attachConditions(ProblemFinal $problem, iterable $data): ProblemFinal
     {
+        bdump($data);
         if (isset($data['problemType'])) {
             /** @var ProblemType|null $type */
             $type = $this->problemTypeRepository->find($data['problemType']);

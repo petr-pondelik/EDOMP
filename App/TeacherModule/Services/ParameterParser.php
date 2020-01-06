@@ -10,6 +10,7 @@ namespace App\TeacherModule\Services;
 
 use App\CoreModule\Helpers\StringsHelper;
 use App\CoreModule\Interfaces\IParser;
+use App\TeacherModule\Exceptions\InvalidParameterException;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 
@@ -54,21 +55,26 @@ final class ParameterParser implements IParser
      * @param string $par
      * @param string $attr
      * @return int
+     * @throws InvalidParameterException
      */
     public static function extractParAttr(string $par, string $attr): int
     {
         $start = Strings::indexOf($par, $attr);
+
         if (!$start) {
-            return null;
+            throw new InvalidParameterException('Zadaná šablona obsahuje nevalidní parametr.');
         }
+
         $par = Strings::substring($par, $start);
         $end = Strings::indexOf($par, '"', 2);
+
         return (int)Strings::substring($par, Strings::indexOf($par, '"') + 1, $end - Strings::indexOf($par, '"') - 1);
     }
 
     /**
      * @param string $expression
      * @return ArrayHash
+     * @throws InvalidParameterException
      */
     public static function extractParametersInfo(string $expression): ArrayHash
     {

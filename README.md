@@ -12,10 +12,10 @@
 
 ## Installation
 
-Make sure you have directories **log/, temp/, data/, and www/public_data/ created and writable**.
+Make sure you have directories **log/, temp/, data/, www/public_data/ and www/public_data/logos created and writable**.
 
     For production (not for local setup), uncomment in Bootstrap/Bootstrap.php (line:95):    
-    
+
     $configurator->addConfig(__DIR__ . '/../Config/config.' . $env . '.neon');
 
 ### 1. Vendors installation
@@ -36,7 +36,7 @@ For local development with webpack dev-server (dev-server is watching changes in
 For local development without webpack dev-server:
 
     npm run dev
-    
+
 For production (minified, optimized assets output):
 
     npm run prod
@@ -82,7 +82,7 @@ So the API here is listening on localhost:3000 or 127.0.0.1:3000.
 To run **all** the PHPUnit tests, run:
 
     sudo ./vendor/bin/phpunit --bootstrap vendor/autoload.php Tests
-    
+
 To run **specific** PHPUnit tests, run:
 
     sudo ./vendor/bin/phpunit --bootstrap vendor/autoload.php Tests/<path_to_subdir_or_file>
@@ -92,7 +92,13 @@ If errors or failures occur, comment these lines in **Tests/EDOMPTestCase.php**:
 
     protected $preserveGlobalState = false;
     protected $runTestInSeparateProcess = true;
-    
+
+## Localhost restrictions and tips
+
+Action for **tests compilation** will not work on localhost. Overleaf API requires **publicly visible archive** to create project on portal.
+
+For catching e-mails sent from application locally, it's handy to use **Mailhog**.
+
 ## More information
 
 For more information, try to read **dev_notes.md**.

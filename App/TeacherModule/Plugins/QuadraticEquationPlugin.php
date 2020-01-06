@@ -31,6 +31,7 @@ final class QuadraticEquationPlugin extends EquationPlugin
      * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
      * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Nette\Utils\JsonException
      */
     public function getDiscriminantA(string $expression, string $variable)
     {
@@ -69,6 +70,7 @@ final class QuadraticEquationPlugin extends EquationPlugin
      * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
      * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Nette\Utils\JsonException
      */
     public function getDiscriminantB(string $standardized, string $variable)
     {
@@ -112,6 +114,7 @@ final class QuadraticEquationPlugin extends EquationPlugin
      * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
      * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Nette\Utils\JsonException
      */
     public function getDiscriminantC(string $expression, string $variable)
     {
@@ -142,6 +145,7 @@ final class QuadraticEquationPlugin extends EquationPlugin
      * @throws \App\TeacherModule\Exceptions\NewtonApiRequestException
      * @throws \App\TeacherModule\Exceptions\NewtonApiUnreachableException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Nette\Utils\JsonException
      */
     public function getDiscriminantExpression(string $standardized, string $variable): string
     {
@@ -154,6 +158,7 @@ final class QuadraticEquationPlugin extends EquationPlugin
      * @throws ProblemTemplateException
      * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
+     * @throws \Doctrine\ORM\EntityNotFoundException
      */
     public function validateType(ProblemTemplateNP $data): bool
     {

@@ -94,7 +94,6 @@ final class ConditionService
      */
     private function findMatches(ProblemTemplateNP $data, int $typeAccessor, int $accessor): ?array
     {
-        bdump($data);
         $matches = [];
         $matchesCnt = 0;
         $res = false;
@@ -181,11 +180,11 @@ final class ConditionService
             }
         }
 
+        bdump($matches);
+
         if (!$res) {
             return null;
         }
-
-        bdump($matches);
 
         return $matches;
     }

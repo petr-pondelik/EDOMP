@@ -27,6 +27,7 @@ final class GeometricSequencePlugin extends SequencePlugin
      * @throws ProblemTemplateException
      * @throws \App\CoreModule\Exceptions\EntityException
      * @throws \Nette\Utils\JsonException
+     * @throws \Doctrine\ORM\EntityNotFoundException
      */
     public function validateType(ProblemTemplateNP $data): bool
     {
@@ -34,7 +35,7 @@ final class GeometricSequencePlugin extends SequencePlugin
          * @var GeometricSequenceTemplateNP $data
          */
 
-        if(!parent::validateType($data)){
+        if (!parent::validateType($data)) {
             return false;
         }
 
@@ -47,7 +48,7 @@ final class GeometricSequencePlugin extends SequencePlugin
 
         $data->setFirstValues($q);
 
-        try{
+        try {
             $matches = $this->conditionService->findConditionsMatches([
                 $this->constHelper::QUOTIENT_VALIDATION => [
                     $this->constHelper::QUOTIENT_EXISTS => [
@@ -55,12 +56,12 @@ final class GeometricSequencePlugin extends SequencePlugin
                     ]
                 ]
             ]);
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             throw new ProblemTemplateException('Zadán chybný formát šablony.');
         }
 
-        if(!$matches){
-            return false;
+        if (!$matches) {
+            throw new ProblemTemplateException('Ze zadané šablony nelze vygenerovat geometrickou posloupnost.');
         }
 
         $matchesJson = Json::encode($matches);
@@ -80,7 +81,7 @@ final class GeometricSequencePlugin extends SequencePlugin
     public function evaluate(ProblemFinal $problem): ArrayHash
     {
         $data = parent::evaluate($problem);
-        $quotient = (string) round($data->res[$data->seqName . '_{' . '2}'] / $data->res[$data->seqName . '_{' . '1}'], 1);
+        $quotient = (string)round($data->res[$data->seqName . '_{' . '2}'] / $data->res[$data->seqName . '_{' . '1}'], 1);
         $data->res['Kvocient'] = $quotient;
         $this->problemFinalFunctionality->storeResult($problem->getId(), $data->res);
         return $data->res;
