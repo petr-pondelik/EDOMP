@@ -87,6 +87,10 @@
         MathJax.Hub.Config({
             messageStyle: "none",
             ignoreClass: "tex2jax_ignore",
+            tex2jax: {
+                inlineMath: [ ['\$','\$'], ["\\(","\\)"] ],
+                processEscapes: true
+            }
         });
     </script>
 {/snippet}
