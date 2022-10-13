@@ -2,13 +2,17 @@
 
 ## Requirements
 
--   **PHP >=7.2**
--   **Composer**    
-    -   You can use Composer's binary from IDE or install Composer  
-    -   For installing Composer, follow the instructions on [Introduction - Composer](https://getcomposer.org/doc/00-intro.md)
--   **NPM**
--   **MySQL >=5.6** or **MariaDB >=10.1**
--   **Node.js**
+* **PHP 7.2**
+  * extensions:
+    * php7.2-zip
+    * php7.2-xml
+    * php7.2-mbstring
+* **Composer 1.x**
+  * You can use Composer's binary from IDE or install Composer  
+  * For installing Composer, follow the instructions on [Introduction - Composer](https://getcomposer.org/doc/00-intro.md)
+* **Node 12.22.12**
+* **NPM**
+* **MySQL >=5.6** or **MariaDB >=10.1**
 
 ## Installation
 
@@ -24,6 +28,28 @@ In application **root directory** run:
 
     composer install
     npm install
+
+Switch between PHP versions:
+
+    sudo update-alternatives --config php
+
+Use NVM to switch between Node.js versions:
+
+    # Install NVM on Ubuntu
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+    nvm --version
+
+    # List available Node versions
+    nvm ls-remote
+
+    # Install Node version
+    nvm install <version>
+
+    # Choose specific Node version
+    nvm use <version>
 
 ### 2. Resources compilation
 

@@ -1,5 +1,5 @@
 {
-	"name": "EDOMP",
+	"name": "petr-pondelik/edomp",
 	"description": "Electronical Database Of Mathematical Problems based on Nette Framework.",
 	"keywords": ["nette", "math", "teacher", "student"],
 	"type": "project",
